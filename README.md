@@ -1,2 +1,2 @@
-# restaurant-web
-sistema web restaurant
+# Restaurant web
+Sistema para restaurant, desarrollado en nodejs.
