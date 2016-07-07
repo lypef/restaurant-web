@@ -1,0 +1,13 @@
+{
+  "name": "StudioVictory",
+  "version": "0.0.1",
+  "author": "Francisco Eduardo",
+  "license": "MIT",
+  "dependencies": {
+    "angular": "latest",
+    "font-awesome": "latest",
+    "lodash": "2.4.1",
+    "normalize-css": "latest",
+    "requirejs": "latest"
+  }
+}

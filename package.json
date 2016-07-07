@@ -1,16 +1,23 @@
 {
   "name": "restaurant-web",
-  "version": "1.0.0",
-  "description": "Sistema restaurant sistem web",
-  "main": "app.js",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node ./bin/www"
   },
-  "author": "ISC: Francisco Eduardo AD",
-  "license": "ISC",
   "dependencies": {
-    "express": "^4.14.0",
-    "jade": "^1.11.0"
+    "body-parser": "~1.15.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "express": "~4.13.4",
+    "express-handlebars": "latest",
+    "lodash": "latest",
+    "morgan": "~1.7.0",
+    "nib": "latest",
+    "stylus": "latest"
+  },
+  "devDependencies": {
+    "bower": "latest",
+    "grunt": "latest"
   }
 }
