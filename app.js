@@ -15,7 +15,7 @@ app.get('/', function (req, res, next) {
     res.render('login', {layout: false});
 });
 app.get('/dashboard', function (req, res, next) {
-    res.render('dashboard');
+    res.render('dashboard',{url:"Dashboard"});
 });
 
 app.listen(8000);
