@@ -1,8 +1,10 @@
 var express = require("express");
 var exphbs  = require("express3-handlebars");
 var bodyparser = require("body-parser");
-
+var user = require("./models/models").user;
 var app = express();
+
+
 
 app.engine('handlebars', exphbs({
 	
@@ -25,9 +27,13 @@ app.get('/dashboard', function (req, res, next) {
 });
 
 app.post("/login_user", function(req,res){
-	console.log("Usuario: " + req.body.username);
-	console.log("Contraseña: " + req.body.password);
-	res.send("Recibimos los datos")
+	var a = new user({username: req.body.username, password: req.body.password});
+	a.save(function(){
+			user.find(function(err,doc){
+				console.log(doc);
+			});
+			res.send("Recibimos los datos: " + a.username)
+	});
 });
 
 
