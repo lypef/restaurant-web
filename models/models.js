@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 
-mongoose.connect("mongodb://localhost/restwebdb");
+mongoose.connect("mongodb://lypef:admin@mongodb-lypef.alwaysdata.net/lypef_db");
 
 var user_scheme = new mongoose.Schema({
 	username: String,

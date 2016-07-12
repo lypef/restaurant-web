@@ -32,9 +32,9 @@ app.post("/login_user", function(req,res){
 			user.find(function(err,doc){
 				console.log(doc);
 			});
-			res.send("Recibimos los datos: " + a.username)
+			res.render('dashboard',{url:"Dashboard"});
 	});
 });
 
 
-app.listen(8000);
+app.listen(8080);
