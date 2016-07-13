@@ -2,6 +2,9 @@ var express = require("express");
 var exphbs  = require("express3-handlebars");
 var bodyparser = require("body-parser");
 var user = require("./models/models").user;
+var session = require("express-session");
+var session_middleware = require("./middlewares/sessions");
+
 var app = express();
 
 
@@ -11,30 +14,62 @@ app.engine('handlebars', exphbs({
 	defaultLayout: 'main'
 
 }));
-
-app.use(bodyparser.json());
-app.use(bodyparser.urlencoded({extended: true}));
-
 app.set('view engine', 'handlebars');
 
 
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({extended: true}));
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}))
+
+app.use("/dashboard", session_middleware);
+app.use("/tables", session_middleware);
+app.use("/logout", session_middleware);
 
 app.get('/', function (req, res, next) {
+	console.log(req.sessionID);
     res.render('login', {layout: false});
 });
+
 app.get('/dashboard', function (req, res, next) {
-    res.render('dashboard',{url:"Dashboard"});
+	res.render('dashboard',{url:"Dashboard"});
 });
 
-app.post("/login_user", function(req,res){
-	var a = new user({username: req.body.username, password: req.body.password});
-	a.save(function(){
-			user.find(function(err,doc){
-				console.log(doc);
-			});
+app.get('/tables', function (req, res, next) {
+	res.render('tables');
+});
+
+app.get('/logout', function (req, res, next) {
+	req.session.destroy(function(err){
+		if (err)
+		{
+			console.log(err);
+		}
+		else
+		{
+			console.log("session destruida");
+			res.redirect("/");
+		}
+	})
+});
+
+app.post("/login", function(req,res){
+	user.findOne({username:req.body.username, password:req.body.password},function(err,doc){
+		if (doc != null)
+		{
+			req.sessionID = doc._id;
 			res.render('dashboard',{url:"Dashboard"});
+		}
+		else{
+			console.log("Usuario no encontrado");
+			res.render('login', {layout: false});
+		}
+		
 	});
 });
-
 
 app.listen(8080);
