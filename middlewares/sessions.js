@@ -1,11 +1,17 @@
 module.exports = function(req,res,next)
 {
-	if (!req.sessionID)
+	if (!req.session.user_id)
 	{
-		res.redirect("/");
-		
-	}else
+		res.redirect("/");	
+	}
+	else
 	{
-		next();
+		if (req.originalUrl == "/")
+		{
+			res.redirect("/dashboard");	
+		}else
+		{
+			next();
+		}
 	}
 }

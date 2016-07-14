@@ -20,10 +20,9 @@ app.set('view engine', 'handlebars');
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended: true}));
 app.use(session({
-  secret: 'keyboard cat',
+  secret: 'ajsj229nshslwkjrfdrfg',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: true }
 }))
 
 app.use("/dashboard", session_middleware);
@@ -31,8 +30,13 @@ app.use("/tables", session_middleware);
 app.use("/logout", session_middleware);
 
 app.get('/', function (req, res, next) {
-	console.log(req.sessionID);
-    res.render('login', {layout: false});
+	if (req.session.user_id)
+	{
+		res.redirect("/dashboard");	
+	}else
+	{
+		res.render('login', {layout: false});
+	}
 });
 
 app.get('/dashboard', function (req, res, next) {
@@ -51,7 +55,6 @@ app.get('/logout', function (req, res, next) {
 		}
 		else
 		{
-			console.log("session destruida");
 			res.redirect("/");
 		}
 	})
@@ -61,14 +64,13 @@ app.post("/login", function(req,res){
 	user.findOne({username:req.body.username, password:req.body.password},function(err,doc){
 		if (doc != null)
 		{
-			req.sessionID = doc._id;
-			res.render('dashboard',{url:"Dashboard"});
+			req.session.user_id = doc._id;
+			res.redirect("/dashboard");
 		}
 		else{
 			console.log("Usuario no encontrado");
 			res.render('login', {layout: false});
 		}
-		
 	});
 });
 
