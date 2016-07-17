@@ -28,6 +28,7 @@ app.use(session({
 app.use("/dashboard", session_middleware);
 app.use("/tables", session_middleware);
 app.use("/logout", session_middleware);
+app.use(express.static('public')); 
 
 app.get('/', function (req, res, next) {
 	if (req.session.user_id)
