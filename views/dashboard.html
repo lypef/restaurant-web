@@ -2,7 +2,7 @@
 <!doctype html>
 
 <!-- ASSIGN OUR ANGULAR MODULE -->
-<html ng-app>
+<html ng-app="restweb">
 <head>
     <title>Restaurant Web</title>
     <meta charset="utf-8">
@@ -20,7 +20,7 @@
     <meta name='viewport', content='width=device-width, initial-scale=1' />
 
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
-    <script src="core.js"></script>
+    <script src="/controller.js"></script>
     <style>
         html                    { overflow-y:scroll; }
         body {
@@ -246,7 +246,7 @@ ul.alert-dropdown {
 
 </head>
 <!-- SET THE CONTROLLER AND GET ALL TODOS -->
-<body>
+<body ng-controller="controller">
     <div id="wrapper">
 
         <!-- Navigation -->
@@ -443,7 +443,7 @@ ul.alert-dropdown {
                                 <i class="glyphicon glyphicon-ok"></i>  {{"Hi"}}
                             </li>
                         </ol>
-                        <h1>{{"Hola, te saludo desde " + "Angular."}}</h1>
+                        <h1>{{"Hola, te saludo desde angular " + nombre}}</h1>
                     </div>
                 </div>
                 <!-- /.row -->

@@ -35,7 +35,7 @@ app.get('/', function(req, res) {
 });
 
 app.get("/dashboard",function(req,res){
-	res.sendfile('./views/dashboard.html');
+	res.sendFile('./views/dashboard.html', { root: __dirname });
 });
 
 
