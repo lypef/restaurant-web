@@ -30,7 +30,7 @@ app.get('/', function(req, res) {
 		res.redirect("/dashboard");
 	}else
 	{
-		res.sendfile('./views/login.html');
+		res.sendFile('./views/login.html', { root : __dirname});
 	}
 });
 
@@ -44,10 +44,11 @@ app.post("/login", function(req,res){
 		if (doc != null)
 		{
 			req.session.user_id = doc._id;
+			conso.log("Session iniciada correctamente.");
 			res.redirect('/dashboard');
 		}
 		else{
-			console.log("Usuario no encontrado");
+			console.log("Usuario no encontrado.");
 			res.redirect("/");
 		}
 	});
