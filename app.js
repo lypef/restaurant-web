@@ -48,7 +48,7 @@ app.post("/login", function(req,res){
 		}
 		else{
 			console.log("Usuario no encontrado");
-			res.sendfile('./views/dashboard.html');
+			res.redirect("/");
 		}
 	});
 });
