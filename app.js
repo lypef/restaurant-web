@@ -44,7 +44,7 @@ app.post("/login", function(req,res){
 		if (doc != null)
 		{
 			req.session.user_id = doc._id;
-			conso.log("Session iniciada correctamente.");
+			console.log("Session iniciada correctamente.");
 			res.redirect('/dashboard');
 		}
 		else{
