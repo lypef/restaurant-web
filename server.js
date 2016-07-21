@@ -24,7 +24,13 @@ app.use(methodOverride());
 app.use("/dashboard",sessiontrue);
 
 
-app.get('/', function(req, res) {
+app.get('/', Inicio );
+app.get("/dashboard", Dashboard );
+app.post("/login", Login );
+app.get('/logout', Logout);
+
+
+function Inicio (req, res) {
 	if (req.session.user_id)
 	{
 		res.redirect("/dashboard");
@@ -32,14 +38,13 @@ app.get('/', function(req, res) {
 	{
 		res.sendFile('./views/login.html', { root : __dirname});
 	}
-});
+}
 
-app.get("/dashboard",function(req,res){
+function Dashboard (req,res){
 	res.sendFile('./views/dashboard.html', { root: __dirname });
-});
+}
 
-
-app.post("/login", function(req,res){
+function Login (req,res){
 	user.findOne({username:req.body.username, password:req.body.password},function(err,doc){
 		if (doc != null)
 		{
@@ -52,9 +57,9 @@ app.post("/login", function(req,res){
 			res.redirect("/");
 		}
 	});
-});
+};
 
-app.get('/logout', function (req, res, next) {
+function Logout (req, res, next) {
 	req.session.destroy(function(err){
 		if (err)
 		{
@@ -65,7 +70,7 @@ app.get('/logout', function (req, res, next) {
 			res.redirect("/");
 		}
 	})
-});
+};
 
 app.listen(8080);
 console.log("Arranque del servidor.");

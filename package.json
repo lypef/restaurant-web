@@ -2,10 +2,10 @@
   "name": "restaurant-web",
   "version": "1.0.0",
   "description": "Sistema restaurant sistem web",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node server.js"
   },
   "author": "ISC: Francisco Eduardo AD",
   "license": "ISC",
