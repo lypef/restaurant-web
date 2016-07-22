@@ -10,6 +10,8 @@ var sessiontrue = require('./middlewares/session');
 
 var app = express(); 
 
+const port = "8080"
+
 app.use(session({
   secret: 'ajsj229nshslwkjrfdrfg',
   resave: false,
@@ -49,14 +51,14 @@ function Login (req,res){
 		if (doc != null)
 		{
 			req.session.user_id = doc._id;
-			console.log("Session iniciada correctamente.");
-			res.redirect('/dashboard');
+			res.redirect("/dashboard");
 		}
 		else{
-			console.log("Usuario no encontrado.");
-			res.redirect("/");
+			console.log("Usuario no encontrado");
+			res.redirect("/dashboard");
 		}
 	});
+	
 };
 
 function Logout (req, res, next) {
@@ -72,5 +74,19 @@ function Logout (req, res, next) {
 	})
 };
 
-app.listen(8080);
-console.log("Arranque del servidor.");
+function CreateUsername (req,res){
+	var db = new user({username: req.body.username, password: req.body.password});
+	db.save(function(){
+			user.find(function(err,doc){
+				console.log(doc);
+			});
+
+	});
+};
+
+app.listen(port, function (err){
+	if (!err)
+	{
+		console.log("Arranque del servidor en el puerto " + port);	
+	}
+});

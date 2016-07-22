@@ -1,459 +1,266 @@
-<!-- index.html -->
-<!doctype html>
-
-<!-- ASSIGN OUR ANGULAR MODULE -->
-<html ng-app="restweb">
+<!DOCTYPE html>
+<html>
 <head>
-    <title>Restaurant Web</title>
-    <meta charset="utf-8">
-    
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
-    
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-    
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name='viewport', content='width=device-width, initial-scale=1' />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
-    <script src="/controller.js"></script>
+    <script src="/metro/docs/js/jquery-2.1.3.min.js"></script>
+    <script src="/metro/docs/js/metro.js"></script>
+    <script src="/metro/docs/js/jquery.dataTables.min.js"></script>
+
+    <link href="/metro/docs/css/metro.css" rel="stylesheet">
+    <link href="/metro/docs/css/metro-schemes.css" rel="stylesheet">
+    <link href="/metro/docs/css/metro-icons.css" rel="stylesheet">
+    <link href="/metro/docs/css/metro-responsive.css" rel="stylesheet">
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    
+    
     <style>
-        html                    { overflow-y:scroll; }
+        html, body {
+            height: 100%;
+        }
         body {
-    background-color:#F2F2F2;
-    margin-top: 100px;
-}
+        }
+        .page-content {
+            padding-top: 3.125rem;
+            min-height: 100%;
+            height: 100%;
+        }
+        .table .input-control.checkbox {
+            line-height: 1;
+            min-height: 0;
+            height: auto;
+        }
 
-@media(min-width:768px) {
-    body {
-        margin-top: 50px;
-    }
-}
-
-#wrapper {
-    padding-left: 0;
-}
-
-#page-wrapper {
-    width: 100%;
-    padding: 0;
-    background-color: #fff;
-}
-
-.huge {
-    font-size: 50px;
-    line-height: normal;
-}
-
-@media(min-width:768px) {
-    #wrapper {
-        padding-left: 225px;
-    }
-
-    #page-wrapper {
-        padding: 10px;
-    }
-}
-
-/* Top Navigation */
-
-.top-nav {
-    padding: 0 15px;
-}
-
-.top-nav>li {
-    display: inline-block;
-    float: left;
-}
-
-.top-nav>li>a {
-    padding-top: 15px;
-    padding-bottom: 20px;
-    line-height: 20px;
-    color: #999;
-}
-
-.top-nav>li>a:hover,
-.top-nav>li>a:focus,
-.top-nav>.open>a,
-.top-nav>.open>a:hover,
-.top-nav>.open>a:focus {
-    color: #fff;
-    background-color: #000;
-}
-
-.top-nav>.open>.dropdown-menu {
-    float: left;
-    position: absolute;
-    margin-top: 0;
-    border: 1px solid rgba(0,0,0,.15);
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    background-color: #fff;
-    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
-    box-shadow: 0 6px 12px rgba(0,0,0,.175);
-}
-
-.top-nav>.open>.dropdown-menu>li>a {
-    white-space: normal;
-}
-
-ul.message-dropdown {
-    padding: 0;
-    max-height: 250px;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-li.message-preview {
-    width: 275px;
-    border-bottom: 1px solid rgba(0,0,0,.15);
-}
-
-li.message-preview>a {
-    padding-top: 15px;
-    padding-bottom: 15px;
-}
-
-li.message-footer {
-    margin: 5px 0;
-}
-
-ul.alert-dropdown {
-    width: 200px;
-}
-
-/* Side Navigation */
-
-@media(min-width:768px) {
-    .side-nav {
-        position: fixed;
-        top: 51px;
-        left: 225px;
-        width: 225px;
-        margin-left: -225px;
-        border: none;
-        border-radius: 0;
-        overflow-y: auto;
-        background-color: #222;
-        bottom: 0;
-        overflow-x: hidden;
-        padding-bottom: 40px;
-    }
-
-    .side-nav>li>a {
-        width: 225px;
-    }
-
-    .side-nav li a:hover,
-    .side-nav li a:focus {
-        outline: none;
-        background-color: #000 !important;
-    }
-}
-
-.side-nav>li>ul {
-    padding: 0;
-}
-
-.side-nav>li>ul>li>a {
-    display: block;
-    padding: 6px 15px 10px 38px;
-    text-decoration: none;
-    color: #999;
-}
-
-.side-nav>li>ul>li>a:hover {
-    color: #fff;
-}
-
-/* Flot Chart Containers */
-
-.flot-chart {
-    display: block;
-    height: 400px;
-}
-
-.flot-chart-content {
-    width: 100%;
-    height: 100%;
-}
-
-/* Custom Colored Panels */
-
-.huge {
-    font-size: 40px;
-}
-
-.panel-green {
-    border-color: #5cb85c;
-}
-
-.panel-green > .panel-heading {
-    border-color: #5cb85c;
-    color: #fff;
-    background-color: #5cb85c;
-}
-
-.panel-green > a {
-    color: #5cb85c;
-}
-
-.panel-green > a:hover {
-    color: #3d8b3d;
-}
-
-.panel-red {
-    border-color: #d9534f;
-}
-
-.panel-red > .panel-heading {
-    border-color: #d9534f;
-    color: #fff;
-    background-color: #d9534f;
-}
-
-.panel-red > a {
-    color: #d9534f;
-}
-
-.panel-red > a:hover {
-    color: #b52b27;
-}
-
-.panel-yellow {
-    border-color: #f0ad4e;
-}
-
-.panel-yellow > .panel-heading {
-    border-color: #f0ad4e;
-    color: #fff;
-    background-color: #f0ad4e;
-}
-
-.panel-yellow > a {
-    color: #f0ad4e;
-}
-
-.panel-yellow > a:hover {
-    color: #df8a13;
-}
+        @media screen and (max-width: 800px){
+            #cell-sidebar {
+                flex-basis: 52px;
+            }
+            #cell-content {
+                flex-basis: calc(100% - 52px);
+            }
+        }
     </style>
 
-</head>
-<!-- SET THE CONTROLLER AND GET ALL TODOS -->
-<body ng-controller="controller">
-    <div id="wrapper">
+    <script>
+        function pushMessage(t){
+            var mes = 'Info|Implement independently';
+            $.Notify({
+                caption: mes.split("|")[0],
+                content: mes.split("|")[1],
+                type: t
+            });
+        }
 
-        <!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/dashboard">Rest - web</a>
-            </div>
-            <!-- Top Menu Items -->
-            <ul class="nav navbar-right top-nav">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
-                    <ul class="dropdown-menu message-dropdown">
-                        <li class="message-preview">
-                            <a href="#">
-                                <div class="media">
-                                    <span class="pull-left">
-                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
-                                    </span>
-                                    <div class="media-body">
-                                        <h5 class="media-heading">
-                                            <strong>John Smith</strong>
-                                        </h5>
-                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
-                                    </div>
-                                </div>
-                            </a>
+        $(function(){
+            $('.sidebar').on('click', 'li', function(){
+                if (!$(this).hasClass('active')) {
+                    $('.sidebar li').removeClass('active');
+                    $(this).addClass('active');
+                }
+            })
+        })
+    </script>
+</head>
+<body class="bg-steel">
+
+    <div class="app-bar fixed-top darcula" data-role="appbar">
+        <a class="app-bar-element branding">RestWeb</a>
+        <span class="app-bar-divider"></span>
+        <ul class="app-bar-menu">
+            <li><a href="">Dashboard</a></li>
+            <li>
+                <a href="" class="dropdown-toggle">Restaurant</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li>
+                        <a href="tables">Mesas</a>
                         </li>
-                        <li class="message-preview">
-                            <a href="#">
-                                <div class="media">
-                                    <span class="pull-left">
-                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
-                                    </span>
-                                    <div class="media-body">
-                                        <h5 class="media-heading">
-                                            <strong>John Smith</strong>
-                                        </h5>
-                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="message-preview">
-                            <a href="#">
-                                <div class="media">
-                                    <span class="pull-left">
-                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
-                                    </span>
-                                    <div class="media-body">
-                                        <h5 class="media-heading">
-                                            <strong>John Smith</strong>
-                                        </h5>
-                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="message-footer">
-                            <a href="#">Read All New Messages</a>
+                        <li>
+                        <a href="#">Entregas</a>
                         </li>
                     </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
-                    <ul class="dropdown-menu alert-dropdown">
-                        <li>
-                            <a href="#">Alert Name <span class="label label-default">Alert Badge</span></a>
+            </li>
+            <li>
+                <a href="" class="dropdown-toggle">Ventas</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li>
+                        <a href="tables">Ventas</a>
                         </li>
                         <li>
-                            <a href="#">Alert Name <span class="label label-primary">Alert Badge</span></a>
+                        <a href="#">Movimientos</a>
                         </li>
                         <li>
-                            <a href="#">Alert Name <span class="label label-success">Alert Badge</span></a>
-                        </li>
-                        <li>
-                            <a href="#">Alert Name <span class="label label-info">Alert Badge</span></a>
-                        </li>
-                        <li>
-                            <a href="#">Alert Name <span class="label label-warning">Alert Badge</span></a>
-                        </li>
-                        <li>
-                            <a href="#">Alert Name <span class="label label-danger">Alert Badge</span></a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">View All</a>
+                        <a href="#">Arqueo de caja</a>
                         </li>
                     </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> John Smith <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+            </li>
+            <li>
+                <a href="" class="dropdown-toggle">Gastos</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li>
+                        <a href="tables">Gastos</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="/logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                        <a href="#">Categorias</a>
                         </li>
                     </ul>
-                </li>
-            </ul>
-            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-            <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul class="nav navbar-nav side-nav">
+            </li>
+            <li>
+                <a href="" class="dropdown-toggle">Productos</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li><a href="#">Cat. Productos</a></li>
+                    <li><a href="#">Cat. Ingredientes</a></li>
+                    <li><a href="#">Productos</a></li>
+                    <li><a href="#">Ingredientes</a></li>
+                    <li><a href="#">Control stock</a></li>
+                    <li><a href="#">Mov. stock</a></li>
+                    </ul>
+            </li>
+            <li>
+                <a href="" class="dropdown-toggle">Clientes</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li><a href="#">Clientes</a></li>
+                    <li><a href="#">Nuevo cliente</a></li>
+                    </ul>
+            </li>
+            <li>
+                <a href="" class="dropdown-toggle">Gestion</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li><a href="#">Clientes</a></li>
+                    <li><a href="#">Nuevo cliente</a></li>
+                    </ul>
+            </li>
+            
+        </ul>
+
+        <div class="app-bar-element place-right">
+            <span class="dropdown-toggle"><span class="mif-cog"></span> Pepe Pecas</span>
+            <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
+                <h2 class="text-light">Quick settings</h2>
+                <ul class="unstyled-list fg-dark">
                     <li>
-                        <a href="/dashboard"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                    <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
                     </li>
                     <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#restaurant"><i class="glyphicon glyphicon-list-alt"></i> Restaurant <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="restaurant" class="collapse">
-                            <li>
-                                <a href="tables">Mesas</a>
-                            </li>
-                            <li>
-                                <a href="#">Entregas</a>
-                            </li>
-                        </ul>
+                    <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
                     </li>
                     <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#ventas"><i class="glyphicon glyphicon-book"></i> Ventas <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="ventas" class="collapse">
-                            <li><a href="#">Ventas</a></li>
-                            <li><a href="#">Movimientos</a></li>
-                            <li><a href="#">Arqueo de caja</a></li>
-                        </ul>
+                    <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
                     </li>
+                    <li class="divider"></li>
                     <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#gastos"><i class="glyphicon glyphicon-sort-by-attributes-alt"></i> Gastos <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="gastos" class="collapse">
-                            <li><a href="#">Gastos</a></li>
-                            <li><a href="#">Categorias</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#productos"><i class="glyphicon glyphicon-sort-by-attributes-alt"></i> Productos <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="productos" class="collapse">
-                            <li><a href="#">Cat. Productos</a></li>
-                            <li><a href="#">Cat. Ingredientes</a></li>
-                            <li><a href="#">Productos</a></li>
-                            <li><a href="#">Ingredientes</a></li>
-                            <li><a href="#">Control stock</a></li>
-                            <li><a href="#">Mov. stock</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#clients"><i class="glyphicon glyphicon-th-list"></i> Clientes <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="clients" class="collapse">
-                            <li><a href="#">Clientes</a></li>
-                            <li><a href="#">Nuevo cliente</a></li>
-                        </ul>
-                    </li>
-                                        <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#gestion"><i class="glyphicon glyphicon-object-align-bottom"></i> Gestion <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="gestion" class="collapse">
-                            <li><a href="#">Clientes</a></li>
-                            <li><a href="#">Nuevo cliente</a></li>
-                        </ul>
+                    <a href="/logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
                     </li>
                 </ul>
             </div>
-            <!-- /.navbar-collapse -->
-        </nav>
-
-        <div id="page-wrapper">
-
-            <div class="container-fluid">
-
-                <!-- Page Heading -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <br>
-                        <ol class="breadcrumb">
-                            <li>
-                                <i class="fa fa-dashboard"></i>  <a href="/dashboard">Dashboard</a>
-                            </li>
-                            <li class="active">
-                                <i class="glyphicon glyphicon-ok"></i>  {{"Hi"}}
-                            </li>
-                        </ol>
-                        <h1>{{saludo1 + nombre +saludo2}}</h1>
-                    </div>
-                </div>
-                <!-- /.row -->
-
-            </div>
-            <!-- /.container-fluid -->
-
         </div>
-        <!-- /#page-wrapper -->
+    </div>
 
+    <div class="page-content">
+        <div class="flex-grid no-responsive-future" style="height: 100%;">
+            <div class="row" style="height: 100%">
+                <div class="cell size-x200" id="cell-sidebar" style="background-color: darkslategray  ; height: 100%">
+                    <ul class="sidebar darcula">
+                        <li><a href="#">
+                            <span class="mif-apps icon"></span>
+                            <span class="title">Mesas</span>
+                            <span class="counter">0</span>
+                        </a></li>
+                        <li><a href="#">
+                            <span class="mif-vpn-publ icon"></span>
+                            <span class="title">Comandas</span>
+                            <span class="counter">0</span>
+                        </a></li>
+                        <li class="active"><a href="#">
+                            <span class="mif-drive-eta icon"></span>
+                            <span class="title">Status</span>
+                            <span class="counter">2</span>
+                        </a></li>
+                        <li><a href="#">
+                            <span class="mif-cloud icon"></span>
+                            <span class="title">Facturas</span>
+                            <span class="counter">0</span>
+                        </a></li>
+                        <li><a href="#">
+                            <span class="mif-database icon"></span>
+                            <span class="title">Caja</span>
+                            <span class="counter">0</span>
+                        </a></li>
+                        <li><a href="#">
+                            <span class="mif-cogs icon"></span>
+                            <span class="title">Clientes</span>
+                            <span class="counter">0</span>
+                        </a></li>
+                        <li><a href="#">
+                            <span class="mif-apps icon"></span>
+                            <span class="title">Corte</span>
+                            <span class="counter">0</span>
+                        </a></li>
+                    </ul>
+                </div>
+                <div class="cell auto-size padding20 bg-white" id="cell-content">
+                    <h1 class="text-light">Virtual machines <span class="mif-drive-eta place-right"></span></h1>
+                    <hr class="thin bg-grayLighter">
+                    <button class="button primary" onclick="pushMessage('info')"><span class="mif-plus"></span> Create...</button>
+                    <button class="button success" onclick="pushMessage('success')"><span class="mif-play"></span> Start</button>
+                    <button class="button warning" onclick="pushMessage('warning')"><span class="mif-loop2"></span> Restart</button>
+                    <button class="button alert" onclick="pushMessage('alert')">Stop all machines</button>
+                    <hr class="thin bg-grayLighter">
+                    <table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+                        <thead>
+                        <tr>
+                            <td style="width: 20px">
+                            </td>
+                            <td class="sortable-column sort-asc" style="width: 100px">ID</td>
+                            <td class="sortable-column">Machine name</td>
+                            <td class="sortable-column">Address</td>
+                            <td class="sortable-column" style="width: 20px">Status</td>
+                            <td style="width: 20px">Switch</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <label class="input-control checkbox small-check no-margin">
+                                    <input type="checkbox">
+                                    <span class="check"></span>
+                                </label>
+                            </td>
+                            <td>123890723212</td>
+                            <td>Machine number 1</td>
+                            <td><a href="http://virtuals.com/machines/123890723212">link</a></td>
+                            <td class="align-center"><span class="mif-checkmark fg-green"></span></td>
+                            <td>
+                                <label class="switch-original">
+                                    <input type="checkbox" checked>
+                                    <span class="check"></span>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="input-control checkbox small-check no-margin">
+                                    <input type="checkbox">
+                                    <span class="check"></span>
+                                </label>
+                            </td>
+                            <td>123890723212</td>
+                            <td>Machine number 2</td>
+                            <td><a href="http://virtuals.com/machines/123890723212">link</a></td>
+                            <td class="align-center"><span class="mif-stop fg-red"></span></td>
+                            <td>
+                                <label class="switch-original">
+                                    <input type="checkbox">
+                                    <span class="check"></span>
+                                </label>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
