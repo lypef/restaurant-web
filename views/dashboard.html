@@ -20,18 +20,7 @@
         html, body {
             height: 100%;
         }
-        #page-wrapper 
-        {
-            width: 100%;
-            padding: 0;
-            background-color: #fff;
-        }
-        @media(min-width:768px) 
-        {
-            #page-wrapper 
-            {
-                padding: 10px;
-            }
+        body {
         }
         .page-content {
             padding-top: 3.125rem;
@@ -208,13 +197,9 @@
                         </a></li>
                     </ul>
                 </div>
-                <div id="page-wrapper">
-
-                   <button class="button primary" onclick="pushMessage('info')"><span class="mif-plus"></span> Create...</button>
-                    <button class="button success" onclick="pushMessage('success')"><span class="mif-play"></span> Start</button>
-                    <button class="button warning" onclick="pushMessage('warning')"><span class="mif-loop2"></span> Restart</button>
-                    <button class="button alert" onclick="pushMessage('alert')">Stop all machines</button>
-    
+                
+                <div class="cell auto-size padding20 bg-white" id="cell-content">
+                    
                     <table class="dataTable border bordered" data-role="datatable" data-auto-width="false">
                         <thead>
                         <tr>
