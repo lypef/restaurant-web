@@ -23,29 +23,39 @@
             background-color: #3c3f41;
             height: 100%;
         }
-        
+        body {
+        }
         .page-content {
             padding-top: 3.125rem;
-            min-height: calc(100% - 5px);
-            height: calc(100% - 5px);
+            min-height: 100%;
+            height: 100%;
         }
         .table .input-control.checkbox {
             line-height: 1;
             min-height: 0;
-            height: auto;
+            height: 100%;
         }
         #cell-sidebar 
         {
             flex-basis: auto;
         }
+        #cell-content 
+        {
+            width: 100%; 
+            height: 100%;      
+        }
         @media screen and (max-width: 800px){
             #cell-sidebar {
                 flex-basis: 52px;
+
             }
             #cell-content {
                 flex-basis: calc(100% - 51px);
-                width: 100%;
-                
+                width: 100%; 
+            }
+            #divone
+            {
+                height: 100%;
             }
         }
     </style>
@@ -74,7 +84,7 @@
 <body>
 
     <div class="app-bar fixed-top darcula" data-role="appbar">
-        <a class="app-bar-element branding">RestWeb</a>
+        <a class="app-bar-element branding">Rw</a>
         <span class="app-bar-divider"></span>
         <ul class="app-bar-menu">
             <li><a href="">Dashboard</a></li>
@@ -165,7 +175,7 @@
     </div>
 
     <div class="page-content">
-        <div class="flex-grid no-responsive-future" style="height: 100%;">
+        <div class="flex-grid no-responsive-future" id="divone">
             <div class="row" style="height: 100%">
                 <div class="cell size-x200" id="cell-sidebar" style="background-color: #3c3f41  ; height: 100%">
                     <ul class="sidebar darcula">
@@ -207,12 +217,13 @@
                     </ul>
                 </div>
                 
-                <div class="cell auto-size padding10 bg-white" id="cell-content" ng-controller="controller">
+                <div class="padding10 bg-white" id="cell-content" ng-controller="controller">
                 <h1>{{saludo1 + nombre +saludo2}}</h1>
                    <button class="button primary" onclick="pushMessage('info')"><span class="mif-plus"></span> Create...</button>
                     <button class="button success" onclick="pushMessage('success')"><span class="mif-play"></span> Start</button>
                     <button class="button warning" onclick="pushMessage('warning')"><span class="mif-loop2"></span> Restart</button>
                     <button class="button alert" onclick="pushMessage('alert')">Stop all machines</button>
+
                 <table class="table">
                     <thead>
                         <tr>
@@ -236,6 +247,202 @@
                             <td>:D</td>
                             <td>:D</td>
                         </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        <tr>
+                            <td>:D</td>
+                            <td>:D</td>
+                            <td>:D</td>
+                        </tr>
+                        
                     </thead>
                 </table>
                 </div>
