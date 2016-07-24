@@ -1,5 +1,4 @@
 
-var user = require("./models/models").user;
 var express  = require('express');
 var session = require("express-session");
 var mongoose = require('mongoose');                     
@@ -7,6 +6,9 @@ var morgan = require('morgan');
 var bodyParser = require('body-parser');    
 var methodOverride = require('method-override');
 var sessiontrue = require('./middlewares/session');
+
+var user = require("./models/models").user;
+var clients = require("./models/models").clients
 
 var app = express(); 
 
@@ -31,6 +33,47 @@ app.get("/dashboard", Dashboard );
 app.post("/login", Login );
 app.get('/logout', Logout);
 
+app.get('/api/clients/', ClientsJson);
+app.post('/api/clients', function(req, res) {  
+    clients.create({
+		nombre: req.body.nombre.toUpperCase(),
+		apellidos: req.body.apellidos.toUpperCase(),
+		direccion: req.body.direccion.toUpperCase(),
+		movil: req.body.movil,
+		telefono: req.body.telefono,
+		mail: req.body.mail
+    }, function(err, todo){
+        if(err) {
+            res.send(err);
+        }
+
+        clients.find(function(err, todos) {
+            if(err){
+                res.send(err);
+            }
+            res.json(todos);
+        });
+    });
+});
+
+app.get('/api/users/', usersjson);
+app.post('/api/users', function(req, res) {  
+    user.create({
+        username: req.body.username,
+        password: req.body.password
+    }, function(err, todo){
+        if(err) {
+            res.send(err);
+        }
+
+        user.find(function(err, todos) {
+            if(err){
+                res.send(err);
+            }
+            res.json(todos);
+        });
+    });
+});
 
 function Inicio (req, res) {
 	if (req.session.user_id)
@@ -83,6 +126,29 @@ function CreateUsername (req,res){
 
 	});
 };
+
+function usersjson (req,res){
+	user.find(function(err, todos) {
+        if(err) {
+            res.send(err);
+        }else
+        {
+        	res.json(todos);	
+        }
+    });
+};
+
+function ClientsJson (req,res){
+	clients.find(function(err, todos) {
+        if(err) {
+            res.send(err);
+        }else
+        {
+        	res.json(todos);	
+        }
+    }).sort({_id:1});
+};
+
 
 app.listen(port, function (err){
 	if (!err)

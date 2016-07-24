@@ -12,8 +12,19 @@ var user_scheme = new mongoose.Schema({
 	tel: String,
 	date_birth: Date,
 	puesto: String
-});
+})
 
-var User = mongoose.model("User",user_scheme);
+var clients_scheme = new mongoose.Schema({
+	nombre: String,
+	apellidos: String,
+	direccion: String,
+	movil: String,
+	telefono: String,
+	mail: String
+})
+
+var User = mongoose.model("User",user_scheme)
+var Clients = mongoose.model("Clients",clients_scheme)
 
 module.exports.user = User;
+module.exports.clients = Clients;
