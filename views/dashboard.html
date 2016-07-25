@@ -225,8 +225,17 @@
                 </div>
                 
                 <div class="padding10 bg-white" id="cell-content" ng-controller="clients">
-                    
-                    <form align="center">  
+                
+                <div class="grid">
+                    <div class="row cells2">
+                        <div class="cell colspan6">
+                            <div class="panel success">
+                <div class="heading">
+                
+                <span class="title">Panel Title</span>
+                </div>
+                <div class="content">
+                <form align="center">  
                         <div class="input-control modern text iconic" id="widthfull">
                         <input type="text" placeholder="Nombre" ng-model="NewClient.nombre" class="input-full">
                         <span class="label">Nuevo nombre</span>
@@ -272,8 +281,17 @@
                         <button class="button success" ng-click="CreateClient()">
                         Agregar
                         </button>
-                    </form>  
-                    <hr>
+                    </form>
+                </div>
+                </div>
+                        </div>
+                        <div class="cell colspan5">
+                            <div class="panel warning " >
+                <div class="heading">
+                
+                <span class="title">Panel Title</span>
+                </div>
+                <div class="content">
                     <div class="listview-outlook" data-role="listview">
                         <div class="list" ng-repeat="todo in all">
                             <div class="list-content" >
@@ -282,8 +300,19 @@
                                 <span class="list-remark">{{ todo.movil }}</span>
                             </div>
                     </div>
-                     
-                    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                </div>
+                </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+
+                
+                
+                    
+                  
+                    <br><br>
                    <button class="button primary" onclick="pushMessage('info')"><span class="mif-plus"></span> Create...</button>
                     <button class="button success" onclick="pushMessage('success')"><span class="mif-play"></span> Start</button>
                     <button class="button warning" onclick="pushMessage('warning')"><span class="mif-loop2"></span> Restart</button>
