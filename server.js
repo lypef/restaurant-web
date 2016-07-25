@@ -113,10 +113,9 @@ function CreateUsername (req,res){
 		{
 		username: req.body.username,
 		password: req.body.password,
-		token: "56565656sss5s45s45s4"
+		token: jwt.sign("payload", process.env.JWT_SECRET || "klaveultrasecretisima")
 		});
 	db.save(function(){
-			console.log(jwt.sign(db, process.env.JWT_SECRET))
 			user.find(function(err,doc){
 				console.log(doc);
 			});
