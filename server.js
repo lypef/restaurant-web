@@ -6,6 +6,7 @@ var morgan = require('morgan');
 var bodyParser = require('body-parser');    
 var methodOverride = require('method-override');
 var sessiontrue = require('./middlewares/session');
+var jwt        = require("jsonwebtoken");
 
 var user = require("./models/models").user;
 var clients = require("./models/models").clients
@@ -25,6 +26,12 @@ app.use(bodyParser.urlencoded({'extended':'true'}));
 app.use(bodyParser.json());                                     
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); 
 app.use(methodOverride());
+app.use(function(req, res, next) {
+res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
+    next();
+});
 app.use("/dashboard",sessiontrue);
 
 
@@ -57,23 +64,7 @@ app.post('/api/clients', function(req, res) {
 });
 
 app.get('/api/users/', usersjson);
-app.post('/api/users', function(req, res) {  
-    user.create({
-        username: req.body.username,
-        password: req.body.password
-    }, function(err, todo){
-        if(err) {
-            res.send(err);
-        }
-
-        user.find(function(err, todos) {
-            if(err){
-                res.send(err);
-            }
-            res.json(todos);
-        });
-    });
-});
+app.post('/api/users', CreateUsername)
 
 function Inicio (req, res) {
 	if (req.session.user_id)
@@ -118,8 +109,14 @@ function Logout (req, res, next) {
 };
 
 function CreateUsername (req,res){
-	var db = new user({username: req.body.username, password: req.body.password});
+	var db = new user(
+		{
+		username: req.body.username,
+		password: req.body.password,
+		token: "56565656sss5s45s45s4"
+		});
 	db.save(function(){
+			console.log(jwt.sign(db, process.env.JWT_SECRET))
 			user.find(function(err,doc){
 				console.log(doc);
 			});

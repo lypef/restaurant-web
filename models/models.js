@@ -11,7 +11,8 @@ var user_scheme = new mongoose.Schema({
 	movil: String,
 	tel: String,
 	date_birth: Date,
-	puesto: String
+	puesto: String,
+	token: String
 })
 
 var clients_scheme = new mongoose.Schema({

@@ -25,4 +25,29 @@ app.controller("clients", function($scope, $http)
             });
     };  
 })
+app.controller("users", function($scope, $http)
+{
+    $scope.NewUser = {};
+
+    $http.get('/api/users/')
+        .success(function(data) {
+            $scope.all = data;
+            console.log(data)
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+    });
+
+    $scope.CreateUsers = function(){
+        $http.post('/api/users', $scope.NewUser)
+            .success(function(data) {
+                $scope.NewUser = {};
+                $scope.all = data;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error:' + data);
+            });
+    };  
+})
 
