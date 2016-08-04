@@ -1,4 +1,3 @@
-
 var express  = require('express');
 var session = require("express-session");
 var mongoose = require('mongoose');                     
@@ -113,7 +112,7 @@ function CreateUsername (req,res){
 		{
 		username: req.body.username,
 		password: req.body.password,
-		token: jwt.sign("payload", process.env.JWT_SECRET || "klaveultrasecretisima")
+		token: jwt.sign("payload", process.env.JWT_SECRET || req.body.password)
 		});
 	db.save(function(){
 			user.find(function(err,doc){
