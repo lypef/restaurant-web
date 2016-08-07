@@ -19,7 +19,8 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
 }))     
-app.use(express.static('public'));            
+app.use(express.static('public'));
+app.use(express.static('views'));            
 app.use(morgan('dev'));                                         
 app.use(bodyParser.urlencoded({'extended':'true'}));            
 app.use(bodyParser.json());                                     

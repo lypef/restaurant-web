@@ -15,9 +15,9 @@
     <script src="/metro/docs/js/jquery.dataTables.min.js"></script>
     <script src="/metro/docs/js/metro.js"></script>
     <script src="/angular.min.js"></script>
+    <script src="/angular-route.min.js"></script>
     <script src="/controller.js"></script>
 
-    
     <style>
     html, body {
             background-color: #3c3f41;
@@ -145,8 +145,8 @@
             <li>
                 <a href="" class="dropdown-toggle">Clientes</a>
                 <ul class="d-menu" data-role="dropdown">
-                    <li><a href="#">Clientes</a></li>
-                    <li><a href="#">Nuevo cliente</a></li>
+                    <li><a href="dashboard#/clients">Clientes</a></li>
+                    <li><a href="dashboard#/addclient">Nuevo cliente</a></li>
                     </ul>
             </li>
             <li>
@@ -224,121 +224,13 @@
                     </ul>
                 </div>
                 
-                <div class="padding10 bg-white" id="cell-content" ng-controller="clients">
-                
-                <div class="panel success">
-                <div class="heading">
-                
-                <span class="title">Panel Title</span>
-                </div>
-                <div class="content">
-                <form align="center">  
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Nombre" ng-model="NewClient.nombre" class="input-full">
-                        <span class="label">Nuevo nombre</span>
-                        <span class="informer">Ingrese solo el nombre</span>
-                        <span class="icon mif-user"></span>
-                        </div>
-                        
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Apellidos" ng-model="NewClient.apellidos">
-                        <span class="label">Nuevo Apellidos</span>
-                        <span class="informer">Ingrese solo el Apellidos</span>
-                        <span class="icon mif-user"></span>
-                        </div>
-                        
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Direccion" ng-model="NewClient.direccion">
-                        <span class="label">Nueva Direccion</span>
-                        <span class="informer">Direccion actual</span>
-                        <span class="icon mif-home"></span>
-                        </div>
-                        
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="number" placeholder="Movil" ng-model="NewClient.movil">
-                        <span class="label">Numero Movil</span>
-                        <span class="informer">Movil personal</span>
-                        <span class="icon mif-mobile"></span>
-                        </div>
-                        
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="number" placeholder="Telefono fijo" ng-model="NewClient.telefono">
-                        <span class="label">Numero de Telefono fijo</span>
-                        <span class="informer">Telefono fijo personal</span>
-                        <span class="icon mif-phone"></span>
-                        </div>
-                        
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="email" placeholder="E-mail" ng-model="NewClient.email">
-                        <span class="label">Email de cliente</span>
-                        <span class="informer">No olvide el @</span>
-                        <span class="icon mif-mail"></span>
-                        </div>
-                        <br>
-                        <button class="button success" ng-click="CreateClient()">
-                        Agregar
-                        </button>
-                    </form>
-                </div>
-                </div>
-                <!--incia-->
-                <div class="panel success" ng-controller="users">
-                <div class="heading">
-                
-                <span class="title">Panel Title</span>
-                </div>
-                <div class="content">
-                <form align="center">  
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Nombre" ng-model="NewUser.username" class="input-full">
-                        <span class="label">Username</span>
-                        <span class="informer">Username</span>
-                        <span class="icon mif-user"></span>
-                        </div>
-                        
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Password" ng-model="NewUser.password">
-                        <span class="label">Passsowords</span>
-                        <span class="informer">password</span>
-                        <span class="icon mif-user"></span>
-                        </div>
-                        
-                        <br>
-                        <button class="button success" ng-click="CreateUsers()">
-                        Agregar
-                        </button>
-                    </form>
-                </div>
-                </div>
-                <!--Finaliza-->
-                <div class="panel warning" >
-                <div class="heading">
-                
-                <span class="title">Panel Title</span>
-                </div>
-                <div class="content">
-                    <div class="listview-outlook" data-role="listview">
-                        <div class="list" ng-repeat="todo in all">
-                            <div class="list-content" >
-                                <span class="list-title">{{ todo.nombre }} {{ todo.apellidos }}</span>
-                                <span class="list-subtitle">{{ todo.direccion}}</span>
-                                <span class="list-remark">{{ todo.movil }}</span>
-                            </div>
-                    </div>
-                </div>
-                </div>
-                    
-                  
-                    <br><br>
-                   <button class="button primary" onclick="pushMessage('info')"><span class="mif-plus"></span> Create...</button>
-                    <button class="button success" onclick="pushMessage('success')"><span class="mif-play"></span> Start</button>
-                    <button class="button warning" onclick="pushMessage('warning')"><span class="mif-loop2"></span> Restart</button>
-                    <button class="button alert" onclick="pushMessage('alert')">Stop all machines</button>
-                    
-       
+                <div class="padding10 bg-white" id="cell-content">
+                    <div ng-view></div>
                 </div>
             </div>
         </div>
     </div>
+    
+    
 </body>
 </html>

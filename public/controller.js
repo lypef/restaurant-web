@@ -1,4 +1,20 @@
-var app = angular.module("restweb", [])
+var app = angular.module('restweb', ['ngRoute'])
+
+app.config(function($routeProvider){
+    $routeProvider
+        .when('/', {
+            templateUrl : 'Clients.html'
+        })
+        .when('/clients', {
+            templateUrl : 'Clients.html'
+        })
+        .when('/addclient', {
+            templateUrl : 'AddClient.html'
+        })
+        .otherwise({
+            redirectTo : '/'
+        })
+})
 
 app.controller("clients", function($scope, $http)
 {
@@ -25,6 +41,7 @@ app.controller("clients", function($scope, $http)
             });
     };  
 })
+
 app.controller("users", function($scope, $http)
 {
     $scope.NewUser = {};
@@ -50,4 +67,3 @@ app.controller("users", function($scope, $http)
             });
     };  
 })
-

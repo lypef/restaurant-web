@@ -1,0 +1,16 @@
+<div class="panel warning" ng-controller="clients">
+                <div class="heading">
+                
+                <span class="title">Panel Title</span>
+                </div>
+                <div class="content">
+                    <div class="listview-outlook" data-role="listview">
+                        <div class="list" ng-repeat="todo in all">
+                            <div class="list-content" >
+                                <span class="list-title">{{ todo.nombre }} {{ todo.apellidos }}</span>
+                                <span class="list-subtitle">{{ todo.direccion}}</span>
+                                <span class="list-remark">{{ todo.movil }}</span>
+                            </div>
+                    </div>
+                </div>
+                </div>
