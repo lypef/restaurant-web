@@ -17,7 +17,7 @@
     <script src="/angular.min.js"></script>
     <script src="/angular-route.min.js"></script>
     <script src="/controller.js"></script>
-
+    
     <style>
     html, body {
             background-color: #3c3f41;
@@ -68,8 +68,8 @@
     </style>
 
     <script>
-        function pushMessage(t){
-            var mes = 'Info|Implement independently';
+        function pushMessage(t, header, body){
+            var mes = header + '|' + body;
             $.Notify({
                 caption: mes.split("|")[0],
                 content: mes.split("|")[1],
@@ -89,12 +89,11 @@
 </head>
 
 <body>
-
     <div class="app-bar fixed-top darcula" data-role="appbar">
-        <a class="app-bar-element branding"><span class="mif-vpn-publ mif-2x icon"></span></a>
+        <a href="dashboard#/" class="app-bar-element branding"><span class="mif-vpn-publ mif-2x icon"></span></a>
         <span class="app-bar-divider"></span>
         <ul class="app-bar-menu">
-            <li><a href="">Dashboard</a></li>
+            <li><a href="dashboard#/">Dashboard</a></li>
             <li>
                 <a href="" class="dropdown-toggle">Restaurant</a>
                 <ul class="d-menu" data-role="dropdown">
@@ -211,7 +210,7 @@
                             <span class="title">Caja</span>
                             
                         </a></li>
-                        <li><a href="#">
+                        <li><a href="dashboard#/clients">
                             <span class="mif-cogs icon"></span>
                             <span class="title">Clientes</span>
                             

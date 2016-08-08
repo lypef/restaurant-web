@@ -3,13 +3,13 @@ var app = angular.module('restweb', ['ngRoute'])
 app.config(function($routeProvider){
     $routeProvider
         .when('/', {
-            templateUrl : 'Clients.html'
+            templateUrl : 'clients/Clients.html'
         })
         .when('/clients', {
-            templateUrl : 'Clients.html'
+        	templateUrl : 'clients/Clients.html'
         })
         .when('/addclient', {
-            templateUrl : 'AddClient.html'
+            templateUrl : 'clients/AddClient.html'
         })
         .otherwise({
             redirectTo : '/'
@@ -34,10 +34,10 @@ app.controller("clients", function($scope, $http)
             .success(function(data) {
                 $scope.NewClient = {};
                 $scope.all = data;
-                console.log(data);
+                pushMessage('success', 'HECHO', 'Cliente agregado con exito')
             })
             .error(function(data) {
-                console.log('Error:' + data);
+                pushMessage('alert','ERROR', 'Verifique todo los campos')
             });
     };  
 })
