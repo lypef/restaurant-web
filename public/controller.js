@@ -1,4 +1,5 @@
 var app = angular.module('restweb', ['ngRoute'])
+var token = "eyJhbGciOiJIUzI1NiJ9.cGF5bG9hZA.f_0OBq6Yxx-jymUjCMcifD5ji1adKKYWUmwZF94VvTA";
 
 app.config(function($routeProvider){
     $routeProvider
@@ -18,8 +19,8 @@ app.config(function($routeProvider){
 
 app.controller("clients", function($scope, $http)
 {
-    $scope.NewClient = {};
-
+    $http.defaults.headers.common['x-access-token']=token;
+    $scope.NewClient = {};    
     $http.get('/api/clients/')
         .success(function(data) {
             $scope.all = data;

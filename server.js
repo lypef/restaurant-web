@@ -5,7 +5,7 @@ var morgan = require('morgan');
 var bodyParser = require('body-parser');    
 var methodOverride = require('method-override');
 var sessiontrue = require('./middlewares/session');
-var jwt        = require("jsonwebtoken");
+var tokenApi = require('./middlewares/TokenApi');
 
 var user = require("./models/models").user;
 var clients = require("./models/models").clients
@@ -33,7 +33,7 @@ res.setHeader('Access-Control-Allow-Origin', '*');
     next();
 });
 app.use("/dashboard",sessiontrue);
-
+app.use('/api/clients/', tokenApi);
 
 app.get('/', Inicio );
 app.get("/dashboard", Dashboard );
@@ -63,7 +63,7 @@ app.post('/api/clients', function(req, res) {
     });
 });
 
-app.get('/api/users/', usersjson);
+app.get('/api/users/', usersjson)
 app.post('/api/users', CreateUsername)
 
 function Inicio (req, res) {
@@ -113,7 +113,6 @@ function CreateUsername (req,res){
 		{
 		username: req.body.username,
 		password: req.body.password,
-		token: jwt.sign("payload", process.env.JWT_SECRET || req.body.password)
 		});
 	db.save(function(){
 			user.find(function(err,doc){
