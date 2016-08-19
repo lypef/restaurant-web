@@ -33,7 +33,7 @@ res.setHeader('Access-Control-Allow-Origin', '*');
     next();
 });
 app.use("/dashboard",sessiontrue);
-app.use('/api/clients/', tokenApi);
+app.use('/api/', tokenApi);
 
 app.get('/', Inicio );
 app.get("/dashboard", Dashboard );
@@ -41,6 +41,8 @@ app.post("/login", Login );
 app.get('/logout', Logout);
 
 app.get('/api/clients/', ClientsJson);
+app.get('/api/clientedit/:id', ClienteditsJson);
+
 app.post('/api/clients', function(req, res) {  
     clients.create({
 		nombre: req.body.nombre.toUpperCase(),
@@ -141,7 +143,19 @@ function ClientsJson (req,res){
         {
         	res.json(todos);	
         }
-    }).sort({_id:1});
+    }).sort({nombre:1});
+};
+
+function ClienteditsJson (req,res){
+	clients.findOne({_id:req.params.id},function(err,doc){
+		if (doc != null)
+		{
+			res.json(doc)
+		}else
+		{
+			res.send(404);
+		}
+	});
 };
 
 

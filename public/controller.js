@@ -12,6 +12,9 @@ app.config(function($routeProvider){
         .when('/addclient', {
             templateUrl : 'clients/AddClient.html'
         })
+        .when('/editclient/:id', {
+            templateUrl : 'clients/editclient.html'
+        })
         .otherwise({
             redirectTo : '/'
         })
@@ -41,6 +44,24 @@ app.controller("clients", function($scope, $http)
                 pushMessage('alert','ERROR', 'Verifique todo los campos')
             });
     };  
+})
+
+app.controller("editclient", function($scope, $http, $routeParams, $window)
+{
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.id = $routeParams.id
+
+    $http.get('/api/clientedit/' + $scope.id)
+        .success(function(data) 
+        {
+            $scope.client = data;
+        })
+        .error(function(data) 
+        {
+            $window.location = "dashboard#clients";
+            pushMessage('alert','ERROR', 'ID no encontrado.')
+        });
 })
 
 app.controller("users", function($scope, $http)
