@@ -13,7 +13,7 @@ app.config(function($routeProvider){
             templateUrl : 'clients/AddClient.html'
         })
         .when('/editclient/:id', {
-            templateUrl : 'clients/editclient.html'
+            templateUrl : 'clients/UpdateClient.html'
         })
         .otherwise({
             redirectTo : '/'
@@ -46,7 +46,7 @@ app.controller("clients", function($scope, $http)
     };  
 })
 
-app.controller("editclient", function($scope, $http, $routeParams, $window)
+app.controller("UpdateClient", function($scope, $http, $routeParams, $window)
 {
     $http.defaults.headers.common['x-access-token']=token;
     
@@ -62,6 +62,16 @@ app.controller("editclient", function($scope, $http, $routeParams, $window)
             $window.location = "dashboard#clients";
             pushMessage('alert','ERROR', 'ID no encontrado.')
         });
+})
+
+app.controller("login", function($scope, $http, $window)
+{
+    $scope.CreateSession = function()
+    {
+        $window.location = "dashboard#";
+        console.log($scope.password)
+    };  
+
 })
 
 app.controller("users", function($scope, $http)

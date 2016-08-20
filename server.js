@@ -68,14 +68,9 @@ app.post('/api/clients', function(req, res) {
 app.get('/api/users/', usersjson)
 app.post('/api/users', CreateUsername)
 
-function Inicio (req, res) {
-	if (req.session.user_id)
-	{
-		res.redirect("/dashboard");
-	}else
-	{
-		res.sendFile('./views/login.html', { root : __dirname});
-	}
+function Inicio (req, res) 
+{
+	res.sendFile('./views/login.html', { root : __dirname});	
 }
 
 function Dashboard (req,res){
