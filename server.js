@@ -6,19 +6,10 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var sessiontrue = require('./middlewares/session');
 var tokenApi = require('./middlewares/TokenApi');
-
-var user = require("./models/models").user;
-var clients = require("./models/models").clients
-
+var db = require("./models/models");
 var app = express(); 
 
-const port = "8080"
-
-app.use(session({
-  secret: 'ajsj229nshslwkjrfdrfg',
-  resave: false,
-  saveUninitialized: true,
-}))     
+app.use(session({ secret: 'ajsj229nshslwkjrfdrfg', resave: false,saveUninitialized: true}))     
 app.use(express.static('public'));
 app.use(express.static('views'));            
 app.use(morgan('dev'));                                         
@@ -35,42 +26,36 @@ res.setHeader('Access-Control-Allow-Origin', '*');
 app.use("/dashboard",sessiontrue);
 app.use('/api/', tokenApi);
 
+
+// Enlaces GET
 app.get('/', Inicio );
 app.get("/dashboard", Dashboard );
-app.post("/login", Login );
 app.get('/logout', Logout);
 
+// Enlaces POST
+app.post("/login", Login );
+
+// Api get
 app.get('/api/clients/', ClientsJson);
 app.get('/api/clientedit/:id', ClienteditsJson);
-
-app.post('/api/clients', function(req, res) {  
-    clients.create({
-		nombre: req.body.nombre.toUpperCase(),
-		apellidos: req.body.apellidos.toUpperCase(),
-		direccion: req.body.direccion.toUpperCase(),
-		movil: req.body.movil,
-		telefono: req.body.telefono,
-		mail: req.body.mail
-    }, function(err, todo){
-        if(err) {
-            res.send(err);
-        }
-
-        clients.find(function(err, todos) {
-            if(err){
-                res.send(err);
-            }
-            res.json(todos);
-        });
-    });
-});
-
 app.get('/api/users/', usersjson)
-app.post('/api/users', CreateUsername)
 
+// Api POST
+app.post('/api/users', CreateUsername)
+app.post('/api/clients', CreateClient );
+
+
+
+//Funciones
 function Inicio (req, res) 
 {
-	res.sendFile('./views/login.html', { root : __dirname});	
+	if (req.session.user_id)
+	{
+		res.redirect("/dashboard");	
+	}else
+	{
+		res.sendFile('./views/login.html', { root : __dirname});	
+	}
 }
 
 function Dashboard (req,res){
@@ -78,7 +63,7 @@ function Dashboard (req,res){
 }
 
 function Login (req,res){
-	user.findOne({username:req.body.username, password:req.body.password},function(err,doc){
+	db.user.findOne({username:req.body.username, password:req.body.password},function(err,doc){
 		if (doc != null)
 		{
 			req.session.user_id = doc._id;
@@ -106,13 +91,13 @@ function Logout (req, res, next) {
 };
 
 function CreateUsername (req,res){
-	var db = new user(
+	var p = new db.user(
 		{
 		username: req.body.username,
 		password: req.body.password,
 		});
-	db.save(function(){
-			user.find(function(err,doc){
+	p.save(function(){
+			db.user.find(function(err,doc){
 				console.log(doc);
 			});
 
@@ -120,7 +105,7 @@ function CreateUsername (req,res){
 };
 
 function usersjson (req,res){
-	user.find(function(err, todos) {
+	db.user.find(function(err, todos) {
         if(err) {
             res.send(err);
         }else
@@ -131,18 +116,18 @@ function usersjson (req,res){
 };
 
 function ClientsJson (req,res){
-	clients.find(function(err, todos) {
+	db.clients.find(function(err, data) {
         if(err) {
             res.send(err);
         }else
         {
-        	res.json(todos);	
+        	res.json(data);	
         }
     }).sort({nombre:1});
 };
 
 function ClienteditsJson (req,res){
-	clients.findOne({_id:req.params.id},function(err,doc){
+	db.clients.findOne({_id:req.params.id},function(err,doc){
 		if (doc != null)
 		{
 			res.json(doc)
@@ -153,6 +138,29 @@ function ClienteditsJson (req,res){
 	});
 };
 
+function CreateClient (req, res) 
+{  
+    var p = new db.clients({
+		nombre: req.body.nombre.toUpperCase(),
+		apellidos: req.body.apellidos.toUpperCase(),
+		direccion: req.body.direccion.toUpperCase(),
+		movil: req.body.movil,
+		telefono: req.body.telefono,
+		mail: req.body.mail
+    })
+
+    p.save(function (err) {
+    	 if (err)
+    	 {
+    	 	res.send(404)
+    	 }else
+    	 {
+    	 	res.send(p._id)
+    	 }
+    });
+}
+
+const port = "8080"
 
 app.listen(port, function (err){
 	if (!err)

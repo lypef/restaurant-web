@@ -4,7 +4,7 @@ var token = "eyJhbGciOiJIUzI1NiJ9.cGF5bG9hZA.f_0OBq6Yxx-jymUjCMcifD5ji1adKKYWUmw
 app.config(function($routeProvider){
     $routeProvider
         .when('/', {
-            templateUrl : 'clients/Clients.html'
+            templateUrl : 'main.html'
         })
         .when('/clients', {
         	templateUrl : 'clients/Clients.html'
@@ -20,14 +20,13 @@ app.config(function($routeProvider){
         })
 })
 
-app.controller("clients", function($scope, $http)
+app.controller("clients", function($scope, $http, $window)
 {
     $http.defaults.headers.common['x-access-token']=token;
     $scope.NewClient = {};    
     $http.get('/api/clients/')
         .success(function(data) {
             $scope.all = data;
-            console.log(data)
         })
         .error(function(data) {
             console.log('Error: ' + data);
@@ -35,13 +34,13 @@ app.controller("clients", function($scope, $http)
 
     $scope.CreateClient = function(){
         $http.post('/api/clients', $scope.NewClient)
-            .success(function(data) {
+            .success(function(id) {
                 $scope.NewClient = {};
-                $scope.all = data;
-                pushMessage('success', 'HECHO', 'Cliente agregado con exito')
+                pushMessage('success', 'HECHO', 'Cliente agregado con exito', "checkmark")
+                $window.location = "dashboard#/editclient/" + id;
             })
-            .error(function(data) {
-                pushMessage('alert','ERROR', 'Verifique todo los campos')
+            .error(function(id) {
+                pushMessage('alert','ERROR', 'Verifique todo los campos', "cross")
             });
     };  
 })
@@ -62,14 +61,19 @@ app.controller("UpdateClient", function($scope, $http, $routeParams, $window)
             $window.location = "dashboard#clients";
             pushMessage('alert','ERROR', 'ID no encontrado.')
         });
+
+    $scope.DeleteClient = function()
+    {
+        pushMessage('success', 'HECHO', 'Cliente eliminado con exito', "checkmark")
+    };  
 })
 
-app.controller("login", function($scope, $http, $window)
+app.controller("login", function($scope, $http, $window, $routeParams)
 {
     $scope.CreateSession = function()
     {
-        $window.location = "dashboard#";
-        console.log($scope.password)
+        $window.location = "dashboard#"
+        console.log($routeParams.password)
     };  
 
 })

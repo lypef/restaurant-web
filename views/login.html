@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="restweb">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -92,9 +92,9 @@
         })
     </script>
 </head>
-<body class="bg-darkTeal" ng-controller="login">
+<body class="bg-darkTeal">
 <div class="login-form padding20 block-shadow">
-    <form method="POST">
+    <form action="/login" method="POST">
         <h1 class="text-light"><center>Inicia session</center></h1>
         <hr class="thin"/>
         <br />
@@ -111,7 +111,7 @@
         <br />
         <br />
         <div class="form-actions">
-            <button type="submit" class="button primary" ng-click="CreateSession()">Iniciar session</button>
+            <button type="submit" class="button primary">Iniciar session</button>
             <button type="button" class="button link">Cancel</button>
         </div>
     </form>

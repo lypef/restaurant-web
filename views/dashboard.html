@@ -68,12 +68,13 @@
     </style>
 
     <script>
-        function pushMessage(t, header, body){
+        function pushMessage(t, header, body, icon){
             var mes = header + '|' + body;
             $.Notify({
                 caption: mes.split("|")[0],
                 content: mes.split("|")[1],
-                type: t
+                type: t,
+                icon: "<span class='mif-"+icon+"'></span>"
             });
         }
 
