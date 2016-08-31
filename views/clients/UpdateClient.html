@@ -6,54 +6,52 @@
 <div class="content">
 	<form align="center">  
         <div class="input-control modern text iconic" id="widthfull">
-        <input type="text" placeholder="Nombre" class="input-full" value="{{client.nombre}}">
+        <input type="text" placeholder="Nombre" class="input-full" ng-model="DateClient.nombre">
         <span class="label">Nuevo nombre</span>
         <span class="informer">Ingrese solo el nombre</span>
         <span class="icon mif-user"></span>
         </div>
         
         <div class="input-control modern text iconic" id="widthfull">
-        <input type="text" placeholder="Apellidos" value="{{client.apellidos}}">
+        <input type="text" placeholder="Apellidos" ng-model="DateClient.apellidos">
         <span class="label">Nuevo Apellidos</span>
         <span class="informer">Ingrese solo el Apellidos</span>
         <span class="icon mif-user"></span>
         </div>
         
         <div class="input-control modern text iconic" id="widthfull">
-        <input type="text" placeholder="Direccion" value="{{client.direccion}}">
+        <input type="text" placeholder="Direccion" ng-model="DateClient.direccion">
         <span class="label">Nueva Direccion</span>
         <span class="informer">Direccion actual</span>
         <span class="icon mif-home"></span>
         </div>
         
         <div class="input-control modern text iconic" id="widthfull">
-        <input type="number" placeholder="Movil" value="{{client.movil}}">
+        <input type="text" placeholder="Movil" ng-model="DateClient.movil">
         <span class="label">Numero Movil</span>
         <span class="informer">Movil personal</span>
         <span class="icon mif-mobile"></span>
         </div>
         
         <div class="input-control modern text iconic" id="widthfull">
-        <input type="number" placeholder="Telefono fijo" value="{{client.telefono}}">
+        <input type="text" placeholder="Telefono fijo" ng-model="DateClient.telefono">
         <span class="label">Numero de Telefono fijo</span>
         <span class="informer">Telefono fijo personal</span>
         <span class="icon mif-phone"></span>
         </div>
         
         <div class="input-control modern text iconic" id="widthfull">
-        <input type="email" placeholder="E-mail" value="{{client.email}}">
+        <input type="text" placeholder="E-mail" ng-model="DateClient.mail">
         <span class="label">Email de cliente</span>
         <span class="informer">No olvide el @</span>
         <span class="icon mif-mail"></span>
         </div>
         <br>
-        <input type="hidden" name="id" value="{{client._id}}">
-        <button class="button success" ng-click="CreateClient()">
-        ACTUALIZAR
-        </button>
-        <button class="button danger" ng-click="DeleteClient()">
-        ELIMINAR
-        </button>
+        <input type="hidden" name="id" ng-model="DateClient._id"">
+
+        <button class="button info" ng-click="Update()">ACTUALIZAR</button>
+        
+        <button class="button danger" ng-click="Delete()">ELIMINAR</button>
     </form>
 </div>
 </div>

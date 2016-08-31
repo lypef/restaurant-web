@@ -43,6 +43,8 @@ app.get('/api/users/', usersjson)
 // Api POST
 app.post('/api/users', CreateUsername)
 app.post('/api/clients', CreateClient );
+app.post('/api/client/update', UpdateClient );
+app.post('/api/client/delete', DeleteClient );
 
 
 
@@ -158,6 +160,47 @@ function CreateClient (req, res)
     	 	res.send(p._id)
     	 }
     });
+}
+
+function UpdateClient (req, res) 
+{  
+	db.clients.update(
+    	{ _id : req.body._id },
+    	{ 
+			nombre: req.body.nombre.toUpperCase(),
+			apellidos: req.body.apellidos.toUpperCase(),
+			direccion: req.body.direccion.toUpperCase(),
+			movil: req.body.movil,
+			telefono: req.body.telefono,
+			mail: req.body.mail
+    	},
+    	function( err) 
+    	{
+        	if (err)
+        	{
+        		res.send(404)
+        	}else
+        	{
+        		res.send(200)
+        	}
+    	})
+}
+
+function DeleteClient (req, res) 
+{  
+	db.clients.remove(
+    	{ _id : req.body._id },
+    	
+    	function( err) 
+    	{
+        	if (err)
+        	{
+        		res.send(404)
+        	}else
+        	{
+        		res.send(200)
+        	}
+    	})
 }
 
 const port = "8080"

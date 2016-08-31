@@ -23,7 +23,8 @@ app.config(function($routeProvider){
 app.controller("clients", function($scope, $http, $window)
 {
     $http.defaults.headers.common['x-access-token']=token;
-    $scope.NewClient = {};    
+    $scope.NewClient = {};  
+
     $http.get('/api/clients/')
         .success(function(data) {
             $scope.all = data;
@@ -48,13 +49,15 @@ app.controller("clients", function($scope, $http, $window)
 app.controller("UpdateClient", function($scope, $http, $routeParams, $window)
 {
     $http.defaults.headers.common['x-access-token']=token;
-    
+    $scope.DateClient = {};  
+
     $scope.id = $routeParams.id
+    
 
     $http.get('/api/clientedit/' + $scope.id)
         .success(function(data) 
         {
-            $scope.client = data;
+            $scope.DateClient = data;
         })
         .error(function(data) 
         {
@@ -62,9 +65,35 @@ app.controller("UpdateClient", function($scope, $http, $routeParams, $window)
             pushMessage('alert','ERROR', 'ID no encontrado.')
         });
 
-    $scope.DeleteClient = function()
+    $scope.Update = function()
     {
-        pushMessage('success', 'HECHO', 'Cliente eliminado con exito', "checkmark")
+        $http.post('/api/client/update', $scope.DateClient)
+            .success(function(err) 
+            {
+                pushMessage('info', 'HECHO', 'Cliente actualizado con exito', "checkmark")
+                $scope.DateClient = {};
+                $window.location = "dashboard#/clients";
+            })
+            .error(function(err) 
+            {
+                pushMessage('alert','ERROR', 'Algo malo sucedio, intente de nuevo', "cross")
+            })
+    }  
+
+    
+    $scope.Delete = function()
+    {
+        $http.post('/api/client/delete', $scope.DateClient)
+            .success(function(err) 
+            {
+                pushMessage('success', 'HECHO', 'Cliente eliminado con exito', "checkmark")
+                $scope.DateClient = {};
+                $window.location = "dashboard#/clients";
+            })
+            .error(function(err) 
+            {
+                pushMessage('alert','ERROR', 'Algo malo sucedio, intente de nuevo', "cross")
+            })
     };  
 })
 
