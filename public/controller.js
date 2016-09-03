@@ -70,7 +70,7 @@ app.controller("UpdateClient", function($scope, $http, $routeParams, $window)
         $http.post('/api/client/update', $scope.DateClient)
             .success(function(err) 
             {
-                pushMessage('info', 'HECHO', 'Cliente actualizado con exito', "checkmark")
+                pushMessage('success', 'HECHO', 'Cliente actualizado con exito', "checkmark")
                 $scope.DateClient = {};
                 $window.location = "dashboard#/clients";
             })

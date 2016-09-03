@@ -6,14 +6,14 @@
                 <div class="content">
                 <form align="center">  
                         <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Nombre" ng-model="NewClient.nombre" class="input-full">
+                        <input type="text" placeholder="Nombre" ng-model="NewClient.nombre" class="input-full" required="">
                         <span class="label">Nuevo nombre</span>
                         <span class="informer">Ingrese solo el nombre</span>
                         <span class="icon mif-user"></span>
                         </div>
                         
                         <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Apellidos" ng-model="NewClient.apellidos">
+                        <input type="text" placeholder="Apellidos" ng-model="NewClient.apellidos" required="">
                         <span class="label">Nuevo Apellidos</span>
                         <span class="informer">Ingrese solo el Apellidos</span>
                         <span class="icon mif-user"></span>
@@ -46,10 +46,11 @@
                         <span class="informer">No olvide el @</span>
                         <span class="icon mif-mail"></span>
                         </div>
-                        <br>
-                        <button class="button success" ng-click="CreateClient()">
+                        <br><br>
+                        <button class="button success loading-pulse" ng-click="CreateClient()">
                         Agregar
                         </button>
                     </form>
+                    <br><br>
                 </div>
                 </div>
