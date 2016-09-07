@@ -40,8 +40,8 @@ app.controller("clients", function($scope, $http, $window)
                 pushMessage('success', 'HECHO', 'Cliente agregado con exito', "checkmark")
                 $window.location = "dashboard#/editclient/" + id;
             })
-            .error(function(id) {
-                pushMessage('alert','ERROR', 'Verifique todo los campos', "cross")
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
             });
     };  
 })
@@ -74,9 +74,9 @@ app.controller("UpdateClient", function($scope, $http, $routeParams, $window)
                 $scope.DateClient = {};
                 $window.location = "dashboard#/clients";
             })
-            .error(function(err) 
+            .error(function(msg) 
             {
-                pushMessage('alert','ERROR', 'Algo malo sucedio, intente de nuevo', "cross")
+                pushMessage('alert','ERROR', msg, "cross")
             })
     }  
 
@@ -90,9 +90,9 @@ app.controller("UpdateClient", function($scope, $http, $routeParams, $window)
                 $scope.DateClient = {};
                 $window.location = "dashboard#/clients";
             })
-            .error(function(err) 
+            .error(function(msg) 
             {
-                pushMessage('alert','ERROR', 'Algo malo sucedio, intente de nuevo', "cross")
+                pushMessage('alert','ERROR', msg, "cross")
             })
     };  
 })

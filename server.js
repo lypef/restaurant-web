@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var sessiontrue = require('./middlewares/session');
 var tokenApi = require('./middlewares/TokenApi');
+var ValidateEmail = require("email-validator");
 var db = require("./models/models");
 var app = express(); 
 
@@ -142,29 +143,38 @@ function ClienteditsJson (req,res){
 
 function CreateClient (req, res) 
 {  
-    var p = new db.clients({
+    if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null)
+    {
+    	var p = new db.clients({
 		nombre: req.body.nombre.toUpperCase(),
 		apellidos: req.body.apellidos.toUpperCase(),
 		direccion: req.body.direccion.toUpperCase(),
 		movil: req.body.movil,
 		telefono: req.body.telefono,
 		mail: req.body.mail
-    })
+    	})
 
-    p.save(function (err) {
+
+    	p.save(function (err) {
     	 if (err)
     	 {
-    	 	res.send(404)
+    	 	res.send(500, "No fue posible crear el cliente, intente de nuevo.")
     	 }else
     	 {
     	 	res.send(p._id)
     	 }
-    });
+    	})	
+    }else
+    {
+    	res.send(500, "Email no valido");
+    }
 }
 
 function UpdateClient (req, res) 
 {  
-	db.clients.update(
+	if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null)
+	{
+		db.clients.update(
     	{ _id : req.body._id },
     	{ 
 			nombre: req.body.nombre.toUpperCase(),
@@ -178,12 +188,17 @@ function UpdateClient (req, res)
     	{
         	if (err)
         	{
-        		res.send(404)
+        		res.send(404, "Algo desconocido sucedio, intente nuevamente")
         	}else
         	{
         		res.send(200)
         	}
-    	})
+    	})	
+	}else
+	{
+		res.send(500, "Email no valido.")
+	}
+	
 }
 
 function DeleteClient (req, res) 
@@ -195,7 +210,7 @@ function DeleteClient (req, res)
     	{
         	if (err)
         	{
-        		res.send(404)
+        		res.send(500, "Error, Intente nuevamente.")
         	}else
         	{
         		res.send(200)
