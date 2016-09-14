@@ -1,22 +1,28 @@
-<div class="input-control text big-input " data-role="input" style="width: 100%">
-    <input type="text">
-    
-    <button class="button"><span class="mif-search"></span></button>
-    
+<div ng-controller="clients">
+	<form>
+	<div class="input-control text big-input " data-role="input" style="width: 100%">
+	    
+	    <input type="text" name="filter" ng-model="inputbox.text">
+	    
+	    <button class="button" ng-click="SearchClient()"><span class="mif-search"></span></button>
+	    
+	</div>
+	</form>
+	
+	<div class="listview">
+	    
+	        <div class="list" ng-repeat="todo in all">
+
+	        <a href="dashboard#/editclient/{{ todo._id }}">
+	            <img src="https://cdn2.iconfinder.com/data/icons/bitsies/128/EditDocument-512.png" class="list-icon">
+	        </a>    
+
+	        <span class="list-title">{{ todo.nombre }} {{ todo.apellidos }}</span>
+	    </div>    
+	    
+	</div>
+	<div class="listview list-type-icons">
+	<div class="listview list-type-tiles">
+	<div class="listview list-type-listing">
+
 </div>
-
-<div class="listview" ng-controller="clients">
-    
-        <div class="list" ng-repeat="todo in all">
-
-        <a href="dashboard#/editclient/{{ todo._id }}">
-            <img src="https://cdn2.iconfinder.com/data/icons/bitsies/128/EditDocument-512.png" class="list-icon">
-        </a>    
-
-        <span class="list-title">{{ todo.nombre }} {{ todo.apellidos }}</span>
-    </div>    
-    
-</div>
-<div class="listview list-type-icons">
-<div class="listview list-type-tiles">
-<div class="listview list-type-listing">

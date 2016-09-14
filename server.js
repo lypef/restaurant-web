@@ -46,6 +46,7 @@ app.post('/api/users', CreateUsername)
 app.post('/api/clients', CreateClient );
 app.post('/api/client/update', UpdateClient );
 app.post('/api/client/delete', DeleteClient );
+app.post('/api/client/search', SearchClient );
 
 
 
@@ -216,6 +217,20 @@ function DeleteClient (req, res)
         		res.send(200)
         	}
     	})
+}
+
+function SearchClient (req, res) 
+{  
+	db.clients.find({$or: [ {nombre: { $regex : req.body.text.toUpperCase() }}, {apellidos: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
+        if(err || data == "") {
+            res.send(500,"Cliente no encontrado")
+        }else
+        {
+        	res.json(data)
+        }
+    }).sort({nombre:1});
+
+
 }
 
 const port = "8080"

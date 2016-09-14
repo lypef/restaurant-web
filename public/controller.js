@@ -44,6 +44,20 @@ app.controller("clients", function($scope, $http, $window)
                 pushMessage('alert','ERROR',msg, "cross")
             });
     };  
+
+    $scope.SearchClient = function(){
+        $scope.inputbox
+        $http.post('/api/client/search', $scope.inputbox)
+            .success(function(data) {
+                pushMessage('success','FOUNT',"Cliente's encontrados", "checkmark")
+                $scope.all = data;
+            })
+            .error(function(msg) {
+                pushMessage('info','NOT FOUND',msg, "question")
+            });
+    };  
+
+
 })
 
 app.controller("UpdateClient", function($scope, $http, $routeParams, $window)
