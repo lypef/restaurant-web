@@ -15,6 +15,9 @@ app.config(function($routeProvider){
         .when('/editclient/:id', {
             templateUrl : 'clients/UpdateClient.html'
         })
+        .when('/catproducts', {
+            templateUrl: 'products/catproducts.html'
+        })
         .otherwise({
             redirectTo : '/'
         })
@@ -146,3 +149,33 @@ app.controller("users", function($scope, $http)
             });
     };  
 })
+
+app.controller("products", function($scope, $http){
+    
+    $http.defaults.headers.common['x-access-token']=token;
+    $scope.productstmp = {}  
+    $scope.Newproduct = {}  
+
+    $http.get('/api/catproducts/')
+        .success(function(data) {
+            $scope.productstmp = data;
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+    });
+
+
+    $scope.CreateCatProduct = function(){
+
+        $http.post('api/catproducts/add', $scope.Newproduct)
+            .success(function(data) {
+                pushMessage('success', 'HECHO', 'Categoria agregada', "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            });
+    }; 
+
+})
+
+

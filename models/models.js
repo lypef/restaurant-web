@@ -24,8 +24,17 @@ var clients_scheme = new mongoose.Schema({
 	mail: String
 })
 
+var catproducts_scheme = new mongoose.Schema({
+	categoria: {type: String, required: true},
+	descripcion: String
+	
+})
+
+
 var User = mongoose.model("User",user_scheme)
 var Clients = mongoose.model("Clients",clients_scheme)
+var CatProducts = mongoose.model("CatProducts",catproducts_scheme)
 
 module.exports.user = User;
 module.exports.clients = Clients;
+module.exports.catproducts = CatProducts;

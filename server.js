@@ -40,6 +40,7 @@ app.post("/login", Login );
 app.get('/api/clients/', ClientsJson);
 app.get('/api/clientedit/:id', ClienteditsJson);
 app.get('/api/users/', usersjson)
+app.get('/api/catproducts/', catproductsJson)
 
 // Api POST
 app.post('/api/users', CreateUsername)
@@ -47,6 +48,7 @@ app.post('/api/clients', CreateClient );
 app.post('/api/client/update', UpdateClient );
 app.post('/api/client/delete', DeleteClient );
 app.post('/api/client/search', SearchClient );
+app.post('/api/catproducts/add', CreateCatProduct );
 
 
 
@@ -233,6 +235,45 @@ function SearchClient (req, res)
 
 }
 
+function catproductsJson (req,res){
+	db.catproducts.find(function(err, data) {
+        if(err) {
+            res.send(err);
+        }else
+        {
+        	res.json(data);	
+        }
+    }).sort({categoria:1});
+};
+
+
+function CreateCatProduct (req, res) 
+{  
+    var p = new db.catproducts({
+		categoria: req.body.categoria.toUpperCase(),
+		descripcion: req.body.descripcion.toUpperCase()
+    	})
+
+
+    	p.save(function (err, doc) {
+    	 if (err)
+    	 {
+    	 	res.send(500, "No fue posible crear el cliente, intente de nuevo.")
+    	 }else
+    	 {
+    	 	db.catproducts.find(function(err, data) {
+                if(err) {
+                    res.send(err);
+                }else
+                {
+                    res.json(data); 
+                }
+            }).sort({categoria:1});
+    	 }
+    	})	
+}
+
+//Config
 const port = "8080"
 
 app.listen(port, function (err){
@@ -241,3 +282,5 @@ app.listen(port, function (err){
 		console.log("Arranque del servidor en el puerto " + port);	
 	}
 });
+
+
