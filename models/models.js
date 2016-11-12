@@ -1,4 +1,6 @@
-var mongoose = require("mongoose");
+var mongoose = require("mongoose")
+require('mongoose-double')(mongoose);
+
 
 mongoose.connect("mongodb://lypef:admin@mongodb-lypef.alwaysdata.net/lypef_db");
 
@@ -32,7 +34,8 @@ var catproducts_scheme = new mongoose.Schema({
 
 var ingredientes_scheme = new mongoose.Schema({
 	nombre: {type: String, required: true},
-	descripcion: String
+	descripcion: String,
+	cantidad: String
 	
 })
 

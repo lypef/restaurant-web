@@ -33,7 +33,20 @@
     <span class="title">Listado de categorias</span>
     </div>
     <div class="content">
-		<table class="table striped hovered">
+    
+    <form>
+        <div class="content">
+    
+    <div class="input-control text big-input " data-role="input" style="width: 100%">
+        
+        <input type="text" name="filter" ng-model="inputbox.text">
+        
+        <button class="button" ng-click="SearchCatProduct()"><span class="mif-search"></span></button>
+        
+    </div>
+    </form>
+
+	<table class="table striped hovered">
 	<th>
 		CATEGORIA
 	</th>

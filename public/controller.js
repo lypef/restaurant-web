@@ -187,7 +187,17 @@ app.controller("products", function($scope, $http){
             });
     }; 
 
-
+    $scope.SearchCatProduct = function(){
+        $scope.inputbox
+        $http.post('/api/catproducts/search', $scope.inputbox)
+            .success(function(data) {
+                pushMessage('success','FOUNT',"Categoria encontrada", "checkmark")
+                $scope.productstmp = data;
+            })
+            .error(function(msg) {
+                pushMessage('info','NOT FOUND',msg, "question")
+            });
+    };  
 })
 
 
@@ -270,7 +280,17 @@ app.controller("ingredientes", function($scope, $http){
             });
     }; 
 
-
+    $scope.SearchIngredient = function(){
+        $scope.inputbox
+        $http.post('/api/ingredientes/search', $scope.inputbox)
+            .success(function(data) {
+                pushMessage('success','FOUNT',"Cliente's encontrados", "checkmark")
+                $scope.ingredientestmp = data;
+            })
+            .error(function(msg) {
+                pushMessage('info','NOT FOUND',msg, "question")
+            });
+    };  
 })
 
 

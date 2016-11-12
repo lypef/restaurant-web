@@ -19,6 +19,12 @@
                         <span class="icon mif-paragraph-left"></span>
                         </div>
                         
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="number" placeholder="Cantidad" ng-model="Newproduct.cantidad" class="input-full" required="">
+                        <span class="label">Cantidad</span>
+                        <span class="informer"></span>
+                        <span class="icon mif-safari"></span>
+                        </div>
                         <br><br>
                         
                         <button class="button success loading-pulse" ng-click="CreateIngrediente()">
@@ -32,16 +38,26 @@
     
     <span class="title">Listado de ingredientes</span>
     </div>
-    <div class="content">
-		<table class="table striped hovered">
+    <form>
+    	<div class="content">
+	
+	<div class="input-control text big-input " data-role="input" style="width: 100%">
+	    
+	    <input type="text" name="filter" ng-model="inputbox.text">
+	    
+	    <button class="button" ng-click="SearchIngredient()"><span class="mif-search"></span></button>
+	    
+	</div>
+    </form>
+
+	<table class="table striped hovered">
+
 	<th>
 		NOMBRE
 	</th>
+	
 	<th>
-		DESCRIPCION
-	</th>
-	<th>
-		GMS/KG
+		CANTIDAD
 	</th>
 	<th>
 		OPCION
@@ -51,10 +67,7 @@
 			{{ ingredient.nombre }}
 		</td>
 		<td>
-			{{ ingredient.descripcion }}
-		</td>
-		<td>
-			100 gms
+			{{ ingredient.cantidad }}
 		</td>
 		<td>
 			

@@ -1,6 +1,6 @@
 var express  = require('express');
 var session = require("express-session");
-var mongoose = require('mongoose');                     
+var mongoose = require('mongoose','mongoose-double');
 var morgan = require('morgan');             
 var bodyParser = require('body-parser');    
 var methodOverride = require('method-override');
@@ -60,11 +60,12 @@ app.post('/api/client/search', SearchClient );
 app.post('/api/catproducts/update', CatproductsUpdateClient );
 app.post('/api/catproducts/delete', DeleteCatProducts );
 app.post('/api/catproducts/add', CreateCatProduct );
+app.post('/api/catproducts/search', SearchCatProducts );
 
 app.post('/api/ingredientes/update', IngredientesUpdate );
 app.post('/api/ingredientes/delete', DeleteIngredientes );
 app.post('/api/ingredientes/add', CreateIngrediente );
-
+app.post('/api/ingredientes/search', SearchIngredients );
 
 
 //Funciones
@@ -247,6 +248,31 @@ function SearchClient (req, res)
         }
     }).sort({nombre:1});
 
+}
+
+function SearchIngredients (req, res) 
+{  
+    db.ingredientes.find({$or: [ {nombre: { $regex : req.body.text.toUpperCase() }}, {descripcion: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
+        if(err || data == "") {
+            res.send(500,"Ingrediente no encontrado")
+        }else
+        {
+            res.json(data)
+        }
+    }).sort({nombre:1});
+
+}
+
+function SearchCatProducts (req, res) 
+{  
+    db.catproducts.find({$or: [ {categoria: { $regex : req.body.text.toUpperCase() }}, {descripcion: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
+        if(err || data == "") {
+            res.send(500,"Categoria no encontrada")
+        }else
+        {
+            res.json(data)
+        }
+    }).sort({categoria:1});
 
 }
 
@@ -300,9 +326,15 @@ function CreateCatProduct (req, res)
 
 function CreateIngrediente (req, res) 
 {  
+    if (req.body.cantidad == mongoose.Schema.Types.Double)
+    {
+
+
+    }
     var p = new db.ingredientes({
         nombre: req.body.nombre.toUpperCase(),
-        descripcion: req.body.descripcion.toUpperCase()
+        descripcion: req.body.descripcion.toUpperCase(),
+        cantidad: req.body.cantidad
         })
 
 
@@ -374,7 +406,8 @@ function IngredientesUpdate (req, res)
         { _id : req.body._id },
         { 
             nombre: req.body.nombre.toUpperCase(),
-            descripcion: req.body.descripcion.toUpperCase()
+            descripcion: req.body.descripcion.toUpperCase(),
+            cantidad: req.body.cantidad
         },
         function( err) 
         {
