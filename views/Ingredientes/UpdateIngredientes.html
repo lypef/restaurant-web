@@ -1,0 +1,53 @@
+<div class="panel warning" ng-controller="UpdateIngrediente">
+                <div class="heading">
+                
+                <span class="title">Edicion Ingrediente : {{ ingrediente.nombre }}</span>
+                </div>
+                <div class="content">
+                <form align="center">  
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Categoria" ng-model="ingrediente.nombre" class="input-full" required="">
+                        <span class="label">Nombre categoria</span>
+                        <span class="informer"></span>
+                        <span class="icon mif-user"></span>
+                        </div>
+                        
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Descripcion" ng-model="ingrediente.descripcion" class="input-full" required="">
+                        <span class="label">Descripcion categoria</span>
+                        <span class="informer"></span>
+                        <span class="icon mif-paragraph-left"></span>
+                        </div>
+                        
+                        <br><br>
+                        
+                        <button class="button info loading-pulse" ng-click="Update()">ACTUALIZAR</button>
+        
+                        <button class="button alert loading-cube" onclick="toggleMetroDialog('#dialog-ajax')">ELIMINAR</button>
+
+                    </form>
+                    <br><br>
+                    
+    
+
+</div>
+<div data-role="dialog" id="dialog-ajax" class="padding30" data-type="" 
+    data-close-button="true"
+    data-width="auto"
+    data-overlay="true">
+
+        <p>
+        <font face="Segoe UI Bold">
+            <h4>SE ELIMINARA LA CATEGORIA: {{ingrediente.categoria}}</h4>
+        </font>
+        <font face="Segoe UI">
+            DESCRIPCION: {{ingrediente.descripcion}}
+            <br>
+        </font>    
+            
+        </p>
+
+        <button class="button alert" ng-click="Delete()" onclick="hideMetroDialog('#dialog-ajax')">SI</button>
+        <button class="button success" onclick="hideMetroDialog('#dialog-ajax')">NO</button>
+</div>
+</div>

@@ -18,6 +18,15 @@ app.config(function($routeProvider){
         .when('/catproducts', {
             templateUrl: 'products/catproducts.html'
         })
+        .when('/catproducts/:id', {
+            templateUrl : 'products/UpdateCatproducts.html'
+        })
+        .when('/ingredientes', {
+            templateUrl: 'Ingredientes/Ingredientes.html'
+        })
+        .when('/ingredientes/:id', {
+            templateUrl : 'Ingredientes/UpdateIngredientes.html'
+        })
         .otherwise({
             redirectTo : '/'
         })
@@ -153,15 +162,15 @@ app.controller("users", function($scope, $http)
 app.controller("products", function($scope, $http){
     
     $http.defaults.headers.common['x-access-token']=token;
-    $scope.productstmp = {}  
-    $scope.Newproduct = {}  
+    
+    $scope.productstmp = {};
 
     $http.get('/api/catproducts/')
         .success(function(data) {
             $scope.productstmp = data;
         })
         .error(function(data) {
-            console.log('Error: ' + data);
+            pushMessage('alert','ERROR',data, "cross")
     });
 
 
@@ -169,6 +178,8 @@ app.controller("products", function($scope, $http){
 
         $http.post('api/catproducts/add', $scope.Newproduct)
             .success(function(data) {
+                $scope.productstmp = data;
+                $scope.Newproduct = {}
                 pushMessage('success', 'HECHO', 'Categoria agregada', "checkmark")
             })
             .error(function(msg) {
@@ -176,6 +187,140 @@ app.controller("products", function($scope, $http){
             });
     }; 
 
+
 })
 
 
+app.controller("UpdateCatproducts", function($scope, $http, $routeParams, $window)
+{
+    $http.defaults.headers.common['x-access-token']=token;
+    $scope.DateCatProduct = {};  
+
+    $scope.id = $routeParams.id
+    
+
+    $http.get('/api/catproducts/' + $scope.id)
+        .success(function(data) 
+        {
+            $scope.DateCatProduct = data;
+        })
+        .error(function(data) 
+        {
+            $window.location = "dashboard#clients";
+            pushMessage('alert','ERROR', 'ID no encontrado.')
+        });
+
+    $scope.Update = function()
+    {
+        $http.post('/api/catproducts/update', $scope.DateCatProduct)
+            .success(function(err) 
+            {
+                pushMessage('success', 'HECHO', 'Categoria actualizada con exito', "checkmark")
+                $scope.DateCatProduct = {};
+                $window.location = "dashboard#/catproducts";
+            })
+            .error(function(msg) 
+            {
+                pushMessage('alert','ERROR', msg, "cross")
+            })
+    }  
+
+    
+    $scope.Delete = function()
+    {
+        $http.post('/api/catproducts/delete', $scope.DateCatProduct)
+            .success(function(err) 
+            {
+                pushMessage('success', 'HECHO', 'Categoria eliminada con exito', "checkmark")
+                $scope.DateCatProduct = {};
+                $window.location = "dashboard#/catproducts";
+            })
+            .error(function(msg) 
+            {
+                pushMessage('alert','ERROR', msg, "cross")
+            })
+    };  
+})
+
+app.controller("ingredientes", function($scope, $http){
+    
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.ingredientestmp = {};
+
+    $http.get('/api/ingredientes/')
+        .success(function(data) {
+            $scope.ingredientestmp = data;
+        })
+        .error(function(data) {
+            pushMessage('alert','ERROR',data, "cross")
+    });
+
+
+    $scope.CreateIngrediente = function(){
+
+        $http.post('api/ingredientes/add', $scope.Newproduct)
+            .success(function(data) {
+                $scope.ingredientestmp = data;
+                $scope.Newproduct = {}
+                pushMessage('success', 'HECHO', 'Categoria agregada', "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            });
+    }; 
+
+
+})
+
+
+app.controller("UpdateIngrediente", function($scope, $http, $routeParams, $window)
+{
+    $http.defaults.headers.common['x-access-token']=token;
+    $scope.ingrediente = {};  
+
+    $scope.id = $routeParams.id
+    
+
+    $http.get('/api/ingredientes/' + $scope.id)
+        .success(function(data) 
+        {
+            $scope.ingrediente = data;
+        })
+        .error(function(data) 
+        {
+            $window.location = "dashboard#clients";
+            pushMessage('alert','ERROR', 'ID no encontrado.')
+        });
+
+    $scope.Update = function()
+    {
+        $http.post('/api/ingredientes/update', $scope.ingrediente)
+            .success(function(err) 
+            {
+                pushMessage('success', 'HECHO', 'Ingrediente actualizado con exito', "checkmark")
+                $scope.ingrediente = {};
+                $window.location = "dashboard#/ingredientes";
+            })
+            .error(function(msg) 
+            {
+                pushMessage('alert','ERROR', msg, "cross")
+            })
+    }  
+
+    
+    $scope.Delete = function()
+    {
+        $http.post('/api/ingredientes/delete', $scope.ingrediente)
+            .success(function(err) 
+            {
+                pushMessage('success', 'HECHO', 'Ingrediente eliminado con exito', "checkmark")
+                $scope.ingrediente = {};
+                $window.location = "dashboard#/ingredientes";
+            })
+            .error(function(msg) 
+            {
+                pushMessage('alert','ERROR', msg, "cross")
+            })
+    };  
+})

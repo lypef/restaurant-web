@@ -39,16 +39,31 @@ app.post("/login", Login );
 // Api get
 app.get('/api/clients/', ClientsJson);
 app.get('/api/clientedit/:id', ClienteditsJson);
-app.get('/api/users/', usersjson)
+
+app.get('/api/catproducts/:id', CatProductsEditsJson);
 app.get('/api/catproducts/', catproductsJson)
+
+app.get('/api/ingredientes/', IngredientesJson)
+app.get('/api/ingredientes/:id', IngredientesEditsJson);
+
+app.get('/api/users/', usersjson)
+
 
 // Api POST
 app.post('/api/users', CreateUsername)
+
 app.post('/api/clients', CreateClient );
 app.post('/api/client/update', UpdateClient );
 app.post('/api/client/delete', DeleteClient );
 app.post('/api/client/search', SearchClient );
+
+app.post('/api/catproducts/update', CatproductsUpdateClient );
+app.post('/api/catproducts/delete', DeleteCatProducts );
 app.post('/api/catproducts/add', CreateCatProduct );
+
+app.post('/api/ingredientes/update', IngredientesUpdate );
+app.post('/api/ingredientes/delete', DeleteIngredientes );
+app.post('/api/ingredientes/add', CreateIngrediente );
 
 
 
@@ -238,7 +253,7 @@ function SearchClient (req, res)
 function catproductsJson (req,res){
 	db.catproducts.find(function(err, data) {
         if(err) {
-            res.send(err);
+            res.send(500,err);
         }else
         {
         	res.json(data);	
@@ -246,6 +261,16 @@ function catproductsJson (req,res){
     }).sort({categoria:1});
 };
 
+function IngredientesJson (req,res){
+    db.ingredientes.find(function(err, data) {
+        if(err) {
+            res.send(500,err);
+        }else
+        {
+            res.json(data); 
+        }
+    }).sort({categoria:1});
+};
 
 function CreateCatProduct (req, res) 
 {  
@@ -263,7 +288,7 @@ function CreateCatProduct (req, res)
     	 {
     	 	db.catproducts.find(function(err, data) {
                 if(err) {
-                    res.send(err);
+                    res.send(500,err);
                 }else
                 {
                     res.json(data); 
@@ -273,6 +298,129 @@ function CreateCatProduct (req, res)
     	})	
 }
 
+function CreateIngrediente (req, res) 
+{  
+    var p = new db.ingredientes({
+        nombre: req.body.nombre.toUpperCase(),
+        descripcion: req.body.descripcion.toUpperCase()
+        })
+
+
+        p.save(function (err, doc) {
+         if (err)
+         {
+            res.send(500, "No fue posible crear el ingrediente, intente de nuevo.")
+         }else
+         {
+            db.ingredientes.find(function(err, data) {
+                if(err) {
+                    res.send(500,err);
+                }else
+                {
+                    res.json(data); 
+                }
+            }).sort({nombre:1});
+         }
+        })  
+}
+function CatProductsEditsJson (req,res){
+    db.catproducts.findOne({_id:req.params.id},function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
+        }else
+        {
+            res.send(404);
+        }
+    });
+};
+
+function IngredientesEditsJson (req,res){
+    db.ingredientes.findOne({_id:req.params.id},function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
+        }else
+        {
+            res.send(404);
+        }
+    });
+};
+
+function CatproductsUpdateClient (req, res) 
+{  
+    db.catproducts.update(
+        { _id : req.body._id },
+        { 
+            categoria: req.body.categoria.toUpperCase(),
+            descripcion: req.body.descripcion.toUpperCase()
+        },
+        function( err) 
+        {
+            if (err)
+            {
+                res.send(404, "Algo desconocido sucedio, intente nuevamente")
+            }else
+            {
+                res.send(200)
+            }
+        })  
+    
+}
+
+function IngredientesUpdate (req, res) 
+{  
+    db.ingredientes.update(
+        { _id : req.body._id },
+        { 
+            nombre: req.body.nombre.toUpperCase(),
+            descripcion: req.body.descripcion.toUpperCase()
+        },
+        function( err) 
+        {
+            if (err)
+            {
+                res.send(404, "Algo desconocido sucedio, intente nuevamente")
+            }else
+            {
+                res.send(200)
+            }
+        })  
+    
+}
+function DeleteCatProducts (req, res) 
+{  
+    db.catproducts.remove(
+        { _id : req.body._id },
+        
+        function( err) 
+        {
+            if (err)
+            {
+                res.send(500, "Error, Intente nuevamente.")
+            }else
+            {
+                res.send(200)
+            }
+        })
+}
+
+function DeleteIngredientes (req, res) 
+{  
+    db.ingredientes.remove(
+        { _id : req.body._id },
+        
+        function( err) 
+        {
+            if (err)
+            {
+                res.send(500, "Error, Intente nuevamente.")
+            }else
+            {
+                res.send(200)
+            }
+        })
+}
 //Config
 const port = "8080"
 

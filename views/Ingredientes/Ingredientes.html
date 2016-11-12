@@ -1,58 +1,64 @@
-<div class="panel info" ng-controller="products">
+<div class="panel warning" ng-controller="ingredientes">
                 <div class="heading">
                 
-                <span class="title">Agregar Categoria</span>
+                <span class="title">Agregar Ingrediente</span>
                 </div>
                 <div class="content">
                 <form align="center">  
                         <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Categoria" ng-model="Newproduct.categoria" class="input-full" required="">
-                        <span class="label">Nombre categoria</span>
+                        <input type="text" placeholder="Nombre" ng-model="Newproduct.nombre" class="input-full" required="">
+                        <span class="label">Nombre ingrediente</span>
                         <span class="informer"></span>
                         <span class="icon mif-user"></span>
                         </div>
                         
                         <div class="input-control modern text iconic" id="widthfull">
                         <input type="text" placeholder="Descripcion" ng-model="Newproduct.descripcion" class="input-full" required="">
-                        <span class="label">Descripcion categoria</span>
+                        <span class="label">Descripcion</span>
                         <span class="informer"></span>
                         <span class="icon mif-paragraph-left"></span>
                         </div>
                         
                         <br><br>
                         
-                        <button class="button success loading-pulse" ng-click="CreateCatProduct()">
+                        <button class="button success loading-pulse" ng-click="CreateIngrediente()">
                         Agregar
                         </button>
                     </form>
                     <br><br>
                     
-<div class="panel info">
+<div class="panel warning">
 	<div class="heading">
     
-    <span class="title">Listado de categorias</span>
+    <span class="title">Listado de ingredientes</span>
     </div>
     <div class="content">
 		<table class="table striped hovered">
 	<th>
-		CATEGORIA
+		NOMBRE
 	</th>
 	<th>
 		DESCRIPCION
 	</th>
 	<th>
+		GMS/KG
+	</th>
+	<th>
 		OPCION
 	</th>
-	<tr align="center" ng-repeat="category in productstmp">
+	<tr align="center" ng-repeat="ingredient in ingredientestmp">
 		<td>
-			{{ category.categoria }}
+			{{ ingredient.nombre }}
 		</td>
 		<td>
-			{{ category.descripcion }}
+			{{ ingredient.descripcion }}
+		</td>
+		<td>
+			100 gms
 		</td>
 		<td>
 			
-			<a href="dashboard#/catproducts/{{ category._id }}">
+			<a href="dashboard#/ingredientes/{{ ingredient._id }}">
 				<button class="button success rounded loading-cube">EDITAR</button>
 			</a>
 
