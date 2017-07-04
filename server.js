@@ -25,6 +25,7 @@ res.setHeader('Access-Control-Allow-Origin', '*');
     next();
 });
 app.use("/dashboard",sessiontrue);
+app.use("/admin_dashboard",sessiontrue);
 app.use('/api/', tokenApi);
 
 
@@ -32,9 +33,12 @@ app.use('/api/', tokenApi);
 app.get('/', Inicio );
 app.get("/dashboard", Dashboard );
 app.get('/logout', Logout);
+app.get('/admin_login', AdminLogin);
+app.get("/admin_dashboard", Dashboard_Admin );
 
 // Enlaces POST
 app.post("/login", Login );
+app.post("/login_admin", login_admin );
 
 // Api get
 app.get('/api/clients/', ClientsJson);
@@ -73,7 +77,13 @@ function Inicio (req, res)
 {
 	if (req.session.user_id)
 	{
-		res.redirect("/dashboard");	
+		if (req.session.clients)
+        {
+            res.redirect("/dashboard");
+        }else 
+        {
+            res.redirect("/admin_dashboard");    
+        }
 	}else
 	{
 		res.sendFile('./views/login.html', { root : __dirname});	
@@ -81,7 +91,21 @@ function Inicio (req, res)
 }
 
 function Dashboard (req,res){
-	res.sendFile('./views/dashboard.html', { root: __dirname });
+	if (req.session.clients)
+    {
+        res.sendFile('./views/dashboard.html', { root: __dirname });
+    }    
+}
+
+function Dashboard_Admin (req,res){
+    if (!req.session.clients)
+    {
+        res.sendFile('./views/Admin/dashboard_admin.html', { root: __dirname });
+    }
+}
+
+function AdminLogin (req,res){
+    res.sendFile('./views/Admin/login.html', { root: __dirname });
 }
 
 function Login (req,res){
@@ -89,7 +113,8 @@ function Login (req,res){
 		if (doc != null)
 		{
 			req.session.user_id = doc._id;
-			res.redirect("/dashboard");
+            req.session.clients = true;
+            res.redirect("/dashboard");
 		}
 		else{
 			console.log("Usuario no encontrado");
@@ -99,18 +124,36 @@ function Login (req,res){
 	
 };
 
+function login_admin (req,res){
+    db.admin.findOne({username:req.body.username, password:req.body.password},function(err,doc){
+        if (doc != null)
+        {
+            req.session.user_id = doc._id;
+            req.session.clients = false;
+            res.redirect("/admin_dashboard");
+        }
+        else{
+            console.log("Usuario no encontrado");
+            res.redirect("/admin_login");
+        }
+    });
+    
+};
+
 function Logout (req, res, next) {
-	req.session.destroy(function(err){
+	req.session.clients = false;
+    req.session.destroy(function(err){
 		if (err)
 		{
 			console.log(err);
 		}
 		else
 		{
-			res.redirect("/");
+            res.redirect("/");
 		}
 	})
 };
+
 
 function CreateUsername (req,res){
 	var p = new db.user(

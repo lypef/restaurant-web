@@ -4,6 +4,7 @@ require('mongoose-double')(mongoose);
 
 mongoose.connect("mongodb://lypef:admin@mongodb-lypef.alwaysdata.net/lypef_db");
 
+
 var user_scheme = new mongoose.Schema({
 	username: String,
 	password: String,
@@ -39,12 +40,16 @@ var ingredientes_scheme = new mongoose.Schema({
 	
 })
 
-var User = mongoose.model("User",user_scheme)
-var Clients = mongoose.model("Clients",clients_scheme)
-var CatProducts = mongoose.model("CatProducts",catproducts_scheme)
-var ingredients = mongoose.model("ingredients",ingredientes_scheme)
+var Admin_scheme = new mongoose.Schema({
+	username: String,
+	password: String,
+	nombre: String
+})
 
-module.exports.user = User;
-module.exports.clients = Clients;
-module.exports.catproducts = CatProducts;
-module.exports.ingredientes = ingredients;
+module.exports.user = mongoose.model("User",user_scheme);
+module.exports.admin = mongoose.model("Admin",Admin_scheme);
+module.exports.clients = mongoose.model("Clients",clients_scheme);
+module.exports.catproducts = mongoose.model("CatProducts",catproducts_scheme);
+module.exports.ingredientes = mongoose.model("ingredients",ingredientes_scheme);
+
+
