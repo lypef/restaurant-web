@@ -12,7 +12,7 @@ var app = express();
 
 app.use(session({ secret: 'ajsj229nshslwkjrfdrfg', resave: false,saveUninitialized: true}))     
 app.use(express.static('public'));
-app.use(express.static('views'));            
+app.use(express.static('views'));
 app.use(morgan('dev'));                                         
 app.use(bodyParser.urlencoded({'extended':'true'}));            
 app.use(bodyParser.json());                                     
@@ -26,6 +26,7 @@ res.setHeader('Access-Control-Allow-Origin', '*');
 });
 app.use("/dashboard",sessiontrue);
 app.use("/admin_dashboard",sessiontrue);
+app.use("/admin",sessiontrue);
 app.use('/api/', tokenApi);
 
 
@@ -86,21 +87,21 @@ function Inicio (req, res)
         }
 	}else
 	{
-		res.sendFile('./views/login.html', { root : __dirname});	
+		res.sendFile('./views/clients_users/login.html', { root : __dirname});	
 	}
 }
 
 function Dashboard (req,res){
 	if (req.session.clients)
     {
-        res.sendFile('./views/dashboard.html', { root: __dirname });
+        res.sendFile('./views/clients_users/dashboard.html', { root: __dirname });
     }    
 }
 
 function Dashboard_Admin (req,res){
     if (!req.session.clients)
     {
-        res.sendFile('./views/Admin/dashboard_admin.html', { root: __dirname });
+        res.sendFile('./views/Admin/dashboard.html', { root: __dirname });
     }
 }
 
@@ -130,7 +131,7 @@ function login_admin (req,res){
         {
             req.session.user_id = doc._id;
             req.session.clients = false;
-            res.redirect("/admin_dashboard");
+            res.redirect("/admin_dashboard#/");
         }
         else{
             console.log("Usuario no encontrado");

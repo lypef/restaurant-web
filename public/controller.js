@@ -4,28 +4,28 @@ var token = "eyJhbGciOiJIUzI1NiJ9.cGF5bG9hZA.f_0OBq6Yxx-jymUjCMcifD5ji1adKKYWUmw
 app.config(function($routeProvider){
     $routeProvider
         .when('/', {
-            templateUrl : 'main.html'
+            templateUrl : '/clients_users/index.html'
         })
         .when('/clients', {
-        	templateUrl : 'clients/Clients.html'
+        	templateUrl : '/clients_users/clients/Clients.html'
         })
         .when('/addclient', {
-            templateUrl : 'clients/AddClient.html'
+            templateUrl : '/clients_users/clients/AddClient.html'
         })
         .when('/editclient/:id', {
-            templateUrl : 'clients/UpdateClient.html'
+            templateUrl : '/clients_users/clients/UpdateClient.html'
         })
         .when('/catproducts', {
-            templateUrl: 'products/catproducts.html'
+            templateUrl: '/clients_users/products/catproducts.html'
         })
         .when('/catproducts/:id', {
-            templateUrl : 'products/UpdateCatproducts.html'
+            templateUrl : '/clients_users/products/UpdateCatproducts.html'
         })
         .when('/ingredientes', {
-            templateUrl: 'Ingredientes/Ingredientes.html'
+            templateUrl: '/clients_users/Ingredientes/Ingredientes.html'
         })
         .when('/ingredientes/:id', {
-            templateUrl : 'Ingredientes/UpdateIngredientes.html'
+            templateUrl : '/clients_users/Ingredientes/UpdateIngredientes.html'
         })
         .otherwise({
             redirectTo : '/'
