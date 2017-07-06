@@ -53,6 +53,7 @@ app.get('/api/ingredientes/:id', IngredientesEditsJson);
 
 app.get('/api/users/', usersjson)
 
+app.get('/api/clients_users/', ClientsUsersJson);
 
 // Api POST
 app.post('/api/users', CreateUsername)
@@ -72,6 +73,8 @@ app.post('/api/ingredientes/delete', DeleteIngredientes );
 app.post('/api/ingredientes/add', CreateIngrediente );
 app.post('/api/ingredientes/search', SearchIngredients );
 
+app.post("/api/clients_users/add", InsertClientUser );
+app.post('/api/clients_users/search', SearchClient_users );
 
 //Funciones
 function Inicio (req, res) 
@@ -95,6 +98,9 @@ function Dashboard (req,res){
 	if (req.session.clients)
     {
         res.sendFile('./views/clients_users/dashboard.html', { root: __dirname });
+    }
+    else {
+        res.redirect("/")
     }    
 }
 
@@ -102,6 +108,8 @@ function Dashboard_Admin (req,res){
     if (!req.session.clients)
     {
         res.sendFile('./views/Admin/dashboard.html', { root: __dirname });
+    }else {
+        res.redirect("/")
     }
 }
 
@@ -188,6 +196,17 @@ function ClientsJson (req,res){
         }else
         {
         	res.json(data);	
+        }
+    }).sort({nombre:1});
+};
+
+function ClientsUsersJson (req,res){
+    db.clients_users.find(function(err, data) {
+        if(err) {
+            res.send(err);
+        }else
+        {
+            res.json(data); 
         }
     }).sort({nombre:1});
 };
@@ -289,6 +308,19 @@ function SearchClient (req, res)
         }else
         {
         	res.json(data)
+        }
+    }).sort({nombre:1});
+
+}
+
+function SearchClient_users (req, res) 
+{  
+    db.clients_users.find({$or: [ {nombre: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
+        if(err || data == "") {
+            res.send(500,"Cliente no encontrado")
+        }else
+        {
+            res.json(data)
         }
     }).sort({nombre:1});
 
@@ -497,6 +529,36 @@ function DeleteIngredientes (req, res)
                 res.send(200)
             }
         })
+}
+
+function InsertClientUser (req,res)
+{
+    if ( ValidateEmail.validate(req.body.mail) == true)
+    {
+        var p = new db.clients_users({
+            nombre: req.body.nombre.toUpperCase(),
+            direccion: req.body.direccion,
+            telefono: req.body.telefono,
+            mail: req.body.mail,
+            type_identificacion: req.body.type_identificacion,
+            number_identificacion: req.body.number_identificacion,
+            status: false,
+            vence_pago: '1990-01-01'
+        })
+
+
+        p.save(function (err) {
+         if (err)
+         {
+            res.send(500, "No fue posible crear el cliente, intente de nuevo.")
+         }else
+         {
+            res.send(p._id)
+         }
+        })
+    }else {
+        res.send(500, "Email no valido.")
+    }  
 }
 //Config
 const port = "8080"

@@ -95,7 +95,7 @@
         <span class="app-bar-divider"></span>
         <ul class="app-bar-menu">
             
-            <li><a href=""><span class="mif-contacts-mail mif-2x"></span> Clientes/Usuarios</a></li>
+            <li><a onclick="toggleMetroDialog('#dialog')"><span class="mif-contacts-mail mif-2x"></span> Clientes</a></li>
             <li><a href=""><span class="mif-clipboard mif-2x"></span> Registros</a></li>
             <li><a href=""><span class="mif-money mif-2x"></span> Pagos</a></li>
         </ul>
@@ -145,5 +145,31 @@
     </div>
     
     
+    <div data-role="dialog" 
+    class="padding30"
+    data-type="" 
+    data-close-button="true"
+    data-width="auto"
+    data-overlay="true"
+     id="dialog">
+    <div class="tile-container">
+
+        <div class="tile bg-emerald fg-white" data-role="tile"  onclick="document.location.href='admin_dashboard#/management_clients', hideMetroDialog('#dialog')">
+                <div class="tile-content iconic">
+                    <span class="icon mif-chart-line"></span>
+                </div>
+                <span class="tile-label">Gestionar clientes</span>
+        </div>
+        
+        <div class="tile bg-darkBlue fg-white" data-role="tile" onclick="document.location.href='admin_dashboard#/add_client', hideMetroDialog('#dialog')">
+                <div class="tile-content iconic">
+                    <span class="icon mif-plus"></span>
+                </div>
+                <span class="tile-label">Agregar clientes</span>
+        </div>
+</div>
+</div>
+
+
 </body>
 </html>

@@ -1,0 +1,29 @@
+<div ng-controller="clients_users">
+	<form>
+	<div class="input-control text big-input " data-role="input" style="width: 100%">
+	    
+	    <input type="text" name="filter" ng-model="inputbox.text">
+	    
+	    <button class="button" ng-click="SearchClient()"><span class="mif-search"></span></button>
+	    
+	</div>
+	</form>
+	
+	<table class="table striped hovered">
+		<tr>
+			<th>NOMBRE</th>
+			<th>CORREO ELECTRONICO</th>
+			<th>MEMBRECIA VENCE</th>
+			<th>STATUS</th>
+			<th>OPCIONES</th>
+		</tr>
+		<tr ng-repeat="todo in all" align="center">
+			<td>{{ todo.nombre }}</td>
+			<td>{{ todo.mail }}</td>
+			<td>{{ todo.vence_pago }}</td>
+			<td>{{ todo.status }}</td>
+			<td><button class="button success">Actualizar</button></td>
+		</tr>
+	</table>
+
+</div>
