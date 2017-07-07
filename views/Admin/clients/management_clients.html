@@ -21,8 +21,10 @@
 			<td>{{ todo.nombre }}</td>
 			<td>{{ todo.mail }}</td>
 			<td>{{ todo.vence_pago }}</td>
-			<td>{{ todo.status }}</td>
-			<td><button class="button success">Actualizar</button></td>
+			<td ng-if=" todo.status == true "><span class="mif-checkmark fg-green mif-2x"></span></td>
+			<td ng-if=" todo.status  == false "><span class="mif-cross fg-red mif-2x"></span></td>
+			<td><a href="/admin_dashboard#/edit_client/{{ todo._id }}">
+			<button class="button primary"><span class="mif-pencil"></span> Actualizar</button></a></td>
 		</tr>
 	</table>
 

@@ -54,6 +54,7 @@ app.get('/api/ingredientes/:id', IngredientesEditsJson);
 app.get('/api/users/', usersjson)
 
 app.get('/api/clients_users/', ClientsUsersJson);
+app.get('/api/clients_users/:id', ClientsUserIDLoad);
 
 // Api POST
 app.post('/api/users', CreateUsername)
@@ -75,6 +76,8 @@ app.post('/api/ingredientes/search', SearchIngredients );
 
 app.post("/api/clients_users/add", InsertClientUser );
 app.post('/api/clients_users/search', SearchClient_users );
+app.post('/api/clients_users/update', UpdateClient_User );
+app.post('/api/clients_users/delete', DeleteClientUser );
 
 //Funciones
 function Inicio (req, res) 
@@ -283,6 +286,39 @@ function UpdateClient (req, res)
 	
 }
 
+function UpdateClient_User (req, res) 
+{  
+    if ( ValidateEmail.validate(req.body.mail) == true)
+    {
+        db.clients_users.update(
+        { _id : req.body._id },
+        { 
+            nombre: req.body.nombre.toUpperCase(),
+            direccion: req.body.direccion,
+            telefono: req.body.telefono,
+            mail: req.body.mail,
+            type_identificacion: req.body.type_identificacion,
+            number_identificacion: req.body.number_identificacion,
+            status: req.body.status,
+            vence_pago: req.body.vence_pago.replace(/-/, '.').substring(0, 10)
+        },
+        function( err) 
+        {
+            if (err)
+            {
+                res.send(404, "Algo desconocido sucedio, intente nuevamente")
+            }else
+            {
+                res.send(200)
+            }
+        })  
+    }else
+    {
+        res.send(500, "Email no valido.")
+    }
+    
+}
+
 function DeleteClient (req, res) 
 {  
 	db.clients.remove(
@@ -455,6 +491,18 @@ function IngredientesEditsJson (req,res){
     });
 };
 
+function ClientsUserIDLoad (req,res){
+    db.clients_users.findOne({_id:req.params.id},function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
+        }else
+        {
+            res.send(404);
+        }
+    });
+};
+
 function CatproductsUpdateClient (req, res) 
 {  
     db.catproducts.update(
@@ -517,6 +565,23 @@ function DeleteCatProducts (req, res)
 function DeleteIngredientes (req, res) 
 {  
     db.ingredientes.remove(
+        { _id : req.body._id },
+        
+        function( err) 
+        {
+            if (err)
+            {
+                res.send(500, "Error, Intente nuevamente.")
+            }else
+            {
+                res.send(200)
+            }
+        })
+}
+
+function DeleteClientUser (req, res) 
+{  
+    db.clients_users.remove(
         { _id : req.body._id },
         
         function( err) 

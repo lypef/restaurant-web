@@ -6,14 +6,14 @@ app.config(function($routeProvider){
         .when('/', {
             templateUrl : '/Admin/index.html'
         })
-        .when('/dashboard_clients', {
-            templateUrl : '/Admin/dashboard_clients.html'
-        })
         .when('/management_clients', {
-            templateUrl : '/Admin/management_clients.html'
+            templateUrl : '/Admin/clients/management_clients.html'
         })
         .when('/add_client', {
-            templateUrl : '/Admin/add_client.html'
+            templateUrl : '/Admin/clients/add_client.html'
+        })
+        .when('/edit_client/:id', {
+            templateUrl : '/Admin/clients/edit_client.html'
         })
         .otherwise({
             redirectTo : '/'
@@ -75,6 +75,56 @@ app.controller("add_client", function($scope, $http){
                 pushMessage('alert','ERROR',msg, "cross")
             });
     }; 
-
     
 })
+
+app.controller("clientUpdate", function($scope, $http, $routeParams, $window)
+{
+    $http.defaults.headers.common['x-access-token']=token;
+
+    $scope.Client = {};  
+    $scope.id = $routeParams.id;  
+    
+    $http.get('/api/clients_users/' + $scope.id)
+        .success(function(data) 
+        {
+            $scope.Client = data;
+        })
+        .error(function(data) 
+        {
+            $window.location = "admin_dashboard#/management_clients";
+            pushMessage('alert','ERROR', 'ID no encontrado.')
+        });
+
+    $scope.Update = function()
+    {
+        $http.post('/api/clients_users/update', $scope.Client)
+            .success(function(err) 
+            {
+                pushMessage('success', 'HECHO', 'Cliente actualizado con exito', "checkmark")
+                $scope.Client = {};
+                $window.location = "admin_dashboard#/management_clients";
+            })
+            .error(function(msg) 
+            {
+                pushMessage('alert','ERROR', msg, "cross")
+            })
+    }  
+
+    
+    $scope.Delete = function()
+    {
+        $http.post('/api/clients_users/delete', $scope.Client)
+            .success(function(err) 
+            {
+                pushMessage('success', 'HECHO', 'Cliente eliminado con exito', "checkmark")
+                $scope.Client = {};
+                $window.location = "admin_dashboard#/management_clients";
+            })
+            .error(function(msg) 
+            {
+                pushMessage('alert','ERROR', msg, "cross")
+            })
+    };  
+})
+
