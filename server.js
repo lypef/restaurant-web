@@ -26,7 +26,6 @@ res.setHeader('Access-Control-Allow-Origin', '*');
 });
 app.use("/dashboard",sessiontrue);
 app.use("/admin_dashboard",sessiontrue);
-app.use("/admin",sessiontrue);
 app.use('/api/', tokenApi);
 
 
@@ -36,6 +35,9 @@ app.get("/dashboard", Dashboard );
 app.get('/logout', Logout);
 app.get('/admin_login', AdminLogin);
 app.get("/admin_dashboard", Dashboard_Admin );
+app.get("/membership_off", Membership_Off );
+app.get("/user_incorrect", user_incorrect );
+app.get("/admin_login_incorrect", AdminIncorrect );
 
 // Enlaces POST
 app.post("/login", Login );
@@ -56,9 +58,10 @@ app.get('/api/users/', usersjson)
 app.get('/api/clients_users/', ClientsUsersJson);
 app.get('/api/clients_users/:id', ClientsUserIDLoad);
 
-// Api POST
-app.post('/api/users', CreateUsername)
+app.get('/api/admin/values', AdminValuesjson)
+app.get('/api/users/values', UserValuesjson)
 
+// Api POST
 app.post('/api/clients', CreateClient );
 app.post('/api/client/update', UpdateClient );
 app.post('/api/client/delete', DeleteClient );
@@ -79,6 +82,9 @@ app.post('/api/clients_users/search', SearchClient_users );
 app.post('/api/clients_users/update', UpdateClient_User );
 app.post('/api/clients_users/delete', DeleteClientUser );
 
+app.post('/api/users/add', AddUser);
+
+
 //Funciones
 function Inicio (req, res) 
 {
@@ -93,7 +99,7 @@ function Inicio (req, res)
         }
 	}else
 	{
-		res.sendFile('./views/clients_users/login.html', { root : __dirname});	
+		res.sendFile('./views/login.html', { root : __dirname});	
 	}
 }
 
@@ -116,6 +122,33 @@ function Dashboard_Admin (req,res){
     }
 }
 
+function Membership_Off (req,res){
+    if (!req.session.clients)
+    {
+        res.sendFile('./views/Membership_Off.html', { root: __dirname });
+    }else {
+        res.redirect("/")
+    }
+}
+
+function user_incorrect (req,res){
+    if (!req.session.clients)
+    {
+        res.sendFile('./views/user_incorrect.html', { root: __dirname });
+    }else {
+        res.redirect("/")
+    }
+}
+
+function AdminIncorrect (req,res){
+    if (!req.session.clients)
+    {
+        res.sendFile('./views/Admin/AdminIncorrect.html', { root: __dirname });
+    }else {
+        res.redirect("/")
+    }
+}
+
 function AdminLogin (req,res){
     res.sendFile('./views/Admin/login.html', { root: __dirname });
 }
@@ -124,13 +157,25 @@ function Login (req,res){
 	db.user.findOne({username:req.body.username, password:req.body.password},function(err,doc){
 		if (doc != null)
 		{
-			req.session.user_id = doc._id;
-            req.session.clients = true;
-            res.redirect("/dashboard");
+			db.clients_users.findOne({_id: doc.admin},function(err,doc1){
+                if (doc1 != null)
+                {
+                    if (doc1.status)
+                    {
+                        req.session.user_id = doc._id;
+                        req.session.clients = true;
+                        res.redirect("/dashboard");
+                    }else
+                    {
+                        console.log("Membresia vencida")
+                        res.redirect("/membership_off");
+                    }
+                }
+            });
 		}
 		else{
-			console.log("Usuario no encontrado");
-			res.redirect("/dashboard");
+			console.log("Usuario incorrecto")
+            res.redirect("/user_incorrect");
 		}
 	});
 	
@@ -146,7 +191,7 @@ function login_admin (req,res){
         }
         else{
             console.log("Usuario no encontrado");
-            res.redirect("/admin_login");
+            res.redirect("/admin_login_incorrect");
         }
     });
     
@@ -167,24 +212,41 @@ function Logout (req, res, next) {
 };
 
 
-function CreateUsername (req,res){
-	var p = new db.user(
-		{
-		username: req.body.username,
-		password: req.body.password,
-		});
-	p.save(function(){
-			db.user.find(function(err,doc){
-				console.log(doc);
-			});
+function AddUser (req,res){
+	db.user.findOne({ username: req.body.username},function(err,doc){
+        if (doc == null && req.body.admin != null)
+        {
+            var p = new db.user(
+            {
+                username: req.body.username,
+                password: req.body.password,
+                nombre: req.body.nombre.toUpperCase(),
+                direccion: req.body.direccion,
+                telefono: req.body.telefono,
+                admin: req.body.admin
+            });
+            p.save(function(){
+                    db.user.find(function(err,doc){
+                        if (err)
+                        {
+                               res.sendStatus(500); 
+                        }else {
+                            res.sendStatus(200);
+                            console.log(doc);
+                        }
+                    });
 
-	});
+            });
+        }else {
+            res.sendStatus(500); 
+        }
+    });
 };
 
 function usersjson (req,res){
 	db.user.find(function(err, todos) {
         if(err) {
-            res.send(err);
+            res.sendStatus(err);
         }else
         {
         	res.json(todos);	
@@ -192,10 +254,32 @@ function usersjson (req,res){
     });
 };
 
+function AdminValuesjson (req,res){
+    db.admin.findOne({_id: req.session.user_id},function(err,doc){
+        if (doc != null)
+        {
+            doc.nombre = doc.nombre.substring(0, 14) + " ...";
+            res.json(doc)
+        }
+    });
+};
+
+function UserValuesjson (req,res){
+    db.user.findOne({_id: req.session.user_id},function(err,doc){
+        if (doc != null)
+        {
+            doc.nombre = doc.nombre.substring(0, 14) + " ...";
+            res.json(doc)
+        }else {
+            console.log("No lo encontramo")
+        }
+    });
+};
+
 function ClientsJson (req,res){
 	db.clients.find(function(err, data) {
         if(err) {
-            res.send(err);
+            res.sendStatus(err);
         }else
         {
         	res.json(data);	
@@ -206,7 +290,7 @@ function ClientsJson (req,res){
 function ClientsUsersJson (req,res){
     db.clients_users.find(function(err, data) {
         if(err) {
-            res.send(err);
+            res.sendStatus(err);
         }else
         {
             res.json(data); 
@@ -221,7 +305,7 @@ function ClienteditsJson (req,res){
 			res.json(doc)
 		}else
 		{
-			res.send(404);
+			res.sendStatus(404);
 		}
 	});
 };
@@ -243,15 +327,15 @@ function CreateClient (req, res)
     	p.save(function (err) {
     	 if (err)
     	 {
-    	 	res.send(500, "No fue posible crear el cliente, intente de nuevo.")
+    	 	res.sendStatus(500, "No fue posible crear el cliente, intente de nuevo.")
     	 }else
     	 {
-    	 	res.send(p._id)
+    	 	res.sendStatus(p._id)
     	 }
     	})	
     }else
     {
-    	res.send(500, "Email no valido");
+    	res.sendStatus(500, "Email no valido");
     }
 }
 
@@ -273,15 +357,15 @@ function UpdateClient (req, res)
     	{
         	if (err)
         	{
-        		res.send(404, "Algo desconocido sucedio, intente nuevamente")
+        		res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
         	}else
         	{
-        		res.send(200)
+        		res.sendStatus(200)
         	}
     	})	
 	}else
 	{
-		res.send(500, "Email no valido.")
+		res.sendStatus(500, "Email no valido.")
 	}
 	
 }
@@ -294,11 +378,11 @@ function UpdateClient_User (req, res)
         { _id : req.body._id },
         { 
             nombre: req.body.nombre.toUpperCase(),
-            direccion: req.body.direccion,
+            direccion: req.body.direccion.toUpperCase(),
             telefono: req.body.telefono,
             mail: req.body.mail,
-            type_identificacion: req.body.type_identificacion,
-            number_identificacion: req.body.number_identificacion,
+            type_identificacion: req.body.type_identificacion.toUpperCase(),
+            number_identificacion: req.body.number_identificacion.toUpperCase(),
             status: req.body.status,
             vence_pago: req.body.vence_pago.replace(/-/, '.').substring(0, 10)
         },
@@ -306,15 +390,15 @@ function UpdateClient_User (req, res)
         {
             if (err)
             {
-                res.send(404, "Algo desconocido sucedio, intente nuevamente")
+                res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
             }else
             {
-                res.send(200)
+                res.sendStatus(200)
             }
         })  
     }else
     {
-        res.send(500, "Email no valido.")
+        res.sendStatus(500, "Email no valido.")
     }
     
 }
@@ -328,10 +412,10 @@ function DeleteClient (req, res)
     	{
         	if (err)
         	{
-        		res.send(500, "Error, Intente nuevamente.")
+        		res.sendStatus(500, "Error, Intente nuevamente.")
         	}else
         	{
-        		res.send(200)
+        		res.sendStatus(200)
         	}
     	})
 }
@@ -340,7 +424,7 @@ function SearchClient (req, res)
 {  
 	db.clients.find({$or: [ {nombre: { $regex : req.body.text.toUpperCase() }}, {apellidos: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
         if(err || data == "") {
-            res.send(500,"Cliente no encontrado")
+            res.sendStatus(500,"Cliente no encontrado")
         }else
         {
         	res.json(data)
@@ -353,7 +437,7 @@ function SearchClient_users (req, res)
 {  
     db.clients_users.find({$or: [ {nombre: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
         if(err || data == "") {
-            res.send(500,"Cliente no encontrado")
+            res.sendStatus(500,"Cliente no encontrado")
         }else
         {
             res.json(data)
@@ -366,7 +450,7 @@ function SearchIngredients (req, res)
 {  
     db.ingredientes.find({$or: [ {nombre: { $regex : req.body.text.toUpperCase() }}, {descripcion: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
         if(err || data == "") {
-            res.send(500,"Ingrediente no encontrado")
+            res.sendStatus(500,"Ingrediente no encontrado")
         }else
         {
             res.json(data)
@@ -379,7 +463,7 @@ function SearchCatProducts (req, res)
 {  
     db.catproducts.find({$or: [ {categoria: { $regex : req.body.text.toUpperCase() }}, {descripcion: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
         if(err || data == "") {
-            res.send(500,"Categoria no encontrada")
+            res.sendStatus(500,"Categoria no encontrada")
         }else
         {
             res.json(data)
@@ -391,7 +475,7 @@ function SearchCatProducts (req, res)
 function catproductsJson (req,res){
 	db.catproducts.find(function(err, data) {
         if(err) {
-            res.send(500,err);
+            res.sendStatus(500,err);
         }else
         {
         	res.json(data);	
@@ -402,7 +486,7 @@ function catproductsJson (req,res){
 function IngredientesJson (req,res){
     db.ingredientes.find(function(err, data) {
         if(err) {
-            res.send(500,err);
+            res.sendStatus(500,err);
         }else
         {
             res.json(data); 
@@ -421,12 +505,12 @@ function CreateCatProduct (req, res)
     	p.save(function (err, doc) {
     	 if (err)
     	 {
-    	 	res.send(500, "No fue posible crear el cliente, intente de nuevo.")
+    	 	res.sendStatus(500, "No fue posible crear el cliente, intente de nuevo.")
     	 }else
     	 {
     	 	db.catproducts.find(function(err, data) {
                 if(err) {
-                    res.send(500,err);
+                    res.sendStatus(500,err);
                 }else
                 {
                     res.json(data); 
@@ -453,12 +537,12 @@ function CreateIngrediente (req, res)
         p.save(function (err, doc) {
          if (err)
          {
-            res.send(500, "No fue posible crear el ingrediente, intente de nuevo.")
+            res.sendStatus(500, "No fue posible crear el ingrediente, intente de nuevo.")
          }else
          {
             db.ingredientes.find(function(err, data) {
                 if(err) {
-                    res.send(500,err);
+                    res.sendStatus(500,err);
                 }else
                 {
                     res.json(data); 
@@ -474,7 +558,7 @@ function CatProductsEditsJson (req,res){
             res.json(doc)
         }else
         {
-            res.send(404);
+            res.sendStatus(404);
         }
     });
 };
@@ -486,7 +570,7 @@ function IngredientesEditsJson (req,res){
             res.json(doc)
         }else
         {
-            res.send(404);
+            res.sendStatus(404);
         }
     });
 };
@@ -498,7 +582,7 @@ function ClientsUserIDLoad (req,res){
             res.json(doc)
         }else
         {
-            res.send(404);
+            res.sendStatus(404);
         }
     });
 };
@@ -515,10 +599,10 @@ function CatproductsUpdateClient (req, res)
         {
             if (err)
             {
-                res.send(404, "Algo desconocido sucedio, intente nuevamente")
+                res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
             }else
             {
-                res.send(200)
+                res.sendStatus(200)
             }
         })  
     
@@ -537,10 +621,10 @@ function IngredientesUpdate (req, res)
         {
             if (err)
             {
-                res.send(404, "Algo desconocido sucedio, intente nuevamente")
+                res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
             }else
             {
-                res.send(200)
+                res.sendStatus(200)
             }
         })  
     
@@ -554,10 +638,10 @@ function DeleteCatProducts (req, res)
         {
             if (err)
             {
-                res.send(500, "Error, Intente nuevamente.")
+                res.sendStatus(500, "Error, Intente nuevamente.")
             }else
             {
-                res.send(200)
+                res.sendStatus(200)
             }
         })
 }
@@ -571,10 +655,10 @@ function DeleteIngredientes (req, res)
         {
             if (err)
             {
-                res.send(500, "Error, Intente nuevamente.")
+                res.sendStatus(500, "Error, Intente nuevamente.")
             }else
             {
-                res.send(200)
+                res.sendStatus(200)
             }
         })
 }
@@ -588,10 +672,10 @@ function DeleteClientUser (req, res)
         {
             if (err)
             {
-                res.send(500, "Error, Intente nuevamente.")
+                res.sendStatus(500, "Error, Intente nuevamente.")
             }else
             {
-                res.send(200)
+                res.sendStatus(200)
             }
         })
 }
@@ -602,11 +686,11 @@ function InsertClientUser (req,res)
     {
         var p = new db.clients_users({
             nombre: req.body.nombre.toUpperCase(),
-            direccion: req.body.direccion,
+            direccion: req.body.direccion.toUpperCase(),
             telefono: req.body.telefono,
             mail: req.body.mail,
-            type_identificacion: req.body.type_identificacion,
-            number_identificacion: req.body.number_identificacion,
+            type_identificacion: req.body.type_identificacion.toUpperCase(),
+            number_identificacion: req.body.number_identificacion.toUpperCase(),
             status: false,
             vence_pago: '1990-01-01'
         })
@@ -615,14 +699,14 @@ function InsertClientUser (req,res)
         p.save(function (err) {
          if (err)
          {
-            res.send(500, "No fue posible crear el cliente, intente de nuevo.")
+            res.sendStatus(500, "No fue posible crear el cliente, intente de nuevo.")
          }else
          {
-            res.send(p._id)
+            res.sendStatus(200)
          }
         })
     }else {
-        res.send(500, "Email no valido.")
+        res.sendStatus(500, "Email no valido.")
     }  
 }
 //Config

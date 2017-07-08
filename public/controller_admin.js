@@ -1,6 +1,7 @@
 var app = angular.module('restweb', ['ngRoute'])
 var token = "eyJhbGciOiJIUzI1NiJ9.cGF5bG9hZA.f_0OBq6Yxx-jymUjCMcifD5ji1adKKYWUmwZF94VvTA";
 
+
 app.config(function($routeProvider){
     $routeProvider
         .when('/', {
@@ -15,10 +16,27 @@ app.config(function($routeProvider){
         .when('/edit_client/:id', {
             templateUrl : '/Admin/clients/edit_client.html'
         })
+        .when('/add_client_user', {
+            templateUrl : '/Admin/clients/add_client_user.html'
+        })
         .otherwise({
             redirectTo : '/'
         })
 })
+
+
+app.controller("UserValues", function($scope, $http){
+    $http.defaults.headers.common['x-access-token']=token;
+    $scope.usuario = {};  
+
+    $http.get('/api/admin/values')
+        .success(function(data) {
+            $scope.usuario = data;
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+    });
+});
 
 app.controller("clients_users", function($scope, $http, $window)
 {
@@ -41,7 +59,8 @@ app.controller("clients_users", function($scope, $http, $window)
                 $window.location = "dashboard#/editclient/" + id;
             })
             .error(function(msg) {
-                pushMessage('alert','ERROR',msg, "cross")
+                console.log(msg);
+                pushMessage('alert','ERROR','VERIFIQUE LA INFORMACION', "cross")
             });
     };  
 
@@ -53,7 +72,8 @@ app.controller("clients_users", function($scope, $http, $window)
                 $scope.all = data;
             })
             .error(function(msg) {
-                pushMessage('info','NOT FOUND',msg, "question")
+                console.log(msg);
+                pushMessage('warning','NOT FOUND',msg, "question")
             });
     };  
 
@@ -72,7 +92,8 @@ app.controller("add_client", function($scope, $http){
                 pushMessage('success', 'HECHO', 'Cliente agregado', "checkmark")
             })
             .error(function(msg) {
-                pushMessage('alert','ERROR',msg, "cross")
+                console.log(msg);
+                pushMessage('alert','ERROR','VERIFIQUE LA INFORMACION', "cross")
             });
     }; 
     
@@ -92,6 +113,7 @@ app.controller("clientUpdate", function($scope, $http, $routeParams, $window)
         })
         .error(function(data) 
         {
+            console.log(msg);
             $window.location = "admin_dashboard#/management_clients";
             pushMessage('alert','ERROR', 'ID no encontrado.')
         });
@@ -107,7 +129,8 @@ app.controller("clientUpdate", function($scope, $http, $routeParams, $window)
             })
             .error(function(msg) 
             {
-                pushMessage('alert','ERROR', msg, "cross")
+                console.log(msg);
+                pushMessage('alert','ERROR', 'VERIFIQUE LA INFORMACION', "cross")
             })
     }  
 
@@ -123,8 +146,45 @@ app.controller("clientUpdate", function($scope, $http, $routeParams, $window)
             })
             .error(function(msg) 
             {
-                pushMessage('alert','ERROR', msg, "cross")
+                console.log(msg);
+                pushMessage('alert','ERROR', 'VERIFIQUE LA INFORMACION', "cross")
             })
     };  
 })
+
+// Agregar usuario a partir de un cliente
+
+app.controller("AddUser_Client", function($scope, $http, $routeParams, $window)
+{
+    $http.defaults.headers.common['x-access-token']=token;
+
+    $scope.Clients = {};  
+    $scope.variables = {};
+    
+    $http.get('/api/clients_users/')
+        .success(function(data) 
+        {
+            $scope.Clients = data;
+        })
+        .error(function(data) 
+        {
+            console.log(msg);
+        });
+
+    $scope.CreateUser = function(){
+        
+        $http.post('/api/users/add', $scope.variables)
+            .success(function(data) {
+                $scope.variables = {};
+                pushMessage('success', 'HECHO', 'Usuario creado', "checkmark")
+            })
+            .error(function(msg) {
+                console.log(msg);
+                pushMessage('alert','ERROR','VERIFIQUE LA INFORMACION', "cross")
+            });
+    }; 
+
+    
+})
+
 

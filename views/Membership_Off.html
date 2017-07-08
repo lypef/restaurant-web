@@ -72,13 +72,17 @@
             });
         });
     </script>
-    <script>
-        function pushMessage(t, header, body){
-            var mes = header + '|' + body;
+</head>
+<body class="bg-darkTeal">
+
+<script>
+       	function pushMessage(t){
+            var mes = 'Error|Membrecia vencida';
             $.Notify({
                 caption: mes.split("|")[0],
                 content: mes.split("|")[1],
-                type: t
+                type: t,
+                icon: "<span class='mif-cross'></span>"
             });
         }
 
@@ -90,9 +94,10 @@
                 }
             })
         })
+
+        pushMessage('warning');
     </script>
-</head>
-<body class="bg-darkTeal">
+
 
 <p align="right"><a href="/admin_login"><span class="mif-cog mif-2x fg-darkcyan"></span></a></p>
 

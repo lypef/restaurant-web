@@ -6,16 +6,12 @@ mongoose.connect("mongodb://lypef:admin@mongodb-lypef.alwaysdata.net/lypef_db");
 
 
 var user_scheme = new mongoose.Schema({
-	username: String,
-	password: String,
-	nombre: String,
-	apellidos: String,
+	username: {type: String, required: true},
+	password: {type: String, required: true},
+	nombre: {type: String, required: true},
 	direccion: String,
-	movil: String,
-	tel: String,
-	date_birth: Date,
-	puesto: String,
-	token: String
+	telefono: String,
+	admin: {type: String, required: true}
 })
 
 var clients_scheme = new mongoose.Schema({
@@ -47,17 +43,17 @@ var Admin_scheme = new mongoose.Schema({
 })
 
 var Clients_Users_scheme = new mongoose.Schema({
-	nombre: String,
-	direccion: String,
-	telefono: String,
-	mail: String,
-	type_identificacion: String,
-	number_identificacion: String,
+	nombre: {type: String, required: true},
+	direccion: {type: String, required: true},
+	telefono: {type: String, required: true},
+	mail: {type: String, required: true},
+	type_identificacion: {type: String, required: true},
+	number_identificacion: {type: String, required: true},
 	status: Boolean,
     vence_pago: Date
 })
 
-module.exports.user = mongoose.model("User",user_scheme);
+module.exports.user = mongoose.model("user",user_scheme);
 module.exports.admin = mongoose.model("Admin",Admin_scheme);
 module.exports.clients = mongoose.model("Clients",clients_scheme);
 module.exports.clients_users = mongoose.model("Clients_Users",Clients_Users_scheme);

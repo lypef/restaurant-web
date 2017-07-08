@@ -1,0 +1,58 @@
+<div class="panel info" ng-controller="AddUser_Client">
+                <div class="heading">
+                
+                <span class="title">Alta nuevo usuario</span>
+                </div>
+                <div class="content">
+                <form align="center">  
+				
+				<span>Seleccione un cliente: </span>
+                <div class="input-control select" style="width: 30%" >
+				<select ng-model="variables.admin">
+				    <option ng-repeat=" a in Clients" value="{{ a._id }}">{{a.nombre}}, ({{a.direccion}})</option>
+				</select>
+				</div>
+				<br>	
+                        <div class="input-control  modern text iconic" id="widthfull" >
+                        <input type="text" placeholder="Username" ng-model="variables.username" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-user"></span>
+                        </div>
+
+                        <div class="input-control  modern text iconic" id="widthfull" >
+                        <input type="password" placeholder="****" ng-model="variables.password" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-key"></span>
+                        </div>
+						
+						<br><br>
+
+                        <div class="input-control  modern text iconic" id="widthfull" >
+                        <input type="text" placeholder="Nombre" ng-model="variables.nombre" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-user"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Direccion" ng-model="variables.direccion" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-paragraph-left"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Telefono" ng-model="variables.telefono" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-phone"></span>
+                        </div>
+
+
+                        
+                        <br><br>
+                        
+                        <button class="button success loading-pulse" ng-click="CreateUser()">
+                        Agregar
+                        </button>
+                    </form>
+                    <br><br>
+                    
+</div>
