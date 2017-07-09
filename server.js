@@ -60,7 +60,9 @@ app.get('/api/clients_users/:id', ClientsUserIDLoad);
 
 app.get('/api/admin/values', AdminValuesjson)
 app.get('/api/users/values', UserValuesjson)
+app.get('/api/users/:id', UserIDLoad);
 
+app.get('/api/users/search/:id', Search_users_id );
 // Api POST
 app.post('/api/clients', CreateClient );
 app.post('/api/client/update', UpdateClient );
@@ -83,7 +85,9 @@ app.post('/api/clients_users/update', UpdateClient_User );
 app.post('/api/clients_users/delete', DeleteClientUser );
 
 app.post('/api/users/add', AddUser);
-
+app.post('/api/users/search', Search_users );
+app.post('/api/users/delete', DeleteUser );
+app.post('/api/users/update', UpdateUser );
 
 //Funciones
 function Inicio (req, res) 
@@ -244,12 +248,12 @@ function AddUser (req,res){
 };
 
 function usersjson (req,res){
-	db.user.find(function(err, todos) {
+	db.user.find().populate('admin').exec(function(err, doc) {
         if(err) {
             res.sendStatus(err);
         }else
-        {
-        	res.json(todos);	
+        {   
+            res.json(doc);    
         }
     });
 };
@@ -403,6 +407,28 @@ function UpdateClient_User (req, res)
     
 }
 
+function UpdateUser (req, res) 
+{  
+    db.user.update(
+        { _id : req.body._id },
+        { 
+            nombre: req.body.nombre.toUpperCase(),
+            direccion: req.body.direccion.toUpperCase(),
+            telefono: req.body.telefono,
+            admin: req.body.admin
+        },
+        function( err) 
+        {
+            if (err)
+            {
+                res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
+            }else
+            {
+                res.sendStatus(200)
+            }
+        })  
+}
+
 function DeleteClient (req, res) 
 {  
 	db.clients.remove(
@@ -418,6 +444,23 @@ function DeleteClient (req, res)
         		res.sendStatus(200)
         	}
     	})
+}
+
+function DeleteUser (req, res) 
+{  
+    db.user.remove(
+        { _id : req.body._id },
+        
+        function( err) 
+        {
+            if (err)
+            {
+                res.sendStatus(500, "Error, Intente nuevamente.")
+            }else
+            {
+                res.sendStatus(200)
+            }
+        })
 }
 
 function SearchClient (req, res) 
@@ -443,6 +486,33 @@ function SearchClient_users (req, res)
             res.json(data)
         }
     }).sort({nombre:1});
+
+}
+
+function Search_users (req, res) 
+{  
+    db.user.find({$or: [ {username: { $regex : req.body.text.toUpperCase() }}, {username: { $regex : req.body.text }} ,{nombre: { $regex : req.body.text.toUpperCase() }} ] }).populate('admin').exec(function(err, doc) {
+        if(err) {
+            res.sendStatus(err);
+        }else
+        {   
+            console.log(doc);
+            res.json(doc);    
+        }
+    });
+
+}
+
+function Search_users_id (req, res) 
+{  
+    db.user.find({admin:req.params.id}).populate('admin').exec(function(err, doc) {
+        if(err) {
+            res.sendStatus(err);
+        }else
+        {   
+            res.json(doc);    
+        }
+    });
 
 }
 
@@ -577,6 +647,18 @@ function IngredientesEditsJson (req,res){
 
 function ClientsUserIDLoad (req,res){
     db.clients_users.findOne({_id:req.params.id},function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
+        }else
+        {
+            res.sendStatus(404);
+        }
+    });
+};
+
+function UserIDLoad (req,res){
+    db.user.findOne({_id:req.params.id},function(err,doc){
         if (doc != null)
         {
             res.json(doc)

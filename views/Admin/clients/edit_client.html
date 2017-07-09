@@ -1,4 +1,31 @@
 <div class="panel info" ng-controller="clientUpdate">
+    <div class="heading">
+    
+    <span class="title">Usuarios asociados</span>
+    </div>
+    <div class="content">
+    
+    <table class="table striped hovered">
+        <tr>
+            <th>NOMBRE DE USUARIO</th>
+            <th>NOMBRE</th>
+            <th>DIRECCION</th>
+            <th>TELEFONO</th>
+            <th>OPCIONES</th>
+        </tr>
+        <tr ng-repeat="todo in all" align="center">
+            <td>{{ todo.username }}</td>
+            <td>{{ todo.nombre }}</td>
+            <td>{{ todo.direccion }}</td>
+            <td>{{ todo.telefono }}</td>
+            
+            <td><a href="/admin_dashboard#/update_users/{{todo._id}}"><button class="button primary"><span class="mif-pencil"></span> Actualizar</button></a></td>
+        </tr>
+    </table>
+
+
+    </div>
+    <div class="panel info">
                 <div class="heading">
                 
                 <span class="title">Actualizar cliente</span>
@@ -71,7 +98,6 @@
                     
 </div>
 
-
 <div data-role="dialog" id="dialog-ajax" class="padding30" data-type="" 
     data-close-button="true"
     data-width="auto"
@@ -94,3 +120,5 @@
         <button class="button alert" ng-click="Delete()" onclick="hideMetroDialog('#dialog-ajax')">SI</button>
         <button class="button success" onclick="hideMetroDialog('#dialog-ajax')">NO</button>
 </div>
+
+

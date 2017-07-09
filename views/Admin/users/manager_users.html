@@ -1,0 +1,30 @@
+<div ng-controller="clients_users_user">
+	<form>
+	<div class="input-control text big-input " data-role="input" style="width: 100%">
+	    
+	    <input type="text" name="filter" ng-model="inputbox.text" placeholder="Ingrese un nombre">
+	    
+	    <button class="button" ng-click="SearchClient()"><span class="mif-search"></span></button>
+	    
+	</div>
+	</form>
+	
+	<table class="table striped hovered">
+		<tr>
+			<th>NOMBRE DE USUARIO</th>
+			<th>NOMBRE</th>
+			<th>ADMINISTRADOR</th>
+			<th>STATUS ADMIN</th>
+			<th>OPCIONES</th>
+		</tr>
+		<tr ng-repeat="todo in all" align="center">
+			<td><a href="/admin_dashboard#/update_users/{{todo._id}}">{{ todo.username }}</a></td>
+			<td>{{ todo.nombre }}</td>
+			<td><a href="/admin_dashboard#/edit_client/{{ todo.admin._id }}">{{ todo.admin.nombre }} </a></td>
+			<td ng-if=" todo.admin.status == true "><span class="mif-checkmark fg-green mif-2x"></span></td>
+			<td ng-if=" todo.admin.status  == false "><span class="mif-cross fg-red mif-2x"></span></td>
+			<td><a href="/admin_dashboard#/update_users/{{todo._id}}"><button class="button primary"><span class="mif-pencil"></span> Actualizar</button></a></td>
+		</tr>
+	</table>
+
+</div>

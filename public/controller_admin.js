@@ -17,7 +17,13 @@ app.config(function($routeProvider){
             templateUrl : '/Admin/clients/edit_client.html'
         })
         .when('/add_client_user', {
-            templateUrl : '/Admin/clients/add_client_user.html'
+            templateUrl : '/Admin/users/add_user.html'
+        })
+        .when('/manager_users', {
+            templateUrl : '/Admin/users/manager_users.html'
+        })
+        .when('/update_users/:id', {
+            templateUrl : '/Admin/users/update_user.html'
         })
         .otherwise({
             redirectTo : '/'
@@ -80,7 +86,7 @@ app.controller("clients_users", function($scope, $http, $window)
 
 })
 
-app.controller("add_client", function($scope, $http){
+app.controller("add_client", function($scope, $http,$window){
     
     $http.defaults.headers.common['x-access-token'] = token;
     
@@ -88,8 +94,9 @@ app.controller("add_client", function($scope, $http){
 
         $http.post('/api/clients_users/add', $scope.add)
             .success(function(data) {
-                $scope.add = {};
                 pushMessage('success', 'HECHO', 'Cliente agregado', "checkmark")
+                $window.location = "admin_dashboard#/management_clients";
+                $scope.add = {};
             })
             .error(function(msg) {
                 console.log(msg);
@@ -104,9 +111,9 @@ app.controller("clientUpdate", function($scope, $http, $routeParams, $window)
     $http.defaults.headers.common['x-access-token']=token;
 
     $scope.Client = {};  
-    $scope.id = $routeParams.id;  
+    $scope.all = {};  
     
-    $http.get('/api/clients_users/' + $scope.id)
+    $http.get('/api/clients_users/' + $routeParams.id)
         .success(function(data) 
         {
             $scope.Client = data;
@@ -117,6 +124,18 @@ app.controller("clientUpdate", function($scope, $http, $routeParams, $window)
             $window.location = "admin_dashboard#/management_clients";
             pushMessage('alert','ERROR', 'ID no encontrado.')
         });
+
+    $http.get('/api/users/search/' + $routeParams.id)
+        .success(function(data) 
+        {
+            $scope.all = data;
+        })
+        .error(function(data) 
+        {
+            console.log(msg);
+            $window.location = "admin_dashboard#/management_clients";
+            pushMessage('alert','ERROR', 'ID no encontrado.')
+        });    
 
     $scope.Update = function()
     {
@@ -175,8 +194,9 @@ app.controller("AddUser_Client", function($scope, $http, $routeParams, $window)
         
         $http.post('/api/users/add', $scope.variables)
             .success(function(data) {
-                $scope.variables = {};
                 pushMessage('success', 'HECHO', 'Usuario creado', "checkmark")
+                $window.location = "admin_dashboard#/edit_client/" + $scope.variables.admin;
+                $scope.variables = {};
             })
             .error(function(msg) {
                 console.log(msg);
@@ -187,4 +207,96 @@ app.controller("AddUser_Client", function($scope, $http, $routeParams, $window)
     
 })
 
+app.controller("clients_users_user", function($scope, $http, $window)
+{
+    $http.defaults.headers.common['x-access-token']=token;
+    $scope.NewClient = {};  
 
+    $http.get('/api/users/')
+        .success(function(data) {
+            $scope.all = data;
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+    });
+
+    
+    $scope.SearchClient = function(){
+        $scope.inputbox
+        $http.post('/api/users/search', $scope.inputbox)
+            .success(function(data) {
+                pushMessage('success','FOUNT',"Cliente's encontrados", "checkmark")
+                $scope.all = data;
+            })
+            .error(function(msg) {
+                console.log(msg);
+                pushMessage('warning','NOT FOUND',msg, "question")
+            });
+    };  
+
+
+})
+
+app.controller("ClientUserUpdate", function($scope, $http, $routeParams, $window)
+{
+    $http.defaults.headers.common['x-access-token']=token;
+
+    $scope.Client = {};  
+    $scope.variables = {};  
+    
+    $http.get('/api/users/' + $routeParams.id)
+        .success(function(data) 
+        {
+            $scope.variables = data;
+        })
+        .error(function(data) 
+        {
+            console.log(msg);
+            $window.location = "admin_dashboard#/management_clients";
+            pushMessage('alert','ERROR', 'ID no encontrado.')
+        });
+
+    
+    $http.get('/api/clients_users/')
+        .success(function(data) 
+        {
+            $scope.Clients = data;
+        })
+        .error(function(data) 
+        {
+            console.log(msg);
+        });
+
+    $scope.Update = function()
+    {
+        $http.post('/api/users/update', $scope.variables)
+            .success(function(err) 
+            {
+                pushMessage('success', 'HECHO', 'Cliente actualizado con exito', "checkmark")
+                $window.location = "admin_dashboard#/edit_client/" + $scope.variables.admin;
+                $scope.variables = {};
+            })
+            .error(function(msg) 
+            {
+                console.log(msg);
+                pushMessage('alert','ERROR', 'VERIFIQUE LA INFORMACION', "cross")
+            })
+    }  
+
+    
+    $scope.Delete = function()
+    {
+        $http.post('/api/users/delete', $scope.variables)
+            .success(function(err) 
+            {
+                pushMessage('success', 'HECHO', 'Cliente eliminado con exito', "checkmark")
+                $window.location = "admin_dashboard#/edit_client/" + $scope.variables.admin;
+                $scope.variables = {};
+            })
+            .error(function(msg) 
+            {
+                console.log(msg);
+                pushMessage('alert','ERROR', 'VERIFIQUE LA INFORMACION', "cross")
+            })
+    };  
+})

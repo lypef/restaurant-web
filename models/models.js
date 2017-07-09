@@ -1,4 +1,5 @@
-var mongoose = require("mongoose")
+var mongoose = require("mongoose"), Schema = mongoose.Schema;
+
 require('mongoose-double')(mongoose);
 
 
@@ -11,7 +12,7 @@ var user_scheme = new mongoose.Schema({
 	nombre: {type: String, required: true},
 	direccion: String,
 	telefono: String,
-	admin: {type: String, required: true}
+	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'}
 })
 
 var clients_scheme = new mongoose.Schema({
@@ -54,10 +55,10 @@ var Clients_Users_scheme = new mongoose.Schema({
 })
 
 module.exports.user = mongoose.model("user",user_scheme);
-module.exports.admin = mongoose.model("Admin",Admin_scheme);
-module.exports.clients = mongoose.model("Clients",clients_scheme);
-module.exports.clients_users = mongoose.model("Clients_Users",Clients_Users_scheme);
-module.exports.catproducts = mongoose.model("CatProducts",catproducts_scheme);
-module.exports.ingredientes = mongoose.model("ingredients",ingredientes_scheme);
+module.exports.admin = mongoose.model("admin",Admin_scheme);
+module.exports.clients = mongoose.model("clients",clients_scheme);
+module.exports.clients_users = mongoose.model("clients_users",Clients_Users_scheme);
+module.exports.catproducts = mongoose.model("catproducts",catproducts_scheme);
+module.exports.ingredientes = mongoose.model("ingredientes",ingredientes_scheme);
 
 

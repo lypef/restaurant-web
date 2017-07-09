@@ -1,0 +1,82 @@
+<div class="panel info" ng-controller="ClientUserUpdate">
+                <div class="heading">
+                
+                <span class="title">Actualizar usuario</span>
+                </div>
+                <div class="content">
+                <form align="center">  
+				
+				<span>Seleccione un cliente: </span>
+                <div class="input-control select" style="width: 30%" >
+				<select ng-model="variables.admin">
+				    <option ng-repeat=" a in Clients" value="{{ a._id }}">{{a.nombre}}, ({{a.direccion}})</option>
+				</select>
+				</div>
+				<br>	
+                        <div class="input-control  modern text iconic" id="widthfull" >
+                        <input type="text" placeholder="Username" ng-model="variables.username" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-user"></span>
+                        </div>
+
+                        <div class="input-control  modern text iconic" id="widthfull" >
+                        <input type="password" placeholder="****" ng-model="variables.password" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-key"></span>
+                        </div>
+						
+						<br><br>
+
+                        <div class="input-control  modern text iconic" id="widthfull" >
+                        <input type="text" placeholder="Nombre" ng-model="variables.nombre" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-user"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Direccion" ng-model="variables.direccion" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-paragraph-left"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Telefono" ng-model="variables.telefono" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-phone"></span>
+                        </div>
+
+
+                        
+                        <br><br>
+                        
+                        <button class="button success loading-pulse" ng-click="Update()">ACTUALIZAR</button>
+        
+        
+                        <button class="button alert loading-cube" onclick="toggleMetroDialog('#dialog-ajax')">ELIMINAR</button>
+                    </form>
+                    <br><br>
+</div>
+
+    <div data-role="dialog" id="dialog-ajax" class="padding30" data-type="" 
+    data-close-button="true"
+    data-width="auto"
+    data-overlay="true">
+
+        <p>
+        <font face="Segoe UI Bold">
+            <h4>SE ELIMINARA EL CLIENTE: {{variables.nombre}}</h4>
+        </font>
+        <font face="Segoe UI">
+            DIRECCION: {{variables.direccion}}
+            <br>
+            TELEFONO: {{variables.telefono}}
+            <br>
+            MAIL: {{variables.mail}}
+        </font>    
+            
+        </p>
+
+        <button class="button alert" ng-click="Delete()" onclick="hideMetroDialog('#dialog-ajax')">SI</button>
+        <button class="button success" onclick="hideMetroDialog('#dialog-ajax')">NO</button>
+</div>
+
