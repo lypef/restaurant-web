@@ -91,18 +91,18 @@
 
 <body>
     <div class="app-bar fixed-top darcula" data-role="appbar">
-        <a href="dashboard#/" class="app-bar-element branding"><span class="mif-shop mif-2x"></span> Dashboard</a>
+        <a href="dashboard#/" class="app-bar-element branding"><span class="mif-shop mif-2x"></span></a>
         <span class="app-bar-divider"></span>
         <ul class="app-bar-menu">
             
             <li>
-                <a href="" class="dropdown-toggle"><span class="mif-spoon-fork mif-2x"></span> Restaurant</a>
+                <a href="" class="dropdown-toggle"><span class="mif-spoon-fork mif-2x"></span></a>
                 <ul class="d-menu" data-role="dropdown">
                     <li>
                         <a href="tables"><span class="mif-apps mif-2x"></span> Mesas</a>
                         </li>
                         <li>
-                        <a href="#"><span class="mif-motorcycle mif-2x"></span> Entregas</a>
+                        <a href="#"><span class="mif-motorcycle mif-2x"></span> Domicilios</a>
                         </li>
                     </ul>
             </li>
@@ -110,25 +110,26 @@
                 <a href="" class="dropdown-toggle"><span class="mif-money mif-2x"></span> Ventas</a>
                 <ul class="d-menu" data-role="dropdown">
                     <li>
-                        <a href="tables"><span class="mif-money mif-2x"></span> Ventas</a>
+                        <a href="tables"><span class="mif-flow-line mif-2x"></span> Ventas</a>
                         </li>
                         <li>
-                        <a href="#"><span class="mif-move-up mif-2x"></span> Movimientos</a>
+                        <a href="#"><span class="mif-flow-line mif-2x"></span> Movimientos</a>
                         </li>
                         <li>
-                        <a href="#"><span class="mif-openid mif-2x"></span> Arqueo de caja</a>
+                        <a href="#"><span class="mif-flow-line mif-2x"></span> Arqueo de caja</a>
                         </li>
                     </ul>
             </li>
             <li>
-                <a href="" class="dropdown-toggle"><span class="mif-vertical-align-bottom mif-2x"></span>Gastos</a>
+                <a href="" class="dropdown-toggle"><span class="mif-chart-dots mif-2x"></span>Finanzas</a>
                 <ul class="d-menu" data-role="dropdown">
-                    <li>
-                        <a href="tables"><span class="mif-vertical-align-bottom mif-2x"></span> Gastos</a>
-                        </li>
-                        <li>
-                        <a href="#"><span class="mif-layers mif-2x"></span> Categorias</a>
-                        </li>
+                    <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Ingresar efectivo</a></li>
+
+                    <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Retirar efectivo</a></li>
+
+                    <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Corte X</a></li>
+
+                    <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Corte Z</a></li>
                     </ul>
             </li>
             <li>
@@ -136,27 +137,17 @@
                 <ul class="d-menu" data-role="dropdown">
                     <li><a href="dashboard#/catproducts"><span class="mif-flow-line mif-2x"></span> Cat. Productos</a></li>
                     <li><a href="dashboard#/ingredientes"><span class="mif-flow-line mif-2x"></span> Ingredientes</a></li>
-                    <li><a href="#"><span class="mif-flow-line mif-2x"></span> Recetas</a></li>
                     <li><a href="#"><span class="mif-flow-line mif-2x"></span> Productos</a></li>
-                    <li><a href="#"><span class="mif-flow-line mif-2x"></span> Control stock</a></li>
-                    <li><a href="#"><span class="mif-flow-line mif-2x"></span> Mov. stock</a></li>
+                    <li><a href="#"><span class="mif-flow-line mif-2x"></span> Stock</a></li>
                     </ul>
             </li>
             <li>
-                <a href="" class="dropdown-toggle"><span class="mif-organization mif-2x"></span> Clientes</a>
+                <a href="" class="dropdown-toggle"><span class="mif-users mif-2x"></span> Clientes</a>
                 <ul class="d-menu" data-role="dropdown">
                     <li><a href="dashboard#/clients"><span class="mif-flow-line mif-2x"></span> Clientes</a></li>
                     <li><a href="dashboard#/addclient"><span class="mif-flow-line mif-2x"></span> Nuevo cliente</a></li>
                     </ul>
-            </li>
-            <li>
-                <a href="" class="dropdown-toggle"><span class="mif-chart-pie mif-2x"></span> Gestion</a>
-                <ul class="d-menu" data-role="dropdown">
-                    <li><a href="#"><span class="mif-flow-line mif-2x"></span> Clientes</a></li>
-                    <li><a href="#"><span class="mif-flow-line mif-2x"></span> Nuevo cliente</a></li>
-                    </ul>
-            </li>
-            
+            </li> 
         </ul>
 
         <div class="app-bar-element place-right" ng-controller="UserValues">
@@ -164,14 +155,17 @@
             <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
                 <ul class="unstyled-list fg-dark">
                     <li>
-                    <a href="#"><i class="fa fa-fw fa-user"></i>Perfil</a>
+                    <a href="#"><i class="fa fa-fw fa-user"></i>NOmbre_admin</a>
                     </li>
                     <li>
-                    <a href="#"><i class="fa fa-fw fa-user"></i>Configuracion</a>
+                    <a href="#"><span class="mif-user icon"> Perfil</span></a>
+                    </li>
+                    <li>
+                    <a href="#"><span class="mif-cog icon"> Configuracion</span></a>
                     </li>
                     <li class="divider"></li>
                     <li>
-                    <a href="/logout"><i class="fa fa-fw fa-power-off"></i>Salir</a>
+                    <a href="/logout"><span class="mif-switch icon"> Salir</span></a>
                     </li>
                 </ul>
             </div>
@@ -194,28 +188,13 @@
                             
                         </a></li>
                         <li><a href="#">
-                            <span class="mif-drive-eta icon"></span>
-                            <span class="title">Status</span>
-                            
-                        </a></li>
-                        <li><a href="#">
                             <span class="mif-cloud icon"></span>
                             <span class="title">Facturas</span>
                             
                         </a></li>
-                        <li><a href="#">
-                            <span class="mif-database icon"></span>
-                            <span class="title">Caja</span>
-                            
-                        </a></li>
                         <li><a href="dashboard#/clients">
-                            <span class="mif-organization icon"></span>
+                            <span class="mif-users icon"></span>
                             <span class="title">Clientes</span>
-                            
-                        </a></li>
-                        <li><a href="#">
-                            <span class="mif-apps icon"></span>
-                            <span class="title">Corte</span>
                             
                         </a></li>
                     </ul>
