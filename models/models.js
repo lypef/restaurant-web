@@ -17,9 +17,7 @@ var user_scheme = new mongoose.Schema({
 
 var clients_scheme = new mongoose.Schema({
 	nombre: {type: String, required: true},
-	apellidos: {type: String, required: true},
 	direccion: String,
-	movil: String,
 	telefono: String,
 	mail: String
 })

@@ -15,16 +15,16 @@ module.exports = function(req,res,next)
         return res.json("Failed to authenticate token.");
       }else
       {
-     	  req.decoded = decoded;    
-        next()
+     	  if (req.session.user_id)
+        {
+          req.decoded = decoded;    
+          next()
+        }
       }
-    
-    });
-
+    })
   }else 
   {
     return res.status(403).send("Fatal Error");
     
   }
-
 }

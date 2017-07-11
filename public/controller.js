@@ -1,6 +1,7 @@
 var app = angular.module('restweb', ['ngRoute'])
 var token = "eyJhbGciOiJIUzI1NiJ9.cGF5bG9hZA.f_0OBq6Yxx-jymUjCMcifD5ji1adKKYWUmwZF94VvTA";
 
+
 app.config(function($routeProvider){
     $routeProvider
         .when('/', {
@@ -48,7 +49,7 @@ app.controller("UserValues", function($scope, $http){
 app.controller("clients", function($scope, $http, $window)
 {
     $http.defaults.headers.common['x-access-token']=token;
-    $scope.NewClient = {};  
+    $scope.Client = {};  
 
     $http.get('/api/clients/')
         .success(function(data) {
@@ -59,9 +60,9 @@ app.controller("clients", function($scope, $http, $window)
     });
 
     $scope.CreateClient = function(){
-        $http.post('/api/clients', $scope.NewClient)
+        $http.post('/api/clients/add', $scope.Client)
             .success(function(id) {
-                $scope.NewClient = {};
+                $scope.Client = {};
                 pushMessage('success', 'HECHO', 'Cliente agregado con exito', "checkmark")
                 $window.location = "dashboard#/editclient/" + id;
             })

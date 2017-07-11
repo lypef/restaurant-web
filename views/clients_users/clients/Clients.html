@@ -2,7 +2,7 @@
 	<form>
 	<div class="input-control text big-input " data-role="input" style="width: 100%">
 	    
-	    <input type="text" name="filter" ng-model="inputbox.text">
+	    <input type="text" name="filter" ng-model="inputbox.text" placeholder="Buscar">
 	    
 	    <button class="button" ng-click="SearchClient()"><span class="mif-search"></span></button>
 	    
@@ -15,9 +15,10 @@
 
 	        <a href="dashboard#/editclient/{{ todo._id }}">
 	            <img src="https://cdn2.iconfinder.com/data/icons/bitsies/128/EditDocument-512.png" class="list-icon">
+	        	<span class="list-title">{{ todo.nombre }} {{ todo.apellidos }}</span>
 	        </a>    
 
-	        <span class="list-title">{{ todo.nombre }} {{ todo.apellidos }}</span>
+	        
 	    </div>    
 	    
 	</div>

@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var sessiontrue = require('./middlewares/session');
 var tokenApi = require('./middlewares/TokenApi');
+var StatusTrue = require('./middlewares/StatusTrue');
 var ValidateEmail = require("email-validator");
 var db = require("./models/models");
 var app = express(); 
@@ -27,6 +28,7 @@ res.setHeader('Access-Control-Allow-Origin', '*');
 app.use("/dashboard",sessiontrue);
 app.use("/admin_dashboard",sessiontrue);
 app.use('/api/', tokenApi);
+app.use('/api/', StatusTrue);
 
 
 // Enlaces GET
@@ -64,7 +66,7 @@ app.get('/api/users/:id', UserIDLoad);
 
 app.get('/api/users/search/:id', Search_users_id );
 // Api POST
-app.post('/api/clients', CreateClient );
+app.post('/api/clients/add', CreateClient );
 app.post('/api/client/update', UpdateClient );
 app.post('/api/client/delete', DeleteClient );
 app.post('/api/client/search', SearchClient );
@@ -158,24 +160,20 @@ function AdminLogin (req,res){
 }
 
 function Login (req,res){
-	db.user.findOne({username:req.body.username, password:req.body.password},function(err,doc){
+	db.user.findOne({username:req.body.username, password:req.body.password}).populate('admin').exec(function(err,doc){
 		if (doc != null)
 		{
-			db.clients_users.findOne({_id: doc.admin},function(err,doc1){
-                if (doc1 != null)
-                {
-                    if (doc1.status)
-                    {
-                        req.session.user_id = doc._id;
-                        req.session.clients = true;
-                        res.redirect("/dashboard");
-                    }else
-                    {
-                        console.log("Membresia vencida")
-                        res.redirect("/membership_off");
-                    }
-                }
-            });
+			if (doc.admin.status)
+            {
+                req.session.user_id = doc._id;
+                req.session.admin = doc.admin._id;
+                req.session.clients = true;
+                res.redirect("/dashboard");
+            }else
+            {
+                console.log("Membresia vencida")
+                res.redirect("/membership_off");
+            }
 		}
 		else{
 			console.log("Usuario incorrecto")
@@ -269,13 +267,13 @@ function AdminValuesjson (req,res){
 };
 
 function UserValuesjson (req,res){
-    db.user.findOne({_id: req.session.user_id},function(err,doc){
+    db.user.findOne({_id: req.session.user_id}).populate('admin').exec(function(err,doc){
         if (doc != null)
         {
             doc.nombre = doc.nombre.substring(0, 14) + " ...";
             res.json(doc)
         }else {
-            console.log("No lo encontramo")
+            console.log("Usuari no encontrado")
         }
     });
 };
@@ -319,22 +317,20 @@ function CreateClient (req, res)
     if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null)
     {
     	var p = new db.clients({
-		nombre: req.body.nombre.toUpperCase(),
-		apellidos: req.body.apellidos.toUpperCase(),
-		direccion: req.body.direccion.toUpperCase(),
-		movil: req.body.movil,
-		telefono: req.body.telefono,
-		mail: req.body.mail
+    		nombre: req.body.nombre.toUpperCase(),
+    		direccion: req.body.direccion.toUpperCase(),
+    		telefono: req.body.telefono,
+    		mail: req.body.mail
     	})
 
 
     	p.save(function (err) {
     	 if (err)
     	 {
-    	 	res.sendStatus(500, "No fue posible crear el cliente, intente de nuevo.")
+    	 	res.Status(500).send("No fue posible crear el cliente, intente de nuevo.")
     	 }else
     	 {
-    	 	res.sendStatus(p._id)
+    	 	res.status(200).send(p._id)
     	 }
     	})	
     }else
@@ -351,9 +347,7 @@ function UpdateClient (req, res)
     	{ _id : req.body._id },
     	{ 
 			nombre: req.body.nombre.toUpperCase(),
-			apellidos: req.body.apellidos.toUpperCase(),
 			direccion: req.body.direccion.toUpperCase(),
-			movil: req.body.movil,
 			telefono: req.body.telefono,
 			mail: req.body.mail
     	},
