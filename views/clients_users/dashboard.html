@@ -89,9 +89,9 @@
     </script>
 </head>
 
-<body>
-    <div class="app-bar fixed-top darcula" data-role="appbar">
-        <a href="dashboard#/" class="app-bar-element branding"><span class="mif-shop mif-2x"></span></a>
+<body ng-controller="UserValues">
+    <div class="app-bar fixed-top blue" data-role="appbar">
+        <a href="dashboard#/" class="app-bar-element branding"><span class="mif-shop mif-2x"> {{ usuario.admin.namefast }}</span></a>
         <span class="app-bar-divider"></span>
         <ul class="app-bar-menu">
             
@@ -150,10 +150,10 @@
             </li> 
         </ul>
 
-        <div class="app-bar-element place-right" ng-controller="UserValues">
+        <div class="app-bar-element place-right">
             <span class="dropdown-toggle"><span class="mif-user-check mif-2x"></span> {{ usuario.nombre }}</span>
             <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
-                <ul class="unstyled-list fg-dark">
+                <ul class="unstyled-list fg-blue">
                     <li>
                     <a href="#"><i class="fa fa-fw fa-user"></i><span class="mif-earth2 icon"> {{ usuario.admin.nombre }}</span></a>
                     </li>
@@ -176,31 +176,6 @@
     <div class="page-content">
         <div class="flex-grid no-responsive-future" id="divone">
             <div class="row" style="height: 100%">
-                <div class="cell size-x200" id="cell-sidebar" style="background-color: #3c3f41  ; height: 100%">
-                    <ul class="sidebar darcula">
-                        <li><a href="#">
-                            <span class="mif-apps icon"></span>
-                            <span class="title">Mesas</span>
-                            
-                        </a></li>
-                        <li><a href="#">
-                            <span class="mif-vpn-publ icon"></span>
-                            <span class="title">Comandas</span>
-                            
-                        </a></li>
-                        <li><a href="#">
-                            <span class="mif-cloud icon"></span>
-                            <span class="title">Facturas</span>
-                            
-                        </a></li>
-                        <li><a href="dashboard#/clients">
-                            <span class="mif-users icon"></span>
-                            <span class="title">Clientes</span>
-                            
-                        </a></li>
-                    </ul>
-                </div>
-                
                 <div class="padding10 bg-white" id="cell-content">
                     <div ng-view></div>
                     <br>
@@ -212,10 +187,13 @@
                     <li class="place-right"><a href="#">Legal</a></li>
                     <li class="place-right"><a href="#">Desarrollo</a></li>
                     <li class="place-right"><a href="#">Contacto</a></li>
+                    
                     </ul>
                     </div>
                 </footer>
                 </div>
+                
+                
             </div>
         </div>
     </div>

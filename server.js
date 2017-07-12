@@ -260,7 +260,7 @@ function AdminValuesjson (req,res){
     db.admin.findOne({_id: req.session.user_id},function(err,doc){
         if (doc != null)
         {
-            doc.nombre = doc.nombre.substring(0, 14) + " ...";
+            doc.nombre = doc.nombre.substring(0, 12) + " ...";
             res.json(doc)
         }
     });
@@ -279,7 +279,7 @@ function UserValuesjson (req,res){
 };
 
 function ClientsJson (req,res){
-	db.clients.find(function(err, data) {
+	db.clients.find({ admin: req.session.admin}, function(err, data) {
         if(err) {
             res.sendStatus(err);
         }else
@@ -301,7 +301,7 @@ function ClientsUsersJson (req,res){
 };
 
 function ClienteditsJson (req,res){
-	db.clients.findOne({_id:req.params.id},function(err,doc){
+	db.clients.findOne({_id:req.params.id , admin: req.session.admin},function(err,doc){
 		if (doc != null)
 		{
 			res.json(doc)
@@ -320,7 +320,8 @@ function CreateClient (req, res)
     		nombre: req.body.nombre.toUpperCase(),
     		direccion: req.body.direccion.toUpperCase(),
     		telefono: req.body.telefono,
-    		mail: req.body.mail
+    		mail: req.body.mail,
+            admin: req.session.admin
     	})
 
 
@@ -341,31 +342,36 @@ function CreateClient (req, res)
 
 function UpdateClient (req, res) 
 {  
-	if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null)
-	{
-		db.clients.update(
-    	{ _id : req.body._id },
-    	{ 
-			nombre: req.body.nombre.toUpperCase(),
-			direccion: req.body.direccion.toUpperCase(),
-			telefono: req.body.telefono,
-			mail: req.body.mail
-    	},
-    	function( err) 
-    	{
-        	if (err)
-        	{
-        		res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
-        	}else
-        	{
-        		res.sendStatus(200)
-        	}
-    	})	
-	}else
-	{
-		res.sendStatus(500, "Email no valido.")
-	}
-	
+	if (req.body.admin == req.session.admin)
+    {
+        if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null)
+        {
+            db.clients.update(
+            { _id : req.body._id },
+            { 
+                nombre: req.body.nombre.toUpperCase(),
+                direccion: req.body.direccion.toUpperCase(),
+                telefono: req.body.telefono,
+                mail: req.body.mail
+            },
+            function( err) 
+            {
+                if (err)
+                {
+                    res.status(404).send("Algo desconocido sucedio, intente nuevamente");
+                }else
+                {
+                    res.status(200)
+                }
+            })  
+        }else
+        {
+            res.sendStatus(500, "Email no valido.")
+        }
+    }else
+    {
+        res.status(500).send("Este cliente no esta asociado a la cuenta actual.");
+    }
 }
 
 function UpdateClient_User (req, res) 
@@ -377,6 +383,7 @@ function UpdateClient_User (req, res)
         { 
             nombre: req.body.nombre.toUpperCase(),
             direccion: req.body.direccion.toUpperCase(),
+            namefast: req.body.namefast.toUpperCase(),
             telefono: req.body.telefono,
             mail: req.body.mail,
             type_identificacion: req.body.type_identificacion.toUpperCase(),
@@ -425,19 +432,25 @@ function UpdateUser (req, res)
 
 function DeleteClient (req, res) 
 {  
-	db.clients.remove(
-    	{ _id : req.body._id },
-    	
-    	function( err) 
-    	{
-        	if (err)
-        	{
-        		res.sendStatus(500, "Error, Intente nuevamente.")
-        	}else
-        	{
-        		res.sendStatus(200)
-        	}
-    	})
+	if (req.body.admin == req.session.admin)
+    {
+        db.clients.remove(
+        { _id : req.body._id },
+        
+        function( err) 
+        {
+            if (err)
+            {
+                res.sendStatus(500, "Error, Intente nuevamente.")
+            }else
+            {
+                res.sendStatus(200)
+            }
+        })    
+    }else {
+        res.status(500).send("Este cliente no esta asociado a la cuenta actual.");
+    }
+    
 }
 
 function DeleteUser (req, res) 
@@ -525,26 +538,26 @@ function SearchIngredients (req, res)
 
 function SearchCatProducts (req, res) 
 {  
-    db.catproducts.find({$or: [ {categoria: { $regex : req.body.text.toUpperCase() }}, {descripcion: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
+    db.catproducts.find({$or: [ {categoria: { $regex : req.body.text.toUpperCase() }}, {descripcion: { $regex : req.body.text.toUpperCase() }} ] }).populate('creator').exec(function(err, data) {
         if(err || data == "") {
             res.sendStatus(500,"Categoria no encontrada")
         }else
         {
             res.json(data)
         }
-    }).sort({categoria:1});
+    })
 
 }
 
 function catproductsJson (req,res){
-	db.catproducts.find(function(err, data) {
+	db.catproducts.find().populate('creator').exec(function(err, data) {
         if(err) {
             res.sendStatus(500,err);
         }else
         {
         	res.json(data);	
         }
-    }).sort({categoria:1});
+    })
 };
 
 function IngredientesJson (req,res){
@@ -562,7 +575,9 @@ function CreateCatProduct (req, res)
 {  
     var p = new db.catproducts({
 		categoria: req.body.categoria.toUpperCase(),
-		descripcion: req.body.descripcion.toUpperCase()
+		descripcion: req.body.descripcion.toUpperCase(),
+        creator: req.session.user_id
+
     	})
 
 
@@ -763,6 +778,7 @@ function InsertClientUser (req,res)
         var p = new db.clients_users({
             nombre: req.body.nombre.toUpperCase(),
             direccion: req.body.direccion.toUpperCase(),
+            namefast: req.body.namefast.toUpperCase(),
             telefono: req.body.telefono,
             mail: req.body.mail,
             type_identificacion: req.body.type_identificacion.toUpperCase(),

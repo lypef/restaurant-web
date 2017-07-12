@@ -19,13 +19,15 @@ var clients_scheme = new mongoose.Schema({
 	nombre: {type: String, required: true},
 	direccion: String,
 	telefono: String,
-	mail: String
+	mail: String,
+	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'}
 })
 
 var catproducts_scheme = new mongoose.Schema({
 	categoria: {type: String, required: true},
-	descripcion: String
-	
+	descripcion: String,
+	creator: { type: Schema.Types.ObjectId, ref: 'user'},
+	last_edit: { type: Schema.Types.ObjectId, ref: 'Admin_scheme'}
 })
 
 var ingredientes_scheme = new mongoose.Schema({
@@ -43,6 +45,7 @@ var Admin_scheme = new mongoose.Schema({
 
 var Clients_Users_scheme = new mongoose.Schema({
 	nombre: {type: String, required: true},
+	namefast: {type: String, required: true},
 	direccion: {type: String, required: true},
 	telefono: {type: String, required: true},
 	mail: {type: String, required: true},

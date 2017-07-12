@@ -25,6 +25,15 @@ app.config(function($routeProvider){
         .when('/update_users/:id', {
             templateUrl : '/Admin/users/update_user.html'
         })
+        .when('/manager_category/', {
+            templateUrl : '/Admin/category/manager_category.html'
+        })
+        .when('/manager_category/add', {
+            templateUrl : '/Admin/category/add_category.html'
+        })
+        .when('/manager_category/:id', {
+            templateUrl : '/Admin/category/update_category.html'
+        })
         .otherwise({
             redirectTo : '/'
         })
@@ -300,3 +309,47 @@ app.controller("ClientUserUpdate", function($scope, $http, $routeParams, $window
             })
     };  
 })
+
+app.controller("category", function($scope, $http, $window)
+{
+    $http.defaults.headers.common['x-access-token']=token;
+    $scope.NewClient = {};  
+
+    $http.get('/api/catproducts/')
+        .success(function(data) {
+            $scope.all = data;
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+    });
+
+    $scope.CreateClient = function(){
+        $http.post('/api/clients', $scope.NewClient)
+            .success(function(id) {
+                $scope.NewClient = {};
+                pushMessage('success', 'HECHO', 'Cliente agregado con exito', "checkmark")
+                $window.location = "dashboard#/editclient/" + id;
+            })
+            .error(function(msg) {
+                console.log(msg);
+                pushMessage('alert','ERROR','VERIFIQUE LA INFORMACION', "cross")
+            });
+    };  
+
+    $scope.SearchClient = function(){
+        $scope.inputbox
+        $http.post('/api/catproducts/search', $scope.inputbox)
+            .success(function(data) {
+                pushMessage('success','FOUNT',"categoria's encontrados", "checkmark")
+                $scope.all = data;
+            })
+            .error(function(msg) {
+                console.log(msg);
+                pushMessage('warning','NOT FOUND',msg, "question")
+            });
+    };  
+
+
+})
+
+
