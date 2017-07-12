@@ -72,8 +72,10 @@ app.post('/api/client/delete', DeleteClient );
 app.post('/api/client/search', SearchClient );
 
 app.post('/api/catproducts/update', CatproductsUpdateClient );
+app.post('/api/catproducts/update/admin', CatproductsUpdateAdmin );
 app.post('/api/catproducts/delete', DeleteCatProducts );
 app.post('/api/catproducts/add', CreateCatProduct );
+app.post('/api/catproducts/add/admin', CreateCatProductAdmin );
 app.post('/api/catproducts/search', SearchCatProducts );
 
 app.post('/api/ingredientes/update', IngredientesUpdate );
@@ -550,7 +552,7 @@ function SearchCatProducts (req, res)
 }
 
 function catproductsJson (req,res){
-	db.catproducts.find().populate('creator').exec(function(err, data) {
+	db.catproducts.find().populate('creator').populate('last_edit').exec(function(err, data) {
         if(err) {
             res.sendStatus(500,err);
         }else
@@ -597,6 +599,27 @@ function CreateCatProduct (req, res)
             }).sort({categoria:1});
     	 }
     	})	
+}
+
+function CreateCatProductAdmin (req, res) 
+{  
+    var p = new db.catproducts({
+        categoria: req.body.categoria.toUpperCase(),
+        descripcion: req.body.descripcion.toUpperCase(),
+        last_edit: req.session.user_id
+
+        })
+
+
+        p.save(function (err, doc) {
+         if (err)
+         {
+            res.status(500).send("No fue posible crear la cetegoria, intente de nuevo.")
+         }else
+         {
+            res.status(200).send("Categoria agregada correctamente")
+         }
+        })  
 }
 
 function CreateIngrediente (req, res) 
@@ -690,10 +713,32 @@ function CatproductsUpdateClient (req, res)
         {
             if (err)
             {
-                res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
+                res.status(404).send("Algo desconocido sucedio, intente nuevamente")
             }else
             {
-                res.sendStatus(200)
+                res.status(200).send("Categoria actualizada correctamente")
+            }
+        })  
+    
+}
+
+function CatproductsUpdateAdmin (req, res) 
+{  
+    db.catproducts.update(
+        { _id : req.body._id },
+        { 
+            categoria: req.body.categoria.toUpperCase(),
+            descripcion: req.body.descripcion.toUpperCase(),
+            last_edit: req.session.user_id
+        },
+        function( err) 
+        {
+            if (err)
+            {
+                res.status(404).send("Algo desconocido sucedio, intente nuevamente")
+            }else
+            {
+                res.status(200).send("Categoria actualizada correctamente")
             }
         })  
     
@@ -729,10 +774,10 @@ function DeleteCatProducts (req, res)
         {
             if (err)
             {
-                res.sendStatus(500, "Error, Intente nuevamente.")
+                res.status(500).send("Error, Intente nuevamente.")
             }else
             {
-                res.sendStatus(200)
+                res.status(200).send("Categoria eliminada correctamente")
             }
         })
 }

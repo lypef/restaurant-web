@@ -323,6 +323,19 @@ app.controller("category", function($scope, $http, $window)
             console.log('Error: ' + data);
     });
 
+    $scope.CreateCatProduct = function(){
+
+        $http.post('/api/catproducts/add/admin', $scope.Newproduct)
+            .success(function(data) {
+                $scope.productstmp = data;
+                $scope.Newproduct = {}
+                pushMessage('success', 'HECHO', 'Categoria agregada', "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            });
+    }; 
+
     $scope.CreateClient = function(){
         $http.post('/api/clients', $scope.NewClient)
             .success(function(id) {
@@ -345,11 +358,59 @@ app.controller("category", function($scope, $http, $window)
             })
             .error(function(msg) {
                 console.log(msg);
-                pushMessage('warning','NOT FOUND',msg, "question")
+                pushMessage('info','NOT FOUND',msg, "question")
             });
     };  
 
 
 })
 
+app.controller("UpdateCatproducts", function($scope, $http, $routeParams, $window)
+{
+    $http.defaults.headers.common['x-access-token']=token;
+    $scope.DateCatProduct = {};  
 
+    
+
+    $http.get('/api/catproducts/' + $routeParams.id)
+        .success(function(data) 
+        {
+            $scope.DateCatProduct = data;
+        })
+        .error(function(data) 
+        {
+            $window.location = "dashboard#clients";
+            pushMessage('alert','ERROR', 'ID no encontrado.')
+        });
+
+    $scope.Update = function()
+    {
+        $http.post('/api/catproducts/update/admin', $scope.DateCatProduct)
+            .success(function(err) 
+            {
+                pushMessage('success', 'HECHO', err, "checkmark")
+                $scope.DateCatProduct = {};
+                $window.location = "admin_dashboard#/manager_category/";
+            })
+            .error(function(msg) 
+            {
+                pushMessage('alert','ERROR', msg, "cross")
+            })
+    }  
+
+    
+    $scope.Delete = function()
+    {
+        $http.post('/api/catproducts/delete', $scope.DateCatProduct)
+            .success(function(err) 
+            {
+                pushMessage('success', 'HECHO', err, "checkmark")
+                $scope.DateCatProduct = {};
+                $window.location = "admin_dashboard#/manager_category/";
+            })
+            .error(function(msg) 
+            {
+                pushMessage('alert','ERROR', msg, "cross")
+            })
+    };  
+})

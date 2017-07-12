@@ -27,7 +27,7 @@ var catproducts_scheme = new mongoose.Schema({
 	categoria: {type: String, required: true},
 	descripcion: String,
 	creator: { type: Schema.Types.ObjectId, ref: 'user'},
-	last_edit: { type: Schema.Types.ObjectId, ref: 'Admin_scheme'}
+	last_edit: { type: Schema.Types.ObjectId, ref: 'admin'}
 })
 
 var ingredientes_scheme = new mongoose.Schema({
