@@ -71,9 +71,8 @@ app.post('/api/client/update', UpdateClient );
 app.post('/api/client/delete', DeleteClient );
 app.post('/api/client/search', SearchClient );
 
-app.post('/api/catproducts/update', CatproductsUpdateClient );
 app.post('/api/catproducts/update/admin', CatproductsUpdateAdmin );
-app.post('/api/catproducts/delete', DeleteCatProducts );
+app.post('/api/catproducts/delete/admin', DeleteCatProducts );
 app.post('/api/catproducts/add', CreateCatProduct );
 app.post('/api/catproducts/add/admin', CreateCatProductAdmin );
 app.post('/api/catproducts/search', SearchCatProducts );
@@ -575,51 +574,80 @@ function IngredientesJson (req,res){
 
 function CreateCatProduct (req, res) 
 {  
-    var p = new db.catproducts({
-		categoria: req.body.categoria.toUpperCase(),
-		descripcion: req.body.descripcion.toUpperCase(),
-        creator: req.session.user_id
+    if (req.body.categoria != null && req.body.descripcion != null)
+    {
+        db.catproducts.findOne({categoria: req.body.categoria.toUpperCase()},function(err,doc){
+        if (doc == null)
+        {
+            var p = new db.catproducts({
+            categoria: req.body.categoria.toUpperCase(),
+            descripcion: req.body.descripcion.toUpperCase(),
+            creator: req.session.user_id
 
-    	})
+            })
 
 
-    	p.save(function (err, doc) {
-    	 if (err)
-    	 {
-    	 	res.sendStatus(500, "No fue posible crear el cliente, intente de nuevo.")
-    	 }else
-    	 {
-    	 	db.catproducts.find(function(err, data) {
-                if(err) {
-                    res.sendStatus(500,err);
-                }else
-                {
-                    res.json(data); 
-                }
-            }).sort({categoria:1});
-    	 }
-    	})	
+            p.save(function (err1, doc1) {
+             if (err1)
+             {
+                res.status(500).send("No fue posible crear el cliente, intente de nuevo.")
+             }else
+             {
+                db.catproducts.find(function(err2, doc2) {
+                    if(err2) {
+                        res.status(500).send(err2);
+                    }else
+                    {
+                        res.json(doc2); 
+                    }
+             }).sort({categoria:1});
+         }
+        })  
+        }else
+        {
+            res.status(500).send("La categoria ya existe");
+        }
+    });
+    }else {
+        res.status(500).send("Verifique su informacion")
+    }
 }
 
 function CreateCatProductAdmin (req, res) 
 {  
-    var p = new db.catproducts({
-        categoria: req.body.categoria.toUpperCase(),
-        descripcion: req.body.descripcion.toUpperCase(),
-        last_edit: req.session.user_id
+    if (req.body.categoria != null && req.body.descripcion != null)
+    {
+            db.admin.findOne({ _id: req.session.user_id },function(err,doc){
+            if (doc)
+            {
+                var p = new db.catproducts({
+                categoria: req.body.categoria.toUpperCase(),
+                descripcion: req.body.descripcion.toUpperCase(),
+                last_edit: req.session.user_id
 
-        })
+                })
 
 
-        p.save(function (err, doc) {
-         if (err)
-         {
-            res.status(500).send("No fue posible crear la cetegoria, intente de nuevo.")
-         }else
-         {
-            res.status(200).send("Categoria agregada correctamente")
-         }
-        })  
+                p.save(function (err1, doc1) {
+                 if (err1)
+                 {
+                    res.status(500).send("No fue posible crear la cetegoria, intente de nuevo.")
+                 }else
+                 {
+                    res.status(200).send("Categoria agregada correctamente")
+                 }
+                })  
+
+        }
+        else{
+            res.status(500).send("Usuario no valido")
+        }
+    });
+
+    }else {
+        res.status(500).send("Verifique su informacion")
+    }
+    
 }
 
 function CreateIngrediente (req, res) 
@@ -701,47 +729,34 @@ function UserIDLoad (req,res){
     });
 };
 
-function CatproductsUpdateClient (req, res) 
-{  
-    db.catproducts.update(
-        { _id : req.body._id },
-        { 
-            categoria: req.body.categoria.toUpperCase(),
-            descripcion: req.body.descripcion.toUpperCase()
-        },
-        function( err) 
-        {
-            if (err)
-            {
-                res.status(404).send("Algo desconocido sucedio, intente nuevamente")
-            }else
-            {
-                res.status(200).send("Categoria actualizada correctamente")
-            }
-        })  
-    
-}
-
 function CatproductsUpdateAdmin (req, res) 
 {  
-    db.catproducts.update(
-        { _id : req.body._id },
-        { 
-            categoria: req.body.categoria.toUpperCase(),
-            descripcion: req.body.descripcion.toUpperCase(),
-            last_edit: req.session.user_id
-        },
-        function( err) 
+    db.admin.findOne({ _id: req.session.user_id },function(err,doc){
+        if (doc)
         {
-            if (err)
+            db.catproducts.update(
+            { _id : req.body._id },
+            { 
+                categoria: req.body.categoria.toUpperCase(),
+                descripcion: req.body.descripcion.toUpperCase(),
+                last_edit: req.session.user_id
+            },
+            function( err1) 
             {
-                res.status(404).send("Algo desconocido sucedio, intente nuevamente")
-            }else
-            {
-                res.status(200).send("Categoria actualizada correctamente")
-            }
-        })  
-    
+                if (err1)
+                {
+                    res.status(404).send("Algo desconocido sucedio, intente nuevamente")
+                }else
+                {
+                    res.status(200).send("Categoria actualizada correctamente")
+                }
+            })  
+        }
+        else{
+            res.status(500).send("Usuario no valido")
+        }
+    });
+
 }
 
 function IngredientesUpdate (req, res) 
@@ -767,19 +782,24 @@ function IngredientesUpdate (req, res)
 }
 function DeleteCatProducts (req, res) 
 {  
-    db.catproducts.remove(
-        { _id : req.body._id },
-        
-        function( err) 
-        {
-            if (err)
+    db.admin.findOne({ _id: req.session.user_id },function(err,doc){
+            if (doc)
             {
-                res.status(500).send("Error, Intente nuevamente.")
-            }else
+                db.catproducts.remove({ _id : req.body._id },function( err) 
             {
-                res.status(200).send("Categoria eliminada correctamente")
-            }
-        })
+                if (err)
+                {
+                    res.status(500).send("Error, Intente nuevamente.")
+                }else
+                {
+                    res.status(200).send("Categoria eliminada correctamente")
+                }
+            })
+        }
+        else{
+            res.status(500).send("Usuario no valido")
+        }
+    });
 }
 
 function DeleteIngredientes (req, res) 

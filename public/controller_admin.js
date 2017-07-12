@@ -401,7 +401,7 @@ app.controller("UpdateCatproducts", function($scope, $http, $routeParams, $windo
     
     $scope.Delete = function()
     {
-        $http.post('/api/catproducts/delete', $scope.DateCatProduct)
+        $http.post('/api/catproducts/delete/admin', $scope.DateCatProduct)
             .success(function(err) 
             {
                 pushMessage('success', 'HECHO', err, "checkmark")

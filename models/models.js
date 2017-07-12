@@ -25,7 +25,7 @@ var clients_scheme = new mongoose.Schema({
 
 var catproducts_scheme = new mongoose.Schema({
 	categoria: {type: String, required: true},
-	descripcion: String,
+	descripcion: {type: String, required: true},
 	creator: { type: Schema.Types.ObjectId, ref: 'user'},
 	last_edit: { type: Schema.Types.ObjectId, ref: 'admin'}
 })
