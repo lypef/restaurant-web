@@ -60,8 +60,8 @@ app.get('/api/clients_users/:id', ClientsUserIDLoad);
 app.get('/api/admin/values', AdminValuesjson)
 app.get('/api/users/values', UserValuesjson)
 app.get('/api/users/:id', UserIDLoad);
-
 app.get('/api/users/search/:id', Search_users_id );
+
 
 // Api POST
 app.post('/api/clients/add', CreateClient );
@@ -86,6 +86,8 @@ app.post('/api/users/add', AddUser);
 app.post('/api/users/search', Search_users );
 app.post('/api/users/delete', DeleteUser );
 app.post('/api/users/update', UpdateUser );
+
+app.post('/api/products/add', AddProduct);
 
 //Funciones
 function Inicio (req, res) 
@@ -241,6 +243,30 @@ function AddUser (req,res){
     });
 };
 
+function AddProduct (req,res){
+    if (req.body.name != null && req.body.stock != null && req.body.category != null )
+    {
+        var p = new db.products(
+        {
+            name: req.body.name.toUpperCase(),
+            description: req.body.description,
+            stock: req.body.stock,
+            category: req.body.category,
+            admin: req.session.admin
+        });
+        p.save(function(err){
+                if (err)
+                {
+                    res.status(500).send("Error desconocido")
+                }else {
+                    res.status(200).send("Producto agregado")
+                }
+        });
+    }else {
+        res.status(500).send("Verifique su informacion")
+    }
+};
+
 function usersjson (req,res){
 	db.user.find().populate('admin').exec(function(err, doc) {
         if(err) {
@@ -286,6 +312,17 @@ function ClientsJson (req,res){
 };
 
 function ClientsUsersJson (req,res){
+    db.clients_users.find(function(err, data) {
+        if(err) {
+            res.sendStatus(err);
+        }else
+        {
+            res.json(data); 
+        }
+    }).sort({nombre:1});
+};
+
+function GetProducts (req,res){
     db.clients_users.find(function(err, data) {
         if(err) {
             res.sendStatus(err);
@@ -569,7 +606,7 @@ function SearchCatProducts (req, res)
 }
 
 function catproductsJson (req,res){
-	db.catproducts.find().populate('creator').populate('last_edit').exec(function(err, data) {
+	db.catproducts.find().sort({categoria:1}).populate('creator').populate('last_edit').exec(function(err, data) {
         if(err) {
             res.sendStatus(500,err);
         }else

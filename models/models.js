@@ -49,10 +49,19 @@ var Clients_Users_scheme = new mongoose.Schema({
     vence_pago: Date
 })
 
+var products_scheme = new mongoose.Schema({
+	name: {type: String, required: true},
+	description: String,
+	stock: Number,
+	category: { type: Schema.Types.ObjectId, ref: 'catproducts'},
+	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'}
+})
+
 module.exports.user = mongoose.model("user",user_scheme);
 module.exports.admin = mongoose.model("admin",Admin_scheme);
 module.exports.clients = mongoose.model("clients",clients_scheme);
 module.exports.clients_users = mongoose.model("clients_users",Clients_Users_scheme);
 module.exports.catproducts = mongoose.model("catproducts",catproducts_scheme);
+module.exports.products = mongoose.model("products",products_scheme);
 
 

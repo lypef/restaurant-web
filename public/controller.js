@@ -17,10 +17,10 @@ app.config(function($routeProvider){
             templateUrl : '/clients_users/clients/UpdateClient.html'
         })
         .when('/catproducts', {
-            templateUrl: '/clients_users/products/catproducts.html'
+            templateUrl: '/clients_users/catproducts/catproducts.html'
         })
-        .when('/catproducts/:id', {
-            templateUrl : '/clients_users/products/UpdateCatproducts.html'
+        .when('/products', {
+            templateUrl : '/clients_users/products/index.html'
         })
         .otherwise({
             redirectTo : '/'
@@ -167,7 +167,7 @@ app.controller("users", function($scope, $http)
     };  
 })
 
-app.controller("products", function($scope, $http){
+app.controller("catproducts", function($scope, $http){
     
     $http.defaults.headers.common['x-access-token']=token;
     
@@ -208,54 +208,43 @@ app.controller("products", function($scope, $http){
     };  
 })
 
-
-app.controller("UpdateCatproducts", function($scope, $http, $routeParams, $window)
-{
-    $http.defaults.headers.common['x-access-token']=token;
-    $scope.DateCatProduct = {};  
-
-    $scope.id = $routeParams.id
+app.controller("products", function($scope, $http){
     
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.product = {};
+    $scope.categories = {};
 
-    $http.get('/api/catproducts/' + $scope.id)
-        .success(function(data) 
-        {
-            $scope.DateCatProduct = data;
+    $http.get('/api/catproducts/')
+        .success(function(data) {
+            $scope.categories = data;
         })
-        .error(function(data) 
-        {
-            $window.location = "dashboard#clients";
-            pushMessage('alert','ERROR', 'ID no encontrado.')
-        });
+        .error(function(data) {
+            pushMessage('alert','ERROR',data, "cross")
+    });
 
-    $scope.Update = function()
-    {
-        $http.post('/api/catproducts/update', $scope.DateCatProduct)
-            .success(function(err) 
-            {
-                pushMessage('success', 'HECHO', 'Categoria actualizada con exito', "checkmark")
-                $scope.DateCatProduct = {};
-                $window.location = "dashboard#/catproducts";
+
+    $scope.create = function(){
+
+        $http.post('/api/products/add', $scope.product)
+            .success(function(data) {
+                $scope.product = {}
+                pushMessage('success', 'HECHO', 'Categoria agregada', "checkmark")
             })
-            .error(function(msg) 
-            {
-                pushMessage('alert','ERROR', msg, "cross")
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            });
+    }; 
+
+    $scope.SearchCatProduct = function(){
+        $scope.inputbox
+        $http.post('/api/catproducts/search', $scope.inputbox)
+            .success(function(data) {
+                pushMessage('success','FOUNT',"Categoria encontrada", "checkmark")
+                $scope.productstmp = data;
             })
-    }  
- 
-    $scope.Delete = function()
-    {
-        $http.post('/api/catproducts/delete', $scope.DateCatProduct)
-            .success(function(err) 
-            {
-                pushMessage('success', 'HECHO', 'Categoria eliminada con exito', "checkmark")
-                $scope.DateCatProduct = {};
-                $window.location = "dashboard#/catproducts";
-            })
-            .error(function(msg) 
-            {
-                pushMessage('alert','ERROR', msg, "cross")
-            })
+            .error(function(msg) {
+                pushMessage('info','NOT FOUND',msg, "question")
+            });
     };  
 })
-

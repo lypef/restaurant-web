@@ -1,0 +1,47 @@
+<div class="panel info" ng-controller="products" style="width: 45%">
+                <div class="heading">
+                
+                <span class="title">Agregar producto</span>
+                </div>
+                <div class="content">
+                <form align="center">  
+
+		                <span>Seleccione una categoria: </span>
+		                <div class="input-control select" style="width: 30%" >
+						<select ng-model="product.category">
+						    <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
+						</select>
+						</div>
+						<br>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Nombre" ng-model="product.name" class="input-full">
+                        <span class="label">Nombre</span>
+                        <span class="informer"></span>
+                        <span class="icon mif-stack3"></span>
+                        </div>
+                        
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Descripcion" ng-model="product.description" class="input-full" >
+                        <span class="label">Descripcion</span>
+                        <span class="informer"></span>
+                        <span class="icon mif-paragraph-left"></span>
+                        </div>
+                        
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="number" placeholder="Stock" ng-model="product.stock" class="input-full" >
+                        <span class="label">Stock</span>
+                        <span class="informer"></span>
+                        <span class="icon mif-list-numbered"></span>
+                        </div>
+
+                        <br><br>
+                        
+                        <button class="button success loading-pulse" ng-click="create()">
+                        Agregar
+                        </button>
+                    </form>
+                    <br><br>
+	</div>
+
+</div>
