@@ -30,12 +30,6 @@ var catproducts_scheme = new mongoose.Schema({
 	last_edit: { type: Schema.Types.ObjectId, ref: 'admin'}
 })
 
-var ingredientes_scheme = new mongoose.Schema({
-	nombre: {type: String, required: true},
-	descripcion: String,
-	cantidad: String
-	
-})
 
 var Admin_scheme = new mongoose.Schema({
 	username: String,
@@ -60,6 +54,5 @@ module.exports.admin = mongoose.model("admin",Admin_scheme);
 module.exports.clients = mongoose.model("clients",clients_scheme);
 module.exports.clients_users = mongoose.model("clients_users",Clients_Users_scheme);
 module.exports.catproducts = mongoose.model("catproducts",catproducts_scheme);
-module.exports.ingredientes = mongoose.model("ingredientes",ingredientes_scheme);
 
 

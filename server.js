@@ -52,9 +52,6 @@ app.get('/api/clientedit/:id', ClienteditsJson);
 app.get('/api/catproducts/:id', CatProductsEditsJson);
 app.get('/api/catproducts/', catproductsJson)
 
-app.get('/api/ingredientes/', IngredientesJson)
-app.get('/api/ingredientes/:id', IngredientesEditsJson);
-
 app.get('/api/users/', usersjson)
 
 app.get('/api/clients_users/', ClientsUsersJson);
@@ -65,9 +62,11 @@ app.get('/api/users/values', UserValuesjson)
 app.get('/api/users/:id', UserIDLoad);
 
 app.get('/api/users/search/:id', Search_users_id );
+
 // Api POST
 app.post('/api/clients/add', CreateClient );
-app.post('/api/client/update', UpdateClient );
+app.post('/api/client/update', UpdateClientAdmin );
+app.post('/api/client/update/clients', UpdateClient_User );
 app.post('/api/client/delete', DeleteClient );
 app.post('/api/client/search', SearchClient );
 
@@ -77,14 +76,10 @@ app.post('/api/catproducts/add', CreateCatProduct );
 app.post('/api/catproducts/add/admin', CreateCatProductAdmin );
 app.post('/api/catproducts/search', SearchCatProducts );
 
-app.post('/api/ingredientes/update', IngredientesUpdate );
-app.post('/api/ingredientes/delete', DeleteIngredientes );
-app.post('/api/ingredientes/add', CreateIngrediente );
-app.post('/api/ingredientes/search', SearchIngredients );
-
 app.post("/api/clients_users/add", InsertClientUser );
 app.post('/api/clients_users/search', SearchClient_users );
 app.post('/api/clients_users/update', UpdateClient_User );
+app.post('/api/account/update', UpdateAccount );
 app.post('/api/clients_users/delete', DeleteClientUser );
 
 app.post('/api/users/add', AddUser);
@@ -341,7 +336,7 @@ function CreateClient (req, res)
     }
 }
 
-function UpdateClient (req, res) 
+function UpdateClientAdmin (req, res) 
 {  
 	if (req.body.admin == req.session.admin)
     {
@@ -377,6 +372,43 @@ function UpdateClient (req, res)
 
 function UpdateClient_User (req, res) 
 {  
+    db.admin.findOne({_id: req.session.admin},function(err,doc){
+        if (doc == null)
+        {
+            if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null)
+            {
+                db.clients.update(
+                { _id : req.body._id },
+                { 
+                    nombre: req.body.nombre.toUpperCase(),
+                    direccion: req.body.direccion.toUpperCase(),
+                    telefono: req.body.telefono.toUpperCase(),
+                    mail: req.body.mail
+                },
+                function( err) 
+                {
+                    if (err)
+                    {
+                        res.status(404).send("Algo desconocido sucedio, intente nuevamente")
+                    }else
+                    {
+                        res.status(200).send("Algo desconocido sucedio, intente nuevamente")
+                    }
+                })  
+            }else
+            {
+                res.status(500).send("Email no valido.")
+            }
+        }else
+        {
+            res.status(500).send("Este cliente no pertenece a su cuenta")
+        }
+    })
+
+}
+
+function UpdateAccount (req, res) 
+{  
     if ( ValidateEmail.validate(req.body.mail) == true)
     {
         db.clients_users.update(
@@ -396,17 +428,16 @@ function UpdateClient_User (req, res)
         {
             if (err)
             {
-                res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
+                res.status(404).send("Algo desconocido sucedio, intente nuevamente")
             }else
             {
-                res.sendStatus(200)
+                res.status(200).send("Cuenta actualizado con exito")
             }
         })  
     }else
     {
         res.sendStatus(500, "Email no valido.")
     }
-    
 }
 
 function UpdateUser (req, res) 
@@ -524,22 +555,9 @@ function Search_users_id (req, res)
 
 }
 
-function SearchIngredients (req, res) 
-{  
-    db.ingredientes.find({$or: [ {nombre: { $regex : req.body.text.toUpperCase() }}, {descripcion: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
-        if(err || data == "") {
-            res.sendStatus(500,"Ingrediente no encontrado")
-        }else
-        {
-            res.json(data)
-        }
-    }).sort({nombre:1});
-
-}
-
 function SearchCatProducts (req, res) 
 {  
-    db.catproducts.find({$or: [ {categoria: { $regex : req.body.text.toUpperCase() }}, {descripcion: { $regex : req.body.text.toUpperCase() }} ] }).populate('creator').exec(function(err, data) {
+    db.catproducts.find({$or: [ {categoria: { $regex : req.body.text.toUpperCase() }}, {descripcion: { $regex : req.body.text.toUpperCase() }} ] }).populate('creator').populate('last_edit').exec(function(err, data) {
         if(err || data == "") {
             res.sendStatus(500,"Categoria no encontrada")
         }else
@@ -559,17 +577,6 @@ function catproductsJson (req,res){
         	res.json(data);	
         }
     })
-};
-
-function IngredientesJson (req,res){
-    db.ingredientes.find(function(err, data) {
-        if(err) {
-            res.sendStatus(500,err);
-        }else
-        {
-            res.json(data); 
-        }
-    }).sort({categoria:1});
 };
 
 function CreateCatProduct (req, res) 
@@ -650,51 +657,8 @@ function CreateCatProductAdmin (req, res)
     
 }
 
-function CreateIngrediente (req, res) 
-{  
-    if (req.body.cantidad == mongoose.Schema.Types.Double)
-    {
-
-
-    }
-    var p = new db.ingredientes({
-        nombre: req.body.nombre.toUpperCase(),
-        descripcion: req.body.descripcion.toUpperCase(),
-        cantidad: req.body.cantidad
-        })
-
-
-        p.save(function (err, doc) {
-         if (err)
-         {
-            res.sendStatus(500, "No fue posible crear el ingrediente, intente de nuevo.")
-         }else
-         {
-            db.ingredientes.find(function(err, data) {
-                if(err) {
-                    res.sendStatus(500,err);
-                }else
-                {
-                    res.json(data); 
-                }
-            }).sort({nombre:1});
-         }
-        })  
-}
 function CatProductsEditsJson (req,res){
     db.catproducts.findOne({_id:req.params.id},function(err,doc){
-        if (doc != null)
-        {
-            res.json(doc)
-        }else
-        {
-            res.sendStatus(404);
-        }
-    });
-};
-
-function IngredientesEditsJson (req,res){
-    db.ingredientes.findOne({_id:req.params.id},function(err,doc){
         if (doc != null)
         {
             res.json(doc)
@@ -759,27 +723,6 @@ function CatproductsUpdateAdmin (req, res)
 
 }
 
-function IngredientesUpdate (req, res) 
-{  
-    db.ingredientes.update(
-        { _id : req.body._id },
-        { 
-            nombre: req.body.nombre.toUpperCase(),
-            descripcion: req.body.descripcion.toUpperCase(),
-            cantidad: req.body.cantidad
-        },
-        function( err) 
-        {
-            if (err)
-            {
-                res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
-            }else
-            {
-                res.sendStatus(200)
-            }
-        })  
-    
-}
 function DeleteCatProducts (req, res) 
 {  
     db.admin.findOne({ _id: req.session.user_id },function(err,doc){
@@ -802,22 +745,6 @@ function DeleteCatProducts (req, res)
     });
 }
 
-function DeleteIngredientes (req, res) 
-{  
-    db.ingredientes.remove(
-        { _id : req.body._id },
-        
-        function( err) 
-        {
-            if (err)
-            {
-                res.sendStatus(500, "Error, Intente nuevamente.")
-            }else
-            {
-                res.sendStatus(200)
-            }
-        })
-}
 
 function DeleteClientUser (req, res) 
 {  

@@ -148,10 +148,10 @@ app.controller("clientUpdate", function($scope, $http, $routeParams, $window)
 
     $scope.Update = function()
     {
-        $http.post('/api/clients_users/update', $scope.Client)
+        $http.post('/api/account/update', $scope.Client)
             .success(function(err) 
             {
-                pushMessage('success', 'HECHO', 'Cliente actualizado con exito', "checkmark")
+                pushMessage('success', 'HECHO', err, "checkmark")
                 $scope.Client = {};
                 $window.location = "admin_dashboard#/management_clients";
             })
