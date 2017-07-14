@@ -62,6 +62,7 @@ app.get('/api/users/values', UserValuesjson)
 app.get('/api/users/:id', UserIDLoad);
 app.get('/api/users/search/:id', Search_users_id );
 
+app.get('/api/getproducts/', getproductsJson)
 
 // Api POST
 app.post('/api/clients/add', CreateClient );
@@ -259,7 +260,15 @@ function AddProduct (req,res){
                 {
                     res.status(500).send("Error desconocido")
                 }else {
-                    res.status(200).send("Producto agregado")
+                    db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').exec(function(err, data) {
+                    if(err) {
+                        res.status(500).send(err)
+                    }else
+                    {
+                        res.status(200).json(data)
+                    }
+                })
+
                 }
         });
     }else {
@@ -615,6 +624,18 @@ function catproductsJson (req,res){
         }
     })
 };
+
+function getproductsJson (req,res){
+    db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').exec(function(err, data) {
+        if(err) {
+            res.status(500).send(err)
+        }else
+        {
+            res.json(data); 
+        }
+    })
+};
+
 
 function CreateCatProduct (req, res) 
 {  

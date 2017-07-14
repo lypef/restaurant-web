@@ -1,4 +1,35 @@
-<div class="panel info" ng-controller="products" style="width: 45%">
+<div ng-controller="products">
+    <div class="panel success" style="border: 2px solid #fff">
+                <div class="heading">
+                
+                <span class="title">Agregar producto</span>
+            
+                </div>
+                <div class="content">
+    <table class="table striped hovered">
+        <tr>
+            <th>DISPONIBLE</th>
+            <th>PRODUCTO</th>
+            <th>CATEGORIA</th>
+            <th>STOCK</th>
+        </tr>
+        <tr ng-repeat="a in products" align="center">
+            <td ng-if=" a.stock > 0 "><span class="mif-thumbs-up fg-green mif-2x"></span>
+            </td>
+            <td ng-if=" a.stock < 1 "><span class="mif-thumbs-down fg-red mif-2x"></span>
+            </td>
+            <td>{{ a.name }}</td>
+            <td>{{ a.category.categoria }}</td>
+            <td>{{ a.stock }} </td>
+        </tr>
+    </table>
+
+</div></div>
+<!-- 3 opciones -->
+<div class="flex-grid">
+    <div class="row flex-just-sa">
+        <div class="cell-auto-size">
+            <div class="panel info" style="border: 2px solid #fff;">
                 <div class="heading">
                 
                 <span class="title">Agregar producto</span>
@@ -6,13 +37,13 @@
                 <div class="content">
                 <form align="center">  
 
-		                <span>Seleccione una categoria: </span>
-		                <div class="input-control select" style="width: 30%" >
-						<select ng-model="product.category">
-						    <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
-						</select>
-						</div>
-						<br>
+                        <span>Seleccione una categoria: </span>
+                        <div class="input-control select" >
+                        <select ng-model="product.category">
+                            <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
+                        </select>
+                        </div>
+                        <br>
 
                         <div class="input-control modern text iconic" id="widthfull">
                         <input type="text" placeholder="Nombre" ng-model="product.name" class="input-full">
@@ -42,6 +73,134 @@
                         </button>
                     </form>
                     <br><br>
-	</div>
+
+    </div>
+
+</div>
+
+        </div>
+
+
+
+        <div class="cell-auto-size">
+            
+<div class="panel warning" style="border: 2px solid #fff;">
+                <div class="heading">
+                
+                <span class="title">Actualizar producto</span>
+                </div>
+                <div class="content">
+                <form align="center">  
+
+                        <span>Seleccione una categoria: </span>
+                        <div class="input-control select">
+                        <select ng-model="select.singleSelect">
+                            <option value="option-1">Option 1</option>
+                            <option ng-repeat=" a in products" value="{{ a._id }}">{{a.name}}</option>
+                        </select>
+                        </div>
+                        singleSelect = {{data.singleSelect}}
+                        <br>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Nombre" ng-model="product.name" class="input-full" >
+                        <span class="label">Nombre</span>
+                        <span class="informer"></span>
+                        <span class="icon mif-stack3"></span>
+                        </div>
+                        
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Descripcion" ng-model="product.description" class="input-full" >
+                        <span class="label">Descripcion</span>
+                        <span class="informer"></span>
+                        <span class="icon mif-paragraph-left"></span>
+                        </div>
+                        
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="number" placeholder="Stock" ng-model="product.stock" class="input-full" >
+                        <span class="label">Stock</span>
+                        <span class="informer"></span>
+                        <span class="icon mif-list-numbered"></span>
+                        </div>
+
+                        <br><br>
+                        
+                        <button class="button success loading-pulse" ng-click="create()">
+                        Actualizar
+                        </button>
+                        <button class="button danger loading-pulse" ng-click="create()">
+                        Eliminar
+                        </button>
+                    </form>
+                    <br><br>
+
+    </div>
+
+</div>
+
+
+
+        </div>
+
+
+
+
+        <div class="cell-auto-size">
+            
+            <div class="panel info" style="border: 2px solid #fff;">
+                <div class="heading">
+                
+                <span class="title">Consultar producto</span>
+                </div>
+                <div class="content">
+                <form align="center">  
+
+                        <span>Seleccione una categoria: </span>
+                        <div class="input-control select" style="width: 30%" >
+                        <select ng-model="product.category">
+                            <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
+                        </select>
+                        </div>
+                        <br>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Nombre" ng-model="product.name" class="input-full">
+                        <span class="label">Nombre</span>
+                        <span class="informer"></span>
+                        <span class="icon mif-stack3"></span>
+                        </div>
+                        
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Descripcion" ng-model="product.description" class="input-full" >
+                        <span class="label">Descripcion</span>
+                        <span class="informer"></span>
+                        <span class="icon mif-paragraph-left"></span>
+                        </div>
+                        
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="number" placeholder="Stock" ng-model="product.stock" class="input-full" >
+                        <span class="label">Stock</span>
+                        <span class="informer"></span>
+                        <span class="icon mif-list-numbered"></span>
+                        </div>
+
+                        <br><br>
+                        
+                        <button class="button info loading-pulse" ng-click="create()">
+                        ok
+                        </button>
+                    </form>
+                    <br><br>
+
+    </div>
+
+</div>
+
+
+
+        </div>
+        
+    </div>
+</div>
 
 </div>

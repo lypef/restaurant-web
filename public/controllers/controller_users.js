@@ -213,8 +213,14 @@ app.controller("products", function($scope, $http){
     $http.defaults.headers.common['x-access-token']=token;
     
     $scope.product = {};
+    $scope.products = {};
     $scope.categories = {};
 
+    $scope.select = {
+        singleSelect: null,
+        option1: 'option-1'
+    }
+    
     $http.get('/api/catproducts/')
         .success(function(data) {
             $scope.categories = data;
@@ -222,12 +228,20 @@ app.controller("products", function($scope, $http){
         .error(function(data) {
             pushMessage('alert','ERROR',data, "cross")
     });
-
+    
+    $http.get('/api/getproducts/')
+        .success(function(data) {
+            $scope.products = data;
+        })
+        .error(function(data) {
+            pushMessage('alert','ERROR',data, "cross")
+    });
 
     $scope.create = function(){
 
         $http.post('/api/products/add', $scope.product)
             .success(function(data) {
+                $scope.products = data
                 $scope.product = {}
                 pushMessage('success', 'HECHO', 'Categoria agregada', "checkmark")
             })
