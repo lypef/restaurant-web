@@ -215,12 +215,9 @@ app.controller("products", function($scope, $http){
     $scope.product = {};
     $scope.products = {};
     $scope.categories = {};
+    $scope.select = {}
+    $scope.show = {}
 
-    $scope.select = {
-        singleSelect: null,
-        option1: 'option-1'
-    }
-    
     $http.get('/api/catproducts/')
         .success(function(data) {
             $scope.categories = data;
@@ -237,6 +234,37 @@ app.controller("products", function($scope, $http){
             pushMessage('alert','ERROR',data, "cross")
     });
 
+    $scope.ok = function ()
+    {
+        $scope.show = {}
+    }
+    
+    $scope.LoadValuesEdit = function(){
+
+        $http.get('/api/getproducts/' + $scope.select.select)
+            .success(function(data) {
+                console.log(data)
+                $scope.select = data
+                pushMessage('warning', 'HECHO', 'Producto encontrado', "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            });
+    };
+
+    $scope.LoadValuesShow = function(){
+
+        $http.get('/api/getproducts/' + $scope.show.select)
+            .success(function(data) {
+                console.log(data)
+                $scope.show = data
+                pushMessage('info', 'HECHO', 'Producto encontrado', "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            });
+    };
+
     $scope.create = function(){
 
         $http.post('/api/products/add', $scope.product)
@@ -249,6 +277,31 @@ app.controller("products", function($scope, $http){
                 pushMessage('alert','ERROR',msg, "cross")
             });
     }; 
+
+    $scope.update = function(){
+        $http.post('/api/updateproducts', $scope.select)
+            .success(function(data) {
+                $scope.products = data;
+                $scope.select = {}
+                pushMessage('success', 'HECHO', 'Producto actualizado', "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            });
+    };
+
+    $scope.delete = function(){
+
+        $http.post('/api/deleteproducts', $scope.select)
+            .success(function(data) {
+                $scope.products = data
+                $scope.select = {}
+                pushMessage('success', 'HECHO', 'Producto eliminado', "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            });
+    };
 
     $scope.SearchCatProduct = function(){
         $scope.inputbox

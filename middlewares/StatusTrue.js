@@ -5,7 +5,6 @@ module.exports = function(req,res,next)
 	if (req.session.clients)
 	{
 		db.clients_users.findOne({_id: req.session.admin},function(err,doc){
-			console.log ('Cuenta:' + doc);
 			if (doc.status)
 			{
 				next();

@@ -63,6 +63,7 @@ app.get('/api/users/:id', UserIDLoad);
 app.get('/api/users/search/:id', Search_users_id );
 
 app.get('/api/getproducts/', getproductsJson)
+app.get('/api/getproducts/:id', getProductID)
 
 // Api POST
 app.post('/api/clients/add', CreateClient );
@@ -89,6 +90,8 @@ app.post('/api/users/delete', DeleteUser );
 app.post('/api/users/update', UpdateUser );
 
 app.post('/api/products/add', AddProduct);
+app.post('/api/updateproducts', UpdateProduct)
+app.post('/api/deleteproducts', DeleteProduct );
 
 //Funciones
 function Inicio (req, res) 
@@ -508,6 +511,35 @@ function UpdateUser (req, res)
         })  
 }
 
+function UpdateProduct (req, res) 
+{  
+    db.products.update(
+        { _id : req.body._id, admin: req.session.admin },
+        { 
+            name: req.body.name.toUpperCase(),
+            description: req.body.description.toUpperCase(),
+            stock: req.body.stock,
+            category: req.body.category
+        },
+        function( err) 
+        {
+            if (err)
+            {
+                res.status(404).send("Algo desconocido sucedio, intente nuevamente")
+            }else
+            {
+                db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').exec(function(err, data) {
+                    if(err) {
+                        res.status(500).send(err)
+                    }else
+                    {
+                        res.json(data); 
+                    }
+                })
+            }
+        })  
+}
+
 function DeleteClient (req, res) 
 {  
 	if (req.body.admin == req.session.admin)
@@ -544,6 +576,30 @@ function DeleteUser (req, res)
             }else
             {
                 res.sendStatus(200)
+            }
+        })
+}
+
+function DeleteProduct (req, res) 
+{  
+    db.products.remove(
+        { _id : req.body._id, admin: req.session.admin },
+        
+        function( err) 
+        {
+            if (err)
+            {
+                res.status(500).send("Error, Intente nuevamente.")
+            }else
+            {
+                db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').exec(function(err, data) {
+                    if(err) {
+                        res.status(500).send(err)
+                    }else
+                    {
+                        res.json(data); 
+                    }
+                })
             }
         })
 }
@@ -636,6 +692,19 @@ function getproductsJson (req,res){
     })
 };
 
+function getProductID (req, res)
+{
+    db.products.findOne({_id: req.params.id , admin: req.session.admin},function(err,doc){
+        if (doc != null)
+        {
+            console.log(doc)
+            res.json(doc)
+        }else
+        {
+            res.status(404).send('Producto no encontrado');
+        }
+    })
+}
 
 function CreateCatProduct (req, res) 
 {  
