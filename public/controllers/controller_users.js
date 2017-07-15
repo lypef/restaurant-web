@@ -238,7 +238,7 @@ app.controller("products", function($scope, $http){
     {
         $scope.show = {}
     }
-    
+
     $scope.LoadValuesEdit = function(){
 
         $http.get('/api/getproducts/' + $scope.select.select)
@@ -256,7 +256,6 @@ app.controller("products", function($scope, $http){
 
         $http.get('/api/getproducts/' + $scope.show.select)
             .success(function(data) {
-                console.log(data)
                 $scope.show = data
                 pushMessage('info', 'HECHO', 'Producto encontrado', "checkmark")
             })
