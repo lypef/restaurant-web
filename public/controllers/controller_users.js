@@ -22,6 +22,12 @@ app.config(function($routeProvider){
         .when('/products', {
             templateUrl : '/clients_users/products/index.html'
         })
+        .when('/recetas', {
+            templateUrl : '/clients_users/recetas/index.html'
+        })
+        .when('/ingredientes', {
+            templateUrl : '/clients_users/recetas/index.html'
+        })
         .otherwise({
             redirectTo : '/'
         })
@@ -243,7 +249,6 @@ app.controller("products", function($scope, $http){
 
         $http.get('/api/getproducts/' + $scope.select.select)
             .success(function(data) {
-                console.log(data)
                 $scope.select = data
                 pushMessage('warning', 'HECHO', 'Producto encontrado', "checkmark")
             })
@@ -311,6 +316,92 @@ app.controller("products", function($scope, $http){
             })
             .error(function(msg) {
                 pushMessage('info','NOT FOUND',msg, "question")
+            });
+    };  
+})
+
+app.controller("ingredients", function($scope, $http){
+    
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.ingredient = {};
+    $scope.ingredients = {};
+    $scope.select = {}
+    $scope.show = {}
+    $scope.IngredientUpdate = {}
+
+    
+    $http.get('/api/getingredients/')
+        .success(function(data) {
+            $scope.ingredients = data;
+            $scope.IngredientUpdate = data
+        })
+        .error(function(data) {
+            pushMessage('alert','ERROR',data, "cross")
+    });
+
+    $scope.LoadValuesEdit = function(){
+
+        $http.get('/api/getingredients/' + $scope.select.select)
+            .success(function(data) {
+                $scope.select = data
+                pushMessage('warning', 'HECHO', 'Ingrediente encontrado', "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            });
+    };
+
+    $scope.create = function(){
+
+        $http.post('/api/add_ingredient', $scope.ingredient)
+            .success(function(data) {
+                $scope.ingredients = data
+                $scope.IngredientUpdate = data
+                $scope.ingredient = {}
+                pushMessage('success', 'HECHO', 'Ingrediente agregada', "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            });
+    }; 
+
+    $scope.update = function(){
+        $http.post('/api/update_ingredient', $scope.select)
+            .success(function(data) {
+                $scope.ingredients = data;
+                $scope.select = {}
+                pushMessage('success', 'HECHO', 'Producto actualizado', "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            });
+    };
+
+    $scope.delete = function(){
+
+        $http.post('/api/ingredient/delete', $scope.select)
+            .success(function(data) {
+                $scope.ingredients = data;
+                $scope.IngredientUpdate = data
+                $scope.select = {}
+                pushMessage('success', 'HECHO', 'Producto eliminado', "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            });
+    };
+
+    $scope.search = function(){
+        $scope.inputbox
+        $http.post('/api/ingredient/search', $scope.inputbox)
+            .success(function(data) {
+                $scope.inputbox = {}
+                $scope.ingredients = data;
+                pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('danger','NOT FOUND',msg, "question")
             });
     };  
 })

@@ -65,6 +65,9 @@ app.get('/api/users/search/:id', Search_users_id );
 app.get('/api/getproducts/', getproductsJson)
 app.get('/api/getproducts/:id', getProductID)
 
+app.get('/api/getingredients/', getIngredientsJson)
+app.get('/api/getingredients/:id', getIngredientID)
+
 // Api POST
 app.post('/api/clients/add', CreateClient );
 app.post('/api/client/update', UpdateClientAdmin );
@@ -92,6 +95,11 @@ app.post('/api/users/update', UpdateUser );
 app.post('/api/products/add', AddProduct);
 app.post('/api/updateproducts', UpdateProduct)
 app.post('/api/deleteproducts', DeleteProduct );
+
+app.post('/api/add_ingredient', AddIngredient);
+app.post('/api/ingredient/search', SearchIngredients )
+app.post('/api/update_ingredient', UpdateIngredient)
+app.post('/api/ingredient/delete', DeleteIngredient );
 
 //Funciones
 function Inicio (req, res) 
@@ -264,6 +272,47 @@ function AddProduct (req,res){
                     res.status(500).send("Error desconocido")
                 }else {
                     db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').exec(function(err, data) {
+                    if(err) {
+                        res.status(500).send(err)
+                    }else
+                    {
+                        res.status(200).json(data)
+                    }
+                })
+
+                }
+        });
+    }else {
+        res.status(500).send("Verifique su informacion")
+    }
+};
+
+function AddIngredient (req,res){
+    var tmp = req.body.kg;
+    if (tmp == null || tmp == false)
+    {   
+        tmp = false
+    }else {
+        tmp = true
+    }
+
+    if (req.body.name != null)
+    {
+        var p = new db.ingredients(
+        {
+            
+
+            name: req.body.name.toUpperCase(),
+            kilogramo: tmp,
+            stock: req.body.stock,
+            admin: req.session.admin
+        });
+        p.save(function(err){
+                if (err)
+                {
+                    res.status(500).send("Error desconocido")
+                }else {
+                    db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').exec(function(err, data) {
                     if(err) {
                         res.status(500).send(err)
                     }else
@@ -540,6 +589,34 @@ function UpdateProduct (req, res)
         })  
 }
 
+function UpdateIngredient (req, res) 
+{  
+    db.ingredients.update(
+        { _id : req.body._id, admin: req.session.admin },
+        { 
+            name: req.body.name.toUpperCase(),
+            stock: req.body.stock,
+            kilogramo: req.body.kg
+        },
+        function( err) 
+        {
+            if (err)
+            {
+                res.status(404).send("Algo desconocido sucedio, intente nuevamente")
+            }else
+            {
+                db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').exec(function(err, data) {
+                    if(err) {
+                        res.status(500).send(err)
+                    }else
+                    {
+                        res.json(data); 
+                    }
+                })
+            }
+        })  
+}
+
 function DeleteClient (req, res) 
 {  
 	if (req.body.admin == req.session.admin)
@@ -593,6 +670,30 @@ function DeleteProduct (req, res)
             }else
             {
                 db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').exec(function(err, data) {
+                    if(err) {
+                        res.status(500).send(err)
+                    }else
+                    {
+                        res.json(data); 
+                    }
+                })
+            }
+        })
+}
+
+function DeleteIngredient (req, res) 
+{  
+    db.ingredients.remove(
+        { _id : req.body._id, admin: req.session.admin },
+        
+        function( err) 
+        {
+            if (err)
+            {
+                res.status(500).send("Error, Intente nuevamente.")
+            }else
+            {
+                db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').exec(function(err, data) {
                     if(err) {
                         res.status(500).send(err)
                     }else
@@ -670,6 +771,19 @@ function SearchCatProducts (req, res)
 
 }
 
+function SearchIngredients (req, res) 
+{  
+    db.ingredients.find({$or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }, function(err, data) {
+        if(err || data == "") {
+            res.status(500).send("Ingrediente no encontrada")
+        }else
+        {
+            res.json(data)
+        }
+    })
+
+}
+
 function catproductsJson (req,res){
 	db.catproducts.find().sort({categoria:1}).populate('creator').populate('last_edit').exec(function(err, data) {
         if(err) {
@@ -692,16 +806,39 @@ function getproductsJson (req,res){
     })
 };
 
+function getIngredientsJson (req,res){
+    db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').exec(function(err, data) {
+        if(err) {
+            res.status(500).send(err)
+        }else
+        {
+            res.json(data); 
+        }
+    })
+};
+
 function getProductID (req, res)
 {
     db.products.findOne({_id: req.params.id , admin: req.session.admin},function(err,doc){
         if (doc != null)
         {
-            console.log(doc)
             res.json(doc)
         }else
         {
             res.status(404).send('Producto no encontrado');
+        }
+    })
+}
+
+function getIngredientID (req, res)
+{
+    db.ingredients.findOne({_id: req.params.id , admin: req.session.admin},function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
+        }else
+        {
+            res.status(404).send('Ingredient no encontrado');
         }
     })
 }

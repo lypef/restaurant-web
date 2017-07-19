@@ -1,72 +1,36 @@
-<div ng-controller="products">
-    <div class="panel success" style="border: 2px solid #fff">
-                <div class="heading">
-                
-                <span class="title">Agregar producto</span>
-            
-                </div>
-                <div class="content">
-    <table class="table striped hovered">
-        <tr>
-            <th>DISPONIBLE</th>
-            <th>PRODUCTO</th>
-            <th>CATEGORIA</th>
-            <th>STOCK</th>
-        </tr>
-        <tr ng-repeat="a in products" align="center" ng-model="products" >
-            <td ng-if=" a.stock > 0 "><span class="mif-thumbs-up fg-green mif-2x"></span>
-            </td>
-            <td ng-if=" a.stock < 1 "><span class="mif-thumbs-down fg-red mif-2x"></span>
-            </td>
-            <td>{{ a.name }}</td>
-            <td>{{ a.category.categoria }}</td>
-            <td>{{ a.stock }} </td>
-        </tr>
-    </table>
-
-</div></div>
-<!-- 3 opciones -->
-<div class="flex-grid">
+<div ng-controller="ingredients">        
+    
+<!-- Crud -->
+<div class="grid">
     <div class="row flex-just-sa">
         <div class="cell-auto-size">
             <div class="panel info" style="border: 2px solid #fff;">
                 <div class="heading">
                 
-                <span class="title">Agregar producto</span>
+                <span class="title">Nuevo ingrediente</span>
                 </div>
                 <div class="content">
                 <form align="center">  
 
                         
-                        <div class="input-control select" >
-                        <select ng-model="product.category">
-                            <option value="">---Cetagorias---</option>
-                            <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
-                        </select>
-                        </div>
-                        <br>
-
                         <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Nombre" ng-model="product.name" class="input-full">
-                        <span class="label">Nombre</span>
+                        <input type="text" placeholder="Nombre" ng-model="ingredient.name" class="input-full">
                         <span class="informer"></span>
                         <span class="icon mif-stack3"></span>
                         </div>
-                        
+
                         <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Descripcion" ng-model="product.description" class="input-full" >
-                        <span class="label">Descripcion</span>
+                        <input type="text" placeholder="Existente" ng-model="ingredient.stock" class="input-full">
                         <span class="informer"></span>
-                        <span class="icon mif-paragraph-left"></span>
-                        </div>
-                        
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="number" placeholder="Stock" ng-model="product.stock" class="input-full" >
-                        <span class="label">Stock</span>
-                        <span class="informer"></span>
-                        <span class="icon mif-list-numbered"></span>
+                        <span class="icon mif-stack3"></span>
                         </div>
 
+                        <br><br><br>
+                        <label class="switch-original">
+						    <input type="checkbox" ng-model="ingredient.kg">Kilogramos
+						    <span class="check"></span>
+						</label>
+                       
                         <br><br><br><br><br>
                         
                         <button class="button success loading-pulse" ng-click="create()">
@@ -80,53 +44,74 @@
 </div>
 
         </div>
+<div class="cell-auto-size" style="width: 100%">
+	
+<div class="panel success" style="border: 2px solid #fff">
+                <div class="heading">
+                
+                <span class="title">Ingredientes</span>
+            
+                </div>
+                <div class="content">
 
+                <form >
+                	<div class="input-control text " data-role="input" style="width: 100%">
+        
+        		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar">
+        
+        		<button class="button" ng-click="search()"><span class="mif-search"></span></button></div>
+                </form>
 
+    <table class="table striped hovered">
+        <tr>
+            <th>Ingrediente</th>
+            <th>Existente</th>
+        </tr>
+        <tr ng-repeat="a in ingredients" align="center" ng-model="ingredients" >
+            <td>{{ a.name }}</td>
+            <td ng-if= " a.kilogramo == true ">{{ a.stock }} kg</td>
+            <td ng-if= " a.kilogramo == false ">{{ a.stock / 1000}} kg</td>
+        </tr>
+    </table>
+
+</div></div>
+</div>
 
         <div class="cell-auto-size">
             
 <div class="panel warning" style="border: 2px solid #fff;">
                 <div class="heading">
                 
-                <span class="title">Actualizar producto: {{ select.name.substring(0, 17) }}</span>
+                <span class="title">Actualizar ingrediente</span>
                 </div>
                 <div class="content">
                 <form align="center" >  
 
                         <div class="input-control select">
                         <select ng-model="select.select"  ng-change="LoadValuesEdit()">
-                            <option value="">---Productos---</option>
-                            <option ng-repeat=" a in products" value="{{ a._id }}">{{a.name}}</option>
-                        </select>
-                        </div>
-                        <br>
-                        <div class="input-control select" >
-                        <select ng-model="select.category">
-                            <option value="">---Categorias---</option>
-                            <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
+                            <option value="">---Ingredientes---</option>
+                            <option ng-repeat=" a in IngredientUpdate" value="{{ a._id }}">{{a.name}}</option>
                         </select>
                         </div>
                         <br>
                         <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Nombre" ng-model="select.name" class="input-full" >
+                        <input type="text" placeholder="Nombre" ng-model="select.name" class="input-full">
                         <span class="label">Nombre</span>
                         <span class="informer"></span>
                         <span class="icon mif-stack3"></span>
                         </div>
-                        
+
                         <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Descripcion" ng-model="select.description" class="input-full" >
-                        <span class="label">Descripcion</span>
+                        <input type="text" placeholder="Existente" ng-model="select.stock" class="input-full">
                         <span class="informer"></span>
-                        <span class="icon mif-paragraph-left"></span>
+                        <span class="icon mif-stack3"></span>
                         </div>
-                        
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="number" placeholder="Stock" ng-model="select.stock" class="input-full" >
-                        <span class="label">Stock</span>
-                        <span class="informer"></span>
-                        <span class="icon mif-list-numbered"></span>
-                        </div>
+
+                        <br><br><br>
+                        <label class="switch-original">
+						    <input type="checkbox" ng-model="select.kg">Kilogramos
+						    <span class="check"></span>
+						</label>
 
                         <br><br>
                         
@@ -161,9 +146,8 @@
         <font face="Segoe UI">
             NOMBRE: {{select.name}}
             <br>
-            DESCRIPCION: {{select.descripcion}}
-            <br>
-            STOCK: {{select.stock}}
+            <span ng-if= "select.kilogramo == true">UNIDAD DE MEDIDA: KILOGRAMOS</span>
+            <span ng-if= "select.kilogramo == false">UNIDAD DE MEDIDA: GRAMOS</span>
         </font>    
             
         </p>
@@ -184,8 +168,14 @@
                 <span class="tile-label">Generar reporte</span>
         </div>
         
-        
         <div class="tile bg-amber fg-white cell-auto-size" data-role="tile" onclick="document.location.href='admin_dashboard#/add_client', hideMetroDialog('#clients')">
+                <div class="tile-content iconic">
+                    <span class="icon mif-list2"></span>
+                </div>
+                <span class="tile-label">Listar escasos</span>
+        </div>
+
+        <div class="tile bg-green fg-white cell-auto-size" data-role="tile" onclick="document.location.href='admin_dashboard#/add_client', hideMetroDialog('#clients')">
                 <div class="tile-content iconic">
                     <span class="icon mif-plus"></span>
                 </div>
@@ -200,7 +190,14 @@
                 <span class="tile-label">Convertir a gramos</span>
         </div>
 
-        
+        <div class="tile bg-crimson fg-white cell-auto-size" data-role="tile" onclick="document.location.href='admin_dashboard#/add_client', hideMetroDialog('#clients')">
+                <div class="tile-content iconic">
+                    <span class="icon mif-not"></span>
+                </div>
+                <span class="tile-label">Eliminar todos</span>
+        </div>
+
+
     </div>
 </div>
 </div>
