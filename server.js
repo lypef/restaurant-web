@@ -596,7 +596,7 @@ function UpdateIngredient (req, res)
         { 
             name: req.body.name.toUpperCase(),
             stock: req.body.stock,
-            kilogramo: req.body.kg
+            kilogramo: req.body.kilogramo
         },
         function( err) 
         {
