@@ -68,6 +68,9 @@ app.get('/api/getproducts/:id', getProductID)
 app.get('/api/getingredients/', getIngredientsJson)
 app.get('/api/getingredients/:id', getIngredientID)
 
+app.get('/api/get_measurements/', GetMeasurementsJSON)
+app.get('/api/get_measurements/:id', GetMeasuremetsJSON_ID)
+
 // Api POST
 app.post('/api/clients/add', CreateClient );
 app.post('/api/client/update', UpdateClientAdmin );
@@ -99,7 +102,11 @@ app.post('/api/deleteproducts', DeleteProduct );
 app.post('/api/add_ingredient', AddIngredient);
 app.post('/api/ingredient/search', SearchIngredients )
 app.post('/api/update_ingredient', UpdateIngredient)
-app.post('/api/ingredient/delete', DeleteIngredient );
+app.post('/api/ingredient/delete', DeleteIngredient )
+
+app.post('/api/measurement/add', CreateMeasurement )
+app.post('/api/measurementucts/update', UpdateMeasurements )
+app.post('/api/measurementucts/delete', DeleteMeasuremeants )
 
 //Funciones
 function Inicio (req, res) 
@@ -288,23 +295,13 @@ function AddProduct (req,res){
 };
 
 function AddIngredient (req,res){
-    var tmp = req.body.kg;
-    if (tmp == null || tmp == false)
-    {   
-        tmp = false
-    }else {
-        tmp = true
-    }
-
     if (req.body.name != null)
     {
         var p = new db.ingredients(
         {
-            
-
             name: req.body.name.toUpperCase(),
-            kilogramo: tmp,
             stock: req.body.stock,
+            measurements: req.body.measurements,
             admin: req.session.admin
         });
         p.save(function(err){
@@ -312,7 +309,7 @@ function AddIngredient (req,res){
                 {
                     res.status(500).send("Error desconocido")
                 }else {
-                    db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').exec(function(err, data) {
+                    db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').populate('measurements').exec(function(err, data) {
                     if(err) {
                         res.status(500).send(err)
                     }else
@@ -596,7 +593,7 @@ function UpdateIngredient (req, res)
         { 
             name: req.body.name.toUpperCase(),
             stock: req.body.stock,
-            kilogramo: req.body.kilogramo
+            measurements: req.body.measurements._id
         },
         function( err) 
         {
@@ -605,7 +602,7 @@ function UpdateIngredient (req, res)
                 res.status(404).send("Algo desconocido sucedio, intente nuevamente")
             }else
             {
-                db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').exec(function(err, data) {
+                db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').populate('measurements').exec(function(err, data) {
                     if(err) {
                         res.status(500).send(err)
                     }else
@@ -693,7 +690,7 @@ function DeleteIngredient (req, res)
                 res.status(500).send("Error, Intente nuevamente.")
             }else
             {
-                db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').exec(function(err, data) {
+                db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').populate('measurements').exec(function(err, data) {
                     if(err) {
                         res.status(500).send(err)
                     }else
@@ -703,6 +700,23 @@ function DeleteIngredient (req, res)
                 })
             }
         })
+}
+
+function DeleteMeasuremeants (req, res) 
+{  
+    db.measurements.remove(
+    { _id : req.body._id },
+    
+    function( err) 
+    {
+        if (err)
+        {
+            res.status(500).send("Error, Intente nuevamente.")
+        }else
+        {
+            res.status(200).send('Eliminado')
+        }
+    })
 }
 
 function SearchClient (req, res) 
@@ -773,7 +787,7 @@ function SearchCatProducts (req, res)
 
 function SearchIngredients (req, res) 
 {  
-    db.ingredients.find({$or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }, function(err, data) {
+    db.ingredients.find({$or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).populate('measurements').exec(function(err, data) {
         if(err || data == "") {
             res.status(500).send("Ingrediente no encontrada")
         }else
@@ -795,6 +809,17 @@ function catproductsJson (req,res){
     })
 };
 
+function GetMeasurementsJSON (req,res){
+    db.measurements.find(function(err, data) {
+        if(err) {
+            res.status(500).send('Error desconocido');
+        }else
+        {
+            res.json(data); 
+        }
+    }).sort({name:1})
+}
+
 function getproductsJson (req,res){
     db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').exec(function(err, data) {
         if(err) {
@@ -807,7 +832,7 @@ function getproductsJson (req,res){
 };
 
 function getIngredientsJson (req,res){
-    db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').exec(function(err, data) {
+    db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').populate('measurements').exec(function(err, data) {
         if(err) {
             res.status(500).send(err)
         }else
@@ -830,9 +855,22 @@ function getProductID (req, res)
     })
 }
 
+function GetMeasuremetsJSON_ID (req, res)
+{
+    db.measurements.findOne({_id: req.params.id},function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
+        }else
+        {
+            res.status(404).send('Producto no encontrado');
+        }
+    })
+}
+
 function getIngredientID (req, res)
 {
-    db.ingredients.findOne({_id: req.params.id , admin: req.session.admin},function(err,doc){
+    db.ingredients.findOne({_id: req.params.id , admin: req.session.admin}).populate('measurements').exec(function(err,doc){
         if (doc != null)
         {
             res.json(doc)
@@ -921,6 +959,42 @@ function CreateCatProductAdmin (req, res)
     
 }
 
+function CreateMeasurement (req, res) 
+{  
+    if (req.body.name != null && req.body.namefast != null)
+    {
+            db.admin.findOne({ _id: req.session.user_id },function(err,doc){
+            if (doc)
+            {
+                var p = new db.measurements({
+                name: req.body.name.toUpperCase(),
+                namefast: req.body.namefast.toUpperCase()
+
+                })
+
+
+                p.save(function (err1, doc1) {
+                 if (err1)
+                 {
+                    res.status(500).send("No fue posible crear la cetegoria, intente de nuevo.")
+                 }else
+                 {
+                    res.status(200).send("Unidad de medida agregada")
+                 }
+                })  
+
+        }
+        else{
+            res.status(500).send("Usuario no valido")
+        }
+    });
+
+    }else {
+        res.status(500).send("Verifique su informacion")
+    }
+    
+}
+
 function CatProductsEditsJson (req,res){
     db.catproducts.findOne({_id:req.params.id},function(err,doc){
         if (doc != null)
@@ -985,6 +1059,26 @@ function CatproductsUpdateAdmin (req, res)
         }
     });
 
+}
+
+function UpdateMeasurements (req, res) 
+{  
+    db.measurements.update(
+    { _id : req.body._id },
+    { 
+        name: req.body.name.toUpperCase(),
+        namefast: req.body.namefast.toUpperCase()
+    },
+    function( err) 
+    {
+        if (err)
+        {
+            res.status(404).send("Algo desconocido sucedio, intente nuevamente")
+        }else
+        {
+            res.status(200).send("actualizado")
+        }
+    })  
 }
 
 function DeleteCatProducts (req, res) 

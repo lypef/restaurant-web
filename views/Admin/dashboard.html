@@ -102,12 +102,24 @@
             <li>
             <a onclick="toggleMetroDialog('#users')"><span class="mif-users mif-2x"></span> Usuarios</a>
             </li>
-
+            
             <li>
-            <a onclick="toggleMetroDialog('#products')"><span class="mif-stack3 mif-2x"></span> Categorias</a>
-            </li>
+            <a href="" class="dropdown-toggle"><span class="mif-earth mif-2x"></span> Globales</a>
+            <ul class="d-menu" data-role="dropdown">
+                <li class="divider"></li>
+                <li><a href="" class="dropdown-toggle"><span class="mif-stack2 mif-2x"></span> Categorias</a>
+                    <ul class="d-menu" data-role="dropdown">
+                        <li><a href="admin_dashboard#/manager_category">Gestionar</a></li>
+                        <li><a href="admin_dashboard#/manager_category/add">Agregar</a></li>
+                    </ul>
+                </li>
+                <li class="divider"></li>
+                <li><a href="admin_dashboard#/manager_measurement"><span class="mif-stack2 mif-2x"></span> U. Medidas</a></li>
+                
+            </ul>
+        </li>
 
-            <li><a href=""><span class="mif-clipboard mif-2x"></span> Registros</a></li>
+        <li><a href=""><span class="mif-clipboard mif-2x"></span> Registros</a></li>
             
             <li><a href=""><span class="mif-money mif-2x"></span> Pagos</a></li>
         </ul>
@@ -212,32 +224,6 @@
         </div>
 </div>
 
-<div 
-    data-place = "top-left"
-    data-role="dialog" 
-    class="padding30"
-    data-type="" 
-    data-close-button="true"
-    data-width="auto"
-    data-overlay="true"
-     id="products">
-    <div class="tile-container">
-
-        <div class="tile bg-emerald fg-white" data-role="tile"  onclick="document.location.href='admin_dashboard#/manager_category', hideMetroDialog('#products')">
-                <div class="tile-content iconic">
-                    <span class="icon mif-chart-line"></span>
-                </div>
-                <span class="tile-label">Gestionar categorias</span>
-        </div>
-       
-
-        <div class="tile bg-yellow fg-white" data-role="tile" onclick="document.location.href='admin_dashboard#/manager_category/add', hideMetroDialog('#products')">
-                <div class="tile-content iconic">
-                    <span class="icon mif-plus"></span>
-                </div>
-                <span class="tile-label">Agregar categoria</span>
-        </div>
-</div>
 
 </div>
 

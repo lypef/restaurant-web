@@ -34,6 +34,9 @@ app.config(function($routeProvider){
         .when('/manager_category/:id', {
             templateUrl : '/Admin/category/update_category.html'
         })
+        .when('/manager_measurement', {
+            templateUrl : '/Admin/measurement/index.html'
+        })
         .otherwise({
             redirectTo : '/'
         })
@@ -413,4 +416,103 @@ app.controller("UpdateCatproducts", function($scope, $http, $routeParams, $windo
                 pushMessage('alert','ERROR', msg, "cross")
             })
     };  
+})
+
+
+app.controller("measurement", function($scope, $http, $routeParams, $window)
+{
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.measurement = {};  
+    $scope.measurements = {};  
+    $scope.measurementsID = {};  
+    $scope.select = {};  
+
+
+    $http.get('/api/get_measurements/')
+        .success(function(data) 
+        {
+            $scope.measurements = data;
+            $scope.select = data;
+        })
+        .error(function(data) 
+        {
+            pushMessage('alert','ERROR', 'Error')
+        });
+
+    $scope.update = function()
+    {
+        $http.post('/api/measurementucts/update', $scope.measurementsID)
+            .success(function(doc) 
+            {
+                pushMessage('success', 'HECHO', doc, "checkmark")
+
+                $http.get('/api/get_measurements/')
+                .success(function(data) 
+                {
+                    $scope.measurements = data;
+                    $scope.select = data;
+                })
+                
+                $scope.measurementsID = {}
+            })
+            .error(function(msg) 
+            {
+                pushMessage('alert','ERROR', msg, "cross")
+            })
+    }  
+
+    
+    $scope.create = function()
+    {
+        $http.post('/api/measurement/add', $scope.measurement)
+            .success(function(err) 
+            {
+                $http.get('/api/get_measurements/')
+                    .success(function(data) 
+                    {
+                        $scope.measurements = data
+                        $scope.select = data
+                    })
+                pushMessage('success', 'HECHO', err, "checkmark")
+                $scope.measurement = {};
+            })
+            .error(function(msg) 
+            {
+                pushMessage('alert','ERROR', msg, "cross")
+            })
+    };  
+
+    $scope.delete = function ()
+    {
+        $http.post('/api/measurementucts/delete', $scope.measurementsID)
+        .success(function(err) 
+        {
+            $http.get('/api/get_measurements/')
+                .success(function(data) 
+                {
+                    $scope.measurements = data
+                    $scope.select = data
+                    $scope.measurementsID = {}
+                })
+            pushMessage('success', 'HECHO', err, "checkmark")
+            $scope.measurement = {};
+        })
+        .error(function(msg) 
+        {
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+    }
+
+    $scope.LoadValuesEdit = function(){
+
+        $http.get('/api/get_measurements/' + $scope.select.select)
+            .success(function(data) {
+                $scope.measurementsID = data
+                pushMessage('warning', 'HECHO', 'Unidad encontrada', "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            });
+    };
 })

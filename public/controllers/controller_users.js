@@ -22,11 +22,8 @@ app.config(function($routeProvider){
         .when('/products', {
             templateUrl : '/clients_users/products/index.html'
         })
-        .when('/recetas', {
-            templateUrl : '/clients_users/recetas/index.html'
-        })
         .when('/ingredientes', {
-            templateUrl : '/clients_users/recetas/index.html'
+            templateUrl : '/clients_users/ingredients/index.html'
         })
         .otherwise({
             redirectTo : '/'
@@ -329,6 +326,7 @@ app.controller("ingredients", function($scope, $http){
     $scope.select = {}
     $scope.show = {}
     $scope.IngredientUpdate = {}
+    $scope.measuremeants = {}
 
     
     $http.get('/api/getingredients/')
@@ -339,6 +337,14 @@ app.controller("ingredients", function($scope, $http){
         .error(function(data) {
             pushMessage('alert','ERROR',data, "cross")
     });
+
+    $http.get('/api/get_measurements/')
+        .success(function(data) {
+            $scope.measuremeants = data
+        })
+        .error(function(data) {
+            pushMessage('alert','ERROR',data, "cross")
+    });    
 
     $scope.LoadValuesEdit = function(){
 

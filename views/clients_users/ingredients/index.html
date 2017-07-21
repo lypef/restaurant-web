@@ -25,13 +25,17 @@
                         <span class="icon mif-stack3"></span>
                         </div>
 
-                        <br><br><br>
-                        <label class="switch-original">
-						    <input type="checkbox" ng-model="ingredient.kg">Kilogramos
-						    <span class="check"></span>
-						</label>
+                        <br>
                        
-                        <br><br><br><br><br>
+                        <div class="input-control select" >
+                        <select ng-model="ingredient.measurements">
+                            <option value="">---U. medida---</option>
+                            <option ng-repeat=" a in measuremeants" value="{{ a._id }}">{{a.name}} ({{ a.namefast }})</option>
+                        </select>
+                        </div>
+
+
+                        <br>
                         
                         <button class="button success loading-pulse" ng-click="create()">
                         Agregar
@@ -69,8 +73,7 @@
         </tr>
         <tr ng-repeat="a in ingredients" align="center" ng-model="ingredients" >
             <td>{{ a.name }}</td>
-            <td ng-if= " a.kilogramo == true ">{{ a.stock }} kg</td>
-            <td ng-if= " a.kilogramo == false ">{{ a.stock / 1000}} kg</td>
+            <td>{{ a.stock }} {{ a.measurements.namefast }}</td>
         </tr>
     </table>
 
@@ -107,13 +110,15 @@
                         <span class="icon mif-stack3"></span>
                         </div>
 
-                        <br><br><br>
-                        <label class="switch-original">
-						    <input type="checkbox" ng-model="select.kilogramo">Kilogramos
-						    <span class="check"></span>
-						</label>
+                        <br>
+                        <div class="input-control select" >
+                        <select ng-model="select.measurements._id">
+                            <option value="">---U. medida---</option>
+                            <option ng-repeat=" a in measuremeants" value="{{ a._id }}">{{a.name}} ({{ a.namefast }})</option>
+                        </select>
+                        </div>
 
-                        <br><br>
+                        <br>
                         
                         <button class="button success loading-pulse" ng-click="update()">
                         Actualizar

@@ -59,9 +59,14 @@ var products_scheme = new mongoose.Schema({
 
 var ingredients_scheme = new mongoose.Schema({
 	name: {type: String, required: true},
-	kilogramo: {type: Boolean, required: true},
 	stock: Number,
-	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'}
+	measurements: { type: Schema.Types.ObjectId, ref: 'measurements', required: true},
+	admin: { type: Schema.Types.ObjectId, ref: 'clients_users', required: true}
+})
+
+var measurement_scheme = new mongoose.Schema({
+	name: {type: String, required: true},
+	namefast: {type: String, required: true}
 })
 
 module.exports.user = mongoose.model("user",user_scheme);
@@ -71,5 +76,6 @@ module.exports.clients_users = mongoose.model("clients_users",Clients_Users_sche
 module.exports.catproducts = mongoose.model("catproducts",catproducts_scheme);
 module.exports.products = mongoose.model("products",products_scheme);
 module.exports.ingredients = mongoose.model("ingredients",ingredients_scheme);
+module.exports.measurements = mongoose.model("measurements",measurement_scheme);
 
 

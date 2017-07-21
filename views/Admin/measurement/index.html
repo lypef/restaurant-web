@@ -1,0 +1,146 @@
+<div ng-controller="measurement">        
+    
+<!-- Crud -->
+<div class="grid">
+    <div class="row flex-just-sa">
+        <div class="cell-auto-size">
+            <div class="panel info" style="border: 2px solid #fff;">
+                <div class="heading">
+                
+                <span class="title">Nueva unidad de medida</span>
+                </div>
+                <div class="content">
+                <form align="center">  
+
+                        
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Nombre" ng-model="measurement.name" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-stack3"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Nombre rapido" ng-model="measurement.namefast" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-stack3"></span>
+                        </div>
+
+
+                        <br><br><br><br><br>
+                        
+                        <button class="button success loading-pulse" ng-click="create()">
+                        Agregar
+                        </button>
+                    </form>
+                    <br><br>
+
+    </div>
+
+</div>
+
+        </div>
+<div class="cell-auto-size" style="width: 100%">
+	
+<div class="panel success" style="border: 2px solid #fff">
+                <div class="heading">
+                
+                <span class="title">Unidades de medida</span>
+            
+                </div>
+                <div class="content">
+
+                <form >
+                	<div class="input-control text " data-role="input" style="width: 100%">
+        
+        		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar">
+        
+        		<button class="button" ng-click="search()"><span class="mif-search"></span></button></div>
+                </form>
+
+    <table class="table striped hovered">
+        <tr>
+            <th>Nombre</th>
+            <th>Nombre rapido</th>
+        </tr>
+        <tr ng-repeat="a in measurements" align="center" ng-model="ingredients" >
+            <td>{{ a.name }}</td>
+            <td>{{ a.namefast }}</td>
+        </tr>
+    </table>
+
+</div></div>
+</div>
+
+        <div class="cell-auto-size">
+            
+<div class="panel warning" style="border: 2px solid #fff;">
+                <div class="heading">
+                
+                <span class="title">Actualizar </span>
+                </div>
+                <div class="content">
+                <form align="center" >  
+
+                        <div class="input-control select">
+                        <select ng-model="select.select"  ng-change="LoadValuesEdit()">
+                            <option value="">---U. Medida---</option>
+                            <option ng-repeat=" a in select" value="{{ a._id }}">{{a.name}}</option>
+                        </select>
+                        </div>
+                        <br>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Nombre" ng-model="measurementsID.name" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-stack3"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Nombre rapido" ng-model="measurementsID.namefast" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-stack3"></span>
+                        </div>
+
+                        <br><br>
+                        
+                        <button class="button success loading-pulse" ng-click="update()">
+                        Actualizar
+                        </button>
+                        <button class="button danger loading-pulse" onclick="toggleMetroDialog('#update')" >
+                        Eliminar
+                        </button>
+                    </form>
+                    <br><br>
+   
+</div>
+
+
+
+        </div>
+
+        </div>
+        
+    </div>
+</div>
+<div data-role="dialog" id="update" class="padding30" data-type="" 
+    data-close-button="true"
+    data-width="auto"
+    data-overlay="true">
+
+        <p>
+        <font face="Segoe UI Bold">
+            <h4>ELIMINAR UNIDAD DE MEDIDA?</h4>
+        </font>
+        <font face="Segoe UI">
+            NOMBRE: {{measurementsID.name}}, ({{measurementsID.namefast}})
+        </font>    
+            
+        </p>
+
+        <button class="button alert" ng-click="delete()" onclick="hideMetroDialog('#update')">SI</button>
+        <button class="button success" onclick="hideMetroDialog('#update')">NO</button>
+</div>
+
+
+</div>
+</div>
