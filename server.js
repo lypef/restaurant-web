@@ -968,7 +968,8 @@ function CreateMeasurement (req, res)
             {
                 var p = new db.measurements({
                 name: req.body.name.toUpperCase(),
-                namefast: req.body.namefast.toUpperCase()
+                namefast: req.body.namefast.toUpperCase(),
+                namefasts: req.body.namefasts.toUpperCase()
 
                 })
 
@@ -1067,7 +1068,8 @@ function UpdateMeasurements (req, res)
     { _id : req.body._id },
     { 
         name: req.body.name.toUpperCase(),
-        namefast: req.body.namefast.toUpperCase()
+        namefast: req.body.namefast.toUpperCase(),
+        namefasts: req.body.namefasts.toUpperCase()
     },
     function( err) 
     {

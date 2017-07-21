@@ -66,7 +66,8 @@ var ingredients_scheme = new mongoose.Schema({
 
 var measurement_scheme = new mongoose.Schema({
 	name: {type: String, required: true},
-	namefast: {type: String, required: true}
+	namefast: {type: String, required: true},
+	namefasts: {type: String, required: true}
 })
 
 module.exports.user = mongoose.model("user",user_scheme);

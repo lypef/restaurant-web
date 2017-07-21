@@ -73,7 +73,9 @@
         </tr>
         <tr ng-repeat="a in ingredients" align="center" ng-model="ingredients" >
             <td>{{ a.name }}</td>
-            <td>{{ a.stock }} {{ a.measurements.namefast }}</td>
+            <td ng-if=" a.stock > 1" >{{ a.stock }} {{ a.measurements.namefasts }}</td>
+            <td ng-if=" a.stock < 1" >{{ a.stock }} {{ a.measurements.namefast }}</td>
+            <td ng-if=" a.stock == 1" >{{ a.stock }} {{ a.measurements.namefast }}</td>
         </tr>
     </table>
 

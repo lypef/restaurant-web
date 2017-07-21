@@ -20,11 +20,16 @@
                         </div>
 
                         <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Nombre rapido" ng-model="measurement.namefast" class="input-full">
+                        <input type="text" placeholder="Nombre rapido singular" ng-model="measurement.namefast" class="input-full">
                         <span class="informer"></span>
                         <span class="icon mif-stack3"></span>
                         </div>
 
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Nombre rapido plural" ng-model="measurement.namefasts" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-stack3"></span>
+                        </div>
 
                         <br><br><br><br><br>
                         
@@ -60,11 +65,13 @@
     <table class="table striped hovered">
         <tr>
             <th>Nombre</th>
-            <th>Nombre rapido</th>
+            <th>Singular</th>
+            <th>Plural</th>
         </tr>
         <tr ng-repeat="a in measurements" align="center" ng-model="ingredients" >
             <td>{{ a.name }}</td>
             <td>{{ a.namefast }}</td>
+            <td>{{ a.namefasts }}</td>
         </tr>
     </table>
 
@@ -96,7 +103,13 @@
                         </div>
 
                         <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Nombre rapido" ng-model="measurementsID.namefast" class="input-full">
+                        <input type="text" placeholder="Nombre rapido singular" ng-model="measurementsID.namefast" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-stack3"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Nombre rapido plural" ng-model="measurementsID.namefasts" class="input-full">
                         <span class="informer"></span>
                         <span class="icon mif-stack3"></span>
                         </div>
