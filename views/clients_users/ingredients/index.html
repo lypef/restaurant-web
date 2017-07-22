@@ -30,7 +30,7 @@
                         <div class="input-control select" >
                         <select ng-model="ingredient.measurements">
                             <option value="">---U. medida---</option>
-                            <option ng-repeat=" a in measuremeants" value="{{ a._id }}">{{a.name}} ({{ a.namefast }})</option>
+                            <option ng-repeat=" a in measuremeants" value="{{ a._id }}">{{a.name}}</option>
                         </select>
                         </div>
 
@@ -67,17 +67,37 @@
                 </form>
 
     <table class="table striped hovered">
-        <tr>
-            <th>Ingrediente</th>
-            <th>Existente</th>
-        </tr>
-        <tr ng-repeat="a in ingredients" align="center" ng-model="ingredients" >
-            <td>{{ a.name }}</td>
-            <td ng-if=" a.stock > 1" >{{ a.stock }} {{ a.measurements.namefasts }}</td>
-            <td ng-if=" a.stock < 1" >{{ a.stock }} {{ a.measurements.namefast }}</td>
-            <td ng-if=" a.stock == 1" >{{ a.stock }} {{ a.measurements.namefast }}</td>
-        </tr>
-    </table>
+          <thead>
+            <tr>
+              <th>Ingrediente</th>
+              <th>Existente</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='a in ingredients | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
+              <td>{{ a.name }}</td>
+                <td ng-if=" a.stock > 1" >{{ a.stock }} {{ a.measurements.namefasts }}</td>
+                <td ng-if=" a.stock < 1" >{{ a.stock }} {{ a.measurements.namefast }}</td>
+                <td ng-if=" a.stock == 1" >{{ a.stock }} {{ a.measurements.namefast }}</td>
+            </tr>
+          </tbody>
+        </table>
+        
+<div class="grid">
+    <div class="row flex-just-sa">
+        <div class="cell-auto-size">
+        <div class='pagination'>
+          <button type='button' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
+          
+          <button type='button' class='item current' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{ page.no }}</button>
+          
+          <button type='button' class='item' ng-disabled='currentPage >= usuarios.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
+        </div>
+    </div>    
+    </div>
+</div>
+
 
 </div></div>
 </div>
@@ -207,4 +227,7 @@
 
     </div>
 </div>
+
+</div>
+
 </div>

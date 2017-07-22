@@ -429,6 +429,7 @@ app.controller("measurement", function($scope, $http, $routeParams, $window)
     $scope.select = {};  
 
 
+
     $http.get('/api/get_measurements/')
         .success(function(data) 
         {
@@ -442,7 +443,7 @@ app.controller("measurement", function($scope, $http, $routeParams, $window)
 
     $scope.update = function()
     {
-        $http.post('/api/measurementucts/update', $scope.measurementsID)
+        $http.post('/api/measurement/update', $scope.measurementsID)
             .success(function(doc) 
             {
                 pushMessage('success', 'HECHO', doc, "checkmark")
@@ -485,7 +486,7 @@ app.controller("measurement", function($scope, $http, $routeParams, $window)
 
     $scope.delete = function ()
     {
-        $http.post('/api/measurementucts/delete', $scope.measurementsID)
+        $http.post('/api/measurement/delete', $scope.measurementsID)
         .success(function(err) 
         {
             $http.get('/api/get_measurements/')
@@ -515,4 +516,18 @@ app.controller("measurement", function($scope, $http, $routeParams, $window)
                 pushMessage('alert','ERROR',msg, "cross")
             });
     };
+
+    $scope.search = function(){
+        $scope.inputbox
+        $http.post('/api/measurement/search', $scope.inputbox)
+            .success(function(data) {
+                pushMessage('success','FOUNT',"Medida encontrada", "checkmark")
+                $scope.measurements = data;
+            })
+            .error(function(msg) {
+                console.log(msg);
+                pushMessage('info','NOT FOUND',msg, "question")
+            });
+    }
+
 })

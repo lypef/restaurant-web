@@ -105,8 +105,9 @@ app.post('/api/update_ingredient', UpdateIngredient)
 app.post('/api/ingredient/delete', DeleteIngredient )
 
 app.post('/api/measurement/add', CreateMeasurement )
-app.post('/api/measurementucts/update', UpdateMeasurements )
-app.post('/api/measurementucts/delete', DeleteMeasuremeants )
+app.post('/api/measurement/update', UpdateMeasurements )
+app.post('/api/measurement/delete', DeleteMeasuremeants )
+app.post('/api/measurement/search', SearchMeasurements );
 
 //Funciones
 function Inicio (req, res) 
@@ -777,6 +778,19 @@ function SearchCatProducts (req, res)
     db.catproducts.find({$or: [ {categoria: { $regex : req.body.text.toUpperCase() }}, {descripcion: { $regex : req.body.text.toUpperCase() }} ] }).populate('creator').populate('last_edit').exec(function(err, data) {
         if(err || data == "") {
             res.sendStatus(500,"Categoria no encontrada")
+        }else
+        {
+            res.json(data)
+        }
+    })
+
+}
+
+function SearchMeasurements (req, res) 
+{  
+    db.measurements.find({$or: [ {name: { $regex : req.body.txt.toUpperCase() }}, {namefast: { $regex : req.body.txt.toUpperCase() }}, {namefasts: { $regex : req.body.txt.toUpperCase() }} ] },function(err, data) {
+        if(err || data == "") {
+            res.status(500).send("Medida no encontrada")
         }else
         {
             res.json(data)
