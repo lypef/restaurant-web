@@ -801,7 +801,9 @@ function SearchMeasurements (req, res)
 
 function SearchIngredients (req, res) 
 {  
-    db.ingredients.find({$or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).populate('measurements').exec(function(err, data) {
+    if (req.body.txt == null || req.body.txt == undefined)
+    {
+        db.ingredients.find().sort({name:1}).populate('measurements').exec(function(err, data) {
         if(err || data == "") {
             res.status(500).send("Ingrediente no encontrada")
         }else
@@ -809,6 +811,16 @@ function SearchIngredients (req, res)
             res.json(data)
         }
     })
+    }else {
+        db.ingredients.find({$or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).sort({name:1}).populate('measurements').exec(function(err, data) {
+        if(err || data == "") {
+            res.status(500).send("Ingrediente no encontrada")
+        }else
+        {
+            res.json(data)
+        }
+    })    
+    }
 
 }
 

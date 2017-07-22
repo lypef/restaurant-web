@@ -18,7 +18,7 @@
                         <span class="informer"></span>
                         <span class="icon mif-stack3"></span>
                         </div>
-
+                        <br>
                         <div class="input-control modern text iconic" id="widthfull">
                         <input type="text" placeholder="Existente" ng-model="ingredient.stock" class="input-full">
                         <span class="informer"></span>
@@ -35,13 +35,14 @@
                         </div>
 
 
-                        <br>
+                        <br><br>
                         
                         <button class="button success loading-pulse" ng-click="create()">
                         Agregar
                         </button>
+                        <br>
                     </form>
-                    <br><br>
+                    <br><br><br><hr>
 
     </div>
 
@@ -98,7 +99,7 @@
     </div>
 </div>
 
-
+<hr>
 </div></div>
 </div>
 
@@ -118,7 +119,7 @@
                             <option ng-repeat=" a in IngredientUpdate" value="{{ a._id }}">{{a.name}}</option>
                         </select>
                         </div>
-                        <br>
+                        
                         <div class="input-control modern text iconic" id="widthfull">
                         <input type="text" placeholder="Nombre" ng-model="select.name" class="input-full">
                         <span class="label">Nombre</span>
@@ -149,7 +150,7 @@
                         Eliminar
                         </button>
                     </form>
-                    <br><br>
+                    <br><br><hr>
    
 </div>
 

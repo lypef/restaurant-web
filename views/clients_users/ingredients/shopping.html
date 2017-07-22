@@ -1,0 +1,61 @@
+<div class="panel success" ng-controller="ingredientes_shopping">
+                <div class="heading">
+                
+                <span class="title">Ingredientes</span>
+            
+                </div>
+                <div class="content">
+
+                <form >
+                	<div class="input-control text " data-role="input" style="width: 100%">
+        
+        		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar">
+        
+        		<button class="button" ng-click="search()"><span class="mif-search"></span></button></div>
+                </form>
+
+    <table class="table striped hovered">
+          <thead>
+            <tr>
+              <th>Ingrediente</th>
+              <th>Existencia</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='a in ingredients | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
+              <td>{{ a.name }}</td>
+                <td>
+                	<div class="input-control text">
+					    <input type="text" value="{{ a.stock }}">
+					</div>
+					<span ng-if=" a.stock > 1" > {{ a.measurements.namefasts }}</span>
+					<span ng-if=" a.stock < 1" > {{ a.measurements.namefast }}</span>
+					<span ng-if=" a.stock == 1" > {{ a.measurements.namefast }}</span>
+                </td>
+            </tr>
+          </tbody>
+        </table>
+        
+<div class="grid">
+    <div class="row flex-just-sa">
+        <div class="cell-auto-size">
+        <div class='pagination'>
+          <button type='button' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
+          
+          <button type='button' class='item current' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{ page.no }}</button>
+          
+          <button type='button' class='item' ng-disabled='currentPage >= usuarios.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
+        </div>
+    </div>    
+    </div>
+</div>
+			<button class="button success loading-pulse" ng-click="update()">
+            Actualizar
+            </button>
+            <button class="button danger loading-pulse" onclick="toggleMetroDialog('#update')" >
+            Eliminar
+            </button>
+<hr>
+</div></div>
+</div>
