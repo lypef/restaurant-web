@@ -90,7 +90,7 @@
 
 <body ng-controller="UserValues">
     <div class="app-bar fixed-top blue" data-role="appbar">
-        <a href="dashboard#/" class="app-bar-element branding"><span class="mif-shop mif-2x"> {{ usuario.admin.namefast }}</span></a>
+        <a href="dashboard#/" class="app-bar-element branding"><span class="mif-shop mif-2x"></span></a>
         <span class="app-bar-divider"></span>
         <ul class="app-bar-menu">
             
@@ -164,18 +164,19 @@
         </ul>
 
         <div class="app-bar-element place-right">
-            <span class="dropdown-toggle"><span class="mif-user-check mif-2x"></span> {{ usuario.nombre }}</span>
+            <a class="dropdown-toggle fg-white"><span class="mif-enter"></span> {{ usuario.admin.namefast }}</a>
             <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
                 <ul class="unstyled-list fg-blue">
                     <li>
                     <a href="#"><i class="fa fa-fw fa-user"></i><span class="mif-earth2 icon"> {{ usuario.admin.nombre }}</span></a>
+
                     </li>
                     <br>
                     <li>
-                    <a href="#"><span class="mif-user icon"> Perfil</span></a>
+                    <a href="#"><span class="mif-user icon"> {{ usuario.nombre }}</span></a>
                     </li>
                     <li>
-                    <a href="#"><span class="mif-cog icon"> Configuracion</span></a>
+                    <a href="#"><span class="mif-cog  icon"> Configuracion</span></a>
                     </li>
                     <li class="divider"></li>
                     <li>

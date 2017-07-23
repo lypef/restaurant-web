@@ -343,7 +343,7 @@ function UserValuesjson (req,res){
     db.user.findOne({_id: req.session.user_id}).populate('admin').exec(function(err,doc){
         if (doc != null)
         {
-            doc.nombre = doc.nombre.substring(0, 14) + " ...";
+            doc.nombre = doc.nombre.substring(0, 10) + " ...";
             res.json(doc)
         }else {
             console.log("Usuari no encontrado")

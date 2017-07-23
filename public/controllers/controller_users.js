@@ -458,8 +458,9 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
   ]).filter('startFromGrid', function() {
     return function(input, start) 
     {
-        start = +start;
-        return input.slice(start);
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
     }       
 })
 
@@ -566,8 +567,9 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
   ]).filter('startFromGrid', function() {
     return function(input, start) 
     {
-        start = +start;
-        return input.slice(start);
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
     }       
 })  
 
