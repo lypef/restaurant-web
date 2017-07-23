@@ -404,6 +404,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
         $http.post('/api/add_ingredient', $scope.ingredient)
             .success(function(msg) {
                 $scope.GetIngredients()
+                $scope.ingredient = {}
                 pushMessage('success', 'HECHO', msg, "checkmark")
             })
             .error(function(msg) {
@@ -428,6 +429,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
         $http.post('/api/ingredient/delete', $scope.select)
             .success(function(msg) {
                 $scope.GetIngredients()
+                $scope.select = {}
                 pushMessage('success', 'HECHO', msg, "checkmark")
             })
             .error(function(msg) {
@@ -523,18 +525,6 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
             $http.post('/api/update_ingredient', item)
             .success(function(data) {
                 pushMessage('success', 'HECHO', 'Producto actualizado', "checkmark")
-            })
-            .error(function(msg) {
-                pushMessage('alert','ERROR',msg, "cross")
-            });
-            
-        };
-
-        $scope.delete = function(item){
-            
-            $http.post('/api/ingredient/delete', item)
-            .success(function(msg) {
-                pushMessage('success', 'HECHO', msg, "checkmark")
             })
             .error(function(msg) {
                 pushMessage('alert','ERROR',msg, "cross")
