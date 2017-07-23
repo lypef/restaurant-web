@@ -20,7 +20,7 @@
                         </div>
                         <br>
                         <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Existente" ng-model="ingredient.stock" class="input-full">
+                        <input type="double" placeholder="Existente" ng-model="ingredient.stock" class="input-full">
                         <span class="informer"></span>
                         <span class="icon mif-stack3"></span>
                         </div>
@@ -89,11 +89,16 @@
     <div class="row flex-just-sa">
         <div class="cell-auto-size">
         <div class='pagination'>
+
+          <button type='button ' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = 0'>Principio</button>
+
           <button type='button' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
           
           <button type='button' class='item current' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{ page.no }}</button>
           
-          <button type='button' class='item' ng-disabled='currentPage >= usuarios.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
+          <button type='button' class='item' ng-disabled='currentPage >= ingredients.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
+
+          <button type='button' class='item' ng-disabled='currentPage == ingredients.length/pageSize - 1' ng-click='currentPage = ingredients.length/pageSize - 1'>Final</button>
         </div>
     </div>    
     </div>
@@ -128,7 +133,7 @@
                         </div>
 
                         <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Existente" ng-model="select.stock" class="input-full">
+                        <input type="double" placeholder="Existente" ng-model="select.stock" class="input-full">
                         <span class="informer"></span>
                         <span class="icon mif-stack3"></span>
                         </div>
@@ -211,13 +216,6 @@
         </div>
 
         
-        <div class="tile bg-cyan fg-white cell-auto-size" data-role="tile" onclick="document.location.href='admin_dashboard#/add_client', hideMetroDialog('#clients')">
-                <div class="tile-content iconic">
-                    <span class="icon mif-calculator"></span>
-                </div>
-                <span class="tile-label">Convertir a gramos</span>
-        </div>
-
         <div class="tile bg-crimson fg-white cell-auto-size" data-role="tile" onclick="document.location.href='admin_dashboard#/add_client', hideMetroDialog('#clients')">
                 <div class="tile-content iconic">
                     <span class="icon mif-not"></span>

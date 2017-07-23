@@ -310,15 +310,7 @@ function AddIngredient (req,res){
                 {
                     res.status(500).send("Error desconocido")
                 }else {
-                    db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').populate('measurements').exec(function(err, data) {
-                    if(err) {
-                        res.status(500).send(err)
-                    }else
-                    {
-                        res.status(200).json(data)
-                    }
-                })
-
+                    res.status(200).send("Ingrediente agregado")
                 }
         });
     }else {
@@ -603,14 +595,7 @@ function UpdateIngredient (req, res)
                 res.status(404).send("Algo desconocido sucedio, intente nuevamente")
             }else
             {
-                db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').populate('measurements').exec(function(err, data) {
-                    if(err) {
-                        res.status(500).send(err)
-                    }else
-                    {
-                        res.json(data); 
-                    }
-                })
+                res.status(200).send('Ingrediente actualizado')
             }
         })  
 }
@@ -691,14 +676,7 @@ function DeleteIngredient (req, res)
                 res.status(500).send("Error, Intente nuevamente.")
             }else
             {
-                db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').populate('measurements').exec(function(err, data) {
-                    if(err) {
-                        res.status(500).send(err)
-                    }else
-                    {
-                        res.json(data); 
-                    }
-                })
+                res.status(200).send("Ingrediente Eliminado")
             }
         })
 }

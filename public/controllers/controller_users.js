@@ -344,16 +344,21 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
         }); 
 
       
-        $http.get('/api/getingredients/')
-            .success(function(data) {
-                $scope.ingredients = data
-                $scope.IngredientUpdate = data
-                $scope.LoadPages();
-                
-            })
-            .error(function(data) {
-                pushMessage('alert','ERROR',data, "cross")
-        });
+        $scope.GetIngredients = function ()
+        {
+            $http.get('/api/getingredients/')
+                .success(function(data) {
+                    $scope.ingredients = data
+                    $scope.IngredientUpdate = data
+                    $scope.LoadPages();
+                    
+                })
+                .error(function(data) {
+                    pushMessage('alert','ERROR',data, "cross")
+            });
+        }
+        
+        $scope.GetIngredients()
 
         $scope.LoadPages = function ()
         {
@@ -397,12 +402,9 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
         $scope.create = function(){
 
         $http.post('/api/add_ingredient', $scope.ingredient)
-            .success(function(data) {
-                $scope.ingredients = data
-                $scope.IngredientUpdate = data
-                $scope.ingredient = {}
-                $scope.LoadPages();
-                pushMessage('success', 'HECHO', 'Ingrediente agregada', "checkmark")
+            .success(function(msg) {
+                $scope.GetIngredients()
+                pushMessage('success', 'HECHO', msg, "checkmark")
             })
             .error(function(msg) {
                 pushMessage('alert','ERROR',msg, "cross")
@@ -411,11 +413,10 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
 
         $scope.update = function(){
         $http.post('/api/update_ingredient', $scope.select)
-            .success(function(data) {
-                $scope.ingredients = data;
+            .success(function(msg){
+                $scope.GetIngredients()
                 $scope.select = {}
-                $scope.LoadPages();
-                pushMessage('success', 'HECHO', 'Producto actualizado', "checkmark")
+                pushMessage('success', 'HECHO', msg, "checkmark")
             })
             .error(function(msg) {
                 pushMessage('alert','ERROR',msg, "cross")
@@ -425,12 +426,9 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
         $scope.delete = function(){
 
         $http.post('/api/ingredient/delete', $scope.select)
-            .success(function(data) {
-                $scope.ingredients = data;
-                $scope.IngredientUpdate = data
-                $scope.select = {}
-                $scope.LoadPages();
-                pushMessage('success', 'HECHO', 'Producto eliminado', "checkmark")
+            .success(function(msg) {
+                $scope.GetIngredients()
+                pushMessage('success', 'HECHO', msg, "checkmark")
             })
             .error(function(msg) {
                 pushMessage('alert','ERROR',msg, "cross")
@@ -466,35 +464,30 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
 app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $http) {
         $http.defaults.headers.common['x-access-token']=token;
 
-        $scope.ingredient = {};
         $scope.ingredients = {};
-        $scope.select = {}
-        $scope.show = {}
         $scope.IngredientUpdate = {}
         $scope.measuremeants = {}
 
         $scope.currentPage = 0;
-        $scope.pageSize = 10;
+        $scope.pageSize = 5;
         $scope.pages = [];
-      
-        $http.get('/api/get_measurements/')
-        .success(function(data) {
-            $scope.measuremeants = data
-        })
-        .error(function(data) {
-            pushMessage('alert','ERROR',data, "cross")
-        }); 
-
       
         $http.get('/api/getingredients/')
             .success(function(data) {
                 $scope.ingredients = data
                 $scope.IngredientUpdate = data
                 $scope.LoadPages();
-                
             })
             .error(function(data) {
                 pushMessage('alert','ERROR',data, "cross")
+        });
+
+        $http.get('/api/get_measurements/')
+        .success(function(data) {
+            $scope.measuremeants = data
+        })
+        .error(function(data) {
+            pushMessage('alert','ERROR',data, "cross")
         });
 
         $scope.LoadPages = function ()
@@ -524,59 +517,29 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
                 if ($scope.currentPage >= $scope.pages.length)
                 $scope.currentPage = $scope.pages.length - 1;
         }
-        $scope.LoadValuesEdit = function(){
-
-        $http.get('/api/getingredients/' + $scope.select.select)
+        
+        $scope.update = function(item){
+            
+            $http.post('/api/update_ingredient', item)
             .success(function(data) {
-                $scope.select = data
-                pushMessage('warning', 'HECHO', 'Ingrediente encontrado', "checkmark")
-            })
-            .error(function(msg) {
-                pushMessage('alert','ERROR',msg, "cross")
-            });
-        };
-
-        $scope.create = function(){
-
-        $http.post('/api/add_ingredient', $scope.ingredient)
-            .success(function(data) {
-                $scope.ingredients = data
-                $scope.IngredientUpdate = data
-                $scope.ingredient = {}
-                $scope.LoadPages();
-                pushMessage('success', 'HECHO', 'Ingrediente agregada', "checkmark")
-            })
-            .error(function(msg) {
-                pushMessage('alert','ERROR',msg, "cross")
-            });
-        }; 
-
-        $scope.update = function(){
-        $http.post('/api/update_ingredient', $scope.select)
-            .success(function(data) {
-                $scope.ingredients = data;
-                $scope.select = {}
-                $scope.LoadPages();
                 pushMessage('success', 'HECHO', 'Producto actualizado', "checkmark")
             })
             .error(function(msg) {
                 pushMessage('alert','ERROR',msg, "cross")
             });
+            
         };
 
-        $scope.delete = function(){
-
-        $http.post('/api/ingredient/delete', $scope.select)
-            .success(function(data) {
-                $scope.ingredients = data;
-                $scope.IngredientUpdate = data
-                $scope.select = {}
-                $scope.LoadPages();
-                pushMessage('success', 'HECHO', 'Producto eliminado', "checkmark")
+        $scope.delete = function(item){
+            
+            $http.post('/api/ingredient/delete', item)
+            .success(function(msg) {
+                pushMessage('success', 'HECHO', msg, "checkmark")
             })
             .error(function(msg) {
                 pushMessage('alert','ERROR',msg, "cross")
             });
+            
         };
 
         $scope.search = function(){
@@ -585,7 +548,7 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
             .success(function(data) {
                 $scope.inputbox = {}
                 $scope.ingredients = data;
-                $scope.LoadPages();
+                $scope.ChangePageItems();
                 pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
             })
             .error(function(msg) {
@@ -596,6 +559,19 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
         $scope.setPage = function(index) {
             $scope.currentPage = index - 1;
         };
+        
+        
+        $scope.ChangePageItems = function() {
+            if ($scope.pageSizetmp.items == 'todos')
+            {
+                $scope.pageSize = $scope.ingredients.length
+            }else {
+                $scope.pageSize = $scope.pageSizetmp.items    
+            }
+            $scope.LoadPages();
+        };
+
+
     }
   ]).filter('startFromGrid', function() {
     return function(input, start) 
