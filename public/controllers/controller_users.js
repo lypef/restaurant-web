@@ -29,6 +29,12 @@ app.config(function($routeProvider){
         .when('/ingredientes_shopping', {
             templateUrl : '/clients_users/ingredients/shopping.html'
         })
+        .when('/add_recetas', {
+            templateUrl : '/clients_users/recetas/add_recetas.html'
+        })
+        .when('/recetas', {
+            templateUrl : '/clients_users/recetas/index.html'
+        })
         .otherwise({
             redirectTo : '/'
         })
@@ -174,28 +180,38 @@ app.controller("users", function($scope, $http)
     };  
 })
 
-app.controller("catproducts", function($scope, $http){
-    
+app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
     $http.defaults.headers.common['x-access-token']=token;
-    
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
+
+        
     $scope.productstmp = {};
 
-    $http.get('/api/catproducts/')
+    $scope.GetCategoryes = function ()
+    {
+        $http.get('/api/catproducts/')
         .success(function(data) {
             $scope.productstmp = data;
+            $scope.LoadPages();
+            $scope.ChangePageItems()
         })
         .error(function(data) {
             pushMessage('alert','ERROR',data, "cross")
     });
+    }
+
+    $scope.GetCategoryes()
 
 
     $scope.CreateCatProduct = function(){
 
         $http.post('api/catproducts/add', $scope.Newproduct)
-            .success(function(data) {
-                $scope.productstmp = data;
+            .success(function(msg) {
+                pushMessage('success', 'HECHO', msg, "checkmark")
                 $scope.Newproduct = {}
-                pushMessage('success', 'HECHO', 'Categoria agregada', "checkmark")
+                $scope.GetCategoryes()
             })
             .error(function(msg) {
                 pushMessage('alert','ERROR',msg, "cross")
@@ -208,12 +224,68 @@ app.controller("catproducts", function($scope, $http){
             .success(function(data) {
                 pushMessage('success','FOUNT',"Categoria encontrada", "checkmark")
                 $scope.productstmp = data;
+                $scope.LoadPages();
+                $scope.ChangePageItems()
             })
             .error(function(msg) {
-                pushMessage('info','NOT FOUND',msg, "question")
+                pushMessage('alert','NOT FOUND',msg, "question")
             });
     };  
-})
+
+        $scope.ChangePageItems = function() {
+            if ($scope.pageSizetmp.items == 'todos')
+            {
+                $scope.pageSize = $scope.productstmp.length
+            }else {
+                $scope.pageSize = $scope.pageSizetmp.items    
+            }
+            $scope.LoadPages();
+        };
+
+        $scope.LoadPages = function ()
+        {
+            $scope.pages.length = 0;
+                var ini = $scope.currentPage - 4;
+                var fin = $scope.currentPage + 5;
+                if (ini < 1) {
+                  ini = 1;
+                  if (Math.ceil($scope.productstmp.length / $scope.pageSize) > 10)
+                    fin = 10;
+                  else
+                    fin = Math.ceil($scope.productstmp.length / $scope.pageSize);
+                } else {
+                  if (ini >= Math.ceil($scope.productstmp.length / $scope.pageSize) - 10) {
+                    ini = Math.ceil($scope.productstmp.length / $scope.pageSize) - 10;
+                    fin = Math.ceil($scope.productstmp.length / $scope.pageSize);
+                  }
+                }
+                if (ini < 1) ini = 1;
+                for (var i = ini; i <= fin; i++) {
+                  $scope.pages.push({
+                    no: i
+                  });
+                }
+
+                if ($scope.currentPage >= $scope.pages.length)
+                $scope.currentPage = $scope.pages.length - 1;
+        }
+        
+          
+        $scope.setPage = function(index) {
+            $scope.currentPage = index - 1;
+        };
+        
+        
+    }
+  ]).filter('startFromGrid', function() {
+    return function(input, start) 
+    {
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
+    }       
+})  
+
 
 app.controller("products", function($scope, $http){
     
@@ -571,5 +643,76 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
         start = +start; 
         return input.slice(start);   
     }       
-})  
+})
 
+app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
+        $http.defaults.headers.common['x-access-token']=token;
+        $scope.currentPage = 0;
+        $scope.pageSize = 5;
+        $scope.pages = [];
+
+        $scope.ingredients = {};
+        
+        
+      
+        $http.get('/api/getingredients/')
+            .success(function(data) {
+                $scope.ingredients = data
+            })
+            .error(function(data) {
+                pushMessage('alert','ERROR',data, "cross")
+        });
+
+        $scope.LoadPages = function ()
+        {
+            $scope.pages.length = 0;
+                var ini = $scope.currentPage - 4;
+                var fin = $scope.currentPage + 5;
+                if (ini < 1) {
+                  ini = 1;
+                  if (Math.ceil($scope.ingredients.length / $scope.pageSize) > 10)
+                    fin = 10;
+                  else
+                    fin = Math.ceil($scope.ingredients.length / $scope.pageSize);
+                } else {
+                  if (ini >= Math.ceil($scope.ingredients.length / $scope.pageSize) - 10) {
+                    ini = Math.ceil($scope.ingredients.length / $scope.pageSize) - 10;
+                    fin = Math.ceil($scope.ingredients.length / $scope.pageSize);
+                  }
+                }
+                if (ini < 1) ini = 1;
+                for (var i = ini; i <= fin; i++) {
+                  $scope.pages.push({
+                    no: i
+                  });
+                }
+
+                if ($scope.currentPage >= $scope.pages.length)
+                $scope.currentPage = $scope.pages.length - 1;
+        }
+        
+        $scope.setPage = function(index) {
+            $scope.currentPage = index - 1;
+        };
+        
+        
+        $scope.ChangePageItems = function() {
+            if ($scope.pageSizetmp.items == 'todos')
+            {
+                $scope.pageSize = $scope.ingredients.length
+            }else {
+                $scope.pageSize = $scope.pageSizetmp.items    
+            }
+            $scope.LoadPages();
+        };
+
+
+    }
+  ]).filter('startFromGrid', function() {
+    return function(input, start) 
+    {
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
+    }       
+})

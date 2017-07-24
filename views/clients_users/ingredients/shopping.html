@@ -19,7 +19,7 @@
 				        </div>
 				        <div class="colspan6" style="width: 100%" align="center">
 					        <div class="input-control select" style="width: 95%">
-	                        <select ng-model="pageSizetmp.items" ng-change="ChangePageItems()">
+	                        <select ng-model="pageSizetmp.items" ng-change="ChangePageItems()" style="text-align: center; text-align-last: center;">
 	                            <option value="">---Items mostrados---</option>
 	                            <option value="5">5</option>
 	                            <option value="10">10</option>
@@ -57,7 +57,7 @@
 						</div>
 
 						<div class="input-control select" >
-                        <select ng-model="a.measurements._id">
+                        <select ng-model="a.measurements._id" style="text-align: center; text-align-last: center;">
                             <option value="">---U. medida---</option>
                             <option ng-repeat=" a in measuremeants" value="{{ a._id }}">{{a.name}} ({{ a.namefast }})</option>
                         </select>

@@ -755,7 +755,7 @@ function SearchCatProducts (req, res)
 {  
     db.catproducts.find({$or: [ {categoria: { $regex : req.body.text.toUpperCase() }}, {descripcion: { $regex : req.body.text.toUpperCase() }} ] }).populate('creator').populate('last_edit').exec(function(err, data) {
         if(err || data == "") {
-            res.sendStatus(500,"Categoria no encontrada")
+            res.status(500).send("Categoria no encontrada")
         }else
         {
             res.json(data)
@@ -903,18 +903,11 @@ function CreateCatProduct (req, res)
             p.save(function (err1, doc1) {
              if (err1)
              {
-                res.status(500).send("No fue posible crear el cliente, intente de nuevo.")
+                res.status(500).send("No fue posible crear la categoria, intente de nuevo.")
              }else
              {
-                db.catproducts.find(function(err2, doc2) {
-                    if(err2) {
-                        res.status(500).send(err2);
-                    }else
-                    {
-                        res.json(doc2); 
-                    }
-             }).sort({categoria:1});
-         }
+                res.status(200).send("Categoria agregada")
+             }
         })  
         }else
         {
