@@ -2,7 +2,7 @@
 	<div class="heading">
 		<span class="title"><span class="mif-plus icon"></span> Nueva receta</span>
 	</div>
-	<div class="content">
+	<div class="content" align="center">
 	<!--Contenido agregar-->
 	<div class="input-control modern text iconic" id="widthfull">
 	    <input type="text" placeholder="Nombre" ng-model="product.name" class="input-full">
@@ -20,10 +20,17 @@
 	    <input type="checkbox">Disminuir ingredientes al utilizar
 	    <span class="check"></span>
 	</label>
-
+	
+	
+	<div class="input-control textarea"
+    data-role="input" data-text-auto-resize="true" data-text-max-height="200" style="width: 95%">
+    <h5>Indique los pasos o anotaciones para la preparacion</h5>
+    <textarea></textarea>
+	</div>
 	<hr>
 	<!--Tabla de seleccion-->
 	<!--Busqueda y numero mostrado -->
+	<h4>Indique los ingredientes y su porcion por unidad</h4>
 	<div class="grid">
 	    <div class="row flex-just-sa">
 	        <div class="colspan6" style="width: 100%" align="center">
@@ -59,26 +66,24 @@
               <th>Ingrediente</th>
               <th>Existencia</th>
               <th>Usar en esta receta</th>
-              <th>Cantidad</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat='a in ingredients | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
               <td>{{ a.name }}</td>
               <td>{{ a.stock }} {{ a.measurements.namefasts }}</td>
-              <td align="center">
-              	<label class="input-control checkbox">
-				    <input type="checkbox">
-				    <span class="check"></span>
-				    <span class="caption">Usar</span>
-				</label>
-              </td>  
               <td>
-              	<div class="input-control text">
-				    <input type="text">
-				</div>
-				<span>{{ a.measurements.namefasts }}</span>
-              </td>
+              	<form>
+              		<button class="button success" ng-click="insert(a)"><span class="mif-plus"></span> Agregar</button>
+              		<div class="input-control text">
+					    <input type="text" ng-model="a.stocktmp">
+					</div>
+					<span>{{ a.measurements.namefasts }}</span>
+              	</form>
+              </td>  
+              
+              	
+              
             </tr>
           </tbody>
         </table>
@@ -98,8 +103,36 @@
           <button type='button' class='item' ng-disabled='currentPage == ingredients.length/pageSize - 1' ng-click='currentPage = ingredients.length/pageSize - 1'>Final</button>
         </div>
     </div>    
-    </div>
+    </div><hr>
 	<!--Finaliza tabla de seleccion-->
 	<!--Finaliza Contenido agregar-->
+	<div class="panel alert">
+		<div class="heading">
+			<span class="title"><span class="mif-list icon"></span> Ingredientes para la receta</span>
+		</div>
+	<div class="content">
+	<table class="table striped hovered bordered" ng-model="arr">
+          <thead>
+            <tr>
+              <th>Ingrediente</th>
+              <th>Porcion</th>
+              <th>Opciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='a in arr'>
+              <td>{{ a.name }}</td>
+              <td ng-if="a.porcion > 1">{{ a.porcion }} {{ a.namefasts }}</td>
+              <td ng-if="a.porcion < 1">{{ a.porcion }} {{ a.namefast }}</td>
+              <td ng-if="a.porcion == 1">{{ a.porcion }} {{ a.namefast }}</td>
+              <td><button class="button alert" ng-click="remove(a)"><span class="mif-bin"></span> Quitar</button></td>            
+            </tr>
+          </tbody>
+        </table>
+	</div></div>
+	
+	<button class="button success large-button">Crear receta</button>
+	<button class="button warning large-button">Limpiar todo</button>
+
 	<hr></div></div>
 

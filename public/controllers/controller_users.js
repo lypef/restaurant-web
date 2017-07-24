@@ -652,16 +652,61 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.pages = [];
 
         $scope.ingredients = {};
+        $scope.arr = [];
         
         
-      
-        $http.get('/api/getingredients/')
+        $scope.GetIngredients = function ()
+        {
+            $http.get('/api/getingredients/')
             .success(function(data) {
                 $scope.ingredients = data
+                $scope.LoadPages()
+                $scope.ChangePageItems()
             })
             .error(function(data) {
                 pushMessage('alert','ERROR',data, "cross")
         });
+        }
+
+        $scope.GetIngredients()
+
+        $scope.search = function(){
+            $scope.inputbox
+            $http.post('/api/ingredient/search', $scope.inputbox)
+                .success(function(data) {
+                    pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
+                    $scope.inputbox = {}
+                    $scope.ingredients = data;
+                    $scope.LoadPages()
+                    $scope.ChangePageItems()
+                })
+                .error(function(msg) {
+                    pushMessage('danger','NOT FOUND',msg, "question")
+                });
+        };
+
+        $scope.insert = function(item){
+            if (item.stocktmp != null && item.stocktmp > 0)
+            {
+                $scope.arr.push(
+                {
+                    id: item._id, 
+                    porcion: item.stocktmp, 
+                    name: item.name, 
+                    namefast: item.measurements.namefast,
+                    namefasts: item.measurements.namefasts
+                })
+                item.stocktmp = ''
+                pushMessage('success','HECHO','Agregado a la lista', "checkmark")
+            }else {
+                pushMessage('alert','NEGADO','Verifique su porcion', "checkmark")
+            }
+        };
+
+        $scope.remove = function (item)
+        {
+            $scope.arr.splice($scope.arr.indexOf(item),1);
+        }
 
         $scope.LoadPages = function ()
         {
