@@ -71,6 +71,10 @@ app.get('/api/getingredients/:id', getIngredientID)
 app.get('/api/get_measurements/', GetMeasurementsJSON)
 app.get('/api/get_measurements/:id', GetMeasuremetsJSON_ID)
 
+app.get('/api/get_receta/', GetRecetasJSON)
+app.get('/api/get_receta/:id', GetRecetasJSON_ID)
+app.get('/api/get_use_recetas/:id', GetUseRecetasJSON_ID)
+
 // Api POST
 app.post('/api/clients/add', CreateClient );
 app.post('/api/client/update', UpdateClientAdmin );
@@ -108,6 +112,10 @@ app.post('/api/measurement/add', CreateMeasurement )
 app.post('/api/measurement/update', UpdateMeasurements )
 app.post('/api/measurement/delete', DeleteMeasuremeants )
 app.post('/api/measurement/search', SearchMeasurements );
+
+app.post('/api/receta/add', CreateReceta );
+app.post('/api/receta/search', SearchRecetas )
+app.post('/api/receta/update', UpdateReceta )
 
 //Funciones
 function Inicio (req, res) 
@@ -802,6 +810,29 @@ function SearchIngredients (req, res)
 
 }
 
+function SearchRecetas (req, res) 
+{  
+    if (req.body.txt == null || req.body.txt == undefined)
+    {
+        db.recetas.find({admin: req.session.admin }).sort({name:1}).populate('admin').exec(function(err,doc){
+            if (doc != null)
+            {
+                res.json(doc)
+            }
+        })
+    }else {
+        db.recetas.find({$or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).sort({name:1}).populate('admin').exec(function(err, data) {
+        if(err || data == "") {
+            res.status(500).send("Receta no encontrada")
+        }else
+        {
+            res.json(data)
+        }
+    })    
+    }
+
+}
+
 function catproductsJson (req,res){
 	db.catproducts.find().sort({categoria:1}).populate('creator').populate('last_edit').exec(function(err, data) {
         if(err) {
@@ -868,6 +899,37 @@ function GetMeasuremetsJSON_ID (req, res)
         }else
         {
             res.status(404).send('Producto no encontrado');
+        }
+    })
+}
+
+function GetRecetasJSON_ID (req, res)
+{
+    db.recetas.findOne({_id: req.params.id , admin: req.session.admin}).sort({name:1}).populate('admin').exec(function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
+        }
+    })
+}
+
+function GetUseRecetasJSON_ID (req, res)
+{
+    console.log(req.params.id)
+    db.use_recetas.find({ receta: req.params.id , admin: req.session.admin}).sort({name:1}).populate('admin').populate('ingrediente').populate('receta').exec(function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
+        }
+    })
+}
+
+function GetRecetasJSON (req, res)
+{
+    db.recetas.find({admin: req.session.admin }).sort({name:1}).populate('admin').exec(function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
         }
     })
 }
@@ -993,6 +1055,51 @@ function CreateMeasurement (req, res)
     
 }
 
+function CreateReceta (req, res) 
+{  
+    var p = new db.recetas({
+        name: req.body.name,
+        description: req.body.description,
+        receta: req.body.receta,
+        admin: req.session.admin
+
+    })
+
+
+    p.save(function (err, doc) {
+     if (err)
+     {
+        res.status(500).send("No fue posible crear la receta, intente de nuevo.")
+     }else
+     {
+        var insert = true;
+
+        for (var i =0; i < req.body.arr.length; i++)
+        {
+            var p = new db.use_recetas({
+                receta: doc._id,
+                ingrediente: req.body.arr[i].id,
+                porcion: req.body.arr[i].porcion,
+                update_ingredients: req.body.arr[i].update_ingredients,
+                admin: req.session.admin
+            })
+            p.save (function (err1,doc1){
+                if (err1)
+                {
+                    insert = false
+                }
+            })
+        }
+        if (insert)
+        {
+            res.status(200).send("Receta creada")
+        }else {
+            res.status(500).send("Alo desconocido sucedio")
+        }
+     }
+    })  
+}
+
 function CatProductsEditsJson (req,res){
     db.catproducts.findOne({_id:req.params.id},function(err,doc){
         if (doc != null)
@@ -1078,6 +1185,11 @@ function UpdateMeasurements (req, res)
             res.status(200).send("actualizado")
         }
     })  
+}
+
+function UpdateReceta (req, res) 
+{  
+    console.log(req.body.arr)
 }
 
 function DeleteCatProducts (req, res) 

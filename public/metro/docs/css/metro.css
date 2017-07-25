@@ -10195,7 +10195,7 @@ input[type="submit"].link:active {
   background-color: #f6f6f6;
   cursor: pointer;
   font-size: .6875rem;
-  text-transform: uppercase;
+  #text-transform: uppercase;
   font-weight: bold;
   position: relative;
   border: 1px #eeeeee solid;
@@ -10236,8 +10236,8 @@ input[type="submit"].link:active {
   color: #999999;
 }
 .accordion > .frame.active > .heading {
-  background-color: #1ba1e2;
-  border-color: #1ba1e2;
+  background-color: indigo;
+  border-color: indigo;
   color: #ffffff;
   box-shadow: -1px 6px 6px -6px rgba(0, 0, 0, 0.35);
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);

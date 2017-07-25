@@ -1,1 +1,86 @@
-hh
+<div class="panel" ng-controller="recetas">
+    <div class="heading">
+        <span class="icon mif-list"></span>
+        <span class="title">Recetas</span>
+    </div>
+    <div class="content">
+        <div class="grid">
+      <div class="row flex-just-sa">
+          <div class="colspan6" style="width: 100%" align="center">
+          <form >
+              <div class="input-control text " data-role="input" style="width: 95%">
+    
+        <input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar">
+    
+        <button class="button" ng-click="search()"><span class="mif-search"></span></button></div>
+            </form>
+          </div>
+          <div class="colspan6" style="width: 100%" align="center">
+            <div class="input-control select" style="width: 95%">
+                <select ng-model="pageSizetmp.items" ng-change="ChangePageItems()" style="text-align: center; text-align-last: center;">
+                    <option value="">---Items mostrados---</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="60">60</option>
+                    <option value="80">80</option>
+                    <option value="100">100</option>
+                    <option value="todos">Ver todos</option>
+                </select>
+                </div>
+          </div>
+      </div>
+  
+  <!--Finaliza Busqueda y numero mostrado -->
+    <table class="table striped hovered bordered">
+          <thead>
+            <tr>
+              <th>Receta</th>
+              <th>Descripcion</th>
+              <th>Preparacion</th>
+              <th>Opciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='a in recetas | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
+              <td>{{ a.name }}</td>
+              <td>{{ a.description }}</td>
+              <td>{{ a.receta.substring(0, 60) }}</td>  
+              <td>
+                <div class="dropdown-button">
+                    <button class="button dropdown-toggle">Opciones</button>
+                    <ul class="split-content d-menu" data-role="dropdown">
+                      <li ng-if="a.update_ingredients == true"><a href="#">Ver ingredientes</a></li>
+                      <li><a href="#">Visualizar</a></li>
+                      <li><a href="dashboard#/edit_recetas/{{a._id}}">Editar</a></li>
+                      <li><a href="#">Eliminar</a></li>
+                    </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+
+    <div class="row flex-just-sa">
+        <div class="cell-auto-size">
+        <div class='pagination'>
+          <button type='button ' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = 0'>Principio</button>
+
+          <button type='button' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
+          
+          <button type='button' class='item current' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{ page.no }}</button>
+          
+          <button type='button' class='item' ng-disabled='currentPage >= recetas.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
+
+          <button type='button' class='item' ng-disabled='currentPage == recetas.length/pageSize - 1' ng-click='currentPage = recetas.length/pageSize - 1'>Final</button>
+        </div>
+    </div>    
+    </div><hr>
+  <!--Finaliza tabla de seleccion-->
+    </div>
+</div>
+
+
+

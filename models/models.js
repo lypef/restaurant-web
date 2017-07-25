@@ -70,6 +70,21 @@ var measurement_scheme = new mongoose.Schema({
 	namefasts: {type: String, required: true}
 })
 
+var recetas_scheme = new mongoose.Schema({
+	name: {type: String, uppercase:true, required: true},
+	description: {type: String, uppercase:true},
+	receta: {type: String, uppercase:true,},
+	admin: { type: Schema.Types.ObjectId, ref: 'clients_users', required: true}
+})
+
+var use_ingredients_scheme = new mongoose.Schema({
+	receta: { type: Schema.Types.ObjectId, ref: 'recetas', required: true},
+	ingrediente: { type: Schema.Types.ObjectId, ref: 'ingredients', required: true},
+	porcion: { type: Number, required: true},
+	update_ingredients: { type: Boolean, default: false },
+	admin: { type: Schema.Types.ObjectId, ref: 'clients_users', required: true}
+})
+
 module.exports.user = mongoose.model("user",user_scheme);
 module.exports.admin = mongoose.model("admin",Admin_scheme);
 module.exports.clients = mongoose.model("clients",clients_scheme);
@@ -78,5 +93,7 @@ module.exports.catproducts = mongoose.model("catproducts",catproducts_scheme);
 module.exports.products = mongoose.model("products",products_scheme);
 module.exports.ingredients = mongoose.model("ingredients",ingredients_scheme);
 module.exports.measurements = mongoose.model("measurements",measurement_scheme);
+module.exports.recetas = mongoose.model("recetas",recetas_scheme);
+module.exports.use_recetas = mongoose.model("use_recetas",use_ingredients_scheme);
 
 

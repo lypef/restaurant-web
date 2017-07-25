@@ -29,11 +29,14 @@ app.config(function($routeProvider){
         .when('/ingredientes_shopping', {
             templateUrl : '/clients_users/ingredients/shopping.html'
         })
-        .when('/add_recetas', {
-            templateUrl : '/clients_users/recetas/add_recetas.html'
-        })
         .when('/recetas', {
             templateUrl : '/clients_users/recetas/index.html'
+        })
+        .when('/add_recetas', {
+            templateUrl : '/clients_users/recetas/add.html'
+        })
+        .when('/edit_recetas/:id', {
+            templateUrl : '/clients_users/recetas/edit.html'
         })
         .otherwise({
             redirectTo : '/'
@@ -652,7 +655,9 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.pages = [];
 
         $scope.ingredients = {};
+        $scope.receta = {};
         $scope.arr = [];
+        $scope.arrtmp = [];
         
         
         $scope.GetIngredients = function ()
@@ -669,6 +674,7 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
         }
 
         $scope.GetIngredients()
+
 
         $scope.search = function(){
             $scope.inputbox
@@ -694,7 +700,8 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
                     porcion: item.stocktmp, 
                     name: item.name, 
                     namefast: item.measurements.namefast,
-                    namefasts: item.measurements.namefasts
+                    namefasts: item.measurements.namefasts,
+                    update_ingredients: true
                 })
                 item.stocktmp = ''
                 pushMessage('success','HECHO','Agregado a la lista', "checkmark")
@@ -706,7 +713,28 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.remove = function (item)
         {
             $scope.arr.splice($scope.arr.indexOf(item),1);
+            $scope.arrtmp.splice($scope.arrtmp.indexOf(item),1);
         }
+
+        $scope.clean = function ()
+        {
+            $scope.GetIngredients()
+            $scope.receta = {};
+            $scope.arr = []
+        }
+
+        $scope.create = function(){
+            $scope.receta.arr = $scope.arr
+
+            $http.post('/api/receta/add', $scope.receta)
+                .success(function(msg) {
+                    pushMessage('success', 'HECHO', msg, "checkmark")
+                    $scope.clean()
+                })
+                .error(function(msg) {
+                    pushMessage('alert','ERROR',msg, "cross")
+                });
+        }; 
 
         $scope.LoadPages = function ()
         {
@@ -745,9 +773,11 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
             if ($scope.pageSizetmp.items == 'todos')
             {
                 $scope.pageSize = $scope.ingredients.length
-            }else {
+            }
+            else {
                 $scope.pageSize = $scope.pageSizetmp.items    
             }
+
             $scope.LoadPages();
         };
 
@@ -761,3 +791,261 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
         return input.slice(start);   
     }       
 })
+
+app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
+        $http.defaults.headers.common['x-access-token']=token;
+        
+        $scope.currentPage = 0;
+        $scope.pageSize = 5;
+        $scope.pages = [];
+
+        $scope.recetas = {};
+        
+        
+        $scope.GetReceta = function ()
+        {
+            $http.get('/api/get_receta/')
+            .success(function(data) {
+                $scope.recetas = data
+                $scope.LoadPages()
+                $scope.ChangePageItems()
+            })
+            .error(function(data) {
+                pushMessage('alert','ERROR',data, "cross")
+        });
+        }
+
+        $scope.GetReceta()
+
+
+        $scope.search = function(){
+            $scope.inputbox
+            $http.post('/api/receta/search', $scope.inputbox)
+                .success(function(data) {
+                    pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
+                    $scope.inputbox = {}
+                    $scope.recetas = data
+                    $scope.LoadPages()
+                    $scope.ChangePageItems()
+                })
+                .error(function(msg) {
+                    pushMessage('danger','NOT FOUND',msg, "question")
+                });
+        };
+
+
+        $scope.LoadPages = function ()
+        {
+            $scope.pages.length = 0;
+                var ini = $scope.currentPage - 4;
+                var fin = $scope.currentPage + 5;
+                if (ini < 1) {
+                  ini = 1;
+                  if (Math.ceil($scope.recetas.length / $scope.pageSize) > 10)
+                    fin = 10;
+                  else
+                    fin = Math.ceil($scope.recetas.length / $scope.pageSize);
+                } else {
+                  if (ini >= Math.ceil($scope.recetas.length / $scope.pageSize) - 10) {
+                    ini = Math.ceil($scope.recetas.length / $scope.pageSize) - 10;
+                    fin = Math.ceil($scope.recetas.length / $scope.pageSize);
+                  }
+                }
+                if (ini < 1) ini = 1;
+                for (var i = ini; i <= fin; i++) {
+                  $scope.pages.push({
+                    no: i
+                  });
+                }
+
+                if ($scope.currentPage >= $scope.pages.length)
+                $scope.currentPage = $scope.pages.length - 1;
+        }
+        
+        $scope.setPage = function(index) {
+            $scope.currentPage = index - 1;
+        };
+        
+        
+        $scope.ChangePageItems = function() {
+            if ($scope.pageSizetmp.items == 'todos')
+            {
+                $scope.pageSize = $scope.recetas.length
+            }
+            else {
+                $scope.pageSize = $scope.pageSizetmp.items    
+            }
+
+            $scope.LoadPages();
+        };
+
+
+    }
+  ]).filter('startFromGrid', function() {
+    return function(input, start) 
+    {
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
+    }       
+})
+
+app.controller("update_recetas", ['$scope', '$routeParams','$http', function ($scope, $routeParams, $http) {
+        $http.defaults.headers.common['x-access-token']=token;
+        
+        
+        $scope.currentPage = 0;
+        $scope.pageSize = 5;
+        $scope.pages = [];
+
+        $scope.receta = {};
+        $scope.ingredientes = {};
+        $scope.arr = [];
+        
+        
+        $http.get('/api/get_receta/' + $routeParams.id)
+            .success(function(data) {
+                $scope.receta = data
+            })
+            .error(function(data) {
+                pushMessage('alert','ERROR',data, "cross")
+        });
+
+        
+        $scope.GetIngredients = function ()
+        {
+            $http.get('/api/getingredients/')
+            .success(function(data) {
+                $scope.ingredientes = data
+                $scope.LoadPages()
+                $scope.ChangePageItems()
+            })
+            .error(function(data) {
+                pushMessage('alert','ERROR',data, "cross")
+        });
+        }
+
+        $scope.GetIngredients()
+
+        $http.get('/api/get_use_recetas/' + $routeParams.id )
+            .success(function(data) {
+                $scope.arr = data
+            })
+            .error(function(data) {
+                pushMessage('alert','ERROR',data, "cross")
+        });
+
+        $scope.update = function(){
+            $scope.receta.arr = $scope.arr
+
+            $http.post('/api/receta/update', $scope.receta)
+                .success(function(msg) {
+                    pushMessage('success', 'HECHO', msg, "checkmark")
+                    $scope.clean()
+                })
+                .error(function(msg) {
+                    pushMessage('alert','ERROR',msg, "cross")
+                });
+        };
+
+        $scope.LoadPages = function ()
+        {
+            $scope.pages.length = 0;
+                var ini = $scope.currentPage - 4;
+                var fin = $scope.currentPage + 5;
+                if (ini < 1) {
+                  ini = 1;
+                  if (Math.ceil($scope.ingredientes.length / $scope.pageSize) > 10)
+                    fin = 10;
+                  else
+                    fin = Math.ceil($scope.ingredientes.length / $scope.pageSize);
+                } else {
+                  if (ini >= Math.ceil($scope.ingredientes.length / $scope.pageSize) - 10) {
+                    ini = Math.ceil($scope.ingredientes.length / $scope.pageSize) - 10;
+                    fin = Math.ceil($scope.ingredientes.length / $scope.pageSize);
+                  }
+                }
+                if (ini < 1) ini = 1;
+                for (var i = ini; i <= fin; i++) {
+                  $scope.pages.push({
+                    no: i
+                  });
+                }
+
+                if ($scope.currentPage >= $scope.pages.length)
+                $scope.currentPage = $scope.pages.length - 1;
+        }
+        
+        $scope.setPage = function(index) {
+            $scope.currentPage = index - 1;
+        };
+        
+        $scope.search = function(){
+            $scope.inputbox
+            $http.post('/api/ingredient/search', $scope.inputbox)
+                .success(function(data) {
+                    pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
+                    $scope.inputbox = {}
+                    $scope.ingredientes = data;
+                    $scope.LoadPages()
+                    $scope.ChangePageItems()
+                })
+                .error(function(msg) {
+                    pushMessage('danger','NOT FOUND',msg, "question")
+                });
+        };
+
+        $scope.insert = function(item){
+            if (item.stocktmp != null && item.stocktmp > 0)
+            {
+                $scope.arr.push(
+                {
+                    id: item._id, 
+                    porcion: item.stocktmp, 
+                    name: item.name, 
+                    namefast: item.measurements.namefast,
+                    namefasts: item.measurements.namefasts,
+                    update_ingredients: true
+                })
+                item.stocktmp = ''
+                pushMessage('success','HECHO','Agregado a la lista', "checkmark")
+            }else {
+                pushMessage('alert','NEGADO','Verifique su porcion', "checkmark")
+            }
+        };
+
+        $scope.remove = function (item)
+        {
+            $scope.arr.splice($scope.arr.indexOf(item),1);
+        }
+
+        $scope.clean = function ()
+        {
+            $scope.GetIngredients()
+            $scope.ingredientes = {};
+            $scope.arr = []
+        }
+
+
+        $scope.ChangePageItems = function() {
+            if ($scope.pageSizetmp.items == 'todos')
+            {
+                $scope.pageSize = $scope.ingredientes.length
+            }
+            else {
+                $scope.pageSize = $scope.pageSizetmp.items    
+            }
+
+            $scope.LoadPages();
+        };
+
+
+    }
+  ]).filter('startFromGrid', function() {
+    return function(input, start) 
+    {
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
+    }       
+})    
