@@ -39,7 +39,8 @@
               <th>Receta</th>
               <th>Descripcion</th>
               <th>Preparacion</th>
-              <th>Opciones</th>
+              <th>Visualizar</th>
+              <th>Editar</th>
             </tr>
           </thead>
           <tbody>
@@ -47,22 +48,22 @@
               <td>{{ a.name }}</td>
               <td>{{ a.description }}</td>
               <td>{{ a.receta.substring(0, 60) }}</td>  
+              
               <td>
-                <div class="dropdown-button">
-                    <button class="button dropdown-toggle">Opciones</button>
-                    <ul class="split-content d-menu" data-role="dropdown">
-                      <li ng-if="a.update_ingredients == true"><a href="#">Ver ingredientes</a></li>
-                      <li><a href="#">Visualizar</a></li>
-                      <li><a href="dashboard#/edit_recetas/{{a._id}}">Editar</a></li>
-                      <li><a href="#">Eliminar</a></li>
-                    </ul>
-                </div>
+              <button class="button info" onclick="toggleMetroDialog('#update')"><span class="mif-versions"></span> Visualizar</button> 
               </td>
+
+              <td>
+              <a href="dashboard#/edit_recetas/{{a._id}}">
+              <button class="button warning"><span class="mif-pencil"></span> Editar</button>
+              </a>
+              </td>
+              
             </tr>
           </tbody>
         </table>
-        
-
+    
+    
     <div class="row flex-just-sa">
         <div class="cell-auto-size">
         <div class='pagination'>
@@ -79,8 +80,26 @@
     </div>    
     </div><hr>
   <!--Finaliza tabla de seleccion-->
+
     </div>
+
 </div>
 
+<!--Ver receta-->    
+<div data-role="dialog" id="update" class="padding30" data-type="" 
+data-close-button="true"
+data-width="auto"
+data-overlay="true">
 
+    <p>
+    <font face="Segoe UI Bold">
+        <h4>ELIMINAR RECETA?</h4>
+    </font>
+    </p>
 
+    <div align="center">
+      <button class="button alert" ng-click="" onclick="hideMetroDialog('#update')">SI</button>
+    <button class="button success" onclick="hideMetroDialog('#update')">NO</button>
+    </div>
+</div>
+<!--Finaliza Ver receta-->    

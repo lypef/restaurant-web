@@ -73,7 +73,7 @@ var measurement_scheme = new mongoose.Schema({
 var recetas_scheme = new mongoose.Schema({
 	name: {type: String, uppercase:true, required: true},
 	description: {type: String, uppercase:true},
-	receta: {type: String, uppercase:true,},
+	receta: {type: String, uppercase:true},
 	admin: { type: Schema.Types.ObjectId, ref: 'clients_users', required: true}
 })
 

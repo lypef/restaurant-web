@@ -9,6 +9,8 @@
         <div class="heading"><span class="mif-plus icon"></span> Actualizar receta</span></div>
         <div class="content" align="center">
         	<!--Contenido agregar-->
+        	<input type="hidden"  ng-model="receta._id" class="input-full">
+
 	<div class="input-control modern text iconic" id="widthfull">
 	    <input type="text" placeholder="Nombre" ng-model="receta.name" class="input-full">
 	    <span class="informer"></span>
@@ -133,9 +135,10 @@
           </thead>
           <tbody>
             <tr ng-repeat='a in arr'>
-              <td ng-if="a.ingrediente.name != null">{{ a.ingrediente.name }}</td>
-              <td ng-if="a.ingrediente.name == null">{{ a.name }}</td>
-              <td >{{ a.porcion }} Porcion</td>
+              <td >{{ a.name }}</td>
+              <td ng-if="a.porcion > 1">{{ a.porcion }} {{ a.namefasts }}</td>
+              <td ng-if="a.porcion < 1">{{ a.porcion }} {{ a.namefast }}</td>
+              <td ng-if="a.porcion == 1">{{ a.porcion }} {{ a.namefast }}</td>
               <td>
 
                 <label class="switch-original">
@@ -152,10 +155,29 @@
         <div class="cell-auto-size">
         <div class='pagination'>
 	        <button class="button success large-button" ng-click="update()"><span class="mif-pencil "></span> Actualizar receta</button>
-			<button class="button danger large-button" ng-click="delete()"><span class="mif-bin "></span> Eliminar</button>
+			   <button class="button danger large-button" onclick="toggleMetroDialog('#update')"><span class="mif-bin "></span> Eliminar</button>
         </div>
     </div>    
     </div>
+
+
+<div data-role="dialog" id="update" class="padding30" data-type="" 
+    data-close-button="true"
+    data-width="auto"
+    data-overlay="true">
+
+        <p>
+        <font face="Segoe UI Bold">
+            <h4>ELIMINAR RECETA?</h4>
+        </font>
+        </p>
+
+        <div align="center">
+          <button class="button alert" ng-click="delete()" onclick="hideMetroDialog('#update')">SI</button>
+        <button class="button success" onclick="hideMetroDialog('#update')">NO</button>
+        </div>
+</div>
+
 
 </div>
 	

@@ -116,6 +116,7 @@ app.post('/api/measurement/search', SearchMeasurements );
 app.post('/api/receta/add', CreateReceta );
 app.post('/api/receta/search', SearchRecetas )
 app.post('/api/receta/update', UpdateReceta )
+app.post('/api/receta/delete', DeleteReceta )
 
 //Funciones
 function Inicio (req, res) 
@@ -915,8 +916,7 @@ function GetRecetasJSON_ID (req, res)
 
 function GetUseRecetasJSON_ID (req, res)
 {
-    console.log(req.params.id)
-    db.use_recetas.find({ receta: req.params.id , admin: req.session.admin}).sort({name:1}).populate('admin').populate('ingrediente').populate('receta').exec(function(err,doc){
+    db.use_recetas.find({ receta: req.params.id , admin: req.session.admin}).populate('ingrediente').exec(function(err,doc){
         if (doc != null)
         {
             res.json(doc)
@@ -1187,9 +1187,83 @@ function UpdateMeasurements (req, res)
     })  
 }
 
+
+function DeleteReceta (req, res) 
+{  
+    var r = true
+    
+    db.recetas.remove({ _id: req.body._id, admin: req.session.admin },function( err) 
+    {
+        if (!err)
+        {
+            db.use_recetas.remove({ receta: req.body._id, admin: req.session.admin },function( err) 
+            {
+                if (!err)
+                {
+                    r = false                
+                }
+            })
+        }
+    })
+
+    if (r)
+    {
+        res.status(200).send('Receta eliminada')
+    }else {
+        res.status(500).send('No se pueod eliminar la receta')
+    }
+}
+
 function UpdateReceta (req, res) 
 {  
-    console.log(req.body.arr)
+    db.use_recetas.remove({ receta: req.body._id, admin: req.session.admin },function( err) 
+    {
+        if (!err)
+        {
+            console.log('Recetas eliminada')
+        }
+    })
+
+    var insert_receta = true
+    var insert_ingredients = true
+
+    db.recetas.update(
+    { _id : req.body._id },
+    { 
+        name: req.body.name.toUpperCase(),
+        description: req.body.description.toUpperCase(),
+        receta: req.body.receta.toUpperCase()
+    },
+    function( err) 
+    {
+        if (err)
+        {
+            insert_receta = false
+        }
+    })  
+
+    for (var i = 0;  i < req.body.arr.length; i++)
+    {
+        var p = new db.use_recetas({
+            receta: req.body._id,
+            ingrediente: req.body.arr[i].id,
+            porcion: req.body.arr[i].porcion,
+            update_ingredients: req.body.arr[i].update_ingredients,
+            admin: req.session.admin
+        })
+        p.save (function (err1,doc1){
+            if (err1)
+            {
+                insert_ingredients = false
+            }
+        })
+    }
+    if (insert_ingredients || insert_receta)
+    {
+        res.status(200).send('Receta actualizada')
+    }else {
+        res.status(500).send('Al parecer la actualizacion no se completo. Verifiquela')
+    }
 }
 
 function DeleteCatProducts (req, res) 

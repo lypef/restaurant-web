@@ -890,7 +890,7 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
     }       
 })
 
-app.controller("update_recetas", ['$scope', '$routeParams','$http', function ($scope, $routeParams, $http) {
+app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', function ($scope, $routeParams, $http, $window) {
         $http.defaults.headers.common['x-access-token']=token;
         
         
@@ -900,9 +900,15 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http', function ($s
 
         $scope.receta = {};
         $scope.ingredientes = {};
+        $scope.measurements = [];
         $scope.arr = [];
         
         
+        $http.get('/api/get_measurements/')
+        .success(function(data) {
+            $scope.measurements = data
+        })
+
         $http.get('/api/get_receta/' + $routeParams.id)
             .success(function(data) {
                 $scope.receta = data
@@ -911,7 +917,19 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http', function ($s
                 pushMessage('alert','ERROR',data, "cross")
         });
 
+        $http.get('/api/get_use_recetas/' + $routeParams.id )
+            .success(function(data) {
+                for (var i = 0; i < data.length; i++)
+                {
+                    $scope.insertfirst(data[i])
+                }
+            })
+            .error(function(data) {
+                pushMessage('alert','ERROR',data, "cross")
+        });
         
+        
+
         $scope.GetIngredients = function ()
         {
             $http.get('/api/getingredients/')
@@ -926,22 +944,28 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http', function ($s
         }
 
         $scope.GetIngredients()
+        
 
-        $http.get('/api/get_use_recetas/' + $routeParams.id )
-            .success(function(data) {
-                $scope.arr = data
-            })
-            .error(function(data) {
-                pushMessage('alert','ERROR',data, "cross")
-        });
 
         $scope.update = function(){
             $scope.receta.arr = $scope.arr
 
             $http.post('/api/receta/update', $scope.receta)
                 .success(function(msg) {
+                    $window.location = "dashboard#/recetas"
                     pushMessage('success', 'HECHO', msg, "checkmark")
-                    $scope.clean()
+                })
+                .error(function(msg) {
+                    pushMessage('alert','ERROR',msg, "cross")
+                });
+        };
+
+        $scope.delete = function(_id){
+            
+            $http.post('/api/receta/delete', $scope.receta)
+                .success(function(msg) {
+                    $window.location = "dashboard#/recetas"
+                    pushMessage('success', 'HECHO', msg, "checkmark")
                 })
                 .error(function(msg) {
                     pushMessage('alert','ERROR',msg, "cross")
@@ -995,6 +1019,28 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http', function ($s
                 });
         };
 
+        $scope.insertfirst = function(item){
+            
+            for ($scope.i = 0; $scope.i < $scope.measurements.length; $scope.i = $scope.i + 1)
+            {
+                if ($scope.measurements[$scope.i]._id == item.ingrediente.measurements)
+                {
+                    $scope.namefast = $scope.measurements[$scope.i].namefast
+                    $scope.namefasts = $scope.measurements[$scope.i].namefasts
+                    break
+                }
+            }
+            
+            $scope.arr.push(
+            {
+                id: item.ingrediente._id, 
+                porcion: item.porcion, 
+                name: item.ingrediente.name,
+                namefast: $scope.namefast,
+                namefasts: $scope.namefasts,    
+                update_ingredients: item.update_ingredients
+            })
+        };
         $scope.insert = function(item){
             if (item.stocktmp != null && item.stocktmp > 0)
             {
@@ -1018,14 +1064,6 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http', function ($s
         {
             $scope.arr.splice($scope.arr.indexOf(item),1);
         }
-
-        $scope.clean = function ()
-        {
-            $scope.GetIngredients()
-            $scope.ingredientes = {};
-            $scope.arr = []
-        }
-
 
         $scope.ChangePageItems = function() {
             if ($scope.pageSizetmp.items == 'todos')
