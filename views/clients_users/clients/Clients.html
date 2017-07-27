@@ -1,29 +1,118 @@
 <div ng-controller="clients">
-	<form>
-	<div class="input-control text big-input " data-role="input" style="width: 100%">
-	    
-	    <input type="text" name="filter" ng-model="inputbox.text" placeholder="Buscar">
-	    
-	    <button class="button" ng-click="SearchClient()"><span class="mif-search"></span></button>
-	    
+
+<div class="accordion large-heading" data-role="accordion" ng-controller="add_recetas">
+    <div class="frame">
+        <div class="heading"><span class="mif-plus icon"></span> Nueva receta</span></div>
+        <div class="content" align="center">
+        <form align="center">  
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="Nombre" ng-model="Client.nombre" class="input-full">
+            <span class="icon mif-user"></span>
+            </div>
+            
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="Direccion" ng-model="Client.direccion">
+            <span class="icon mif-home"></span>
+            </div>
+            
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="number" placeholder="Telefono fijo" ng-model="Client.telefono">
+            <span class="icon mif-phone"></span>
+            </div>
+            
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="E-mail" ng-model="Client.mail">
+            <span class="icon mif-mail"></span>
+            </div>
+            <br><br>
+            <button class="button success loading-pulse" ng-click="CreateClient()">
+            Agregar
+            </button>
+        </form>
+        </div>
+    </div>
+</div>
+<br>
+<div class="panel alert">
+    <div class="heading">
+    
+    <span class="title">Clientes</span>
+
+    </div>
+    <div class="content">
+	<!--Busqueda y numero mostrado -->
+	<div class="grid">
+	    <div class="row flex-just-sa">
+	        <div class="colspan6" style="width: 100%" align="center">
+	        <form >
+            	<div class="input-control text " data-role="input" style="width: 95%">
+    
+    		<input type="text" name="filter" ng-model="inputbox.text" placeholder="Buscar">
+    
+    		<button class="button" ng-click="SearchClient()"><span class="mif-search"></span></button></div>
+            </form>
+	        </div>
+	        <div class="colspan6" style="width: 100%" align="center">
+		        <div class="input-control select" style="width: 95%">
+                <select ng-model="pageSizetmp.items" ng-change="ChangePageItems()" style="text-align: center; text-align-last: center;">
+                    <option value="">---Items mostrados---</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="60">60</option>
+                    <option value="80">80</option>
+                    <option value="100">100</option>
+                    <option value="todos">Ver todos</option>
+                </select>
+                </div>
+	        </div>
+	    </div>
 	</div>
-	</form>
-	
-	<div class="listview">
-	    
-	        <div class="list" ng-repeat="todo in all">
+	<!--Finaliza Busqueda y numero mostrado -->
+                
+    <table class="table striped hovered bordered">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Direccion</th>
+              <th>Telefono</th>
+              <th>Actualizar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='a in all | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
+              <td>{{ a.nombre }}</td>
+              <td>{{ a.direccion }}</td>
+              <td>{{ a.telefono }}</td>
+                <td>
+                	<a href="dashboard#/editclient/{{ a._id }}">
+						<button class="button success mif-floppy-disk" ng-Click="update(a)"> Editar</button>
+					</a>
+                </td>
+                
+            </tr>
+          </tbody>
+        </table>
+        
+<div class="grid">
+    <div class="row flex-just-sa">
+        <div class="cell-auto-size">
+        <div class='pagination'>
+          <button type='button ' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = 0'>Principio</button>
 
-	        <a href="dashboard#/editclient/{{ todo._id }}">
-	            <img src="https://cdn2.iconfinder.com/data/icons/bitsies/128/EditDocument-512.png" class="list-icon">
-	        	<span class="list-title">{{ todo.nombre }} {{ todo.apellidos }}</span>
-	        </a>    
+          <button type='button' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
+          
+          <button type='button' class='item current' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{ page.no }}</button>
+          
+          <button type='button' class='item' ng-disabled='currentPage >= all.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
 
-	        
-	    </div>    
-	    
-	</div>
-	<div class="listview list-type-icons">
-	<div class="listview list-type-tiles">
-	<div class="listview list-type-listing">
-
+          <button type='button' class='item' ng-disabled='currentPage == all.length/pageSize - 1' ng-click='currentPage = all.length/pageSize - 1'>Final</button>
+        </div>
+    </div>    
+    </div>
+</div>
+<hr>
+</div></div>
+</div>
 </div>

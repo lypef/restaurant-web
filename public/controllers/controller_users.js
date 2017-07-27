@@ -11,9 +11,6 @@ app.config(function($routeProvider){
         .when('/clients', {
         	templateUrl : '/clients_users/clients/Clients.html'
         })
-        .when('/addclient', {
-            templateUrl : '/clients_users/clients/AddClient.html'
-        })
         .when('/editclient/:id', {
             templateUrl : '/clients_users/clients/UpdateClient.html'
         })
@@ -56,45 +53,111 @@ app.controller("UserValues", function($scope, $http){
     });
 });
 
-app.controller("clients", function($scope, $http, $window)
-{
-    $http.defaults.headers.common['x-access-token']=token;
-    $scope.Client = {};  
+app.controller("clients", ['$scope','$http','$window', function ($scope, $http, $window) {
+        $http.defaults.headers.common['x-access-token']=token;
+        
+        $scope.currentPage = 0;
+        $scope.pageSize = 5;
+        $scope.pages = [];
+        
+        $scope.all = {};
+        $scope.Client = {};
+        
+        
 
-    $http.get('/api/clients/')
-        .success(function(data) {
-            $scope.all = data;
-        })
-        .error(function(data) {
-            console.log('Error: ' + data);
-    });
+        $scope.GetClients = function ()
+        {
+            $http.get('/api/clients/')
+            .success(function(data) {
+                $scope.all = data;
+                $scope.LoadPages()
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+        }
+        $scope.GetClients()
 
-    $scope.CreateClient = function(){
+        $scope.CreateClient = function(){
         $http.post('/api/clients/add', $scope.Client)
-            .success(function(id) {
-                $scope.Client = {};
-                pushMessage('success', 'HECHO', 'Cliente agregado con exito', "checkmark")
-                $window.location = "dashboard#/editclient/" + id;
+            .success(function(msg) {
+                $scope.GetClients()
+                pushMessage('success', 'HECHO', msg, "checkmark")
             })
             .error(function(msg) {
                 pushMessage('alert','ERROR',msg, "cross")
             });
-    };  
+        };  
 
-    $scope.SearchClient = function(){
-        $scope.inputbox
-        $http.post('/api/client/search', $scope.inputbox)
-            .success(function(data) {
-                pushMessage('success','FOUNT',"Cliente's encontrados", "checkmark")
-                $scope.all = data;
-            })
-            .error(function(msg) {
-                pushMessage('info','NOT FOUND',msg, "question")
-            });
-    };  
+        $scope.SearchClient = function(){
+            $scope.inputbox
+            $http.post('/api/client/search', $scope.inputbox)
+                .success(function(data) {
+                    pushMessage('success','FOUNT',"Cliente's encontrados", "checkmark")
+                    $scope.all = data;
+                    $scope.LoadPages()
+                })
+                .error(function(msg) {
+                    pushMessage('info','NOT FOUND',msg, "question")
+                });
+        };  
 
 
-})
+        $scope.LoadPages = function ()
+        {
+            $scope.pages.length = 0;
+                var ini = $scope.currentPage - 4;
+                var fin = $scope.currentPage + 5;
+                if (ini < 1) {
+                  ini = 1;
+                  if (Math.ceil($scope.all.length / $scope.pageSize) > 10)
+                    fin = 10;
+                  else
+                    fin = Math.ceil($scope.all.length / $scope.pageSize);
+                } else {
+                  if (ini >= Math.ceil($scope.all.length / $scope.pageSize) - 10) {
+                    ini = Math.ceil($scope.all.length / $scope.pageSize) - 10;
+                    fin = Math.ceil($scope.all.length / $scope.pageSize);
+                  }
+                }
+                if (ini < 1) ini = 1;
+                for (var i = ini; i <= fin; i++) {
+                  $scope.pages.push({
+                    no: i
+                  });
+                }
+
+                if ($scope.currentPage >= $scope.pages.length)
+                $scope.currentPage = $scope.pages.length - 1;
+        }
+        
+        $scope.setPage = function(index) {
+            $scope.currentPage = index - 1;
+        };
+        
+        $scope.ChangePageItems = function() {
+            if ($scope.pageSizetmp.items == 'todos')
+            {
+                $scope.pageSize = $scope.all.length
+            }
+            else {
+                $scope.pageSize = $scope.pageSizetmp.items    
+            }
+
+            $scope.LoadPages();
+        };
+
+
+    }
+  ]).filter('startFromGrid', function() {
+    return function(input, start) 
+    {
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
+    }       
+})    
+
 
 app.controller("UpdateClient", function($scope, $http, $routeParams, $window)
 {

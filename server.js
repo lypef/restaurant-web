@@ -363,7 +363,7 @@ function UserValuesjson (req,res){
 function ClientsJson (req,res){
 	db.clients.find({ admin: req.session.admin}, function(err, data) {
         if(err) {
-            res.sendStatus(err);
+            res.status(500).send(err);
         }else
         {
         	res.json(data);	
@@ -407,7 +407,7 @@ function ClienteditsJson (req,res){
 
 function CreateClient (req, res) 
 {  
-    if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null)
+    if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null || req.body.mail == '')
     {
     	var p = new db.clients({
     		nombre: req.body.nombre.toUpperCase(),
@@ -421,10 +421,10 @@ function CreateClient (req, res)
     	p.save(function (err) {
     	 if (err)
     	 {
-    	 	res.Status(500).send("No fue posible crear el cliente, intente de nuevo.")
+    	 	res.status(500).send("No fue posible crear el cliente, intente de nuevo.")
     	 }else
     	 {
-    	 	res.status(200).send(p._id)
+    	 	res.status(200).send('Cliente creado con exito')
     	 }
     	})	
     }else
@@ -614,7 +614,7 @@ function DeleteClient (req, res)
 	if (req.body.admin == req.session.admin)
     {
         db.clients.remove(
-        { _id : req.body._id },
+        { admin: req.session.admin, _id : req.body._id },
         
         function( err) 
         {
@@ -709,9 +709,9 @@ function DeleteMeasuremeants (req, res)
 
 function SearchClient (req, res) 
 {  
-	db.clients.find({$or: [ {nombre: { $regex : req.body.text.toUpperCase() }}, {apellidos: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
+	db.clients.find({admin: req.session.admin, $or: [ {nombre: { $regex : req.body.text.toUpperCase() }}, {apellidos: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
         if(err || data == "") {
-            res.sendStatus(500,"Cliente no encontrado")
+            res.status(500).send("Cliente no encontrado")
         }else
         {
         	res.json(data)
@@ -790,7 +790,7 @@ function SearchIngredients (req, res)
 {  
     if (req.body.txt == null || req.body.txt == undefined)
     {
-        db.ingredients.find().sort({name:1}).populate('measurements').exec(function(err, data) {
+        db.ingredients.find({admin: req.session.admin}).sort({name:1}).populate('measurements').exec(function(err, data) {
         if(err || data == "") {
             res.status(500).send("Ingrediente no encontrada")
         }else
@@ -799,7 +799,7 @@ function SearchIngredients (req, res)
         }
     })
     }else {
-        db.ingredients.find({$or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).sort({name:1}).populate('measurements').exec(function(err, data) {
+        db.ingredients.find({admin: req.session.admin, $or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).sort({name:1}).populate('measurements').exec(function(err, data) {
         if(err || data == "") {
             res.status(500).send("Ingrediente no encontrada")
         }else
@@ -822,7 +822,7 @@ function SearchRecetas (req, res)
             }
         })
     }else {
-        db.recetas.find({$or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).sort({name:1}).populate('admin').exec(function(err, data) {
+        db.recetas.find({admin: req.session.admin, $or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).sort({name:1}).populate('admin').exec(function(err, data) {
         if(err || data == "") {
             res.status(500).send("Receta no encontrada")
         }else
