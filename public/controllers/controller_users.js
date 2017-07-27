@@ -43,7 +43,9 @@ app.config(function($routeProvider){
 app.controller("UserValues", function($scope, $http){
     $http.defaults.headers.common['x-access-token']=token;
     $scope.usuario = {};
-    $scope.loader = true;  
+    
+    $scope.$on('load', function(){$scope.loading = true})
+    $scope.$on('unload', function(){$scope.loading = false})
     
     $http.get('/api/users/values')
         .success(function(data) {
@@ -52,6 +54,8 @@ app.controller("UserValues", function($scope, $http){
         .error(function(data) {
             console.log('Error: ' + data);
     });
+
+    
 });
 
 app.controller("clients", ['$scope','$http','$window', function ($scope, $http, $window) {
@@ -63,19 +67,21 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
         
         $scope.all = {};
         $scope.Client = {};
-        
-        
-
+     
         $scope.GetClients = function ()
         {
+            $scope.$emit('load')
             $http.get('/api/clients/')
             .success(function(data) {
                 $scope.all = data;
                 $scope.LoadPages()
+                $scope.$emit('unload')
             })
             .error(function(data) {
+                $scope.$emit('unload')
                 console.log('Error: ' + data);
             });
+
         }
         $scope.GetClients()
 
