@@ -10192,7 +10192,7 @@ input[type="submit"].link:active {
 .accordion > .frame > .heading {
   display: block;
   padding: 8px 16px 8px 20px;
-  background-color: #f6f6f6;
+  background-color: gray;
   cursor: pointer;
   font-size: .6875rem;
   #text-transform: uppercase;
@@ -10223,7 +10223,7 @@ input[type="submit"].link:active {
   transition: all 0.3s ease;
 }
 .accordion > .frame > .heading:hover {
-  background-color: #eeeeee;
+  background-color: indigo;
 }
 .accordion > .frame > .heading .icon {
   position: absolute;

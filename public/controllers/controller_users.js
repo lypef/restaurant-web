@@ -78,9 +78,11 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
                 $scope.$emit('unload')
             })
             .error(function(data) {
-                $scope.$emit('unload')
                 console.log('Error: ' + data);
-            });
+            })
+            .finally (function(){
+                $scope.$emit('unload')
+            })
 
         }
         $scope.GetClients()

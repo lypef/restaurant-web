@@ -90,21 +90,7 @@
 
 <body ng-controller="UserValues">
     <div class="app-bar fixed-top blue" data-role="appbar">
-        <div class="app-bar fixed-top blue" data-role="appbar">
-
-        <span class="app-bar-element branding" ng-show="loading">
-            <div data-role="preloader"
-            data-type="square" 
-            data-style="color" 
-            class="preloader-square color-style"
-            >
-        </div>
-        </span>
-
-        <a href="dashboard#/" class="app-bar-element branding" ng-if="loader == false">
-        <span class="mif-shop mif-2x">
-        </span></a>
-
+        <a href="dashboard#/" class="app-bar-element branding"><span class="mif-shop mif-2x"></span></a>
         <span class="app-bar-divider"></span>
         <ul class="app-bar-menu">
             
@@ -206,9 +192,7 @@
         <div class="flex-grid no-responsive-future" id="divone">
             <div class="row" style="height: 100%">
                 <div class="padding10 bg-white" id="cell-content">
-                    <div ng-view>
-                        
-                    </div>
+                    <div ng-view></div>
                     <br>
                 <footer>
                     <div class="bottom-menu-wrapper">
