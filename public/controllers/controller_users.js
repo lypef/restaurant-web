@@ -42,8 +42,9 @@ app.config(function($routeProvider){
 
 app.controller("UserValues", function($scope, $http){
     $http.defaults.headers.common['x-access-token']=token;
-    $scope.usuario = {};  
-
+    $scope.usuario = {};
+    $scope.loader = true;  
+    
     $http.get('/api/users/values')
         .success(function(data) {
             $scope.usuario = data;
