@@ -915,7 +915,11 @@ function GetRecetasJSON_ID (req, res)
 
 function GetUseRecetasJSON_ID (req, res)
 {
-    db.use_recetas.find({ receta: req.params.id , admin: req.session.admin}).populate('ingrediente').exec(function(err,doc){
+    db.use_recetas.find({ receta: req.params.id , admin: req.session.admin}).populate(
+            {path:     'ingrediente',         
+                populate: { path:  'measurements',
+                            model: 'measurements' }
+            }).exec(function(err,doc){
         if (doc != null)
         {
             res.json(doc)

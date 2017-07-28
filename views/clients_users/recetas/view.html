@@ -1,0 +1,44 @@
+<div ng-controller="view_receta">
+<!--Preparacion-->
+<div class="panel">
+	    <div class="heading" align="center">
+	        <span class="title">{{ receta.name}} - PREPARACION</span>
+	    </div>
+	    <div class="content padding20">
+	    	<div class="grid">
+				<div class="row flex-just-sa">
+					<div class="cell-auto-size" style="border: 2px">
+					<div class="listview-outlook" data-role="listview">
+		    <div class="list">
+		        <div class="list-content" ng-repeat='a in ingredientes'>
+		            <span class="list-title">
+	            		{{ a.porcion }} 
+	                    <span ng-if="a.porcion < 1">{{ a.ingrediente.measurements.namefast }}</span>
+	                    <span ng-if="a.porcion > 1">{{ a.ingrediente.measurements.namefasts }}</span>
+	                    <span ng-if="a.porcion == 1">{{ a.ingrediente.measurements.namefast }}</span>
+	                    {{ a.ingrediente.name }}
+	                </span>
+		            <span class="list-subtitle">Stock: {{ a.ingrediente.stock }}</span>
+		            <span class="list-remark" ng-if = "a.update_ingredients">
+		            Descontar stock</span>
+		        </div>
+		    </div></div>
+					</div>
+					<div class="cell-auto-size padding20" style="border: 2px; width: 100%">
+						<center><h2>{{ receta.description}}</h2></center>
+						<h4 class="align-justify">{{ receta.receta}}</h4>
+						<center>
+							<br><br>
+							<button class="button large-button primary"><span class="mif-printer"></span> Imprimir</button>
+							<a href="dashboard#/edit_recetas/{{receta._id}}">
+								<button class="button large-button warning"><span class="mif-pencil"></span> Editar</button>
+							</a>
+							<br><br>
+						</center>
+				    </div>
+				</div>
+			</div>
+
+	    </div>
+	</div>
+<!--Finaliza preparacion-->

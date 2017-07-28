@@ -38,19 +38,26 @@
             <tr>
               <th>Receta</th>
               <th>Descripcion</th>
-              <th>Preparacion</th>
+              <th>Imprimir</th>
               <th>Visualizar</th>
               <th>Editar</th>
+              <th>Eliminar</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat='a in recetas | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
               <td>{{ a.name }}</td>
               <td>{{ a.description }}</td>
-              <td>{{ a.receta.substring(0, 60) }}</td>  
+              <td>
+              <a href="">
+                <button class="button primary"><span class="mif-printer"></span> Imprimir</button> 
+              </a>
+              </td>  
               
               <td>
-              <button class="button primary" onclick="toggleMetroDialog('#view')" ng-click="loadvalues(a)"><span class="mif-versions"></span> Visualizar</button> 
+              <a href="dashboard#/view_recetas/{{ a._id }}">
+                <button class="button success"><span class="mif-versions"></span> Visualizar</button> 
+              </a>
               </td>
 
               <td>

@@ -35,6 +35,9 @@ app.config(function($routeProvider){
         .when('/edit_recetas/:id', {
             templateUrl : '/clients_users/recetas/edit.html'
         })
+        .when('/view_recetas/:id', {
+            templateUrl : '/clients_users/recetas/view.html'
+        })
         .otherwise({
             redirectTo : '/'
         })
@@ -1263,4 +1266,45 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
         start = +start; 
         return input.slice(start);   
     }       
-})    
+})
+
+
+app.controller("view_receta", function($scope, $http, $routeParams, $window)
+{
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.receta = {};
+    $scope.ingredientes = {};  
+    
+    $scope.GetReceta = function (){
+        $scope.$emit('load')
+        $http.get('/api/get_receta/' + $routeParams.id)
+        .success(function(data) 
+        {
+            $scope.receta = data;
+        })
+        .error(function(data) 
+        {
+            pushMessage('alert','ERROR', 'Receta no encontrada.','cross')
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    $scope.GetIngredientes = function (){
+        $scope.$emit('load')
+        $http.get('/api/get_use_recetas/' + $routeParams.id)
+        .success(function(data) 
+        {
+            $scope.ingredientes = data;
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    $scope.GetReceta()
+    $scope.GetIngredientes()
+
+})
