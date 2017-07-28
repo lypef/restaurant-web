@@ -88,14 +88,19 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
         $scope.GetClients()
 
         $scope.CreateClient = function(){
+        $scope.$emit('load')
         $http.post('/api/clients/add', $scope.Client)
-            .success(function(msg) {
-                $scope.GetClients()
-                pushMessage('success', 'HECHO', msg, "checkmark")
-            })
-            .error(function(msg) {
-                pushMessage('alert','ERROR',msg, "cross")
-            });
+        .success(function(msg) {
+            $scope.GetClients()
+            $scope.Client = {}
+            pushMessage('success', 'HECHO', msg, "checkmark")
+        })
+        .error(function(msg) {
+            pushMessage('alert','ERROR',msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
         };  
 
         $scope.SearchClient = function(){
@@ -176,7 +181,9 @@ app.controller("UpdateClient", function($scope, $http, $routeParams, $window)
     $scope.id = $routeParams.id
     
 
-    $http.get('/api/clientedit/' + $scope.id)
+    $scope.GetClient = function (){
+        $scope.$emit('load')
+        $http.get('/api/clientedit/' + $scope.id)
         .success(function(data) 
         {
             $scope.DateClient = data;
@@ -185,37 +192,50 @@ app.controller("UpdateClient", function($scope, $http, $routeParams, $window)
         {
             $window.location = "dashboard#clients";
             pushMessage('alert','ERROR', 'ID no encontrado.','cross')
-        });
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+    $scope.GetClient()
 
     $scope.Update = function()
     {
+        $scope.$emit('load')
         $http.post('/api/client/update/clients', $scope.DateClient)
-            .success(function(err) 
-            {
-                pushMessage('success', 'HECHO', 'Cliente actualizado con exito', "checkmark")
-                $scope.DateClient = {};
-                $window.location = "dashboard#/clients";
-            })
-            .error(function(msg) 
-            {
-                pushMessage('alert','ERROR', msg, "cross")
-            })
+        .success(function(err) 
+        {
+            pushMessage('success', 'HECHO', 'Cliente actualizado con exito', "checkmark")
+            $scope.DateClient = {};
+            $window.location = "dashboard#/clients";
+        })
+        .error(function(msg) 
+        {
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('load')
+        })
     }  
 
     
     $scope.Delete = function()
     {
+        $scope.$emit('load')
         $http.post('/api/client/delete', $scope.DateClient)
-            .success(function(err) 
-            {
-                pushMessage('success', 'HECHO', 'Cliente eliminado con exito', "checkmark")
-                $scope.DateClient = {};
-                $window.location = "dashboard#/clients";
-            })
-            .error(function(msg) 
-            {
-                pushMessage('alert','ERROR', msg, "cross")
-            })
+        .success(function(err) 
+        {
+            pushMessage('success', 'HECHO', 'Cliente eliminado con exito', "checkmark")
+            $scope.DateClient = {};
+            $window.location = "dashboard#/clients";
+        })
+        .error(function(msg) 
+        {
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('load')
+        })
     };  
 })
 
@@ -266,6 +286,7 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
 
     $scope.GetCategoryes = function ()
     {
+        $scope.$emit('load')
         $http.get('/api/catproducts/')
         .success(function(data) {
             $scope.productstmp = data;
@@ -274,7 +295,10 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
         })
         .error(function(data) {
             pushMessage('alert','ERROR',data, "cross")
-    });
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
     }
 
     $scope.GetCategoryes()
@@ -282,29 +306,37 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
 
     $scope.CreateCatProduct = function(){
 
+        $scope.$emit('load')
         $http.post('api/catproducts/add', $scope.Newproduct)
-            .success(function(msg) {
-                pushMessage('success', 'HECHO', msg, "checkmark")
-                $scope.Newproduct = {}
-                $scope.GetCategoryes()
-            })
-            .error(function(msg) {
-                pushMessage('alert','ERROR',msg, "cross")
-            });
+        .success(function(msg) {
+            pushMessage('success', 'HECHO', msg, "checkmark")
+            $scope.Newproduct = {}
+            $scope.GetCategoryes()
+        })
+        .error(function(msg) {
+            pushMessage('alert','ERROR',msg, "cross")
+        })
+        .finally(function (){
+            $scope.$emit('unload')
+        })
     }; 
 
     $scope.SearchCatProduct = function(){
+        $scope.$emit('load')
         $scope.inputbox
         $http.post('/api/catproducts/search', $scope.inputbox)
-            .success(function(data) {
-                pushMessage('success','FOUNT',"Categoria encontrada", "checkmark")
-                $scope.productstmp = data;
-                $scope.LoadPages();
-                $scope.ChangePageItems()
-            })
-            .error(function(msg) {
-                pushMessage('alert','NOT FOUND',msg, "question")
-            });
+        .success(function(data) {
+            pushMessage('success','FOUNT',"Categoria encontrada", "checkmark")
+            $scope.productstmp = data;
+            $scope.LoadPages();
+            $scope.ChangePageItems()
+        })
+        .error(function(msg) {
+            pushMessage('alert','NOT FOUND',msg, "question")
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
     };  
 
         $scope.ChangePageItems = function() {
@@ -493,6 +525,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
       
         $scope.GetIngredients = function ()
         {
+            $scope.$emit('load')
             $http.get('/api/getingredients/')
                 .success(function(data) {
                     $scope.ingredients = data
@@ -502,7 +535,10 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
                 })
                 .error(function(data) {
                     pushMessage('alert','ERROR',data, "cross")
-            });
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
         }
         
         $scope.GetIngredients()
@@ -536,6 +572,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
         }
         $scope.LoadValuesEdit = function(){
 
+        $scope.$emit('load')
         $http.get('/api/getingredients/' + $scope.select.select)
             .success(function(data) {
                 $scope.select = data
@@ -543,12 +580,15 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
             })
             .error(function(msg) {
                 pushMessage('alert','ERROR',msg, "cross")
-            });
+            })
+            .finally (function(){
+                $scope.$emit('unload')
+            })
         };
 
         $scope.create = function(){
-
-        $http.post('/api/add_ingredient', $scope.ingredient)
+            $scope.$emit('load')
+            $http.post('/api/add_ingredient', $scope.ingredient)
             .success(function(msg) {
                 $scope.GetIngredients()
                 $scope.ingredient = {}
@@ -556,11 +596,15 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
             })
             .error(function(msg) {
                 pushMessage('alert','ERROR',msg, "cross")
-            });
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
         }; 
 
         $scope.update = function(){
-        $http.post('/api/update_ingredient', $scope.select)
+            $scope.$emit('load')
+            $http.post('/api/update_ingredient', $scope.select)
             .success(function(msg){
                 $scope.GetIngredients()
                 $scope.select = {}
@@ -568,11 +612,14 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
             })
             .error(function(msg) {
                 pushMessage('alert','ERROR',msg, "cross")
-            });
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
         };
 
         $scope.delete = function(){
-
+        $scope.$emit('load')
         $http.post('/api/ingredient/delete', $scope.select)
             .success(function(msg) {
                 $scope.GetIngredients()
@@ -581,10 +628,14 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
             })
             .error(function(msg) {
                 pushMessage('alert','ERROR',msg, "cross")
-            });
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
         };
 
         $scope.search = function(){
+        $scope.$emit('load')
         $scope.inputbox
         $http.post('/api/ingredient/search', $scope.inputbox)
             .success(function(data) {
@@ -595,7 +646,10 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
             })
             .error(function(msg) {
                 pushMessage('danger','NOT FOUND',msg, "question")
-            });
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
         };
           
         $scope.setPage = function(index) {
@@ -622,7 +676,9 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
         $scope.pageSize = 5;
         $scope.pages = [];
       
-        $http.get('/api/getingredients/')
+        $scope.GetIngredients = function (){
+            $scope.$emit('load')
+            $http.get('/api/getingredients/')
             .success(function(data) {
                 $scope.ingredients = data
                 $scope.IngredientUpdate = data
@@ -630,7 +686,12 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
             })
             .error(function(data) {
                 pushMessage('alert','ERROR',data, "cross")
-        });
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
+        }
+        $scope.GetIngredients()
 
         $http.get('/api/get_measurements/')
         .success(function(data) {
@@ -669,18 +730,22 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
         }
         
         $scope.update = function(item){
-            
+            $scope.$emit('load')
             $http.post('/api/update_ingredient', item)
             .success(function(data) {
                 pushMessage('success', 'HECHO', 'Producto actualizado', "checkmark")
             })
             .error(function(msg) {
                 pushMessage('alert','ERROR',msg, "cross")
-            });
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
             
         };
 
         $scope.search = function(){
+        $scope.$emit('load')
         $scope.inputbox
         $http.post('/api/ingredient/search', $scope.inputbox)
             .success(function(data) {
@@ -691,7 +756,10 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
             })
             .error(function(msg) {
                 pushMessage('danger','NOT FOUND',msg, "question")
-            });
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
         };
           
         $scope.setPage = function(index) {
@@ -734,6 +802,7 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
         
         $scope.GetIngredients = function ()
         {
+            $scope.$emit('load')
             $http.get('/api/getingredients/')
             .success(function(data) {
                 $scope.ingredients = data
@@ -742,25 +811,32 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
             })
             .error(function(data) {
                 pushMessage('alert','ERROR',data, "cross")
-        });
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
         }
 
         $scope.GetIngredients()
 
 
         $scope.search = function(){
-            $scope.inputbox
-            $http.post('/api/ingredient/search', $scope.inputbox)
-                .success(function(data) {
-                    pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
-                    $scope.inputbox = {}
-                    $scope.ingredients = data;
-                    $scope.LoadPages()
-                    $scope.ChangePageItems()
-                })
-                .error(function(msg) {
-                    pushMessage('danger','NOT FOUND',msg, "question")
-                });
+        $scope.$emit('load')
+        $scope.inputbox
+        $http.post('/api/ingredient/search', $scope.inputbox)
+            .success(function(data) {
+                pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
+                $scope.inputbox = {}
+                $scope.ingredients = data;
+                $scope.LoadPages()
+                $scope.ChangePageItems()
+            })
+            .error(function(msg) {
+                pushMessage('danger','NOT FOUND',msg, "question")
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
         };
 
         $scope.insert = function(item){
@@ -796,16 +872,20 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
         }
 
         $scope.create = function(){
+            $scope.$emit('load')
             $scope.receta.arr = $scope.arr
 
             $http.post('/api/receta/add', $scope.receta)
-                .success(function(msg) {
-                    pushMessage('success', 'HECHO', msg, "checkmark")
-                    $scope.clean()
-                })
-                .error(function(msg) {
-                    pushMessage('alert','ERROR',msg, "cross")
-                });
+            .success(function(msg) {
+                pushMessage('success', 'HECHO', msg, "checkmark")
+                $scope.clean()
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
         }; 
 
         $scope.LoadPages = function ()
@@ -872,10 +952,12 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.pages = [];
 
         $scope.recetas = {};
+        $scope.receta = {};
         
         
         $scope.GetReceta = function ()
         {
+            $scope.$emit('load')
             $http.get('/api/get_receta/')
             .success(function(data) {
                 $scope.recetas = data
@@ -884,25 +966,51 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
             })
             .error(function(data) {
                 pushMessage('alert','ERROR',data, "cross")
-        });
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
         }
 
         $scope.GetReceta()
 
+        $scope.loadvalues = function (item)
+        {
+            $scope.receta = item
+        }
 
+        $scope.delete = function ()
+        {
+            $scope.$emit('load')
+            $http.post('/api/receta/delete', $scope.receta)
+            .success(function(msg) {
+                $scope.GetReceta()
+                pushMessage('success', 'HECHO', msg, "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
+        }
         $scope.search = function(){
+            $scope.$emit('load')
             $scope.inputbox
             $http.post('/api/receta/search', $scope.inputbox)
-                .success(function(data) {
-                    pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
-                    $scope.inputbox = {}
-                    $scope.recetas = data
-                    $scope.LoadPages()
-                    $scope.ChangePageItems()
-                })
-                .error(function(msg) {
-                    pushMessage('danger','NOT FOUND',msg, "question")
-                });
+            .success(function(data) {
+                pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
+                $scope.inputbox = {}
+                $scope.recetas = data
+                $scope.LoadPages()
+                $scope.ChangePageItems()
+            })
+            .error(function(msg) {
+                pushMessage('danger','NOT FOUND',msg, "question")
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
         };
 
 
@@ -1004,6 +1112,7 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
 
         $scope.GetIngredients = function ()
         {
+            $scope.$emit('load')
             $http.get('/api/getingredients/')
             .success(function(data) {
                 $scope.ingredientes = data
@@ -1012,7 +1121,10 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
             })
             .error(function(data) {
                 pushMessage('alert','ERROR',data, "cross")
-        });
+            })
+            .finally (function(){
+                $scope.$emit('unload')
+            })
         }
 
         $scope.GetIngredients()
@@ -1020,28 +1132,35 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
 
 
         $scope.update = function(){
+            $scope.$emit('load')
             $scope.receta.arr = $scope.arr
 
             $http.post('/api/receta/update', $scope.receta)
-                .success(function(msg) {
-                    $window.location = "dashboard#/recetas"
-                    pushMessage('success', 'HECHO', msg, "checkmark")
-                })
-                .error(function(msg) {
-                    pushMessage('alert','ERROR',msg, "cross")
-                });
+            .success(function(msg) {
+                $window.location = "dashboard#/recetas"
+                pushMessage('success', 'HECHO', msg, "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
         };
 
         $scope.delete = function(_id){
-            
+            $scope.$emit('load')
             $http.post('/api/receta/delete', $scope.receta)
-                .success(function(msg) {
-                    $window.location = "dashboard#/recetas"
-                    pushMessage('success', 'HECHO', msg, "checkmark")
-                })
-                .error(function(msg) {
-                    pushMessage('alert','ERROR',msg, "cross")
-                });
+            .success(function(msg) {
+                $window.location = "dashboard#/recetas"
+                pushMessage('success', 'HECHO', msg, "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            })
+            .finally (function (){
+                $scope.$emit('unload')
+            })
         };
 
         $scope.LoadPages = function ()
@@ -1076,21 +1195,7 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
             $scope.currentPage = index - 1;
         };
         
-        $scope.search = function(){
-            $scope.inputbox
-            $http.post('/api/ingredient/search', $scope.inputbox)
-                .success(function(data) {
-                    pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
-                    $scope.inputbox = {}
-                    $scope.ingredientes = data;
-                    $scope.LoadPages()
-                    $scope.ChangePageItems()
-                })
-                .error(function(msg) {
-                    pushMessage('danger','NOT FOUND',msg, "question")
-                });
-        };
-
+        
         $scope.insertfirst = function(item){
             
             for ($scope.i = 0; $scope.i < $scope.measurements.length; $scope.i = $scope.i + 1)

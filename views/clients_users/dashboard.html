@@ -90,7 +90,9 @@
 
 <body ng-controller="UserValues">
     <div class="app-bar fixed-top blue" data-role="appbar">
+        
         <a href="dashboard#/" class="app-bar-element branding"><span class="mif-shop mif-2x"></span></a>
+
         <span class="app-bar-divider"></span>
         <ul class="app-bar-menu">
             
@@ -164,8 +166,19 @@
             <li><a href="dashboard#/clients"><span class="mif-users mif-2x"></span> Clientes</a></li>
         </ul>
 
-        <div class="app-bar-element place-right">
-            <a class="dropdown-toggle fg-white"><span class="mif-enter"></span> {{ usuario.admin.namefast }}</a>
+        <div class="app-bar-element place-right" ng-show="loading">
+
+        <a href="dashboard#/" class="app-bar-element branding" ng-show="loading">
+            <span class="mif-spinner2 mif-ani-spin mif-2x"></span>
+        </a> 
+        </div >
+
+        <div class="app-bar-element place-right" ng-show="!loading">
+
+        <a href="dashboard#/" class="app-bar-element branding" ng-show="loading">
+            <span class="mif-spinner2 mif-ani-spin mif-2x"></span>
+        </a>            
+        <a class="dropdown-toggle fg-white"><span class="mif-enter"></span> {{ usuario.admin.namefast }}</a>
             <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
                 <ul class="unstyled-list fg-blue">
                     <li>
@@ -192,7 +205,11 @@
         <div class="flex-grid no-responsive-future" id="divone">
             <div class="row" style="height: 100%">
                 <div class="padding10 bg-white" id="cell-content">
-                    <div ng-view></div>
+                <div ng-view>
+                        
+
+
+                    </div>
                     <br>
                 <footer>
                     <div class="bottom-menu-wrapper">
