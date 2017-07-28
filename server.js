@@ -770,7 +770,6 @@ function SearchCatProducts (req, res)
             res.json(data)
         }
     })
-
 }
 
 function SearchMeasurements (req, res) 
