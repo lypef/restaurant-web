@@ -50,7 +50,7 @@
               <td>{{ a.receta.substring(0, 60) }}</td>  
               
               <td>
-              <button class="button info" onclick="toggleMetroDialog('#view')" ng-click="loadvalues(a)"><span class="mif-versions"></span> Visualizar</button> 
+              <button class="button primary" onclick="toggleMetroDialog('#view')" ng-click="loadvalues(a)"><span class="mif-versions"></span> Visualizar</button> 
               </td>
 
               <td>
@@ -60,7 +60,7 @@
               </td>
 
               <td>
-              <button class="button alert" onclick="toggleMetroDialog('#delete')" ng-click="loadvalues(a)"><span class="mif-bin"></span> Visualizar</button>
+              <button class="button alert" onclick="toggleMetroDialog('#delete')" ng-click="loadvalues(a)"><span class="mif-bin"></span> Eliminar</button>
               </td>
               
             </tr>
@@ -88,24 +88,7 @@
     </div>
 
 </div>
-
-<!--Ver receta-->    
-<div data-role="dialog" id="view" class="padding30" data-type="" 
-data-close-button="true"
-data-width="auto"
-data-overlay="true">
-
-    <p>
-    <font face="Segoe UI Bold">
-        <h4>ELIMINAR RECETA: {{ receta.name }} ?</h4>
-    </font>
-    </p>
-
-    <div align="center">
-      <button class="button alert" onclick="hideMetroDialog('#view')">Imprimir</button>
-    </div>
-</div>
-<!--Finaliza Ver receta-->    
+   
 <!--Eliminar receta-->    
 <div data-role="dialog" id="delete" class="padding30" data-type="" 
 data-close-button="true"
