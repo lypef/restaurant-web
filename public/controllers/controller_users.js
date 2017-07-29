@@ -53,15 +53,20 @@ app.controller("UserValues", function($scope, $http){
     $scope.$on('loadasc', function(){$scope.loadinasc = true})
     $scope.$on('unloadasc', function(){$scope.loadinasc = false})
     
-    $http.get('/api/users/values')
+    $scope.load = function (){
+        $scope.loadinasc = true
+        $http.get('/api/users/values')
         .success(function(data) {
             $scope.usuario = data;
         })
         .error(function(data) {
             console.log('Error: ' + data);
-    });
-
-    
+        })
+        .finally (function (){
+            $scope.loadinasc = false
+        })
+    }
+    $scope.load()
 });
 
 app.controller("clients", ['$scope','$http','$window', function ($scope, $http, $window) {
