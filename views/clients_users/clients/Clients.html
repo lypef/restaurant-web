@@ -1,3 +1,12 @@
+<div ng-show="loading">
+  
+  <div class="cell bg-white">
+          <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
+      </div>
+
+</div>
+
+<div ng-show="!loading">
 <div ng-controller="clients">
 <div class="accordion large-heading" data-role="accordion" ng-controller="add_recetas">
     <div class="frame">
@@ -10,12 +19,7 @@
             </div>
             
             <div class="input-control modern text iconic" id="widthfull">
-            <input type="text" placeholder="Direccion" ng-model="Client.direccion">
-            <span class="icon mif-home"></span>
-            </div>
-            
-            <div class="input-control modern text iconic" id="widthfull">
-            <input type="number" placeholder="Telefono fijo" ng-model="Client.telefono">
+            <input type="number" placeholder="Telefono" ng-model="Client.telefono">
             <span class="icon mif-phone"></span>
             </div>
             
@@ -74,20 +78,24 @@
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>Direccion</th>
               <th>Telefono</th>
+              <th>Direcciones</th>
               <th>Actualizar</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat='a in all | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
               <td>{{ a.nombre }}</td>
-              <td>{{ a.direccion }}</td>
               <td>{{ a.telefono }}</td>
-                <td>
+                <td align="center">
+                  <a href="dashboard#/editclient/{{ a._id }}">
+                    <button class="button primary mif-floppy-disk" ng-Click="update(a)"> Direcciones</button>
+                  </a>
+                </td>
+                <td align="center">
                 	<a href="dashboard#/editclient/{{ a._id }}">
-						<button class="button success mif-floppy-disk" ng-Click="update(a)"> Editar</button>
-					</a>
+        						<button class="button success mif-floppy-disk" ng-Click="update(a)"> Actualizar</button>
+        					</a>
                 </td>
                 
             </tr>
@@ -114,4 +122,4 @@
 <hr>
 </div></div>
 </div>
-</div>
+</div></div>

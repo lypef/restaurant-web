@@ -411,7 +411,6 @@ function CreateClient (req, res)
     {
     	var p = new db.clients({
     		nombre: req.body.nombre.toUpperCase(),
-    		direccion: req.body.direccion.toUpperCase(),
     		telefono: req.body.telefono,
     		mail: req.body.mail,
             admin: req.session.admin
@@ -478,7 +477,6 @@ function UpdateClient_User (req, res)
                 { _id : req.body._id },
                 { 
                     nombre: req.body.nombre.toUpperCase(),
-                    direccion: req.body.direccion.toUpperCase(),
                     telefono: req.body.telefono.toUpperCase(),
                     mail: req.body.mail
                 },

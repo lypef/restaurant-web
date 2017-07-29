@@ -1,3 +1,12 @@
+<div ng-show="loading">
+  
+  <div class="cell bg-white">
+          <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
+      </div>
+
+</div>
+
+<div ng-show="!loading">
 <div class="panel info" ng-controller="UpdateClient">
 <div class="heading">
 
@@ -9,13 +18,6 @@
         <input type="text" placeholder="Nombre" class="input-full" ng-model="DateClient.nombre">
         <span class="label">Nombre</span>
         <span class="icon mif-user"></span>
-        </div>
-        
-        
-        <div class="input-control modern text iconic" id="widthfull">
-        <input type="text" placeholder="Direccion" ng-model="DateClient.direccion">
-        <span class="label">Direccion</span>
-        <span class="icon mif-home"></span>
         </div>
         
         <div class="input-control modern text iconic" id="widthfull">
@@ -67,5 +69,4 @@
 
 
 </div>
-
-
+</div>

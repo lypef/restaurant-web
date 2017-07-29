@@ -1,4 +1,13 @@
-<script>
+<div ng-show="loading">
+  
+  <div class="cell bg-white">
+          <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
+      </div>
+
+</div>
+
+<div ng-show="!loading">
+  <script>
     $(function(){
         $("#accordion").accordion();
     });
@@ -8,55 +17,55 @@
     <div class="frame active">
         <div class="heading"><span class="mif-plus icon"></span> Actualizar receta</span></div>
         <div class="content" align="center">
-        	<!--Contenido agregar-->
-        	<input type="hidden"  ng-model="receta._id" class="input-full">
+          <!--Contenido agregar-->
+          <input type="hidden"  ng-model="receta._id" class="input-full">
 
-	<div class="input-control modern text iconic" id="widthfull">
-	    <input type="text" placeholder="Nombre" ng-model="receta.name" class="input-full">
-	    <span class="informer"></span>
-	    <span class="icon mif-stack3"></span>
+  <div class="input-control modern text iconic" id="widthfull">
+      <input type="text" placeholder="Nombre" ng-model="receta.name" class="input-full">
+      <span class="informer"></span>
+      <span class="icon mif-stack3"></span>
     </div>
 
     <div class="input-control modern text iconic" id="widthfull">
-	    <input type="text" placeholder="Descripcion" ng-model="receta.description" class="input-full">
-	    <span class="informer"></span>
-	    <span class="icon mif-stack3"></span>
+      <input type="text" placeholder="Descripcion" ng-model="receta.description" class="input-full">
+      <span class="informer"></span>
+      <span class="icon mif-stack3"></span>
     </div>
-	</label>
-	
-	
-	<div class="input-control textarea"
+  </label>
+  
+  
+  <div class="input-control textarea"
     data-role="input" data-text-auto-resize="true" data-text-max-height="200" style="width: 95%">
     <a class="place-center" title="">
         <h4>Indique los pasos o anotaciones para la preparacion</h4>
     </a>
     <textarea ng-model="receta.receta"></textarea>
-	</div><hr>
-	<!--Finaliza agregar-->
+  </div><hr>
+  <!--Finaliza agregar-->
         </div>
     </div>
     
     <div class="frame">
         <div class="heading"><span class="mif-shopping-basket icon"></span>Mis Ingredientes</span></div>
         <div class="content" align="center">
-        	<!--Busqueda y numero mostrado -->
-	<a class="place-center" title="">
+          <!--Busqueda y numero mostrado -->
+  <a class="place-center" title="">
         <h4>Indique las porciones de ingredientes para la preparacion</h4>
     </a>
-	
-	<div class="grid">
-	    <div class="row flex-just-sa">
-	        <div class="colspan6" style="width: 100%" align="center">
-	        <form >
-            	<div class="input-control text " data-role="input" style="width: 95%">
+  
+  <div class="grid">
+      <div class="row flex-just-sa">
+          <div class="colspan6" style="width: 100%" align="center">
+          <form >
+              <div class="input-control text " data-role="input" style="width: 95%">
     
-    		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar">
+        <input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar">
     
-    		<button class="button" ng-click="search()"><span class="mif-search"></span></button></div>
+        <button class="button" ng-click="search()"><span class="mif-search"></span></button></div>
             </form>
-	        </div>
-	        <div class="colspan6" style="width: 100%" align="center">
-		        <div class="input-control select" style="width: 95%">
+          </div>
+          <div class="colspan6" style="width: 100%" align="center">
+            <div class="input-control select" style="width: 95%">
                 <select ng-model="pageSizetmp.items" ng-change="ChangePageItems()" style="text-align: center; text-align-last: center;">
                     <option value="">---Items mostrados---</option>
                     <option value="5">5</option>
@@ -69,10 +78,10 @@
                     <option value="todos">Ver todos</option>
                 </select>
                 </div>
-	        </div>
-	    </div>
-	</div>
-	<!--Finaliza Busqueda y numero mostrado -->
+          </div>
+      </div>
+  </div>
+  <!--Finaliza Busqueda y numero mostrado -->
     <table class="table striped hovered bordered">
           <thead>
             <tr>
@@ -86,16 +95,16 @@
               <td>{{ a.name }}</td>
               <td>{{ a.stock }} {{ a.measurements.namefasts }}</td>
               <td>
-              	<form>
-              		<button class="button success" ng-click="insert(a)"><span class="mif-plus"></span> Agregar</button>
-              		<div class="input-control text">
-					    <input type="double" ng-model="a.stocktmp">
-					</div>
-					<span>{{ a.measurements.namefasts }}</span>
-              	</form>
+                <form>
+                  <button class="button success" ng-click="insert(a)"><span class="mif-plus"></span> Agregar</button>
+                  <div class="input-control text">
+              <input type="double" ng-model="a.stocktmp">
+          </div>
+          <span>{{ a.measurements.namefasts }}</span>
+                </form>
               </td>  
               
-              	
+                
               
             </tr>
           </tbody>
@@ -117,19 +126,19 @@
         </div>
     </div>    
     </div><hr>
-	<!--Finaliza tabla de seleccion-->
+  <!--Finaliza tabla de seleccion-->
         </div>
     </div>
 
     <div class="frame">
         <div class="heading"><span class="mif-list icon"></span> Ingredientes seleccionados</span></div>
         <div class="content">
-        	<table class="table striped hovered bordered" ng-model="arr">
+          <table class="table striped hovered bordered" ng-model="arr">
           <thead>
             <tr>
               <th>Ingrediente</th>
               <th>Porcion</th>
-              <th>Descontar porcion</th>
+              <th>Disminuir porcion de ingredientes al utilizar</th>
               <th>Opciones</th>
             </tr>
           </thead>
@@ -139,23 +148,23 @@
               <td ng-if="a.porcion > 1">{{ a.porcion }} {{ a.namefasts }}</td>
               <td ng-if="a.porcion < 1">{{ a.porcion }} {{ a.namefast }}</td>
               <td ng-if="a.porcion == 1">{{ a.porcion }} {{ a.namefast }}</td>
-              <td>
+              <td align="center">
 
                 <label class="switch-original">
-                  <input type="checkbox"  ng-model="a.update_ingredients">Disminuir ingredientes al utilizar
+                  <input type="checkbox"  ng-model="a.update_ingredients">
                   <span class="check"></span>
               </td>
-              <td><button class="button alert" ng-click="remove(a)"><span class="mif-bin"></span> Quitar</button></td>            
+              <td align="center"><button class="button alert" ng-click="remove(a)"><span class="mif-bin"></span> Quitar</button></td>            
             </tr>
           </tbody>
         </table>
-	</div></div>
+  </div></div>
 
     <div class="row flex-just-sa">
         <div class="cell-auto-size">
         <div class='pagination'>
-	        <button class="button success large-button" ng-click="update()"><span class="mif-pencil "></span> Actualizar receta</button>
-			   <button class="button danger large-button" onclick="toggleMetroDialog('#update')"><span class="mif-bin "></span> Eliminar</button>
+          <button class="button success large-button" ng-click="update()"><span class="mif-pencil "></span> Actualizar receta</button>
+         <button class="button danger large-button" onclick="toggleMetroDialog('#update')"><span class="mif-bin "></span> Eliminar</button>
         </div>
     </div>    
     </div>
@@ -178,9 +187,10 @@
         </div>
 </div>
 
+</div>
+  
+  
+
+
 
 </div>
-	
-	
-
-

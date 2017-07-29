@@ -1,3 +1,12 @@
+<div ng-show="loading">
+  
+  <div class="cell bg-white">
+          <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
+      </div>
+
+</div>
+
+<div ng-show="!loading">
 <div class="panel" ng-controller="recetas">
     <div class="heading">
         <span class="icon mif-list"></span>
@@ -48,25 +57,25 @@
             <tr ng-repeat='a in recetas | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
               <td>{{ a.name }}</td>
               <td>{{ a.description }}</td>
-              <td>
+              <td align="center">
               <a href="">
                 <button class="button primary"><span class="mif-printer"></span> Imprimir</button> 
               </a>
               </td>  
               
-              <td>
+              <td align="center">
               <a href="dashboard#/view_recetas/{{ a._id }}">
                 <button class="button success"><span class="mif-versions"></span> Visualizar</button> 
               </a>
               </td>
 
-              <td>
+              <td align="center">
               <a href="dashboard#/edit_recetas/{{a._id}}">
               <button class="button warning"><span class="mif-pencil"></span> Editar</button>
               </a>
               </td>
 
-              <td>
+              <td align="center">
               <button class="button alert" onclick="toggleMetroDialog('#delete')" ng-click="loadvalues(a)"><span class="mif-bin"></span> Eliminar</button>
               </td>
               
@@ -114,3 +123,4 @@ data-overlay="true">
     </div>
 </div>
 <!--Finaliza Eliminar receta-->    
+</div>

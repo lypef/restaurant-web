@@ -1,3 +1,12 @@
+<div ng-show="loading">
+  
+  <div class="cell bg-white">
+          <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
+      </div>
+
+</div>
+
+<div ng-show="!loading">
 <script>
     $(function(){
         $("#accordion").accordion();
@@ -127,7 +136,7 @@
             <tr>
               <th>Ingrediente</th>
               <th>Porcion</th>
-              <th>Descontar porcion</th>
+              <th>Disminuir porcion ingredientes al utilizar</th>
               <th>Opciones</th>
             </tr>
           </thead>
@@ -137,13 +146,13 @@
               <td ng-if="a.porcion > 1">{{ a.porcion }} {{ a.namefasts }}</td>
               <td ng-if="a.porcion < 1">{{ a.porcion }} {{ a.namefast }}</td>
               <td ng-if="a.porcion == 1">{{ a.porcion }} {{ a.namefast }}</td>
-              <td>
+              <td align="center">
 
                 <label class="switch-original">
-                  <input type="checkbox"  ng-model="a.update_ingredients">Disminuir ingredientes al utilizar
+                  <input type="checkbox"  ng-model="a.update_ingredients">
                   <span class="check"></span>
               </td>
-              <td><button class="button alert" ng-click="remove(a)"><span class="mif-bin"></span> Quitar</button></td>            
+              <td align="center"><button class="button alert" ng-click="remove(a)"><span class="mif-bin"></span> Quitar</button></td>            
             </tr>
           </tbody>
         </table>
@@ -159,7 +168,4 @@
     </div>
 
 </div>
-	
-	
-
-
+</div>	

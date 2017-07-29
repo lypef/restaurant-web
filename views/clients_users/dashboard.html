@@ -166,19 +166,16 @@
             <li><a href="dashboard#/clients"><span class="mif-users mif-2x"></span> Clientes</a></li>
         </ul>
 
-        <div class="app-bar-element place-right" ng-show="loading">
+        <div class="app-bar-element place-right" ng-show="loadinasc">
 
-        <a href="dashboard#/" class="app-bar-element branding" ng-show="loading">
+        <a href="" class="app-bar-element branding" ng-show="loadinasc">
             <span class="mif-spinner2 mif-ani-spin mif-2x"></span>
         </a> 
         </div >
 
-        <div class="app-bar-element place-right" ng-show="!loading">
+        <div class="app-bar-element place-right" ng-show="!loadinasc">
 
-        <a href="dashboard#/" class="app-bar-element branding" ng-show="loading">
-            <span class="mif-spinner2 mif-ani-spin mif-2x"></span>
-        </a>            
-        <a class="dropdown-toggle fg-white"><span class="mif-enter"></span> {{ usuario.admin.namefast }}</a>
+            <a class="dropdown-toggle fg-white"><span class="mif-enter"></span> {{ usuario.admin.namefast }}</a>
             <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
                 <ul class="unstyled-list fg-blue">
                     <li>

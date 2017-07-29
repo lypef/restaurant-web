@@ -1,5 +1,13 @@
-<div ng-controller="ingredients">        
-    
+<div ng-show="loading">
+  
+  <div class="cell bg-white">
+          <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
+      </div>
+
+</div>
+
+<div ng-show="!loading">
+<div ng-controller="ingredients">            
 <!-- Crud -->
 <div class="grid">
     <div class="row flex-just-sa">
@@ -229,4 +237,4 @@
 
 </div>
 
-</div>
+</div></div>

@@ -17,7 +17,6 @@ var user_scheme = new mongoose.Schema({
 
 var clients_scheme = new mongoose.Schema({
 	nombre: {type: String, required: true},
-	direccion: String,
 	telefono: String,
 	mail: String,
 	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'}
