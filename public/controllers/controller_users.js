@@ -670,7 +670,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
             })
             .finally (function (){
                 $scope.$emit('unloadasc')
-                $scope.GetIngredients()
+                $scope.GetIngredientsasc()
             })
         }; 
 
@@ -1101,6 +1101,10 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
             })
         };
 
+        $scope.print = function (item)
+        {
+            pushMessage('danger','NOT FOUND',item.name, "question")
+        }
 
         $scope.LoadPages = function ()
         {
@@ -1387,6 +1391,11 @@ app.controller("view_receta", function($scope, $http, $routeParams, $window)
         .finally (function (){
             $scope.$emit('unload')
         })
+    }
+
+    $scope.print = function ()
+    {
+        pushMessage('danger','NOT FOUND',$scope.receta.name, "question")
     }
 
     $scope.GetReceta()

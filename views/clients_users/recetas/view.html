@@ -1,12 +1,3 @@
-<div ng-show="loading">
-  
-  <div class="cell bg-white">
-          <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
-      </div>
-
-</div>
-
-<div ng-show="!loading">
 <div ng-controller="view_receta">
 <!--Preparacion-->
 <div class="panel">
@@ -15,19 +6,21 @@
 	    </div>
 	    <div class="content padding20">
 	    <a class="place-center" title="">
-					        <center>
-					        <h2>{{ receta.name}}</h2>
-					        <h4>{{ receta.description}}</h4>
-					        <center>
-							<br>
-							<button class="button large-button primary"><span class="mif-printer"></span> Imprimir</button>
-							<a href="dashboard#/edit_recetas/{{receta._id}}">
-								<button class="button large-button warning"><span class="mif-pencil"></span> Editar</button>
-							</a>
-							<br>
-						</center>
-					        </center>
-					    </a>
+		        <center>
+		        <h2>{{ receta.name}}</h2>
+		        <h4>{{ receta.description}}</h4>
+		    
+				<br>
+				<a ng-click="print()">
+					<button class="button large-button primary"><span class="mif-print"></span> Imprimir</button>
+				</a>
+				<a href="dashboard#/edit_recetas/{{receta._id}}">
+					<button class="button large-button warning"><span class="mif-pencil"></span> Editar</button>
+				</a>
+				<br>
+			
+		        </center>
+		    </a>
 	    	<div class="grid">
 				<div class="row flex-just-sa">
 					<div class="cell-auto-size" style="border: 2px">
@@ -51,10 +44,7 @@
 						
 						<div class="input-control textarea" style="width: 100%">
 					    <textarea readonly="readonly" ng-model="receta.receta" cols=42 rows=26 style="background-color: #e8f1f4; border: none"></textarea>
-						</div>
-
-
-						
+						</div>						
 				    </div>
 				</div>
 			</div>
@@ -62,4 +52,3 @@
 	    </div>
 	</div>
 <!--Finaliza preparacion-->
-</div>

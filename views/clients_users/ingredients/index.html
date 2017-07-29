@@ -1,12 +1,3 @@
-<div ng-show="loading">
-  
-  <div class="cell bg-white">
-          <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
-      </div>
-
-</div>
-
-<div ng-show="!loading">
 <div ng-controller="ingredients">            
 <!-- Crud -->
 <div class="grid">
@@ -199,42 +190,3 @@
 
 
 </div>
-<!--Opciones-->
-<div class="grid">
-    <div class="row flex-just-sa">
-        <div class="tile bg-emerald fg-white cell-auto-size" data-role="tile"  onclick="document.location.href='admin_dashboard#/management_clients', hideMetroDialog('#clients')">
-                <div class="tile-content iconic">
-                    <span class="icon mif-file-pdf"></span>
-                </div>
-                <span class="tile-label">Generar reporte</span>
-        </div>
-        
-        <div class="tile bg-amber fg-white cell-auto-size" data-role="tile" onclick="document.location.href='admin_dashboard#/add_client', hideMetroDialog('#clients')">
-                <div class="tile-content iconic">
-                    <span class="icon mif-list2"></span>
-                </div>
-                <span class="tile-label">Listar escasos</span>
-        </div>
-
-        <div class="tile bg-green fg-white cell-auto-size" data-role="tile" onclick="document.location.href='dashboard#/ingredientes_shopping', hideMetroDialog('#clients')">
-                <div class="tile-content iconic">
-                    <span class="icon mif-plus"></span>
-                </div>
-                <span class="tile-label">Compras</span>
-        </div>
-
-        
-        <div class="tile bg-crimson fg-white cell-auto-size" data-role="tile" onclick="document.location.href='admin_dashboard#/add_client', hideMetroDialog('#clients')">
-                <div class="tile-content iconic">
-                    <span class="icon mif-not"></span>
-                </div>
-                <span class="tile-label">Eliminar todos</span>
-        </div>
-
-
-    </div>
-</div>
-
-</div>
-
-</div></div>

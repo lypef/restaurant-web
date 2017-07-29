@@ -202,11 +202,18 @@
         <div class="flex-grid no-responsive-future" id="divone">
             <div class="row" style="height: 100%">
                 <div class="padding10 bg-white" id="cell-content">
-                <div ng-view>
-                        
+                
+                <div ng-show="loading">
 
+                <div class="cell bg-white">
+                <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
+                </div>
 
-                    </div>
+                </div>
+
+                <div ng-show="!loading">
+                    <div ng-view></div>
+                </div>
                     <br>
                 <footer>
                     <div class="bottom-menu-wrapper">
