@@ -241,7 +241,7 @@ app.controller("UpdateClient", function($scope, $http, $routeParams, $window)
             pushMessage('alert','ERROR', msg, "cross")
         })
         .finally (function (){
-            $scope.$emit('load')
+            $scope.$emit('unload')
         })
     }  
 
