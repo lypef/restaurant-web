@@ -1,4 +1,62 @@
 <div ng-controller="products">
+
+<div class="accordion large-heading" data-role="accordion" ng-controller="add_recetas">
+    <div class="frame">
+        <div class="heading"><span class="mif-plus icon"></span> Agregar</span></div>
+        <div class="content" align="center">
+        <!-- Nuevo producto-->
+        <div class="panel info">
+        <div class="heading">
+        
+        <span class="title">Nuevo producto</span>
+        </div>
+        <div class="content">
+        <form align="center">  
+
+                
+        <div class="input-control select" >
+        <select ng-model="product.category">
+            <option value="">---Cetagorias---</option>
+            <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
+        </select>
+        </div>
+        <br>
+
+        <div class="input-control modern text iconic" id="widthfull">
+        <input type="text" placeholder="Nombre" ng-model="product.name" class="input-full">
+        <span class="label">Nombre</span>
+        <span class="informer"></span>
+        <span class="icon mif-stack3"></span>
+        </div>
+        
+        <div class="input-control modern text iconic" id="widthfull">
+        <input type="text" placeholder="Descripcion" ng-model="product.description" class="input-full" >
+        <span class="label">Descripcion</span>
+        <span class="informer"></span>
+        <span class="icon mif-paragraph-left"></span>
+        </div>
+        
+        <div class="input-control modern text iconic" id="widthfull">
+        <input type="number" placeholder="Stock" ng-model="product.stock" class="input-full" >
+        <span class="label">Stock</span>
+        <span class="informer"></span>
+        <span class="icon mif-list-numbered"></span>
+        </div>
+
+        <br><br><br><br><br>
+        
+        <button class="button success loading-pulse" ng-click="create()">
+        Agregar
+        </button>
+    </form>
+    <br><br>
+    </div>
+</div>
+    <!-- Finaliza Nuevo producto-->
+        </div>
+    </div>
+</div>
+    <!--Lista de productos-->
     <div class="panel success" style="border: 2px solid #fff">
                 <div class="heading">
                 
@@ -25,185 +83,5 @@
     </table>
 
 </div></div>
-<!-- 3 opciones -->
-<div class="flex-grid">
-    <div class="row flex-just-sa">
-        <div class="cell-auto-size">
-            <div class="panel info" style="border: 2px solid #fff;">
-                <div class="heading">
-                
-                <span class="title">Agregar producto</span>
-                </div>
-                <div class="content">
-                <form align="center">  
-
-                        
-                        <div class="input-control select" >
-                        <select ng-model="product.category">
-                            <option value="">---Cetagorias---</option>
-                            <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
-                        </select>
-                        </div>
-                        <br>
-
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Nombre" ng-model="product.name" class="input-full">
-                        <span class="label">Nombre</span>
-                        <span class="informer"></span>
-                        <span class="icon mif-stack3"></span>
-                        </div>
-                        
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Descripcion" ng-model="product.description" class="input-full" >
-                        <span class="label">Descripcion</span>
-                        <span class="informer"></span>
-                        <span class="icon mif-paragraph-left"></span>
-                        </div>
-                        
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="number" placeholder="Stock" ng-model="product.stock" class="input-full" >
-                        <span class="label">Stock</span>
-                        <span class="informer"></span>
-                        <span class="icon mif-list-numbered"></span>
-                        </div>
-
-                        <br><br><br><br><br>
-                        
-                        <button class="button success loading-pulse" ng-click="create()">
-                        Agregar
-                        </button>
-                    </form>
-                    <br><br>
-
-    </div>
-
-</div>
-
-        </div>
-
-
-
-        <div class="cell-auto-size">
-            
-<div class="panel warning" style="border: 2px solid #fff;">
-                <div class="heading">
-                
-                <span class="title">Actualizar producto: {{ select.name.substring(0, 17) }}</span>
-                </div>
-                <div class="content">
-                <form align="center" >  
-
-                        <div class="input-control select">
-                        <select ng-model="select.select"  ng-change="LoadValuesEdit()">
-                            <option value="">---Productos---</option>
-                            <option ng-repeat=" a in products" value="{{ a._id }}">{{a.name}}</option>
-                        </select>
-                        </div>
-                        <br>
-                        <div class="input-control select" >
-                        <select ng-model="select.category">
-                            <option value="">---Categorias---</option>
-                            <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
-                        </select>
-                        </div>
-                        <br>
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Nombre" ng-model="select.name" class="input-full" >
-                        <span class="label">Nombre</span>
-                        <span class="informer"></span>
-                        <span class="icon mif-stack3"></span>
-                        </div>
-                        
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="text" placeholder="Descripcion" ng-model="select.description" class="input-full" >
-                        <span class="label">Descripcion</span>
-                        <span class="informer"></span>
-                        <span class="icon mif-paragraph-left"></span>
-                        </div>
-                        
-                        <div class="input-control modern text iconic" id="widthfull">
-                        <input type="number" placeholder="Stock" ng-model="select.stock" class="input-full" >
-                        <span class="label">Stock</span>
-                        <span class="informer"></span>
-                        <span class="icon mif-list-numbered"></span>
-                        </div>
-
-                        <br><br>
-                        
-                        <button class="button success loading-pulse" ng-click="update()">
-                        Actualizar
-                        </button>
-                        <button class="button danger loading-pulse" onclick="toggleMetroDialog('#update')" >
-                        Eliminar
-                        </button>
-                    </form>
-                    <br><br>
-   
-</div>
-
-
-
-        </div>
-
-        </div>
-        
-    </div>
-</div>
-
-
-
-<div data-role="dialog" id="update" class="padding30" data-type="" 
-    data-close-button="true"
-    data-width="auto"
-    data-overlay="true">
-
-        <p>
-        <font face="Segoe UI Bold">
-            <h4>SE ELIMINARA EL PRODUCTO?</h4>
-        </font>
-        <font face="Segoe UI">
-            NOMBRE: {{select.name}}
-            <br>
-            DESCRIPCION: {{select.descripcion}}
-            <br>
-            STOCK: {{select.stock}}
-        </font>    
-            
-        </p>
-
-        <button class="button alert" ng-click="delete()" onclick="hideMetroDialog('#update')">SI</button>
-        <button class="button success" onclick="hideMetroDialog('#update')">NO</button>
-</div>
-
-
-</div>
-<!--Opciones-->
-<div class="grid">
-    <div class="row flex-just-sa">
-        <div class="tile bg-emerald fg-white cell-auto-size" data-role="tile"  onclick="document.location.href='admin_dashboard#/management_clients', hideMetroDialog('#clients')">
-                <div class="tile-content iconic">
-                    <span class="icon mif-file-pdf"></span>
-                </div>
-                <span class="tile-label">Generar reporte</span>
-        </div>
-        
-        
-        <div class="tile bg-amber fg-white cell-auto-size" data-role="tile" onclick="document.location.href='admin_dashboard#/add_client', hideMetroDialog('#clients')">
-                <div class="tile-content iconic">
-                    <span class="icon mif-plus"></span>
-                </div>
-                <span class="tile-label">Compras</span>
-        </div>
-
-        
-        <div class="tile bg-cyan fg-white cell-auto-size" data-role="tile" onclick="document.location.href='admin_dashboard#/add_client', hideMetroDialog('#clients')">
-                <div class="tile-content iconic">
-                    <span class="icon mif-calculator"></span>
-                </div>
-                <span class="tile-label">Convertir a gramos</span>
-        </div>
-
-        
-    </div>
-</div>
+    <!--Finaliza Lista de productos-->
 </div>
