@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="restweb">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,9 +14,9 @@
     <script src="/metro/docs/js/jquery-2.1.3.min.js"></script>
     <script src="/metro/docs/js/jquery.dataTables.min.js"></script>
     <script src="/metro/docs/js/metro.js"></script>
-    <script src="/angular.min.js"></script>
-    <script src="/angular-route.min.js"></script>
-    <script src="/controller.js"></script>
+    <script src="/angular/angular.min.js"></script>
+    <script src="/angular/angular-route.min.js"></script>
+    <script src="/controllers/controller_login.js"></script>
     
 <style>
         body
@@ -74,7 +74,7 @@
     </script>
     
 </head>
-<body class="bg-darkTeal">
+<body class="bg-darkTeal" ng-controller="loader">
 
 <script>
        	function pushMessage(t){
@@ -104,7 +104,17 @@
 
 <div class="login-form padding20 block-shadow">
     <form action="/login_admin" method="POST">
-        <h1 class="text-light"><center>Administracion</center></h1>
+        <div ng-show="loading">
+
+            <div class="cell">
+            <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
+            </div>
+
+            </div>
+
+            <div ng-show="!loading">
+                <h1 class="text-light"><center>Administracion</center></h1>
+            </div>
         <hr class="thin"/>
         <br />
         <div class="input-control text full-size" data-role="input">
@@ -120,7 +130,7 @@
         <br />
         <br />
         <div class="form-actions">
-            <button type="submit" class="button primary">Iniciar session</button>
+            <button type="submit" class="button primary" ng-click="loading = true">Iniciar session</button>
             <a href="/"><button type="button" class="button link">Cancel</button></a>
         </div>
     </form>

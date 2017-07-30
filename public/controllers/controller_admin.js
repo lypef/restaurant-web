@@ -47,6 +47,12 @@ app.controller("UserValues", function($scope, $http){
     $http.defaults.headers.common['x-access-token']=token;
     $scope.usuario = {};  
 
+    $scope.$on('load', function(){$scope.loading = true})
+    $scope.$on('unload', function(){$scope.loading = false})
+
+    $scope.$on('loadasc', function(){$scope.loadinasc = true})
+    $scope.$on('unloadasc', function(){$scope.loadinasc = false})
+
     $http.get('/api/admin/values')
         .success(function(data) {
             $scope.usuario = data;
@@ -61,13 +67,20 @@ app.controller("clients_users", function($scope, $http, $window)
     $http.defaults.headers.common['x-access-token']=token;
     $scope.NewClient = {};  
 
-    $http.get('/api/clients_users/')
+    $scope.GetClientsuser = function (){
+        $scope.$emit('load')
+        $http.get('/api/clients_users/')
         .success(function(data) {
             $scope.all = data;
         })
         .error(function(data) {
             console.log('Error: ' + data);
-    });
+        })
+        .finally ( function (){
+            $scope.$emit('unload')
+        })
+    }
+    $scope.GetClientsuser()
 
     $scope.CreateClient = function(){
         $http.post('/api/clients', $scope.NewClient)
@@ -83,16 +96,20 @@ app.controller("clients_users", function($scope, $http, $window)
     };  
 
     $scope.SearchClient = function(){
+        $scope.$emit('loadasc')
         $scope.inputbox
         $http.post('/api/clients_users/search', $scope.inputbox)
-            .success(function(data) {
-                pushMessage('success','FOUNT',"Cliente's encontrados", "checkmark")
-                $scope.all = data;
-            })
-            .error(function(msg) {
-                console.log(msg);
-                pushMessage('warning','NOT FOUND',msg, "question")
-            });
+        .success(function(data) {
+            pushMessage('success','FOUNT',"Cliente's encontrados", "checkmark")
+            $scope.all = data;
+        })
+        .error(function(msg) {
+            console.log(msg);
+            pushMessage('warning','NOT FOUND',msg, "question")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     };  
 
 
@@ -103,17 +120,20 @@ app.controller("add_client", function($scope, $http,$window){
     $http.defaults.headers.common['x-access-token'] = token;
     
     $scope.addClient_user = function(){
-
+        $scope.$emit('loadasc')
         $http.post('/api/clients_users/add', $scope.add)
-            .success(function(data) {
-                pushMessage('success', 'HECHO', 'Cliente agregado', "checkmark")
-                $window.location = "admin_dashboard#/management_clients";
-                $scope.add = {};
-            })
-            .error(function(msg) {
-                console.log(msg);
-                pushMessage('alert','ERROR','VERIFIQUE LA INFORMACION', "cross")
-            });
+        .success(function(data) {
+            pushMessage('success', 'HECHO', 'Cliente agregado', "checkmark")
+            $window.location = "admin_dashboard#/management_clients";
+            $scope.add = {};
+        })
+        .error(function(msg) {
+            console.log(msg);
+            pushMessage('alert','ERROR','VERIFIQUE LA INFORMACION', "cross")
+        })
+        .finally(function (){
+            $scope.$emit('unloadasc')
+        })
     }; 
     
 })
@@ -125,7 +145,9 @@ app.controller("clientUpdate", function($scope, $http, $routeParams, $window)
     $scope.Client = {};  
     $scope.all = {};  
     
-    $http.get('/api/clients_users/' + $routeParams.id)
+    $scope.GetClientsuser = function (){
+        $scope.$emit('load')
+        $http.get('/api/clients_users/' + $routeParams.id)
         .success(function(data) 
         {
             $scope.Client = data;
@@ -135,9 +157,11 @@ app.controller("clientUpdate", function($scope, $http, $routeParams, $window)
             console.log(msg);
             $window.location = "admin_dashboard#/management_clients";
             pushMessage('alert','ERROR', 'ID no encontrado.')
-        });
-
-    $http.get('/api/users/search/' + $routeParams.id)
+        })
+    }
+    
+    $scope.Getusers = function (){
+        $http.get('/api/users/search/' + $routeParams.id)
         .success(function(data) 
         {
             $scope.all = data;
@@ -147,39 +171,49 @@ app.controller("clientUpdate", function($scope, $http, $routeParams, $window)
             console.log(msg);
             $window.location = "admin_dashboard#/management_clients";
             pushMessage('alert','ERROR', 'ID no encontrado.')
-        });    
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+    $scope.GetClientsuser()  
+    $scope.Getusers()     
 
     $scope.Update = function()
     {
+        $scope.$emit('loadasc')
         $http.post('/api/account/update', $scope.Client)
-            .success(function(err) 
-            {
-                pushMessage('success', 'HECHO', err, "checkmark")
-                $scope.Client = {};
-                $window.location = "admin_dashboard#/management_clients";
-            })
-            .error(function(msg) 
-            {
-                console.log(msg);
-                pushMessage('alert','ERROR', 'VERIFIQUE LA INFORMACION', "cross")
-            })
+        .success(function(err) 
+        {
+            pushMessage('success', 'HECHO', err, "checkmark")
+            $scope.Client = {};
+            $window.location = "admin_dashboard#/management_clients";
+        })
+        .error(function(msg) 
+        {
+            console.log(msg);
+            pushMessage('alert','ERROR', 'VERIFIQUE LA INFORMACION', "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     }  
 
     
     $scope.Delete = function()
     {
         $http.post('/api/clients_users/delete', $scope.Client)
-            .success(function(err) 
-            {
-                pushMessage('success', 'HECHO', 'Cliente eliminado con exito', "checkmark")
-                $scope.Client = {};
-                $window.location = "admin_dashboard#/management_clients";
-            })
-            .error(function(msg) 
-            {
-                console.log(msg);
-                pushMessage('alert','ERROR', 'VERIFIQUE LA INFORMACION', "cross")
-            })
+        .success(function(err) 
+        {
+            pushMessage('success', 'HECHO', 'Cliente eliminado con exito', "checkmark")
+            $scope.Client = {};
+            $window.location = "admin_dashboard#/management_clients";
+        })
+        .error(function(msg) 
+        {
+            console.log(msg);
+            pushMessage('alert','ERROR', 'VERIFIQUE LA INFORMACION', "cross")
+        })
     };  
 })
 
@@ -192,7 +226,9 @@ app.controller("AddUser_Client", function($scope, $http, $routeParams, $window)
     $scope.Clients = {};  
     $scope.variables = {};
     
-    $http.get('/api/clients_users/')
+    $scope.Getclient_user = function (){
+        $scope.$emit('load')
+        $http.get('/api/clients_users/')
         .success(function(data) 
         {
             $scope.Clients = data;
@@ -200,20 +236,28 @@ app.controller("AddUser_Client", function($scope, $http, $routeParams, $window)
         .error(function(data) 
         {
             console.log(msg);
-        });
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+    $scope.Getclient_user()
 
     $scope.CreateUser = function(){
-        
+        $scope.$emit('loadasc')
         $http.post('/api/users/add', $scope.variables)
-            .success(function(data) {
-                pushMessage('success', 'HECHO', 'Usuario creado', "checkmark")
-                $window.location = "admin_dashboard#/edit_client/" + $scope.variables.admin;
-                $scope.variables = {};
-            })
-            .error(function(msg) {
-                console.log(msg);
-                pushMessage('alert','ERROR','VERIFIQUE LA INFORMACION', "cross")
-            });
+        .success(function(data) {
+            pushMessage('success', 'HECHO', 'Usuario creado', "checkmark")
+            $window.location = "admin_dashboard#/edit_client/" + $scope.variables.admin;
+            $scope.variables = {};
+        })
+        .error(function(msg) {
+            console.log(msg);
+            pushMessage('alert','ERROR','VERIFIQUE LA INFORMACION', "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     }; 
 
     
@@ -224,26 +268,36 @@ app.controller("clients_users_user", function($scope, $http, $window)
     $http.defaults.headers.common['x-access-token']=token;
     $scope.NewClient = {};  
 
-    $http.get('/api/users/')
+    $scope.GetClientsuser = function (){
+        $scope.$emit('load')
+        $http.get('/api/users/')
         .success(function(data) {
             $scope.all = data;
         })
         .error(function(data) {
             console.log('Error: ' + data);
-    });
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+    $scope.GetClientsuser()
 
-    
     $scope.SearchClient = function(){
+        $scope.$emit('loadasc')
         $scope.inputbox
         $http.post('/api/users/search', $scope.inputbox)
-            .success(function(data) {
-                pushMessage('success','FOUNT',"Cliente's encontrados", "checkmark")
-                $scope.all = data;
-            })
-            .error(function(msg) {
-                console.log(msg);
-                pushMessage('warning','NOT FOUND',msg, "question")
-            });
+        .success(function(data) {
+            pushMessage('success','FOUNT',"Usuario's encontrados", "checkmark")
+            $scope.all = data;
+        })
+        .error(function(msg) {
+            console.log(msg);
+            pushMessage('warning','NOT FOUND',msg, "question")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     };  
 
 
@@ -256,7 +310,9 @@ app.controller("ClientUserUpdate", function($scope, $http, $routeParams, $window
     $scope.Client = {};  
     $scope.variables = {};  
     
-    $http.get('/api/users/' + $routeParams.id)
+    $scope.GetUser = function (){
+        $scope.$emit('load')
+        $http.get('/api/users/' + $routeParams.id)
         .success(function(data) 
         {
             $scope.variables = data;
@@ -266,10 +322,11 @@ app.controller("ClientUserUpdate", function($scope, $http, $routeParams, $window
             console.log(msg);
             $window.location = "admin_dashboard#/management_clients";
             pushMessage('alert','ERROR', 'ID no encontrado.')
-        });
+        })
+    }
 
-    
-    $http.get('/api/clients_users/')
+    $scope.GetUser_client = function (){
+        $http.get('/api/clients_users/')
         .success(function(data) 
         {
             $scope.Clients = data;
@@ -277,8 +334,15 @@ app.controller("ClientUserUpdate", function($scope, $http, $routeParams, $window
         .error(function(data) 
         {
             console.log(msg);
-        });
-
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+    $scope.GetUser()
+    $scope.GetUser_client()
+    
+    
     $scope.Update = function()
     {
         $http.post('/api/users/update', $scope.variables)
@@ -318,13 +382,20 @@ app.controller("category", function($scope, $http, $window)
     $http.defaults.headers.common['x-access-token']=token;
     $scope.NewClient = {};  
 
-    $http.get('/api/catproducts/')
+    $scope.Getcatproducts = function (){
+        $scope.$emit('load')
+        $http.get('/api/catproducts/')
         .success(function(data) {
             $scope.all = data;
         })
         .error(function(data) {
             console.log('Error: ' + data);
-    });
+        })
+        .finally(function (){
+            $scope.$emit('unload')
+        })
+    }
+    $scope.Getcatproducts()   
 
     $scope.CreateCatProduct = function(){
 
@@ -353,18 +424,45 @@ app.controller("category", function($scope, $http, $window)
     };  
 
     $scope.SearchClient = function(){
+        $scope.$emit('loadasc')
         $scope.inputbox
         $http.post('/api/catproducts/search', $scope.inputbox)
-            .success(function(data) {
-                pushMessage('success','FOUNT',"categoria's encontrados", "checkmark")
-                $scope.all = data;
-            })
-            .error(function(msg) {
-                console.log(msg);
-                pushMessage('info','NOT FOUND',msg, "question")
-            });
+        .success(function(data) {
+            pushMessage('success','FOUNT',"categoria's encontrados", "checkmark")
+            $scope.all = data;
+        })
+        .error(function(msg) {
+            console.log(msg);
+            pushMessage('info','NOT FOUND',msg, "question")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     };  
 
+
+})
+
+app.controller("add_category", function($scope, $http, $window)
+{
+    $http.defaults.headers.common['x-access-token']=token;
+    $scope.NewClient = {};  
+
+    $scope.CreateCatProduct = function(){
+        $scope.$emit('loadasc')
+        $http.post('/api/catproducts/add/admin', $scope.Newproduct)
+            .success(function(data) {
+                $scope.productstmp = data;
+                $scope.Newproduct = {}
+                pushMessage('success', 'HECHO', 'Categoria agregada', "checkmark")
+            })
+            .error(function(msg) {
+                pushMessage('alert','ERROR',msg, "cross")
+            })
+            .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }; 
 
 })
 
@@ -373,9 +471,9 @@ app.controller("UpdateCatproducts", function($scope, $http, $routeParams, $windo
     $http.defaults.headers.common['x-access-token']=token;
     $scope.DateCatProduct = {};  
 
-    
-
-    $http.get('/api/catproducts/' + $routeParams.id)
+    $scope.GetProduct = function (){
+        $scope.$emit('load')
+        $http.get('/api/catproducts/' + $routeParams.id)
         .success(function(data) 
         {
             $scope.DateCatProduct = data;
@@ -384,37 +482,50 @@ app.controller("UpdateCatproducts", function($scope, $http, $routeParams, $windo
         {
             $window.location = "dashboard#clients";
             pushMessage('alert','ERROR', 'ID no encontrado.')
-        });
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+    $scope.GetProduct()
 
     $scope.Update = function()
     {
+        $scope.$emit('loadasc')
         $http.post('/api/catproducts/update/admin', $scope.DateCatProduct)
-            .success(function(err) 
-            {
-                pushMessage('success', 'HECHO', err, "checkmark")
-                $scope.DateCatProduct = {};
-                $window.location = "admin_dashboard#/manager_category/";
-            })
-            .error(function(msg) 
-            {
-                pushMessage('alert','ERROR', msg, "cross")
-            })
+        .success(function(err) 
+        {
+            pushMessage('success', 'HECHO', err, "checkmark")
+            $scope.DateCatProduct = {};
+            $window.location = "admin_dashboard#/manager_category/";
+        })
+        .error(function(msg) 
+        {
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     }  
 
     
     $scope.Delete = function()
     {
+        $scope.$emit('loadasc')
         $http.post('/api/catproducts/delete/admin', $scope.DateCatProduct)
-            .success(function(err) 
-            {
-                pushMessage('success', 'HECHO', err, "checkmark")
-                $scope.DateCatProduct = {};
-                $window.location = "admin_dashboard#/manager_category/";
-            })
-            .error(function(msg) 
-            {
-                pushMessage('alert','ERROR', msg, "cross")
-            })
+        .success(function(err) 
+        {
+            pushMessage('success', 'HECHO', err, "checkmark")
+            $scope.DateCatProduct = {};
+            $window.location = "admin_dashboard#/manager_category/";
+        })
+        .error(function(msg) 
+        {
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     };  
 })
 
@@ -429,8 +540,9 @@ app.controller("measurement", function($scope, $http, $routeParams, $window)
     $scope.select = {};  
 
 
-
-    $http.get('/api/get_measurements/')
+    $scope.Get_measurements = function (){
+        $scope.$emit('load')
+        $http.get('/api/get_measurements/')
         .success(function(data) 
         {
             $scope.measurements = data;
@@ -439,53 +551,67 @@ app.controller("measurement", function($scope, $http, $routeParams, $window)
         .error(function(data) 
         {
             pushMessage('alert','ERROR', 'Error')
-        });
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+    $scope.Get_measurements()
 
     $scope.update = function()
     {
+        $scope.$emit('loadasc')
         $http.post('/api/measurement/update', $scope.measurementsID)
-            .success(function(doc) 
-            {
-                pushMessage('success', 'HECHO', doc, "checkmark")
+        .success(function(doc) 
+        {
+            pushMessage('success', 'HECHO', doc, "checkmark")
 
-                $http.get('/api/get_measurements/')
-                .success(function(data) 
-                {
-                    $scope.measurements = data;
-                    $scope.select = data;
-                })
-                
-                $scope.measurementsID = {}
-            })
-            .error(function(msg) 
+            $http.get('/api/get_measurements/')
+            .success(function(data) 
             {
-                pushMessage('alert','ERROR', msg, "cross")
+                $scope.measurements = data;
+                $scope.select = data;
             })
+            
+            $scope.measurementsID = {}
+        })
+        .error(function(msg) 
+        {
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     }  
 
     
     $scope.create = function()
     {
+        $scope.$emit('loadasc')
         $http.post('/api/measurement/add', $scope.measurement)
-            .success(function(err) 
-            {
-                $http.get('/api/get_measurements/')
-                    .success(function(data) 
-                    {
-                        $scope.measurements = data
-                        $scope.select = data
-                    })
-                pushMessage('success', 'HECHO', err, "checkmark")
-                $scope.measurement = {};
-            })
-            .error(function(msg) 
-            {
-                pushMessage('alert','ERROR', msg, "cross")
-            })
+        .success(function(err) 
+        {
+            $http.get('/api/get_measurements/')
+                .success(function(data) 
+                {
+                    $scope.measurements = data
+                    $scope.select = data
+                })
+            pushMessage('success', 'HECHO', err, "checkmark")
+            $scope.measurement = {};
+        })
+        .error(function(msg) 
+        {
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     };  
 
     $scope.delete = function ()
     {
+        $scope.$emit('loadasc')
         $http.post('/api/measurement/delete', $scope.measurementsID)
         .success(function(err) 
         {
@@ -503,31 +629,41 @@ app.controller("measurement", function($scope, $http, $routeParams, $window)
         {
             pushMessage('alert','ERROR', msg, "cross")
         })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     }
 
     $scope.LoadValuesEdit = function(){
-
+        $scope.$emit('loadasc')
         $http.get('/api/get_measurements/' + $scope.select.select)
-            .success(function(data) {
-                $scope.measurementsID = data
-                pushMessage('warning', 'HECHO', 'Unidad encontrada', "checkmark")
-            })
-            .error(function(msg) {
-                pushMessage('alert','ERROR',msg, "cross")
-            });
+        .success(function(data) {
+            $scope.measurementsID = data
+            pushMessage('warning', 'HECHO', 'Unidad encontrada', "checkmark")
+        })
+        .error(function(msg) {
+            pushMessage('alert','ERROR',msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     };
 
     $scope.search = function(){
+        $scope.$emit('loadasc')
         $scope.inputbox
         $http.post('/api/measurement/search', $scope.inputbox)
-            .success(function(data) {
-                pushMessage('success','FOUNT',"Medida encontrada", "checkmark")
-                $scope.measurements = data;
-            })
-            .error(function(msg) {
-                console.log(msg);
-                pushMessage('info','NOT FOUND',msg, "question")
-            });
+        .success(function(data) {
+            pushMessage('success','FOUNT',"Medida encontrada", "checkmark")
+            $scope.measurements = data;
+        })
+        .error(function(msg) {
+            console.log(msg);
+            pushMessage('info','NOT FOUND',msg, "question")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     }
 
 })

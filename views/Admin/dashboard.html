@@ -17,7 +17,7 @@
     <script src="/angular/angular.min.js"></script>
     <script src="/angular/angular-route.min.js"></script>
     <script src="/controllers/controller_admin.js"></script>
-    
+    <title>REST WEB AIO</title>
     <style>
     html, body {
             background-color: #3c3f41;
@@ -89,7 +89,7 @@
     </script>
 </head>
 
-<body>
+<body ng-controller="UserValues">
     <div class="app-bar fixed-top red" data-role="appbar">
         <a href="admin_dashboard#/" class="app-bar-element branding"><span class="mif-security mif-2x"></span></a>
         <span class="app-bar-divider"></span>
@@ -124,7 +124,14 @@
             <li><a href=""><span class="mif-money mif-2x"></span> Pagos</a></li>
         </ul>
 
-        <div class="app-bar-element place-right" ng-controller="UserValues">
+        <div class="app-bar-element place-right" ng-show="loadinasc">
+
+        <a href="" class="app-bar-element branding" ng-show="loadinasc">
+            <span class="mif-spinner2 mif-ani-spin mif-2x"></span>
+        </a> 
+        </div >
+
+        <div class="app-bar-element place-right" ng-show="!loadinasc">
             <span class="dropdown-toggle"><span class="mif-user-check mif-2x"></span> {{ usuario.nombre }}</span>
             <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
                 <ul class="unstyled-list fg-dark">
@@ -147,7 +154,18 @@
         <div class="flex-grid no-responsive-future" id="divone">
             <div class="row" style="height: 100%">
                 <div class="padding10 bg-white" id="cell-content">
-                    <div ng-view></div>
+                    
+                    <div ng-show="loading">
+
+                    <div class="cell">
+                    <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
+                    </div>
+
+                    </div>
+
+                    <div ng-show="!loading">
+                        <div ng-view></div>
+                    </div>
                     <br>
                 <footer>
                     <div class="bottom-menu-wrapper">
