@@ -449,9 +449,34 @@ app.controller("products", function($scope, $http){
     
     $scope.product = {};
     $scope.products = {};
+    $scope.recetas = {};
     $scope.categories = {};
     $scope.select = {}
     $scope.show = {}
+    $scope.use_receta = {}
+    $scope.use_receta_load = false
+    $scope.use_receta_create = false
+
+    $scope.loadreceta = function (){
+        if ($scope.use_receta.status)
+        {
+            $scope.use_receta_load = true
+            $http.get('/api/get_receta/')
+            .success(function(data) {
+                $scope.use_receta_create = true
+                $scope.recetas = data;
+            })
+            .error(function(data) {
+                pushMessage('alert','ERROR',$scope.use_receta, "cross")
+            })
+            .finally (function (){
+                $scope.use_receta_load = false
+            })
+        }else
+        {
+            $scope.use_receta_create = false
+        }
+    }
 
     $scope.Getcatproducts = function (){
         $scope.$emit('load')
@@ -510,7 +535,7 @@ app.controller("products", function($scope, $http){
         .success(function(data) {
             $scope.products = data
             $scope.product = {}
-            pushMessage('success', 'HECHO', 'Categoria agregada', "checkmark")
+            pushMessage('success', 'HECHO', $scope.product.img, "checkmark")
         })
         .error(function(msg) {
             pushMessage('alert','ERROR',msg, "cross")
@@ -707,7 +732,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
         };
 
         $scope.search = function(){
-        $scope.$emit('load')
+        $scope.$emit('loadasc')
         $scope.inputbox
         $http.post('/api/ingredient/search', $scope.inputbox)
             .success(function(data) {
@@ -720,7 +745,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
                 pushMessage('danger','NOT FOUND',msg, "question")
             })
             .finally (function (){
-                $scope.$emit('unload')
+                $scope.$emit('unloadasc')
             })
         };
           

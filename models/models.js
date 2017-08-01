@@ -53,6 +53,7 @@ var products_scheme = new mongoose.Schema({
 	description: String,
 	stock: Number,
 	category: { type: Schema.Types.ObjectId, ref: 'catproducts'},
+	receta: { type: Schema.Types.ObjectId, ref: 'recetas'},
 	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'}
 })
 

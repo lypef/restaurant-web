@@ -11,45 +11,93 @@
         <span class="title">Nuevo producto</span>
         </div>
         <div class="content">
-        <form align="center">  
 
-                
-        <div class="input-control select" >
-        <select ng-model="product.category">
-            <option value="">---Cetagorias---</option>
-            <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
-        </select>
-        </div>
-        <br>
 
-        <div class="input-control modern text iconic" id="widthfull">
-        <input type="text" placeholder="Nombre" ng-model="product.name" class="input-full">
-        <span class="label">Nombre</span>
-        <span class="informer"></span>
-        <span class="icon mif-stack3"></span>
-        </div>
         
-        <div class="input-control modern text iconic" id="widthfull">
-        <input type="text" placeholder="Descripcion" ng-model="product.description" class="input-full" >
-        <span class="label">Descripcion</span>
-        <span class="informer"></span>
-        <span class="icon mif-paragraph-left"></span>
-        </div>
-        
-        <div class="input-control modern text iconic" id="widthfull">
-        <input type="number" placeholder="Stock" ng-model="product.stock" class="input-full" >
-        <span class="label">Stock</span>
-        <span class="informer"></span>
-        <span class="icon mif-list-numbered"></span>
-        </div>
+            <div class="row flex-just-sa">
+                <div class="cell-auto-size">
+                <br>
+                <img src="/images/no-imagen.jpg" alt="Imagen" width="400" height="400" /><br><br>
+                </div>
+                <div class="cell-auto-size">
+                <br>
+                <form align="center">  
 
-        <br><br><br><br><br>
+                    <div class="input-control select" >
+                    <select ng-model="product.category" style="text-align: center; text-align-last: center;">
+                        <option value="">---Cetegorias---</option>
+                        <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
+                    </select>
+                    </div>
+                    
+                    
+                    <div class="input-control file" data-role="input" ng-model="product.img">
+                        <input type="file" placeholder="Imagen" >
+                        <button class="button" ><span class="mif-folder"></span></button>
+                    </div>
+                    <br>
+                    
+
+                    <div class="input-control modern text iconic" id="widthfull">
+                    <input type="text" placeholder="Nombre" ng-model="product.name" class="input-full">
+                    <span class="label">Nombre</span>
+                    <span class="informer"></span>
+                    <span class="icon mif-stack3"></span>
+                    </div>
+                    
+                    <div class="input-control modern text iconic" id="widthfull">
+                    <input type="text" placeholder="Descripcion" ng-model="product.description" class="input-full" >
+                    <span class="label">Descripcion</span>
+                    <span class="informer"></span>
+                    <span class="icon mif-paragraph-left"></span>
+                    </div>
+                    
+                    <div class="input-control modern text iconic" id="widthfull" ng-show="!use_receta_create">
+                    <input type="number" placeholder="Stock" ng-model="product.stock" class="input-full" >
+                    <span class="label">Stock</span>
+                    <span class="informer"></span>
+                    <span class="icon mif-list-numbered"></span>
+                    </div>
+                    <br>
+                    <label class="switch-original">
+                        <input type="checkbox" ng-model="use_receta.status" ng-change="loadreceta()" ng-disabled="use_receta_load"> Usar receta
+                        <span class="check"></span>
+                    </label>
+                    <br><br>
+
+                    
+                    <!-- Receta-->
+                    <div ng-show="use_receta_load">
+
+                        <div class="cell">
+                        <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
+                        </div>
+
+                    </div>
+
+                    <!--Usar receta-->
+                    <div ng-show="use_receta_create" align="center">
+                        
+                        <div class="input-control select" >
+                        <select ng-model="product.category" style="text-align: center; text-align-last: center;">
+                            <option value="">---Recetas---</option>
+                            <option ng-repeat=" a in recetas" value="{{ a._id }}">{{a.name}}</option>
+                        </select>
+                        </div>
+
+                    </div>
+                    <!-- FInaliza Usar receta-->
+                    <!-- FInaliza Receta-->
+
+                    <br><br>
+                    
+                    <button class="button success loading-pulse" ng-click="create()">
+                    Agregar
+                    </button>
+                </form>
+                </div>
+            </div>
         
-        <button class="button success loading-pulse" ng-click="create()">
-        Agregar
-        </button>
-    </form>
-    <br><br>
     </div>
 </div>
     <!-- Finaliza Nuevo producto-->
