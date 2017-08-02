@@ -442,8 +442,7 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
     }       
 })  
 
-
-app.controller("products", function($scope, $http){
+app.controller("products", function($scope, $http, $timeout){
     
     $http.defaults.headers.common['x-access-token']=token;
     
@@ -456,6 +455,40 @@ app.controller("products", function($scope, $http){
     $scope.use_receta = {}
     $scope.use_receta_load = false
     $scope.use_receta_create = false
+
+    $scope.product.img = '/images/no-imagen.jpg'
+
+    function GenerarCodeBar()
+    {
+      var caracteres = "abcdefghijkmnlopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      var contraseña = "";
+      for (i=0; i <6; i++) contraseña += caracteres.charAt(Math.floor(Math.random()*caracteres.length));
+      return contraseña;
+    }
+    
+
+    $scope.product.codebar = GenerarCodeBar()
+
+    $scope.fileReaderSupported = window.FileReader != null;
+    $scope.photoChanged = function(files){
+        $scope.product.img_load = true
+        if (files != null) {
+            var file = files[0];
+        if ($scope.fileReaderSupported && file.type.indexOf('image') > -1) {
+            $timeout(function() {
+                var fileReader = new FileReader();
+                fileReader.readAsDataURL(file);
+                fileReader.onload = function(e) {
+                    $timeout(function(){
+                        $scope.product.img = e.target.result;
+                        $scope.product.img_load = false
+                    });
+                }
+            }
+            );
+        }
+    }
+    };
 
     $scope.loadreceta = function (){
         if ($scope.use_receta.status)
@@ -530,12 +563,15 @@ app.controller("products", function($scope, $http){
     };
 
     $scope.create = function(){
+        $scope.product.img = null
         $scope.$emit('loadasc')
         $http.post('/api/products/add', $scope.product)
         .success(function(data) {
+            pushMessage('success', 'HECHO', 'Producto agregado', "checkmark")
             $scope.products = data
             $scope.product = {}
-            pushMessage('success', 'HECHO', $scope.product.img, "checkmark")
+            $scope.product.codebar = GenerarCodeBar()
+            $scope.product.img = '/images/no-imagen.jpg'
         })
         .error(function(msg) {
             pushMessage('alert','ERROR',msg, "cross")

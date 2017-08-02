@@ -273,31 +273,33 @@ function AddUser (req,res){
 };
 
 function AddProduct (req,res){
-    if (req.body.name != null && req.body.stock != null && req.body.category != null )
+    if (req.body.codebar != null && req.body.category != null )
     {
         var p = new db.products(
         {
+            codebar: req.body.codebar,
             name: req.body.name.toUpperCase(),
             description: req.body.description,
             stock: req.body.stock,
             category: req.body.category,
+            receta: req.body.receta,
             admin: req.session.admin
         });
         p.save(function(err){
-                if (err)
+            if (err)
+            {
+                res.status(500).send("Error desconocido")
+            }else {
+                db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, data) {
+                if(err) {
+                    res.status(500).send(err)
+                }else
                 {
-                    res.status(500).send("Error desconocido")
-                }else {
-                    db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').exec(function(err, data) {
-                    if(err) {
-                        res.status(500).send(err)
-                    }else
-                    {
-                        res.status(200).json(data)
-                    }
-                })
-
+                    res.status(200).json(data)
                 }
+            })
+
+            }
         });
     }else {
         res.status(500).send("Verifique su informacion")
