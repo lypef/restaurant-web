@@ -563,7 +563,6 @@ app.controller("products", function($scope, $http, $timeout){
     };
 
     $scope.create = function(){
-        $scope.product.img = null
         $scope.$emit('loadasc')
         $http.post('/api/products/add', $scope.product)
         .success(function(data) {

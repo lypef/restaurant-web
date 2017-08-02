@@ -273,7 +273,8 @@ function AddUser (req,res){
 };
 
 function AddProduct (req,res){
-    if (req.body.codebar != null && req.body.category != null )
+    console.log(req.body.img)
+    /*if (req.body.codebar != null && req.body.category != null )
     {
         var p = new db.products(
         {
@@ -303,7 +304,7 @@ function AddProduct (req,res){
         });
     }else {
         res.status(500).send("Verifique su informacion")
-    }
+    }*/
 };
 
 function AddIngredient (req,res){
