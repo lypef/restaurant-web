@@ -138,6 +138,7 @@
             <th>PRODUCTO</th>
             <th>CATEGORIA</th>
             <th>STOCK</th>
+            <th>img</th>
         </tr>
         <tr ng-repeat="a in products" align="center" ng-model="products" >
             <td ng-if=" a.stock > 0 "><span class="mif-thumbs-up fg-green mif-2x"></span>
@@ -147,6 +148,12 @@
             <td>{{ a.name }}</td>
             <td>{{ a.category.categoria }}</td>
             <td>{{ a.stock }} </td>
+            
+            <td>
+                <img src="{{a.img}}" style="
+                    width: auto;
+                    height: auto;">
+            </td>
         </tr>
     </table>
 

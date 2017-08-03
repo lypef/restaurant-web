@@ -273,8 +273,7 @@ function AddUser (req,res){
 };
 
 function AddProduct (req,res){
-    console.log(req.body.img)
-    /*if (req.body.codebar != null && req.body.category != null )
+    if (req.body.codebar != null && req.body.category != null )
     {
         var p = new db.products(
         {
@@ -282,6 +281,7 @@ function AddProduct (req,res){
             name: req.body.name.toUpperCase(),
             description: req.body.description,
             stock: req.body.stock,
+            img: req.body.img,
             category: req.body.category,
             receta: req.body.receta,
             admin: req.session.admin
@@ -304,7 +304,7 @@ function AddProduct (req,res){
         });
     }else {
         res.status(500).send("Verifique su informacion")
-    }*/
+    }
 };
 
 function AddIngredient (req,res){
