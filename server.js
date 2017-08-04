@@ -74,6 +74,7 @@ app.get('/api/get_measurements/:id', GetMeasuremetsJSON_ID)
 app.get('/api/get_receta/', GetRecetasJSON)
 app.get('/api/get_receta/:id', GetRecetasJSON_ID)
 app.get('/api/get_use_recetas/:id', GetUseRecetasJSON_ID)
+app.get('/api/get_use_recetas/', GetUseRecetasJSON)
 
 // Api POST
 app.post('/api/clients/add', CreateClient );
@@ -940,6 +941,20 @@ function GetRecetasJSON_ID (req, res)
 function GetUseRecetasJSON_ID (req, res)
 {
     db.use_recetas.find({ receta: req.params.id , admin: req.session.admin}).populate(
+            {path:     'ingrediente',         
+                populate: { path:  'measurements',
+                            model: 'measurements' }
+            }).exec(function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
+        }
+    })
+}
+
+function GetUseRecetasJSON (req, res)
+{
+    db.use_recetas.find({ admin: req.session.admin}).populate(
             {path:     'ingrediente',         
                 populate: { path:  'measurements',
                             model: 'measurements' }

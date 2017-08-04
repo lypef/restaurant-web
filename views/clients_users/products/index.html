@@ -181,7 +181,7 @@
                 <td ng-if="a.receta.name != null">{{ a.receta.name }} </td>
                 <td ng-if="a.receta.name == null">NINGUNA</td>
                 <td ng-if="a.receta.name == null">Stock: {{ a.stock }}</td>
-                <td ng-if="a.receta.name != null">Aprox: {{ a.receta._id }}</td>
+                <td ng-if="a.receta.name != null">Aprox: {{ calulate(a.receta._id) }}</td>
                 <td>
                     <a href="dashboard#/editclient/{{ a._id }}">
                         <button class="button primary mif-pencil" ng-Click="update(a)"> Actualizar</button>
@@ -211,5 +211,4 @@
 <hr>
 </div></div>
     <!--Finaliza Lista de productos-->
-
 </div>

@@ -453,6 +453,7 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
     $scope.product = {};
     $scope.products = {};
     $scope.recetas = {};
+    $scope.ingredientes = {};
     $scope.categories = {};
     $scope.select = {}
     $scope.show = {}
@@ -462,6 +463,7 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
 
     $scope.product.img = '/images/no-imagen.jpg'
 
+    
     function GenerarCodeBar()
     {
       var caracteres = "abcdefghijkmnlopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -494,8 +496,17 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
     }
     };
 
-    $scope.calulate = function (id){
-        return id
+    $scope.calulate = function (receta){
+        var r = '';
+        for (var i = 0; i < $scope.ingredientes.length; i++)
+        {
+            if ($scope.ingredientes[i].receta == receta)
+            {
+                r += 'Stock: ' + $scope.ingredientes[i].ingrediente.stock 
+                + 'Porcion: ' + $scope.ingredientes[i].porcion + ', '
+            }
+        }
+        return r;
     }
 
     $scope.loadreceta = function (){
@@ -519,8 +530,17 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
         }
     }
 
-    $scope.Getcatproducts = function (){
+    $scope.GetIngredientes = function ()
+    {
         $scope.$emit('load')
+        //Load ingredientes
+        $http.get('/api/get_use_recetas/')
+        .success(function(data0) {
+            $scope.ingredientes = data0;
+        })
+    }
+
+    $scope.Getcatproducts = function (){
         $http.get('/api/catproducts/')
         .success(function(data) {
             $scope.categories = data;
@@ -545,7 +565,7 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
         })
     }
 
-
+    $scope.GetIngredientes()
     $scope.Getcatproducts()
     $scope.Getproducts()
     
@@ -977,7 +997,7 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
 
 
         $scope.search = function(){
-        $scope.$emit('load')
+        $scope.$emit('loadasc')
         $scope.inputbox
         $http.post('/api/ingredient/search', $scope.inputbox)
             .success(function(data) {
@@ -991,7 +1011,7 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
                 pushMessage('danger','NOT FOUND',msg, "question")
             })
             .finally (function (){
-                $scope.$emit('unload')
+                $scope.$emit('unloadasc')
             })
         };
 
