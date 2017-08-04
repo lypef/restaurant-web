@@ -49,13 +49,14 @@ var Clients_Users_scheme = new mongoose.Schema({
 })
 
 var products_scheme = new mongoose.Schema({
-	name: {type: String, required: true},
-	description: String,
+	name: {type: String, required: true, uppercase:true},
+	codebar: {type: String, required: true },
+	description: {type: String, uppercase:true},
 	stock: Number,
 	img: String,
-	category: { type: Schema.Types.ObjectId, ref: 'catproducts'},
-	receta: { type: Schema.Types.ObjectId, ref: 'recetas'},
-	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'}
+	category: { type: Schema.Types.ObjectId, ref: 'catproducts', required: true},
+	receta: { type: Schema.Types.ObjectId, ref: 'recetas' },
+	admin: { type: Schema.Types.ObjectId, ref: 'clients_users', required: true}
 })
 
 var ingredients_scheme = new mongoose.Schema({

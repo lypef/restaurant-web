@@ -442,10 +442,14 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
     }       
 })  
 
-app.controller("products", function($scope, $http, $timeout){
+app.controller("products", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
     
     $http.defaults.headers.common['x-access-token']=token;
     
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
+
     $scope.product = {};
     $scope.products = {};
     $scope.recetas = {};
@@ -490,6 +494,10 @@ app.controller("products", function($scope, $http, $timeout){
     }
     };
 
+    $scope.calulate = function (id){
+        return id
+    }
+
     $scope.loadreceta = function (){
         if ($scope.use_receta.status)
         {
@@ -520,16 +528,14 @@ app.controller("products", function($scope, $http, $timeout){
         .error(function(data) {
             pushMessage('alert','ERROR',data, "cross")
         })
-        .finally (function (){
-            $scope.$emit('unload')
-        })
+
     }
     
     $scope.Getproducts = function (){
-        $scope.$emit('load')
         $http.get('/api/getproducts/')
         .success(function(data) {
             $scope.products = data;
+            $scope.LoadPages()
         })
         .error(function(data) {
             pushMessage('alert','ERROR',data, "cross")
@@ -539,29 +545,10 @@ app.controller("products", function($scope, $http, $timeout){
         })
     }
 
+
     $scope.Getcatproducts()
     $scope.Getproducts()
-        
-    $scope.ok = function ()
-    {
-        $scope.show = {}
-    }
-
-    $scope.LoadValuesEdit = function(){
-        $scope.$emit('loadasc')
-        $http.get('/api/getproducts/' + $scope.select.select)
-        .success(function(data) {
-            $scope.select = data
-            pushMessage('warning', 'HECHO', 'Producto encontrado', "checkmark")
-        })
-        .error(function(msg) {
-            pushMessage('alert','ERROR',msg, "cross")
-        })
-        .finally (function (){
-            $scope.$emit('unloadasc')
-        })
-    };
-
+    
     $scope.create = function(){
         $scope.$emit('loadasc')
         $http.post('/api/products/add', $scope.product)
@@ -580,38 +567,75 @@ app.controller("products", function($scope, $http, $timeout){
         })
     }; 
 
-    $scope.update = function(){
+    $scope.search = function(){
         $scope.$emit('loadasc')
-        $http.post('/api/updateproducts', $scope.select)
+        
+        $http.post('/api/search_products', $scope.inputbox)
         .success(function(data) {
+            pushMessage('success','FOUNT',"Productos encontrados", "checkmark")
             $scope.products = data;
-            $scope.select = {}
-            pushMessage('success', 'HECHO', 'Producto actualizado', "checkmark")
+            $scope.LoadPages();
+            $scope.ChangePageItems()
         })
         .error(function(msg) {
-            pushMessage('alert','ERROR',msg, "cross")
+            pushMessage('alert','NOT FOUND',msg, "question")
         })
         .finally (function (){
             $scope.$emit('unloadasc')
         })
     };
 
-    $scope.delete = function(){
-        $scope.$emit('loadasc')
-        $http.post('/api/deleteproducts', $scope.select)
-        .success(function(data) {
-            $scope.products = data
-            $scope.select = {}
-            pushMessage('success', 'HECHO', 'Producto eliminado', "checkmark")
-        })
-        .error(function(msg) {
-            pushMessage('alert','ERROR',msg, "cross")
-        })
-        .finally (function (){
-        $scope.$emit('unloadasc')
-        })
+    $scope.ChangePageItems = function() {
+        if ($scope.pageSizetmp.items == 'todos')
+        {
+            $scope.pageSize = $scope.products.length
+        }else {
+            $scope.pageSize = $scope.pageSizetmp.items    
+        }
+        $scope.LoadPages();
     };
 
+    $scope.LoadPages = function ()
+    {
+        $scope.pages.length = 0;
+        var ini = $scope.currentPage - 4;
+        var fin = $scope.currentPage + 5;
+        if (ini < 1) {
+          ini = 1;
+          if (Math.ceil($scope.products.length / $scope.pageSize) > 10)
+            fin = 10;
+          else
+            fin = Math.ceil($scope.products.length / $scope.pageSize);
+        } else {
+          if (ini >= Math.ceil($scope.products.length / $scope.pageSize) - 10) {
+            ini = Math.ceil($scope.products.length / $scope.pageSize) - 10;
+            fin = Math.ceil($scope.products.length / $scope.pageSize);
+          }
+        }
+        if (ini < 1) ini = 1;
+        for (var i = ini; i <= fin; i++) {
+          $scope.pages.push({
+            no: i
+          });
+        }
+
+        if ($scope.currentPage >= $scope.pages.length)
+        $scope.currentPage = $scope.pages.length - 1;
+    }
+    
+      
+    $scope.setPage = function(index) {
+        $scope.currentPage = index - 1;
+    };
+    
+}
+  ]).filter('startFromGrid', function() {
+    return function(input, start) 
+    {
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
+    }       
 })
 
 app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {

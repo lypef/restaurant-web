@@ -102,6 +102,7 @@ app.post('/api/users/update', UpdateUser );
 app.post('/api/products/add', AddProduct);
 app.post('/api/updateproducts', UpdateProduct)
 app.post('/api/deleteproducts', DeleteProduct );
+app.post('/api/search_products', search_products );
 
 app.post('/api/add_ingredient', AddIngredient);
 app.post('/api/ingredient/search', SearchIngredients )
@@ -273,12 +274,10 @@ function AddUser (req,res){
 };
 
 function AddProduct (req,res){
-    if (req.body.codebar != null && req.body.category != null )
-    {
-        var p = new db.products(
+    var p = new db.products(
         {
+            name: req.body.name,
             codebar: req.body.codebar,
-            name: req.body.name.toUpperCase(),
             description: req.body.description,
             stock: req.body.stock,
             img: req.body.img,
@@ -302,9 +301,7 @@ function AddProduct (req,res){
 
             }
         });
-    }else {
-        res.status(500).send("Verifique su informacion")
-    }
+    
 };
 
 function AddIngredient (req,res){
@@ -748,6 +745,32 @@ function Search_users (req, res)
 
 }
 
+function search_products (req, res) 
+{  
+    if (req.body.text == null || req.body.text == '')
+    {
+        db.products.find({ admin : req.session.admin }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
+        if(err) {
+            res.status(500).send(err);
+        }else
+        {   
+            res.json(doc);    
+        }
+        });
+    }else
+    {
+        db.products.find({admin : req.session.admin, $or: [ {name: { $regex : req.body.text.toUpperCase() }}, {codebar: { $regex : req.body.text }} ,{description: { $regex : req.body.text.toUpperCase() }} ] }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
+        if(err) {
+            res.status(500).send(err);
+        }else
+        {   
+            res.json(doc);    
+        }
+        });
+    }
+    
+}
+
 function Search_users_id (req, res) 
 {  
     db.user.find({admin:req.params.id}).populate('admin').exec(function(err, doc) {
@@ -857,7 +880,7 @@ function GetMeasurementsJSON (req,res){
 }
 
 function getproductsJson (req,res){
-    db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').exec(function(err, data) {
+    db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, data) {
         if(err) {
             res.status(500).send(err)
         }else
@@ -1105,13 +1128,13 @@ function CreateReceta (req, res)
 }
 
 function CatProductsEditsJson (req,res){
-    db.catproducts.findOne({_id:req.params.id},function(err,doc){
+    db.catproducts.findOne({_id: req.params.id},function(err,doc){
         if (doc != null)
         {
             res.json(doc)
         }else
         {
-            res.sendStatus(404);
+            res.status(404);
         }
     });
 };
