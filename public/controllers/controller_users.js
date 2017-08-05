@@ -20,6 +20,9 @@ app.config(function($routeProvider){
         .when('/products', {
             templateUrl : '/clients_users/products/index.html'
         })
+        .when('/products/:id', {
+            templateUrl : '/clients_users/products/edit.html'
+        })
         .when('/ingredientes', {
             templateUrl : '/clients_users/ingredients/index.html'
         })
@@ -498,15 +501,24 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
 
     $scope.calulate = function (receta){
         var r = '';
+        
         for (var i = 0; i < $scope.ingredientes.length; i++)
         {
-            if ($scope.ingredientes[i].receta == receta)
+            if ($scope.ingredientes[i].receta == receta && $scope.ingredientes[i].receta != null)
             {
-                r += 'Stock: ' + $scope.ingredientes[i].ingrediente.stock 
-                + 'Porcion: ' + $scope.ingredientes[i].porcion + ', '
+                if (i == $scope.ingredientes.length - 1)
+                {
+                    r +=  Math.round($scope.ingredientes[i].ingrediente.stock / $scope.ingredientes[i].porcion)
+                }
+                else
+                {
+                    r +=  Math.round($scope.ingredientes[i].ingrediente.stock / $scope.ingredientes[i].porcion) + ','
+                }
+                
             }
         }
-        return r;
+        
+        return Math.min.apply(null, r.split(','));
     }
 
     $scope.loadreceta = function (){
@@ -1359,6 +1371,25 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
             })
         };
 
+        $scope.search = function(){
+        $scope.$emit('loadasc')
+        $scope.inputbox
+        $http.post('/api/ingredient/search', $scope.inputbox)
+            .success(function(data) {
+                pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
+                $scope.inputbox = {}
+                $scope.ingredientes = data;
+                $scope.LoadPages()
+                $scope.ChangePageItems()
+            })
+            .error(function(msg) {
+                pushMessage('danger','NOT FOUND',msg, "question")
+            })
+            .finally (function (){
+                $scope.$emit('unloadasc')
+            })
+        };
+
         $scope.LoadPages = function ()
         {
             $scope.pages.length = 0;
@@ -1505,4 +1536,133 @@ app.controller("view_receta", function($scope, $http, $routeParams, $window)
     $scope.GetReceta()
     $scope.GetIngredientes()
 
+})
+
+
+app.controller("update_products", function ($scope, $http, $timeout, $routeParams, $window) {
+    
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.product = {};
+    $scope.recetas = {};
+    $scope.categories = {}
+    $scope.use_receta_create = false
+    
+    $scope.update = function()
+    {
+        $scope.$emit('loadasc')
+        $http.post('/api/updateproducts', $scope.product)
+        .success(function(err) 
+        {
+            pushMessage('success', 'HECHO', 'Producto actualizado con exito', "checkmark")
+            $scope.DateClient = {};
+            $window.location = "dashboard#/products";
+        })
+        .error(function(msg) 
+        {
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+
+    $scope.delete = function()
+    {
+        $scope.$emit('loadasc')
+        $http.post('/api/deleteproducts', $scope.product)
+        .success(function(err) 
+        {
+            pushMessage('success', 'HECHO', err, "checkmark")
+            $window.location = "dashboard#/products";
+        })
+        .error(function(msg) 
+        {
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }    
+    $scope.changerecet = function ()
+    {
+        if (!$scope.use_receta_create)
+        {
+            $scope.product.receta = null
+        }
+    }
+
+    $scope.loadvalues = function (){
+        $scope.use_receta_load = true
+        $http.get('/api/getproducts/' + $routeParams.id)
+        .success(function(data) {
+            $scope.product = data;
+            if ($scope.product.receta)
+            {
+                $scope.use_receta_create = true
+            }
+        })
+        .error(function(data) {
+            pushMessage('alert','ERROR',$scope.use_receta, "cross")
+        })
+        .finally (function (){
+            $scope.use_receta_load = false
+        })
+    }
+
+    $scope.GetReceta = function (){
+        $scope.$emit('load')
+        $http.get('/api/get_receta/')
+        .success(function(data) 
+        {
+            $scope.recetas = data;
+        })
+        .error(function(data) 
+        {
+            pushMessage('alert','ERROR', 'Receta no encontrada.','cross')
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    $scope.GetCategoryes = function ()
+    {
+        $scope.$emit('load')
+        $http.get('/api/catproducts/')
+        .success(function(data) {
+            $scope.categories = data;
+        })
+        .error(function(data) {
+            pushMessage('alert','ERROR',data, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    $scope.loadvalues()
+    $scope.GetReceta()
+    $scope.GetCategoryes()
+    
+    $scope.fileReaderSupported = window.FileReader != null;
+    $scope.photoChanged = function(files){
+        $scope.product.img_load = true
+        if (files != null) {
+            var file = files[0];
+        if ($scope.fileReaderSupported && file.type.indexOf('image') > -1) {
+            $timeout(function() {
+                var fileReader = new FileReader();
+                fileReader.readAsDataURL(file);
+                fileReader.onload = function(e) {
+                    $timeout(function(){
+                        $scope.product.img = e.target.result;
+                        $scope.product.img_load = false
+                    });
+                }
+            }
+            );
+        }
+    }
+    };    
 })

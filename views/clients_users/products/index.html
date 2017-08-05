@@ -162,7 +162,7 @@
         </div>
     </div>
     <!--Finaliza Busqueda y numero mostrado -->
-    <table class="table striped hovered">
+    <table class="table striped hovered bordered border">
          <thead>
             <tr>
             <th>CODEBAR</th>
@@ -181,9 +181,19 @@
                 <td ng-if="a.receta.name != null">{{ a.receta.name }} </td>
                 <td ng-if="a.receta.name == null">NINGUNA</td>
                 <td ng-if="a.receta.name == null">Stock: {{ a.stock }}</td>
-                <td ng-if="a.receta.name != null">Aprox: {{ calulate(a.receta._id) }}</td>
+                <td ng-if="a.receta.name != null">Platillos: {{ calulate(a.receta._id) }}</td>
                 <td>
-                    <a href="dashboard#/editclient/{{ a._id }}">
+                    <div class="dropdown-button" ng-if="a.receta.name != null">
+                    <button class="button success dropdown-toggle">{{ a.receta.name }}</button>
+                        <ul class="split-content d-menu" data-role="dropdown">
+                            <li><a href="dashboard#/edit_recetas/{{ a.receta._id }}">Surtir ingredientes</a></li>
+                            <li class="divider"></li>
+                            <li><a href="dashboard#/view_recetas/{{ a.receta._id }}">Ver receta</a></li>
+                            <li><a href="dashboard#/edit_recetas/{{ a.receta._id }}">Editar receta</a></li>
+
+                        </ul>
+                    </div>
+                    <a href="dashboard#/products/{{ a._id }}">
                         <button class="button primary mif-pencil" ng-Click="update(a)"> Actualizar</button>
                     </a>
                 </td>

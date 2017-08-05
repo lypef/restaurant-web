@@ -564,9 +564,12 @@ function UpdateProduct (req, res)
         { _id : req.body._id, admin: req.session.admin },
         { 
             name: req.body.name.toUpperCase(),
+            codebar: req.body.codebar,
             description: req.body.description.toUpperCase(),
             stock: req.body.stock,
-            category: req.body.category
+            img: req.body.img,
+            category: req.body.category,
+            receta: req.body.receta
         },
         function( err) 
         {
@@ -660,14 +663,7 @@ function DeleteProduct (req, res)
                 res.status(500).send("Error, Intente nuevamente.")
             }else
             {
-                db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').exec(function(err, data) {
-                    if(err) {
-                        res.status(500).send(err)
-                    }else
-                    {
-                        res.json(data); 
-                    }
-                })
+                res.status(200).send('Producto eliminado con exito')
             }
         })
 }
