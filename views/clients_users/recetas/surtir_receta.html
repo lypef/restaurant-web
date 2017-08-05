@@ -1,0 +1,45 @@
+<div class="panel alert" ng-controller="surtir_recetea">
+                <div class="heading">
+                
+                <span class="title">Surtir ingredientes de {{ receta.name }}</span>
+            
+                </div>
+                <div class="content">
+				
+    	<table class="table striped hovered bordered">
+          <thead>
+            <tr>
+              <th>Ingrediente</th>
+              <th>Existencia / actualizacion</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='a in ingredients'>
+              <td>{{ a.ingrediente.name }}</td>
+                <td>
+                	<form>
+	                	
+	                	<div class="input-control text">
+					            <input type="double" ng-model="a.ingrediente.stock">        
+						</div>
+
+						<div class="input-control select" >
+                        <select ng-model="a.ingrediente.measurements._id" style="text-align: center; text-align-last: center;">
+                            <option value="">---U. medida---</option>
+                            <option ng-repeat=" a in measuremeants" value="{{ a._id }}">{{a.name}} ({{ a.namefast }})</option>
+                        </select>
+                        </div>
+						<button class="button rounded success mif-floppy-disk" ng-Click="update(a)"> Guardar</button>
+					</form>
+					
+
+                </td>
+                
+            </tr>
+          </tbody>
+        </table>
+        
+<hr>
+</div></div>
+</div>

@@ -38,6 +38,9 @@ app.config(function($routeProvider){
         .when('/edit_recetas/:id', {
             templateUrl : '/clients_users/recetas/edit.html'
         })
+        .when('/surtir_receta/:id', {
+            templateUrl : '/clients_users/recetas/surtir_receta.html'
+        })
         .when('/view_recetas/:id', {
             templateUrl : '/clients_users/recetas/view.html'
         })
@@ -500,25 +503,18 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
     };
 
     $scope.calulate = function (receta){
-        var r = '';
+        var r = [];
         
         for (var i = 0; i < $scope.ingredientes.length; i++)
         {
-            if ($scope.ingredientes[i].receta == receta && $scope.ingredientes[i].receta != null)
+            
+            if ($scope.ingredientes[i].receta == receta)
             {
-                if (i == $scope.ingredientes.length - 1)
-                {
-                    r +=  Math.round($scope.ingredientes[i].ingrediente.stock / $scope.ingredientes[i].porcion)
-                }
-                else
-                {
-                    r +=  Math.round($scope.ingredientes[i].ingrediente.stock / $scope.ingredientes[i].porcion) + ','
-                }
-                
+                r.push(Math.round($scope.ingredientes[i].ingrediente.stock / $scope.ingredientes[i].porcion));
             }
         }
         
-        return Math.min.apply(null, r.split(','));
+        return Math.min.apply(null, r);
     }
 
     $scope.loadreceta = function (){
@@ -601,7 +597,6 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
 
     $scope.search = function(){
         $scope.$emit('loadasc')
-        
         $http.post('/api/search_products', $scope.inputbox)
         .success(function(data) {
             pushMessage('success','FOUNT',"Productos encontrados", "checkmark")
@@ -1666,3 +1661,53 @@ app.controller("update_products", function ($scope, $http, $timeout, $routeParam
     }
     };    
 })
+
+app.controller('surtir_recetea', function ($scope, $http, $routeParams){
+    
+    $http.defaults.headers.common['x-access-token']=token;
+
+    $scope.receta = {}
+    $scope.ingredients = {}
+    $scope.measuremeants = {}
+
+
+    $scope.GetReceta = function (){
+        $scope.$emit('load')
+        $http.get('/api/get_receta/'+ $routeParams.id)
+        .success(function(data){
+            $scope.receta = data
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    $scope.GetIngredientes = function (){
+        $scope.$emit('load')
+        $http.get('/api/get_use_recetas/'+ $routeParams.id)
+        .success (function (data){
+            $scope.ingredients = data
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    $scope.GetMeasurements = function (){
+        $scope.$emit('load')
+        $http.get('/api/get_measurements/')
+        .success(function(data) {
+            $scope.measuremeants = data
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    $scope.GetReceta()
+    $scope.GetIngredientes()
+    $scope.GetMeasurements()
+    
+})
+
+

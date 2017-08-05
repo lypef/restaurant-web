@@ -50,7 +50,7 @@ var Clients_Users_scheme = new mongoose.Schema({
 
 var products_scheme = new mongoose.Schema({
 	name: {type: String, required: true, uppercase:true},
-	codebar: {type: String, required: true },
+	codebar: {type: String, required: true, uppercase:true },
 	description: {type: String, uppercase:true},
 	stock: Number,
 	img: String,

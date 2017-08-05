@@ -564,7 +564,7 @@ function UpdateProduct (req, res)
         { _id : req.body._id, admin: req.session.admin },
         { 
             name: req.body.name.toUpperCase(),
-            codebar: req.body.codebar,
+            codebar: req.body.codebar.toUpperCase(),
             description: req.body.description.toUpperCase(),
             stock: req.body.stock,
             img: req.body.img,
@@ -756,7 +756,7 @@ function search_products (req, res)
         });
     }else
     {
-        db.products.find({admin : req.session.admin, $or: [ {name: { $regex : req.body.text.toUpperCase() }}, {codebar: { $regex : req.body.text }} ,{description: { $regex : req.body.text.toUpperCase() }} ] }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
+        db.products.find({admin : req.session.admin, $or: [ {name: { $regex : req.body.text.toUpperCase() }}, {codebar: { $regex : req.body.text.toUpperCase() }} ,{description: { $regex : req.body.text.toUpperCase() }} ] }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
         if(err) {
             res.status(500).send(err);
         }else
