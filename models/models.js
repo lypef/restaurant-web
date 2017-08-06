@@ -22,6 +22,16 @@ var clients_scheme = new mongoose.Schema({
 	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'}
 })
 
+var clientsDirecciones_scheme = new mongoose.Schema({
+	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'},
+	cliente: { type: Schema.Types.ObjectId, ref: 'clients'},
+	calle: String,
+	numero: String,
+	colonia: String,
+	ciudad: String,
+	referencia: String
+})
+
 var catproducts_scheme = new mongoose.Schema({
 	categoria: {type: String, required: true},
 	descripcion: {type: String, required: true},
@@ -97,5 +107,6 @@ module.exports.ingredients = mongoose.model("ingredients",ingredients_scheme);
 module.exports.measurements = mongoose.model("measurements",measurement_scheme);
 module.exports.recetas = mongoose.model("recetas",recetas_scheme);
 module.exports.use_recetas = mongoose.model("use_recetas",use_ingredients_scheme);
+module.exports.direcciones = mongoose.model("clientsDirecciones_scheme",clientsDirecciones_scheme);
 
 

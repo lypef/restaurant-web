@@ -1,25 +1,39 @@
-<div ng-controller="clients">
-<div class="accordion large-heading" data-role="accordion" ng-controller="add_recetas">
+<div ng-controller="c_direcciones">
+<div class="accordion large-heading" data-role="accordion">
     <div class="frame">
-        <div class="heading"><span class="mif-plus icon"></span> Nueva cliente</span></div>
+        <div class="heading"><span class="mif-plus icon"></span> Nueva Direccion</span></div>
         <div class="content" align="center">
         <form align="center">  
+            
             <div class="input-control modern text iconic" id="widthfull">
-            <input type="text" placeholder="Nombre" ng-model="Client.nombre" class="input-full">
+            <input type="text" placeholder="Calle" ng-model="direccion.calle" class="input-full">
             <span class="icon mif-user"></span>
             </div>
             
-            <div class="input-control modern text iconic" id="widthfull">
-            <input type="number" placeholder="Telefono" ng-model="Client.telefono">
-            <span class="icon mif-phone"></span>
-            </div>
             
             <div class="input-control modern text iconic" id="widthfull">
-            <input type="text" placeholder="E-mail" ng-model="Client.mail">
+            <input type="number" placeholder="Numero" ng-model="direccion.numero">
             <span class="icon mif-mail"></span>
             </div>
+
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="Colonia" ng-model="direccion.colonia">
+            <span class="icon mif-phone"></span>
+            </div>
+
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="Ciudad" ng-model="direccion.ciudad">
+            <span class="icon mif-phone"></span>
+            </div>
+
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="Referencia" ng-model="direccion.referencia">
+            <span class="icon mif-phone"></span>
+            </div>
+
+
             <br><br>
-            <button class="button success loading-pulse" ng-click="CreateClient()">
+            <button class="button success loading-pulse" ng-click="create()">
             Agregar
             </button>
         </form>
@@ -30,7 +44,7 @@
 <div class="panel alert">
     <div class="heading">
     
-    <span class="title">Clientes</span>
+    <span class="title">Direcciones</span>
 
     </div>
     <div class="content">
@@ -76,8 +90,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat='a in all | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
-              <td>{{ a.nombre }}</td>
+            <tr ng-repeat='a in direcciones | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
+              <td>{{ a.calle }}</td>
               <td>{{ a.telefono }}</td>
               <td ng-if="a.mail != null">{{ a.mail }}</td>
               <td ng-if="a.mail == null">NINGUNO</td>
@@ -107,9 +121,9 @@
           
           <button type='button' class='item current' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{ page.no }}</button>
           
-          <button type='button' class='item' ng-disabled='currentPage >= all.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
+          <button type='button' class='item' ng-disabled='currentPage >= direcciones.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
 
-          <button type='button' class='item' ng-disabled='currentPage == all.length/pageSize - 1' ng-click='currentPage = all.length/pageSize - 1'>Final</button>
+          <button type='button' class='item' ng-disabled='currentPage == direcciones.length/pageSize - 1' ng-click='currentPage = direcciones.length/pageSize - 1'>Final</button>
         </div>
     </div>    
     </div>

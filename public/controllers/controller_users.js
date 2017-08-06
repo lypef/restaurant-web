@@ -11,6 +11,9 @@ app.config(function($routeProvider){
         .when('/clients', {
         	templateUrl : '/clients_users/clients/Clients.html'
         })
+        .when('/direcciones/:id', {
+            templateUrl : '/clients_users/clients/direcciones.html'
+        })
         .when('/editclient/:id', {
             templateUrl : '/clients_users/clients/UpdateClient.html'
         })
@@ -213,6 +216,114 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
     }       
 })    
 
+app.controller ("c_direcciones", function ($scope, $http, $routeParams){
+    $http.defaults.headers.common['x-access-token']=token;
+
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
+    
+    $scope.direcciones = {};
+    $scope.direccion = {};
+    $scope.direccion.cliente = $routeParams.id
+
+    $scope.GetDirecciones = function ()
+    {
+        $scope.$emit('load')
+        $http.get('/api/get_direcciones/' + $routeParams.id)
+        .success(function(data) {
+            $scope.direcciones = data;
+            $scope.LoadPages()
+            $scope.$emit('unload')
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+        })
+        .finally (function(){
+            $scope.$emit('unload')
+        })
+
+    }
+    $scope.GetDirecciones()
+    
+    $scope.create = function(){
+        $scope.$emit('loadasc')
+        $http.post('/api/clients_direcciones/add', $scope.direccion)
+        .success(function(msg) {
+            $scope.direccion = {}
+            pushMessage('success', 'HECHO', msg, "checkmark")
+        })
+        .error(function(msg) {
+            pushMessage('alert','ERROR',msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+            $scope.GetClientsasc()
+        })
+    };
+
+    $scope.SearchClient = function(){
+        $scope.$emit('loadasc')
+        $scope.inputbox
+        $http.post('/api/client/search', $scope.inputbox)
+        .success(function(data) {
+            pushMessage('success','FOUNT',"Cliente's encontrados", "checkmark")
+            $scope.all = data;
+            $scope.LoadPages()
+        })
+        .error(function(msg) {
+            pushMessage('info','NOT FOUND',msg, "question")
+        })
+        .finally(function (){
+            $scope.$emit('unloadasc')
+        })
+    };  
+
+
+    $scope.LoadPages = function ()
+    {
+        $scope.pages.length = 0;
+            var ini = $scope.currentPage - 4;
+            var fin = $scope.currentPage + 5;
+            if (ini < 1) {
+              ini = 1;
+              if (Math.ceil($scope.direcciones.length / $scope.pageSize) > 10)
+                fin = 10;
+              else
+                fin = Math.ceil($scope.direcciones.length / $scope.pageSize);
+            } else {
+              if (ini >= Math.ceil($scope.direcciones.length / $scope.pageSize) - 10) {
+                ini = Math.ceil($scope.direcciones.length / $scope.pageSize) - 10;
+                fin = Math.ceil($scope.direcciones.length / $scope.pageSize);
+              }
+            }
+            if (ini < 1) ini = 1;
+            for (var i = ini; i <= fin; i++) {
+              $scope.pages.push({
+                no: i
+              });
+            }
+
+            if ($scope.currentPage >= $scope.pages.length)
+            $scope.currentPage = $scope.pages.length - 1;
+    }
+    
+    $scope.setPage = function(index) {
+        $scope.currentPage = index - 1;
+    };
+    
+    $scope.ChangePageItems = function() {
+        if ($scope.pageSizetmp.items == 'todos')
+        {
+            $scope.pageSize = $scope.all.length
+        }
+        else {
+            $scope.pageSize = $scope.pageSizetmp.items    
+        }
+
+        $scope.LoadPages();
+    };    
+})
 
 app.controller("UpdateClient", function($scope, $http, $routeParams, $window)
 {

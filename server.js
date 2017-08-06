@@ -49,6 +49,9 @@ app.post("/login_admin", login_admin );
 app.get('/api/clients/', ClientsJson);
 app.get('/api/clientedit/:id', ClienteditsJson);
 
+
+app.get('/api/get_direcciones/:id', ClienteDireccionesJson);
+
 app.get('/api/catproducts/:id', CatProductsEditsJson);
 app.get('/api/catproducts/', catproductsJson)
 
@@ -83,6 +86,8 @@ app.post('/api/client/update', UpdateClientAdmin );
 app.post('/api/client/update/clients', UpdateClient_User );
 app.post('/api/client/delete', DeleteClient );
 app.post('/api/client/search', SearchClient );
+
+app.post("/api/clients_direcciones/add", InsertClientDirecciones );
 
 app.post('/api/catproducts/update/admin', CatproductsUpdateAdmin );
 app.post('/api/catproducts/delete/admin', DeleteCatProducts );
@@ -397,7 +402,19 @@ function GetProducts (req,res){
 };
 
 function ClienteditsJson (req,res){
-	db.clients.findOne({_id:req.params.id , admin: req.session.admin},function(err,doc){
+    db.clients.findOne({_id:req.params.id , admin: req.session.admin},function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
+        }else
+        {
+            res.sendStatus(404);
+        }
+    });
+};
+
+function ClienteDireccionesJson (req,res){
+	db.direcciones.find({ admin: req.session.admin, cliente: req.params.id },function(err,doc){
 		if (doc != null)
 		{
 			res.json(doc)
@@ -1381,6 +1398,29 @@ function DeleteClientUser (req, res)
                 res.sendStatus(200)
             }
         })
+}
+
+function InsertClientDirecciones (req,res)
+{
+    var p = new db.direcciones({
+        admin: req.session.admin,
+        cliente: req.body.cliente,
+        calle: req.body.calle,
+        numero: req.body.numero,
+        colonia: req.body.colonia,
+        ciudad: req.body.ciudad,
+        referencia: req.body.referencia
+    })
+
+    p.save(function (err) {
+     if (err)
+     {
+        res.status(500).send("No fue posible crear la direccion, intente de nuevo.")
+     }else
+     {
+        res.status(200)
+     }
+    })
 }
 
 function InsertClientUser (req,res)
