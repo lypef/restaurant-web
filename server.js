@@ -16,7 +16,7 @@ app.use(express.static('public'));
 app.use(express.static('views'));
 app.use(morgan('dev'));                                         
 app.use(bodyParser.urlencoded({'extended':'true'}));            
-app.use(bodyParser.json());                                     
+app.use(bodyParser.json({limit: '3mb'}));                                     
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); 
 app.use(methodOverride());
 app.use(function(req, res, next) {
@@ -63,6 +63,7 @@ app.get('/api/users/:id', UserIDLoad);
 app.get('/api/users/search/:id', Search_users_id );
 
 app.get('/api/getproducts/', getproductsJson)
+app.get('/api/getproducts_stock/', getproductsJson_stock)
 app.get('/api/getproducts/:id', getProductID)
 
 app.get('/api/getingredients/', getIngredientsJson)
@@ -104,6 +105,7 @@ app.post('/api/products/add', AddProduct);
 app.post('/api/updateproducts', UpdateProduct)
 app.post('/api/deleteproducts', DeleteProduct );
 app.post('/api/search_products', search_products );
+app.post('/api/search_products_stock', search_products_stock );
 
 app.post('/api/add_ingredient', AddIngredient);
 app.post('/api/ingredient/search', SearchIngredients )
@@ -742,6 +744,32 @@ function Search_users (req, res)
 
 }
 
+function search_products_stock (req, res) 
+{  
+    if (req.body.text == null || req.body.text == '')
+    {
+        db.products.find({ admin : req.session.admin, receta: null }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
+        if(err) {
+            res.status(500).send(err);
+        }else
+        {   
+            res.json(doc);    
+        }
+        });
+    }else
+    {
+        db.products.find({admin : req.session.admin, receta: null, $or: [ {name: { $regex : req.body.text.toUpperCase() }}, {codebar: { $regex : req.body.text.toUpperCase() }} ,{description: { $regex : req.body.text.toUpperCase() }} ] }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
+        if(err) {
+            res.status(500).send(err);
+        }else
+        {   
+            res.json(doc);    
+        }
+        });
+    }
+    
+}
+
 function search_products (req, res) 
 {  
     if (req.body.text == null || req.body.text == '')
@@ -878,6 +906,17 @@ function GetMeasurementsJSON (req,res){
 
 function getproductsJson (req,res){
     db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, data) {
+        if(err) {
+            res.status(500).send(err)
+        }else
+        {
+            res.json(data); 
+        }
+    })
+};
+
+function getproductsJson_stock (req,res){
+    db.products.find({ admin : req.session.admin, receta: null }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, data) {
         if(err) {
             res.status(500).send(err)
         }else

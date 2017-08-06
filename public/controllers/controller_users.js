@@ -20,6 +20,9 @@ app.config(function($routeProvider){
         .when('/products', {
             templateUrl : '/clients_users/products/index.html'
         })
+        .when('/products_shopping', {
+            templateUrl : '/clients_users/products/products_shopping.html'
+        })
         .when('/products/:id', {
             templateUrl : '/clients_users/products/edit.html'
         })
@@ -578,7 +581,7 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
     $scope.Getproducts()
     
     $scope.create = function(){
-        $scope.$emit('loadasc')
+        $scope.$emit('load')
         $http.post('/api/products/add', $scope.product)
         .success(function(data) {
             pushMessage('success', 'HECHO', 'Producto agregado', "checkmark")
@@ -591,7 +594,7 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
             pushMessage('alert','ERROR',msg, "cross")
         })
         .finally (function (){
-            $scope.$emit('unloadasc')
+            $scope.$emit('unload')
         })
     }; 
 
@@ -1707,7 +1710,137 @@ app.controller('surtir_recetea', function ($scope, $http, $routeParams){
     $scope.GetReceta()
     $scope.GetIngredientes()
     $scope.GetMeasurements()
-    
+
+    $scope.update = function(item){
+        item = item.ingrediente
+        $scope.$emit('loadasc')
+        $http.post('/api/update_ingredient', item)
+        .success(function(data) {
+            pushMessage('success', 'HECHO', 'Producto actualizado', "checkmark")
+        })
+        .error(function(msg) {
+            pushMessage('alert','ERROR',msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+        
+    };
 })
 
+app.controller("products_shopping", ['$scope', '$http', function ($scope, $http) {
+    
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
 
+    $scope.products = {};
+    $scope.use_receta = {}
+    $scope.use_receta_load = false
+    $scope.use_receta_create = false
+
+
+    $scope.update = function(item){
+        $scope.$emit('loadasc')
+        $http.post('/api/updateproducts', item)
+        .success(function(data) {
+            pushMessage('success', 'HECHO', 'Producto actualizado', "checkmark")
+        })
+        .error(function(msg) {
+            pushMessage('alert','ERROR',msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+        
+    };
+
+    $scope.Getproducts = function (){
+        $scope.$emit('load')
+        $http.get('/api/getproducts_stock')
+        .success(function(data) {
+            $scope.products = data;
+            $scope.LoadPages()
+        })
+        .error(function(data) {
+            pushMessage('alert','ERROR',data, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    
+    $scope.Getproducts()
+    
+    $scope.search = function(){
+        $scope.$emit('loadasc')
+        $http.post('/api/search_products_stock', $scope.inputbox)
+        .success(function(data) {
+            pushMessage('success','FOUNT',"Productos encontrados", "checkmark")
+            $scope.products = data;
+            $scope.LoadPages();
+            $scope.ChangePageItems()
+        })
+        .error(function(msg) {
+            pushMessage('alert','NOT FOUND',msg, "question")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    };
+
+    $scope.ChangePageItems = function() {
+        if ($scope.pageSizetmp.items == 'todos')
+        {
+            $scope.pageSize = $scope.products.length
+        }else {
+            $scope.pageSize = $scope.pageSizetmp.items    
+        }
+        $scope.LoadPages();
+    };
+
+    $scope.LoadPages = function ()
+    {
+        $scope.pages.length = 0;
+        var ini = $scope.currentPage - 4;
+        var fin = $scope.currentPage + 5;
+        if (ini < 1) {
+          ini = 1;
+          if (Math.ceil($scope.products.length / $scope.pageSize) > 10)
+            fin = 10;
+          else
+            fin = Math.ceil($scope.products.length / $scope.pageSize);
+        } else {
+          if (ini >= Math.ceil($scope.products.length / $scope.pageSize) - 10) {
+            ini = Math.ceil($scope.products.length / $scope.pageSize) - 10;
+            fin = Math.ceil($scope.products.length / $scope.pageSize);
+          }
+        }
+        if (ini < 1) ini = 1;
+        for (var i = ini; i <= fin; i++) {
+          $scope.pages.push({
+            no: i
+          });
+        }
+
+        if ($scope.currentPage >= $scope.pages.length)
+        $scope.currentPage = $scope.pages.length - 1;
+    }
+    
+      
+    $scope.setPage = function(index) {
+        $scope.currentPage = index - 1;
+    };
+    
+}
+  ]).filter('startFromGrid', function() {
+    return function(input, start) 
+    {
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
+    }       
+})
