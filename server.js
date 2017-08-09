@@ -669,9 +669,21 @@ function DeleteClient (req, res)
                 res.sendStatus(500, "Error, Intente nuevamente.")
             }else
             {
-                res.sendStatus(200)
+                db.direcciones.remove(
+                { admin: req.session.admin, cliente: req.body._id },
+                
+                function( err) 
+                {
+                    if (err)
+                    {
+                        res.status(500).send("Error, Intente nuevamente.")
+                    }else
+                    {
+                        res.status(200).send('Cliente eliminado')
+                    }
+                })
             }
-        })    
+        })
     }else {
         res.status(500).send("Este cliente no esta asociado a la cuenta actual.");
     }

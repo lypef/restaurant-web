@@ -71,8 +71,7 @@
               <th>Nombre</th>
               <th>Telefono</th>
               <th>MAIL</th>
-              <th>Actualizar</th>
-              <th>Direcciones</th>
+              <th>Opciones</th>
             </tr>
           </thead>
           <tbody>
@@ -82,21 +81,20 @@
               <td ng-if="a.mail != null">{{ a.mail }}</td>
               <td ng-if="a.mail == null">NINGUNO</td>
               <td align="center">
-                  <a href="dashboard#/editclient/{{ a._id }}">
-                    <button class="button success mif-pencil" ng-Click="update(a)"> Actualizar</button>
-                  </a>
-                </td>
-
-              <td align="center">
-                <a href="dashboard#/direcciones/{{ a._id }}">
-                  <button class="button primary mif-earth2" ng-Click="update(a)"> Direcciones</button>
-                </a>
-              </td>
+              <div class="dropdown-button">
+                  <button class="button dropdown-toggle">Opciones</button>
+                  <ul class="split-content d-menu" data-role="dropdown">
+                      <li><a class="mif-pencil" ng-Click="loadvalues(a)" onclick="toggleMetroDialog('#editmodal')"> Actualizar</a></li>
+                      
+                      <li><a class="mif-bin" ng-Click="loadvalues(a)" onclick="toggleMetroDialog('#delete')"> Eliminar</a></li>
+                      
+                      <li><a class="mif-earth2" href="dashboard#/direcciones/{{ a._id }}"> Direcciones</a></li>
+                  </ul>
+              </div>
                 
             </tr>
           </tbody>
         </table>
-        
 <div class="grid">
     <div class="row flex-just-sa">
         <div class="cell-auto-size">
@@ -116,5 +114,48 @@
 </div>
 <hr>
 </div></div>
-</div>
+<!--Ventana modal-->
+<div data-role="dialog" id="editmodal" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+
+      <form align="center">  
+        <div class="input-control modern text iconic" id="widthfull">
+        <input type="text" placeholder="Nombre" class="input-full" ng-model="tmp.nombre">
+        <span class="label">Nombre</span>
+        <span class="icon mif-user"></span>
+        </div>
+        
+        <div class="input-control modern text iconic" id="widthfull">
+        <input type="text" placeholder="Telefono fijo" ng-model="tmp.telefono">
+        <span class="label">Telefono</span>
+        <span class="icon mif-phone"></span>
+        </div>
+        
+        <div class="input-control modern text iconic" id="widthfull">
+        <input type="text" placeholder="E-mail" ng-model="tmp.mail">
+        <span class="label">Email</span>
+        <span class="icon mif-mail"></span>
+        </div>
+        <br>
+        <input type="hidden" name="id" ng-model="tmp._id"">
+        
+        <button class="button warning" ng-click="update()" onclick="hideMetroDialog('#editmodal')"><span class="mif-floppy-disk"/> Guardar</button>
+
+        <button class="button success" onclick="hideMetroDialog('#editmodal')">Cancelar</button>
+        
+    </form>
+<!--Ventana modal-->
+<!--Ventana modal-->
+<div data-role="dialog" id="delete" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3>Eliminar? : {{ tmp.nombre }}</h3></p>
+      <button class="button alert" ng-click="delete()" onclick="hideMetroDialog('#delete')"><span class="mif-bin"></span> Si</button>
+
+      <button class="button success" onclick="hideMetroDialog('#delete')"><span class="mif-checkmark"></span> No</button>
+        
+<!--Ventana modal-->        
 </div>

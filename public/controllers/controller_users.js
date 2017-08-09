@@ -14,9 +14,6 @@ app.config(function($routeProvider){
         .when('/direcciones/:id', {
             templateUrl : '/clients_users/clients/direcciones.html'
         })
-        .when('/editclient/:id', {
-            templateUrl : '/clients_users/clients/UpdateClient.html'
-        })
         .when('/catproducts', {
             templateUrl: '/clients_users/catproducts/catproducts.html'
         })
@@ -82,128 +79,171 @@ app.controller("UserValues", function($scope, $http){
 });
 
 app.controller("clients", ['$scope','$http','$window', function ($scope, $http, $window) {
-        $http.defaults.headers.common['x-access-token']=token;
-        
-        $scope.currentPage = 0;
-        $scope.pageSize = 5;
-        $scope.pages = [];
-        
-        $scope.all = {};
-        $scope.Client = {};
-     
-        $scope.GetClients = function ()
-        {
-            $scope.$emit('load')
-            $http.get('/api/clients/')
-            .success(function(data) {
-                $scope.all = data;
-                $scope.LoadPages()
-                $scope.$emit('unload')
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-            })
-            .finally (function(){
-                $scope.$emit('unload')
-            })
-
-        }
-
-        $scope.GetClientsasc = function ()
-        {
-            $scope.$emit('loadasc')
-            $http.get('/api/clients/')
-            .success(function(data) {
-                $scope.all = data;
-                $scope.LoadPages()
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-            })
-            .finally (function(){
-                $scope.$emit('unloadasc')
-            })
-
-        }
-        $scope.GetClients()
-
-        $scope.CreateClient = function(){
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
+    
+    $scope.all = {};
+    $scope.Client = {};
+    $scope.tmp = {};
+ 
+    $scope.update = function()
+    {
         $scope.$emit('loadasc')
-        $http.post('/api/clients/add', $scope.Client)
-        .success(function(msg) {
-            $scope.Client = {}
-            pushMessage('success', 'HECHO', msg, "checkmark")
+        $http.post('/api/client/update/clients', $scope.tmp)
+        .success(function(err) 
+        {
+            pushMessage('success', 'HECHO', 'Cliente actualizado con exito', "checkmark")
+            $scope.tmp = {};
         })
-        .error(function(msg) {
-            pushMessage('alert','ERROR',msg, "cross")
+        .error(function(msg) 
+        {
+            pushMessage('alert','ERROR', msg, "cross")
         })
         .finally (function (){
-            $scope.$emit('unloadasc')
             $scope.GetClientsasc()
+            $scope.$emit('unloadasc')
         })
-        };  
-
-        $scope.SearchClient = function(){
-            $scope.$emit('loadasc')
-            $scope.inputbox
-            $http.post('/api/client/search', $scope.inputbox)
-            .success(function(data) {
-                pushMessage('success','FOUNT',"Cliente's encontrados", "checkmark")
-                $scope.all = data;
-                $scope.LoadPages()
-            })
-            .error(function(msg) {
-                pushMessage('info','NOT FOUND',msg, "question")
-            })
-            .finally(function (){
-                $scope.$emit('unloadasc')
-            })
-        };  
-
-
-        $scope.LoadPages = function ()
+    }  
+    
+    $scope.delete = function()
+    {
+        $scope.$emit('loadasc')
+        $http.post('/api/client/delete', $scope.tmp)
+        .success(function(msg) 
         {
-            $scope.pages.length = 0;
-                var ini = $scope.currentPage - 4;
-                var fin = $scope.currentPage + 5;
-                if (ini < 1) {
-                  ini = 1;
-                  if (Math.ceil($scope.all.length / $scope.pageSize) > 10)
-                    fin = 10;
-                  else
-                    fin = Math.ceil($scope.all.length / $scope.pageSize);
-                } else {
-                  if (ini >= Math.ceil($scope.all.length / $scope.pageSize) - 10) {
-                    ini = Math.ceil($scope.all.length / $scope.pageSize) - 10;
-                    fin = Math.ceil($scope.all.length / $scope.pageSize);
-                  }
-                }
-                if (ini < 1) ini = 1;
-                for (var i = ini; i <= fin; i++) {
-                  $scope.pages.push({
-                    no: i
-                  });
-                }
+            pushMessage('success', 'HECHO', msg, "checkmark")
+            $scope.tmp = {};
+        })
+        .error(function(msg) 
+        {
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.GetClientsasc()
+            $scope.$emit('loadasc')
+        })
+    };  
 
-                if ($scope.currentPage >= $scope.pages.length)
-                $scope.currentPage = $scope.pages.length - 1;
+    $scope.loadvalues = function (item){
+        $scope.tmp = item
+    }
+
+    $scope.GetClients = function ()
+    {
+        $scope.$emit('load')
+        $http.get('/api/clients/')
+        .success(function(data) {
+            $scope.all = data;
+            $scope.LoadPages()
+            $scope.$emit('unload')
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+        })
+        .finally (function(){
+            $scope.$emit('unload')
+        })
+
+    }
+
+    $scope.GetClientsasc = function ()
+    {
+        $scope.$emit('loadasc')
+        $http.get('/api/clients/')
+        .success(function(data) {
+            $scope.all = data;
+            $scope.LoadPages()
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+        })
+        .finally (function(){
+            $scope.$emit('unloadasc')
+        })
+
+    }
+    $scope.GetClients()
+
+    $scope.CreateClient = function(){
+    $scope.$emit('loadasc')
+    $http.post('/api/clients/add', $scope.Client)
+    .success(function(msg) {
+        $scope.Client = {}
+        pushMessage('success', 'HECHO', msg, "checkmark")
+    })
+    .error(function(msg) {
+        pushMessage('alert','ERROR',msg, "cross")
+    })
+    .finally (function (){
+        $scope.$emit('unloadasc')
+        $scope.GetClientsasc()
+    })
+    };  
+
+    $scope.SearchClient = function(){
+        $scope.$emit('loadasc')
+        $scope.inputbox
+        $http.post('/api/client/search', $scope.inputbox)
+        .success(function(data) {
+            pushMessage('success','FOUNT',"Cliente's encontrados", "checkmark")
+            $scope.all = data;
+            $scope.LoadPages()
+        })
+        .error(function(msg) {
+            pushMessage('info','NOT FOUND',msg, "question")
+        })
+        .finally(function (){
+            $scope.$emit('unloadasc')
+        })
+    };  
+
+
+    $scope.LoadPages = function ()
+    {
+        $scope.pages.length = 0;
+            var ini = $scope.currentPage - 4;
+            var fin = $scope.currentPage + 5;
+            if (ini < 1) {
+              ini = 1;
+              if (Math.ceil($scope.all.length / $scope.pageSize) > 10)
+                fin = 10;
+              else
+                fin = Math.ceil($scope.all.length / $scope.pageSize);
+            } else {
+              if (ini >= Math.ceil($scope.all.length / $scope.pageSize) - 10) {
+                ini = Math.ceil($scope.all.length / $scope.pageSize) - 10;
+                fin = Math.ceil($scope.all.length / $scope.pageSize);
+              }
+            }
+            if (ini < 1) ini = 1;
+            for (var i = ini; i <= fin; i++) {
+              $scope.pages.push({
+                no: i
+              });
+            }
+
+            if ($scope.currentPage >= $scope.pages.length)
+            $scope.currentPage = $scope.pages.length - 1;
+    }
+    
+    $scope.setPage = function(index) {
+        $scope.currentPage = index - 1;
+    };
+    
+    $scope.ChangePageItems = function() {
+        if ($scope.pageSizetmp.items == 'todos')
+        {
+            $scope.pageSize = $scope.all.length
         }
-        
-        $scope.setPage = function(index) {
-            $scope.currentPage = index - 1;
-        };
-        
-        $scope.ChangePageItems = function() {
-            if ($scope.pageSizetmp.items == 'todos')
-            {
-                $scope.pageSize = $scope.all.length
-            }
-            else {
-                $scope.pageSize = $scope.pageSizetmp.items    
-            }
+        else {
+            $scope.pageSize = $scope.pageSizetmp.items    
+        }
 
-            $scope.LoadPages();
-        };
+        $scope.LoadPages();
+    };
 
 
     }
@@ -307,72 +347,6 @@ app.controller ("c_direcciones", function ($scope, $http, $routeParams){
         })
     }
 
-})
-
-app.controller("UpdateClient", function($scope, $http, $routeParams, $window)
-{
-    $http.defaults.headers.common['x-access-token']=token;
-    $scope.DateClient = {};  
-
-    $scope.id = $routeParams.id
-    
-
-    $scope.GetClient = function (){
-        $scope.$emit('load')
-        $http.get('/api/clientedit/' + $scope.id)
-        .success(function(data) 
-        {
-            $scope.DateClient = data;
-        })
-        .error(function(data) 
-        {
-            $window.location = "dashboard#clients";
-            pushMessage('alert','ERROR', 'ID no encontrado.','cross')
-        })
-        .finally (function (){
-            $scope.$emit('unload')
-        })
-    }
-    $scope.GetClient()
-
-    $scope.Update = function()
-    {
-        $scope.$emit('load')
-        $http.post('/api/client/update/clients', $scope.DateClient)
-        .success(function(err) 
-        {
-            pushMessage('success', 'HECHO', 'Cliente actualizado con exito', "checkmark")
-            $scope.DateClient = {};
-            $window.location = "dashboard#/clients";
-        })
-        .error(function(msg) 
-        {
-            pushMessage('alert','ERROR', msg, "cross")
-        })
-        .finally (function (){
-            $scope.$emit('unload')
-        })
-    }  
-
-    
-    $scope.Delete = function()
-    {
-        $scope.$emit('load')
-        $http.post('/api/client/delete', $scope.DateClient)
-        .success(function(err) 
-        {
-            pushMessage('success', 'HECHO', 'Cliente eliminado con exito', "checkmark")
-            $scope.DateClient = {};
-            $window.location = "dashboard#/clients";
-        })
-        .error(function(msg) 
-        {
-            pushMessage('alert','ERROR', msg, "cross")
-        })
-        .finally (function (){
-            $scope.$emit('load')
-        })
-    };  
 })
 
 app.controller("login", function($scope, $http, $window, $routeParams)
