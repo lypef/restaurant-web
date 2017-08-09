@@ -87,7 +87,7 @@ app.post('/api/client/update/clients', UpdateClient_User );
 app.post('/api/client/delete', DeleteClient );
 app.post('/api/client/search', SearchClient );
 
-app.post("/api/clients_direcciones/add", InsertClientDirecciones );
+app.post('/api/clients_direcciones/add', InsertClientDirecciones );
 
 app.post('/api/catproducts/update/admin', CatproductsUpdateAdmin );
 app.post('/api/catproducts/delete/admin', DeleteCatProducts );
@@ -1413,13 +1413,13 @@ function InsertClientDirecciones (req,res)
     })
 
     p.save(function (err) {
-     if (err)
-     {
-        res.status(500).send("No fue posible crear la direccion, intente de nuevo.")
-     }else
-     {
-        res.status(200)
-     }
+        if (err)
+        {
+            res.status(500).send("No fue posible crear la direccion, intente de nuevo.")
+        }else
+        {
+            res.status(200)
+        }
     })
 }
 

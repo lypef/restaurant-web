@@ -225,7 +225,7 @@ app.controller ("c_direcciones", function ($scope, $http, $routeParams){
     
     $scope.direcciones = {};
     $scope.direccion = {};
-    $scope.direccion.cliente = $routeParams.id
+    //$scope.direccion.cliente = $routeParams.id
 
     $scope.GetDirecciones = function ()
     {

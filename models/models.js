@@ -107,6 +107,6 @@ module.exports.ingredients = mongoose.model("ingredients",ingredients_scheme);
 module.exports.measurements = mongoose.model("measurements",measurement_scheme);
 module.exports.recetas = mongoose.model("recetas",recetas_scheme);
 module.exports.use_recetas = mongoose.model("use_recetas",use_ingredients_scheme);
-module.exports.direcciones = mongoose.model("clientsDirecciones_scheme",clientsDirecciones_scheme);
+module.exports.direcciones = mongoose.model("clients_direcciones",clientsDirecciones_scheme);
 
 
