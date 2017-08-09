@@ -222,10 +222,12 @@ app.controller ("c_direcciones", function ($scope, $http, $routeParams){
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
-    
+    $scope.pageSizetmp = {}
+    $scope.tmp = {}
+
     $scope.direcciones = {};
     $scope.direccion = {};
-    //$scope.direccion.cliente = $routeParams.id
+    $scope.direccion.cliente = $routeParams.id
 
     $scope.GetDirecciones = function ()
     {
@@ -234,18 +236,38 @@ app.controller ("c_direcciones", function ($scope, $http, $routeParams){
         .success(function(data) {
             $scope.direcciones = data;
             $scope.LoadPages()
-            $scope.$emit('unload')
         })
-        .error(function(data) {
-            console.log('Error: ' + data);
+        .error(function(msg) {
+            pushMessage('success', 'HECHO', msg, "checkmark")
         })
         .finally (function(){
             $scope.$emit('unload')
         })
 
     }
+
+    $scope.GetDireccionesAsc = function ()
+    {
+        $scope.$emit('loadasc')
+        $http.get('/api/get_direcciones/' + $routeParams.id)
+        .success(function(data) {
+            $scope.direcciones = data;
+            $scope.LoadPages()
+        })
+        .error(function(msg) {
+            pushMessage('success', 'HECHO', msg, "checkmark")
+        })
+        .finally (function(){
+            $scope.$emit('unloadasc')
+        })
+
+    }
     $scope.GetDirecciones()
     
+    $scope.LoadValuesEdit = function(item){
+        $scope.tmp = item
+    };
+
     $scope.create = function(){
         $scope.$emit('loadasc')
         $http.post('/api/clients_direcciones/add', $scope.direccion)
@@ -258,7 +280,7 @@ app.controller ("c_direcciones", function ($scope, $http, $routeParams){
         })
         .finally (function (){
             $scope.$emit('unloadasc')
-            $scope.GetClientsasc()
+            $scope.GetDireccionesAsc()
         })
     };
 
@@ -315,7 +337,7 @@ app.controller ("c_direcciones", function ($scope, $http, $routeParams){
     $scope.ChangePageItems = function() {
         if ($scope.pageSizetmp.items == 'todos')
         {
-            $scope.pageSize = $scope.all.length
+            $scope.pageSize = $scope.direcciones.length
         }
         else {
             $scope.pageSize = $scope.pageSizetmp.items    
@@ -404,6 +426,7 @@ app.controller("login", function($scope, $http, $window, $routeParams)
 app.controller("users", function($scope, $http)
 {
     $scope.NewUser = {};
+    $scope.pageSizetmp = {}
 
     $http.get('/api/users/')
         .success(function(data) {
@@ -432,7 +455,7 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
-
+    $scope.pageSizetmp = {}
         
     $scope.productstmp = {};
 
@@ -569,6 +592,7 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
+    $scope.pageSizetmp = {}
 
     $scope.product = {};
     $scope.products = {};
@@ -972,7 +996,8 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
         $scope.currentPage = 0;
         $scope.pageSize = 5;
         $scope.pages = [];
-      
+        $scope.pageSizetmp = {}
+
         $scope.GetIngredients = function (){
             $scope.$emit('load')
             $http.get('/api/getingredients/')
@@ -1090,6 +1115,7 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.currentPage = 0;
         $scope.pageSize = 5;
         $scope.pages = [];
+        $scope.pageSizetmp = {}
 
         $scope.ingredients = {};
         $scope.receta = {};
@@ -1246,6 +1272,7 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.currentPage = 0;
         $scope.pageSize = 5;
         $scope.pages = [];
+        $scope.pageSizetmp = {}
 
         $scope.recetas = {};
         $scope.receta = {};
@@ -1394,6 +1421,7 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
         $scope.currentPage = 0;
         $scope.pageSize = 5;
         $scope.pages = [];
+        $scope.pageSizetmp = {}
 
         $scope.receta = {};
         $scope.ingredientes = {};
@@ -1846,6 +1874,7 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
+    $scope.pageSizetmp = {}
 
     $scope.products = {};
     $scope.use_receta = {}

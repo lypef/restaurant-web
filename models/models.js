@@ -23,13 +23,13 @@ var clients_scheme = new mongoose.Schema({
 })
 
 var clientsDirecciones_scheme = new mongoose.Schema({
-	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'},
-	cliente: { type: Schema.Types.ObjectId, ref: 'clients'},
-	calle: String,
-	numero: String,
-	colonia: String,
-	ciudad: String,
-	referencia: String
+	admin: { type: Schema.Types.ObjectId, ref: 'clients_users', required: true},
+	cliente: { type: Schema.Types.ObjectId, ref: 'clients', required: true, uppercase: true},
+	calle: { type: String, required: true, uppercase: true},
+	numero: { type: String, uppercase: true},
+	colonia: { type: String, uppercase: true},
+	ciudad: { type: String, uppercase: true},
+	referencia: { type: String, uppercase: true}
 })
 
 var catproducts_scheme = new mongoose.Schema({

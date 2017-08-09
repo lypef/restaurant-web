@@ -414,13 +414,13 @@ function ClienteditsJson (req,res){
 };
 
 function ClienteDireccionesJson (req,res){
-	db.direcciones.find({ admin: req.session.admin, cliente: req.params.id },function(err,doc){
+	db.direcciones.find({ admin: req.session.admin, cliente: req.params.id }).sort({ calle:1 }).populate('cliente').exec(function(err,doc){
 		if (doc != null)
 		{
 			res.json(doc)
 		}else
 		{
-			res.sendStatus(404);
+			res.status(400).send('Cliente no encontrado');
 		}
 	});
 };
@@ -1402,9 +1402,10 @@ function DeleteClientUser (req, res)
 
 function InsertClientDirecciones (req,res)
 {
+    
     var p = new db.direcciones({
         admin: req.session.admin,
-        cliente: req.body.cliente,
+        cliente: req.body.cliente, 
         calle: req.body.calle,
         numero: req.body.numero,
         colonia: req.body.colonia,
@@ -1413,12 +1414,13 @@ function InsertClientDirecciones (req,res)
     })
 
     p.save(function (err) {
+        console.log(p)
         if (err)
         {
             res.status(500).send("No fue posible crear la direccion, intente de nuevo.")
         }else
         {
-            res.status(200)
+            res.status(200).send('Direccion agregada correctamente')
         }
     })
 }

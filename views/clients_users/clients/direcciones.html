@@ -8,28 +8,28 @@
             
             <div class="input-control modern text iconic" id="widthfull">
             <input type="text" placeholder="Calle" ng-model="direccion.calle" class="input-full">
-            <span class="icon mif-user"></span>
+            <span class="icon mif-database"></span>
             </div>
             
             
             <div class="input-control modern text iconic" id="widthfull">
-            <input type="number" placeholder="Numero" ng-model="direccion.numero">
-            <span class="icon mif-mail"></span>
+            <input type="text" placeholder="Numero" ng-model="direccion.numero">
+            <span class="icon mif-database"></span>
             </div>
 
             <div class="input-control modern text iconic" id="widthfull">
             <input type="text" placeholder="Colonia" ng-model="direccion.colonia">
-            <span class="icon mif-phone"></span>
+            <span class="icon mif-database"></span>
             </div>
 
             <div class="input-control modern text iconic" id="widthfull">
             <input type="text" placeholder="Ciudad" ng-model="direccion.ciudad">
-            <span class="icon mif-phone"></span>
+            <span class="icon mif-database"></span>
             </div>
 
             <div class="input-control modern text iconic" id="widthfull">
             <input type="text" placeholder="Referencia" ng-model="direccion.referencia">
-            <span class="icon mif-phone"></span>
+            <span class="icon mif-database"></span>
             </div>
 
 
@@ -49,87 +49,66 @@
 
     </div>
     <div class="content">
-	<!--Busqueda y numero mostrado -->
-	<div class="grid">
-	    <div class="row flex-just-sa">
-	        <div class="colspan6" style="width: 100%" align="center">
-	        <form >
-            	<div class="input-control text " data-role="input" style="width: 95%">
-    
-    		<input type="text" name="filter" ng-model="inputbox.text" placeholder="Buscar">
-    
-    		<button class="button" ng-click="SearchClient()"><span class="mif-search"></span></button></div>
-            </form>
-	        </div>
-	        <div class="colspan6" style="width: 100%" align="center">
-		        <div class="input-control select" style="width: 95%">
-                <select ng-model="pageSizetmp.items" ng-change="ChangePageItems()" style="text-align: center; text-align-last: center;">
-                    <option value="">---Items mostrados---</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="40">40</option>
-                    <option value="60">60</option>
-                    <option value="80">80</option>
-                    <option value="100">100</option>
-                    <option value="todos">Ver todos</option>
-                </select>
-                </div>
-	        </div>
-	    </div>
-	</div>
-	<!--Finaliza Busqueda y numero mostrado -->
-                
     <table class="table striped hovered bordered">
           <thead>
             <tr>
-              <th>Nombre</th>
-              <th>Telefono</th>
-              <th>MAIL</th>
-              <th>Actualizar</th>
+              <th>Cliente</th>
+              <th>Direccion</th>
+              <th>Referencia</th>
               <th>Direcciones</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat='a in direcciones | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
-              <td>{{ a.calle }}</td>
-              <td>{{ a.telefono }}</td>
-              <td ng-if="a.mail != null">{{ a.mail }}</td>
-              <td ng-if="a.mail == null">NINGUNO</td>
+              <td>{{ a.cliente.nombre }}</td>
+              <td>{{ a.calle }}-{{ a.numero }}, COL. {{ a.colonia }}, {{ a.ciudad }}</td>
+              <td>{{ a.referencia }}</td>
               <td align="center">
-                  <a href="dashboard#/editclient/{{ a._id }}">
-                    <button class="button success mif-pencil" ng-Click="update(a)"> Actualizar</button>
-                  </a>
+                  <button class="button success mif-pencil" ng-click="LoadValuesEdit(a)" onclick="toggleMetroDialog('#dialog')"> Actualizar</button>
                 </td>
-
-              <td align="center">
-                <a href="dashboard#/direcciones/{{ a._id }}">
-                  <button class="button primary mif-earth2" ng-Click="update(a)"> Direcciones</button>
-                </a>
-              </td>
-                
+  
             </tr>
           </tbody>
         </table>
         
-<div class="grid">
-    <div class="row flex-just-sa">
-        <div class="cell-auto-size">
-        <div class='pagination'>
-          <button type='button ' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = 0'>Principio</button>
-
-          <button type='button' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
-          
-          <button type='button' class='item current' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{ page.no }}</button>
-          
-          <button type='button' class='item' ng-disabled='currentPage >= direcciones.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
-
-          <button type='button' class='item' ng-disabled='currentPage == direcciones.length/pageSize - 1' ng-click='currentPage = direcciones.length/pageSize - 1'>Final</button>
-        </div>
-    </div>    
-    </div>
-</div>
 <hr>
 </div></div>
-</div>
+<!--Ventana modal-->
+<div data-role="dialog" id="dialog" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+
+      <p>
+      <h3>{{ tmp.cliente.nombre }}</h3>
+      <input type="hidden" ng-model="tmp._id" class="input-full">
+      <div class="input-control modern text iconic" id="widthfull">
+      <input type="text" placeholder="Calle" ng-model="tmp.calle" class="input-full">
+      <span class="icon mif-database"></span>
+      </div>
+      
+      <div class="input-control modern text iconic" id="widthfull">
+      <input type="text" placeholder="Numero" ng-model="tmp.numero">
+      <span class="icon mif-database"></span>
+      </div>
+      <br>
+      <div class="input-control modern text iconic" id="widthfull">
+      <input type="text" placeholder="Colonia" ng-model="tmp.colonia">
+      <span class="icon mif-database"></span>
+      </div>
+      
+      <div class="input-control modern text iconic" id="widthfull">
+      <input type="text" placeholder="Ciudad" ng-model="tmp.ciudad">
+      <span class="icon mif-database"></span>
+      </div>
+      <br>
+      <div class="input-control modern text iconic" id="widthfull">
+      <input type="text" placeholder="Referencia" ng-model="tmp.referencia">
+      <span class="icon mif-database"></span>
+      </div>
+      <br>
+      <button class="button alert" ng-click="delete()" onclick="hideMetroDialog('#dialog')">Actualizar</button>
+      <button class="button success" onclick="hideMetroDialog('#dialog')">Cancelar</button>
+      </div>
+<!--Ventana modal-->
 </div>
