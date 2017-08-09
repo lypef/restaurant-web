@@ -55,7 +55,8 @@
               <th>Cliente</th>
               <th>Direccion</th>
               <th>Referencia</th>
-              <th>Direcciones</th>
+              <th>Actualizar</th>
+              <th>Eliminar</th>
             </tr>
           </thead>
           <tbody>
@@ -64,9 +65,11 @@
               <td>{{ a.calle }}-{{ a.numero }}, COL. {{ a.colonia }}, {{ a.ciudad }}</td>
               <td>{{ a.referencia }}</td>
               <td align="center">
-                  <button class="button success mif-pencil" ng-click="LoadValuesEdit(a)" onclick="toggleMetroDialog('#dialog')"> Actualizar</button>
-                </td>
-  
+                <button class="button success mif-pencil" ng-click="LoadValuesEdit(a)" onclick="toggleMetroDialog('#dialog')"> Actualizar</button>
+              </td>
+              <td align="center">
+                <button class="button alert mif-bin" ng-click="LoadValuesEdit(a)" onclick="toggleMetroDialog('#delete')"> Eliminar</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -79,7 +82,8 @@
       data-width="auto"
       data-overlay="true">
 
-      <p>
+      <form>
+        <p>
       <h3>{{ tmp.cliente.nombre }}</h3>
       <input type="hidden" ng-model="tmp._id" class="input-full">
       <div class="input-control modern text iconic" id="widthfull">
@@ -107,8 +111,21 @@
       <span class="icon mif-database"></span>
       </div>
       <br>
-      <button class="button alert" ng-click="delete()" onclick="hideMetroDialog('#dialog')">Actualizar</button>
+      <button class="button warning" ng-click="update()" onclick="hideMetroDialog('#dialog')">Actualizar</button>
       <button class="button success" onclick="hideMetroDialog('#dialog')">Cancelar</button>
+      </div>
+      </form>
+<!--Ventana modal-->
+<!--Ventana modal-->
+<div data-role="dialog" id="delete" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+
+      <p>
+      <h3>Eliminar Direccion</h3>
+      <button class="button alert" ng-click="delete()" onclick="hideMetroDialog('#delete')">Si</button>
+      <button class="button success" onclick="hideMetroDialog('#delete')">No</button>
       </div>
 <!--Ventana modal-->
 </div>

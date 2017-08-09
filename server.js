@@ -88,6 +88,8 @@ app.post('/api/client/delete', DeleteClient );
 app.post('/api/client/search', SearchClient );
 
 app.post('/api/clients_direcciones/add', InsertClientDirecciones );
+app.post('/api/clients_direcciones/update', UpdateClientDireccion );
+app.post('/api/clients_direcciones/delete', DeleteClientDireccion );
 
 app.post('/api/catproducts/update/admin', CatproductsUpdateAdmin );
 app.post('/api/catproducts/delete/admin', DeleteCatProducts );
@@ -454,7 +456,7 @@ function CreateClient (req, res)
 
 function UpdateClientAdmin (req, res) 
 {  
-	if (req.body.admin == req.session.admin)
+    if (req.body.admin == req.session.admin)
     {
         if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null)
         {
@@ -484,6 +486,29 @@ function UpdateClientAdmin (req, res)
     {
         res.status(500).send("Este cliente no esta asociado a la cuenta actual.");
     }
+}
+
+function UpdateClientDireccion (req, res) 
+{  
+	db.direcciones.update(
+    { _id : req.body._id, admin: req.session.admin },
+    { 
+        calle: req.body.calle.toUpperCase(),
+        numero: req.body.numero.toUpperCase(),
+        colonia: req.body.colonia.toUpperCase(),
+        ciudad: req.body.ciudad.toUpperCase(),
+        referencia: req.body.referencia.toUpperCase()
+    },
+    function( err) 
+    {
+        if (err)
+        {
+            res.status(404).send("Algo desconocido sucedio, intente nuevamente");
+        }else
+        {
+            res.status(200).send('Direccion actualizada')
+        }
+    })
 }
 
 function UpdateClient_User (req, res) 
@@ -632,7 +657,7 @@ function UpdateIngredient (req, res)
 
 function DeleteClient (req, res) 
 {  
-	if (req.body.admin == req.session.admin)
+    if (req.body.admin == req.session.admin)
     {
         db.clients.remove(
         { admin: req.session.admin, _id : req.body._id },
@@ -651,6 +676,23 @@ function DeleteClient (req, res)
         res.status(500).send("Este cliente no esta asociado a la cuenta actual.");
     }
     
+}
+
+function DeleteClientDireccion (req, res) 
+{  
+	db.direcciones.remove(
+    { admin: req.session.admin, _id : req.body._id },
+    
+    function( err) 
+    {
+        if (err)
+        {
+            res.sendStatus(500, "Error, Intente nuevamente.")
+        }else
+        {
+            res.status(200).send('Direccion eliminada')
+        }
+    })    
 }
 
 function DeleteUser (req, res) 
