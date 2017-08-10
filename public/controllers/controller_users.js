@@ -402,7 +402,6 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
         .success(function(data) {
             $scope.productstmp = data;
             $scope.LoadPages();
-            $scope.ChangePageItems()
         })
         .error(function(data) {
             pushMessage('alert','ERROR',data, "cross")
@@ -1066,7 +1065,6 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
             .success(function(data) {
                 $scope.ingredients = data
                 $scope.LoadPages()
-                $scope.ChangePageItems()
             })
             .error(function(data) {
                 pushMessage('alert','ERROR',data, "cross")
@@ -1221,7 +1219,6 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
             .success(function(data) {
                 $scope.recetas = data
                 $scope.LoadPages()
-                $scope.ChangePageItems()
             })
             .error(function(data) {
                 pushMessage('alert','ERROR',data, "cross")
@@ -1238,7 +1235,6 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
             .success(function(data) {
                 $scope.recetas = data
                 $scope.LoadPages()
-                $scope.ChangePageItems()
             })
             .error(function(data) {
                 pushMessage('alert','ERROR',data, "cross")
@@ -1398,7 +1394,6 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
             .success(function(data) {
                 $scope.ingredientes = data
                 $scope.LoadPages()
-                $scope.ChangePageItems()
             })
             .error(function(data) {
                 pushMessage('alert','ERROR',data, "cross")

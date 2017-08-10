@@ -65,7 +65,7 @@
 	</div>
 	<!--Finaliza Busqueda y numero mostrado -->
     <div style="overflow-x:auto;">
-      <table class="table striped hovered bordered">
+      <table class="table striped hovered bordered border">
           <thead>
             <tr>
               <th>Nombre</th>
@@ -83,7 +83,7 @@
               <td align="center">
               <div class="dropdown-button">
                   <button class="button dropdown-toggle">Opciones</button>
-                  <ul class="split-content d-menu" data-role="dropdown">
+                  <ul class="split-content d-menu place-right" data-role="dropdown">
                       <li><a class="mif-pencil" ng-Click="loadvalues(a)" onclick="toggleMetroDialog('#editmodal')"> Actualizar</a></li>
                       
                       <li><a class="mif-bin" ng-Click="loadvalues(a)" onclick="toggleMetroDialog('#delete')"> Eliminar</a></li>
@@ -95,7 +95,7 @@
             </tr>
           </tbody>
         </table>
-    </div>            
+    
     
 <div class="grid">
     <div class="row flex-just-sa">
@@ -114,7 +114,7 @@
     </div>    
     </div>
 </div>
-<hr>
+<hr></div>            
 </div></div>
 <!--Ventana modal-->
 <div data-role="dialog" id="editmodal" class="padding30" data-type="" 

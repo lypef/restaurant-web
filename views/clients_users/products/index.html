@@ -195,10 +195,13 @@
                     <div class="dropdown-button" ng-if="a.receta.name != null">
                     <button class="button success dropdown-toggle">{{ a.receta.name }}</button>
                         <ul class="split-content d-menu" data-role="dropdown">
-                            <li><a href="dashboard#/surtir_receta/{{ a.receta._id }}">Surtir ingredientes</a></li>
+                            <li><a class="mif-plus" href="dashboard#/surtir_receta/{{ a.receta._id }}"> Surtir ingredientes</a></li>
+                            
                             <li class="divider"></li>
-                            <li><a href="dashboard#/view_recetas/{{ a.receta._id }}">Ver receta</a></li>
-                            <li><a href="dashboard#/edit_recetas/{{ a.receta._id }}">Editar receta</a></li>
+                            
+                            <li><a class="mif-search" href="dashboard#/view_recetas/{{ a.receta._id }}"> Ver receta</a></li>
+                            
+                            <li><a class="mif-pencil" href="dashboard#/edit_recetas/{{ a.receta._id }}"> Editar receta</a></li>
 
                         </ul>
                     </div>
@@ -210,7 +213,7 @@
               </tr>
           </tbody>
     </table>
-    </div>
+    
 <div class="grid">
     <div class="row flex-just-sa">
         <div class="cell-auto-size">
@@ -229,6 +232,7 @@
     </div>
 </div>
 <hr>
+</div>
 </div></div>
     <!--Finaliza Lista de productos-->
 </div>
