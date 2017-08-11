@@ -55,13 +55,19 @@ app.config(function($routeProvider){
 app.controller("UserValues", function($scope, $http){
     $http.defaults.headers.common['x-access-token']=token;
     $scope.usuario = {};
-    
+    $scope.color = 'blue'
+
     $scope.$on('load', function(){$scope.loading = true})
     $scope.$on('unload', function(){$scope.loading = false})
 
     $scope.$on('loadasc', function(){$scope.loadinasc = true})
     $scope.$on('unloadasc', function(){$scope.loadinasc = false})
     
+    $scope.setcolor = function (color)
+    {
+        $scope.color = color
+        pushMessage('success', 'HECHO', 'msg', "checkmark")
+    }
     $scope.load = function (){
         $scope.loadinasc = true
         $http.get('/api/users/values')

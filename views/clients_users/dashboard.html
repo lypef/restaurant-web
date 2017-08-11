@@ -89,8 +89,9 @@
 </head>
 
 <body ng-controller="UserValues">
-        <div class="app-bar fixed-top blue" data-role="appbar">
         
+        <div class="app-bar fixed-top {{ color }}" data-role="appbar">
+
         <a href="dashboard#/" class="app-bar-element branding"><span class="mif-shop mif-2x"></span></a>
 
         <span class="app-bar-divider"></span>
@@ -296,8 +297,21 @@
       data-overlay="true">
       <p><h3><span class="mif-cogs icon"> Ajustes</span></h3></p>
       
-      
-      
+        
+            <h5>Color menu bar</h5>
+            <label class="input-control radio">
+                <input type="radio" name="n1">
+                <span class="check" ng-checked=" setcolor(s) "></span>
+                <span class="caption">Darcula</span>
+            </label>
+
+            <label class="input-control radio">
+                <input type="radio" name="n1" ng-checked=" setcolor(sa) ">
+                <span class="check"></span>
+                <span class="caption">Blue</span>
+            </label>
+
+      <br>
       <button class="button success" onclick="hideMetroDialog('#modelAjustes')"><span class="mif-floppy-disk"></span> ok</button>
 
       
