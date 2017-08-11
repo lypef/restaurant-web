@@ -67,6 +67,22 @@ app.controller("UserValues", function($scope, $http){
         $http.get('/api/users/values')
         .success(function(data) {
             $scope.usuario = data;
+            $scope.usuario.passwordtmp = $scope.usuario.password
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+        })
+        .finally (function (){
+            $scope.loadinasc = false
+        })
+    }
+
+    loadasc = function (){
+        $scope.loadinasc = true
+        $http.get('/api/users/values')
+        .success(function(data) {
+            $scope.usuario = data;
+            $scope.usuario.passwordtmp = $scope.usuario.password
         })
         .error(function(data) {
             console.log('Error: ' + data);
@@ -76,6 +92,27 @@ app.controller("UserValues", function($scope, $http){
         })
     }
     $scope.load()
+
+    $scope.updateuser = function (){
+        if ($scope.usuario.password == $scope.usuario.passwordtmp)
+        {
+            $scope.$emit('loadasc')
+            $http.post('/api/users/update', $scope.usuario)
+            .success (function (msg){
+                loadasc()
+                pushMessage('success', 'HECHO', msg, "checkmark")
+            })
+            .error (function (msg){
+                pushMessage('alert','ERROR', msg, "cross")
+            })
+            .finally (function (){
+                $scope.$emit('unloadasc')
+            })
+        }else
+        {
+            pushMessage('alert','ERROR', 'Contraseña son iguales', "cross")
+        }
+    }
 });
 
 app.controller("clients", ['$scope','$http','$window', function ($scope, $http, $window) {

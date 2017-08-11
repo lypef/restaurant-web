@@ -89,7 +89,7 @@
 </head>
 
 <body ng-controller="UserValues">
-    <div class="app-bar fixed-top blue" data-role="appbar">
+        <div class="app-bar fixed-top blue" data-role="appbar">
         
         <a href="dashboard#/" class="app-bar-element branding"><span class="mif-shop mif-2x"></span></a>
 
@@ -184,10 +184,10 @@
                     </li>
                     <br>
                     <li>
-                    <a href="#"><span class="mif-user icon"> {{ usuario.nombre }}</span></a>
+                    <a onclick="toggleMetroDialog('#modelperfil')"><span class="mif-user icon"> Perfil</span></a>
                     </li>
                     <li>
-                    <a href="#"><span class="mif-cog  icon"> Configuracion</span></a>
+                    <a onclick="toggleMetroDialog('#modelAjustes')"><span class="mif-cogs icon"> Ajustes</span></a>
                     </li>
                     <li class="divider"></li>
                     <li>
@@ -234,6 +234,76 @@
         </div>
     </div>
     
+    <!--Ventana modal perfil-->
+    <div data-role="dialog" id="modelperfil" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3>{{ usuario.admin.nombre }}</h3></p>
+      
+      <form>
+          <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="Nombre" ng-model="usuario.nombre">
+            <span class="label">Nombre</span>
+            <span class="icon mif-user"></span>
+          </div>
+         
+      <div class="input-control modern text iconic" id="widthfull">
+        <input type="text" placeholder="Username" ng-model="usuario.username" disabled>
+        <span class="label">Username</span> 
+        <span class="icon mif-user"></span>
+      </div>
+        <br>
+      <div class="input-control modern text iconic" id="widthfull">
+        <input type="password" placeholder="*****" ng-model="usuario.password">
+        <span class="label">Password</span>
+        <span class="icon mif-key"></span>
+      </div>
+
+      <div class="input-control modern text iconic" id="widthfull">
+        <input type="password" placeholder="*****" ng-model="usuario.passwordtmp">
+        <span class="label">Confirm password</span>
+        <span class="icon mif-key"></span>
+      </div>
+        <br>
+      <div class="input-control modern text iconic" id="widthfull">
+        <input type="text" placeholder="Direccion" ng-model="usuario.direccion">
+        <span class="label">Direccion</span>
+        <span class="icon mif-location-city"></span>
+      </div>
+        
+      <div class="input-control modern text iconic" id="widthfull">
+        <input type="text" placeholder="Telefono" ng-model="usuario.telefono">
+        <span class="label">Telefono</span>
+        <span class="icon mif-phone"></span>
+      </div>
+        <br>
+
+      
+      
+      <button class="button success" ng-click="updateuser()" onclick="hideMetroDialog('#modelperfil')"><span class="mif-floppy-disk"></span> Guardar</button>
+
+      <button class="button info" onclick="hideMetroDialog('#modelperfil')"><span class="mif-checkmark"></span> Cancelar</button>
+      </form>    
+
+    </div>
+    <!--Ventana modal perfil-->
+
+    <!--Ventana modal Ajustes-->
+    <div data-role="dialog" id="modelAjustes" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><span class="mif-cogs icon"> Ajustes</span></h3></p>
+      
+      
+      
+      <button class="button success" onclick="hideMetroDialog('#modelAjustes')"><span class="mif-floppy-disk"></span> ok</button>
+
+      
+
+    </div>
+    <!--Ventana modal Ajustes-->
     
 </body>
 </html>

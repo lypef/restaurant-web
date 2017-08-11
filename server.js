@@ -362,7 +362,6 @@ function UserValuesjson (req,res){
     db.user.findOne({_id: req.session.user_id}).populate('admin').exec(function(err,doc){
         if (doc != null)
         {
-            doc.nombre = doc.nombre.substring(0, 10) + " ...";
             res.json(doc)
         }else {
             console.log("Usuari no encontrado")
@@ -585,10 +584,10 @@ function UpdateUser (req, res)
     db.user.update(
         { _id : req.body._id },
         { 
+            password: req.body.password, 
             nombre: req.body.nombre.toUpperCase(),
             direccion: req.body.direccion.toUpperCase(),
-            telefono: req.body.telefono,
-            admin: req.body.admin
+            telefono: req.body.telefono
         },
         function( err) 
         {
@@ -597,7 +596,7 @@ function UpdateUser (req, res)
                 res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
             }else
             {
-                res.sendStatus(200)
+                res.status(200).send('Valores actualizados')
             }
         })  
 }
