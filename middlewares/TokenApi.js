@@ -15,7 +15,7 @@ module.exports = function(req,res,next)
         return res.json("Failed to authenticate token.");
       }else
       {
-     	  if (req.session.user_id)
+     	  if (req.session.user)
         {
           req.decoded = decoded;    
           next()
