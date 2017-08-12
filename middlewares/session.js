@@ -2,7 +2,7 @@ module.exports = function(req,res,next)
 {
 	if (req.session.clients)
 	{
-		if (!req.session.user_id)
+		if (!req.session.user)
 		{
 			res.redirect("/");	
 		}
@@ -19,7 +19,7 @@ module.exports = function(req,res,next)
 	}
 	else
 	{
-		if (!req.session.user_id)
+		if (!req.session.user)
 		{
 			res.redirect("/");	
 		}
