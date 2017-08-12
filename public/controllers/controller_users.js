@@ -120,7 +120,7 @@ app.controller("UserValues", function($scope, $http){
         $scope.$emit('loadasc')
         $http.post('/api/users/update_preferencias', $scope.usuario)
         .success (function (msg){
-            loadasc()
+                loadasc()
         })
         .error (function (msg){
             pushMessage('alert','ERROR', msg, "cross")

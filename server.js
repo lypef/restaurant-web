@@ -595,7 +595,8 @@ function UpdateUser (req, res)
             password: req.body.password, 
             nombre: req.body.nombre.toUpperCase(),
             direccion: req.body.direccion.toUpperCase(),
-            telefono: req.body.telefono
+            telefono: req.body.telefono,
+            admin: req.body.admin
         },
         function( err) 
         {
@@ -604,6 +605,13 @@ function UpdateUser (req, res)
                 res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
             }else
             {
+                if (req.session.user._id == req.body._id)
+                {
+                    req.session.user.nombre = req.body.nombre.toUpperCase(),
+                    req.session.user.direccion = req.body.direccion.toUpperCase(),
+                    req.session.user.telefono = req.body.telefono
+
+                }
                 res.status(200).send('Valores actualizados')
             }
         })  
@@ -628,6 +636,10 @@ function UpdateUser_preferencias (req, res)
                 res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
             }else
             {
+                if (req.session.user._id == req.body._id)
+                {
+                    req.session.user.preferencias = req.body.preferencias
+                }
                 res.status(200).send('Valores actualizados')
             }
         })  

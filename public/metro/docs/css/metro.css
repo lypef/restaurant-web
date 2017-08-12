@@ -2472,15 +2472,15 @@ a.tag {
   left: 0;
   margin-top: 10px;
   border: 2px solid #005696;
-  background: #ffffff;
+  background: #005696;
 }
 .app-bar .app-bar-drop-container:before {
   content: '';
   position: absolute;
-  background-color: #ffffff;
+  background-color: #005696;
   width: 10px;
   height: 10px;
-  border: 2px #005696 solid;
+  border: 2px #ffffff solid;
   top: 1px;
   left: 1rem;
   margin: -8px 0;

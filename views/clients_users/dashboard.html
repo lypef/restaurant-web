@@ -178,24 +178,24 @@
 
             <a class="dropdown-toggle fg-white"><span class="mif-enter"></span> {{ usuario.admin.namefast }}</a>
             <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
-                <ul class="unstyled-list fg-blue">
+                <ul class="unstyled-list">
                     <li>
-                    <a href="#"><i class="fa fa-fw fa-user"></i><span class="mif-earth2 icon"> {{ usuario.admin.nombre }}</span></a>
+                    <a href="#"><i class="fa fa-fw fa-user"></i><span class="mif-earth2 icon fg-white"> {{ usuario.admin.nombre }}</span></a>
 
                     </li>
                     <br>
                     <li>
-                    <a onclick="toggleMetroDialog('#modelperfil')"><span class="mif-user icon"> Perfil</span></a>
+                    <a onclick="toggleMetroDialog('#modelperfil')"><span class="mif-user icon fg-white"> Perfil</span></a>
                     </li>
                     <li>
-                    <a onclick="toggleMetroDialog('#modelAjustes')"><span class="mif-cogs icon"> Ajustes</span></a>
+                    <a onclick="toggleMetroDialog('#modelAjustes')"><span class="mif-cogs icon fg-white"> Ajustes</span></a>
                     </li>
                     <li ng-show='usuario.preferencias.admin'>
-                    <a href="dashboard#/admin"><span class="mif-cogs icon"> Administrar</span></a>
+                    <a href="dashboard#/admin"><span class="mif-cogs icon fg-white"> Administrar</span></a>
                     </li>
                     <li class="divider"></li>
                     <li>
-                    <a href="/logout"><span class="mif-switch icon"> Salir</span></a>
+                    <a href="/logout"><span class="mif-switch icon fg-white"> Salir</span></a>
                     </li>
                 </ul>
             </div>
