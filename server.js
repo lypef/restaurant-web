@@ -135,7 +135,7 @@ app.post('/api/receta/delete', DeleteReceta )
 //Funciones
 function Inicio (req, res) 
 {
-	if (req.session.user_id)
+	if (req.session.user)
 	{
 		if (req.session.clients)
         {
@@ -201,13 +201,12 @@ function AdminLogin (req,res){
 }
 
 function Login (req,res){
-	db.user.findOne({username:req.body.username, password:req.body.password}).populate('admin').exec(function(err,doc){
+	db.user.findOne({username:req.body.username, password:req.body.password}).populate('admin').populate('preferencias').exec(function(err,doc){
 		if (doc != null)
 		{
 			if (doc.admin.status)
             {
-                req.session.user_id = doc._id;
-                req.session.admin = doc.admin._id;
+                req.session.user = doc
                 req.session.clients = true;
                 res.redirect("/dashboard");
             }else
@@ -228,7 +227,7 @@ function login_admin (req,res){
     db.admin.findOne({username:req.body.username, password:req.body.password},function(err,doc){
         if (doc != null)
         {
-            req.session.user_id = doc._id;
+            req.session.user = doc;
             req.session.clients = false;
             res.redirect("/admin_dashboard#/");
         }
@@ -304,14 +303,14 @@ function AddProduct (req,res){
             img: req.body.img,
             category: req.body.category,
             receta: req.body.receta,
-            admin: req.session.admin
+            admin: req.session.user.admin._id
         });
         p.save(function(err){
             if (err)
             {
                 res.status(500).send("Error desconocido")
             }else {
-                db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, data) {
+                db.products.find({ admin : req.session.user.admin._id}).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, data) {
                 if(err) {
                     res.status(500).send(err)
                 }else
@@ -333,7 +332,7 @@ function AddIngredient (req,res){
             name: req.body.name.toUpperCase(),
             stock: req.body.stock,
             measurements: req.body.measurements,
-            admin: req.session.admin
+            admin: req.session.user.admin._id
         });
         p.save(function(err){
                 if (err)
@@ -360,28 +359,15 @@ function usersjson (req,res){
 };
 
 function AdminValuesjson (req,res){
-    db.admin.findOne({_id: req.session.user_id},function(err,doc){
-        if (doc != null)
-        {
-            doc.nombre = doc.nombre.substring(0, 12) + " ...";
-            res.json(doc)
-        }
-    });
+    res.json(req.session.user)
 };
 
 function UserValuesjson (req,res){
-    db.user.findOne({_id: req.session.user_id}).populate('admin').populate('preferencias').exec(function(err,doc){
-        if (doc != null)
-        {
-            res.json(doc)
-        }else {
-            console.log("Usuari no encontrado")
-        }
-    });
+    res.json(req.session.user)
 };
 
 function User_adminValuesjson (req,res){
-    db.user.find({ admin: req.session.admin }).populate('admin').populate('preferencias').exec(function(err,doc){
+    db.user.find({ admin: req.session.user.admin._id }).populate('admin').populate('preferencias').exec(function(err,doc){
         if (doc != null)
         {
             res.json(doc)
@@ -392,7 +378,7 @@ function User_adminValuesjson (req,res){
 };
 
 function ClientsJson (req,res){
-	db.clients.find({ admin: req.session.admin}, function(err, data) {
+	db.clients.find({ admin: req.session.user.admin._id}, function(err, data) {
         if(err) {
             res.status(500).send(err);
         }else
@@ -425,7 +411,7 @@ function GetProducts (req,res){
 };
 
 function ClienteditsJson (req,res){
-    db.clients.findOne({_id:req.params.id , admin: req.session.admin},function(err,doc){
+    db.clients.findOne({_id:req.params.id , admin: req.session.user.admin._id},function(err,doc){
         if (doc != null)
         {
             res.json(doc)
@@ -437,7 +423,7 @@ function ClienteditsJson (req,res){
 };
 
 function ClienteDireccionesJson (req,res){
-	db.direcciones.find({ admin: req.session.admin, cliente: req.params.id }).sort({ calle:1 }).populate('cliente').exec(function(err,doc){
+	db.direcciones.find({ admin: req.session.user.admin._id, cliente: req.params.id }).sort({ calle:1 }).populate('cliente').exec(function(err,doc){
 		if (doc != null)
 		{
 			res.json(doc)
@@ -456,7 +442,7 @@ function CreateClient (req, res)
     		nombre: req.body.nombre.toUpperCase(),
     		telefono: req.body.telefono,
     		mail: req.body.mail,
-            admin: req.session.admin
+            admin: req.session.user.admin._id
     	})
 
 
@@ -477,7 +463,7 @@ function CreateClient (req, res)
 
 function UpdateClientAdmin (req, res) 
 {  
-    if (req.body.admin == req.session.admin)
+    if (req.body.admin == req.session.user.admin._id)
     {
         if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null)
         {
@@ -512,7 +498,7 @@ function UpdateClientAdmin (req, res)
 function UpdateClientDireccion (req, res) 
 {  
 	db.direcciones.update(
-    { _id : req.body._id, admin: req.session.admin },
+    { _id : req.body._id, admin: req.session.user.admin._id },
     { 
         calle: req.body.calle.toUpperCase(),
         numero: req.body.numero.toUpperCase(),
@@ -534,7 +520,7 @@ function UpdateClientDireccion (req, res)
 
 function UpdateClient_User (req, res) 
 {  
-    db.admin.findOne({_id: req.session.admin},function(err,doc){
+    db.admin.findOne({_id: req.session.user.admin._id},function(err,doc){
         if (doc == null)
         {
             if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null)
@@ -650,7 +636,7 @@ function UpdateUser_preferencias (req, res)
 function UpdateProduct (req, res) 
 {  
     db.products.update(
-        { _id : req.body._id, admin: req.session.admin },
+        { _id : req.body._id, admin: req.session.user.admin._id },
         { 
             name: req.body.name.toUpperCase(),
             codebar: req.body.codebar.toUpperCase(),
@@ -667,7 +653,7 @@ function UpdateProduct (req, res)
                 res.status(404).send("Algo desconocido sucedio, intente nuevamente")
             }else
             {
-                db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').exec(function(err, data) {
+                db.products.find({ admin : req.session.user.admin._id}).sort({name:1}).populate('category').populate('admin').exec(function(err, data) {
                     if(err) {
                         res.status(500).send(err)
                     }else
@@ -682,7 +668,7 @@ function UpdateProduct (req, res)
 function UpdateIngredient (req, res) 
 {  
     db.ingredients.update(
-        { _id : req.body._id, admin: req.session.admin },
+        { _id : req.body._id, admin: req.session.user.admin._id },
         { 
             name: req.body.name.toUpperCase(),
             stock: req.body.stock,
@@ -702,10 +688,10 @@ function UpdateIngredient (req, res)
 
 function DeleteClient (req, res) 
 {  
-    if (req.body.admin == req.session.admin)
+    if (req.body.admin == req.session.user.admin._id)
     {
         db.clients.remove(
-        { admin: req.session.admin, _id : req.body._id },
+        { admin: req.session.user.admin._id, _id : req.body._id },
         
         function( err) 
         {
@@ -715,7 +701,7 @@ function DeleteClient (req, res)
             }else
             {
                 db.direcciones.remove(
-                { admin: req.session.admin, cliente: req.body._id },
+                { admin: req.session.user.admin._id, cliente: req.body._id },
                 
                 function( err) 
                 {
@@ -738,7 +724,7 @@ function DeleteClient (req, res)
 function DeleteClientDireccion (req, res) 
 {  
 	db.direcciones.remove(
-    { admin: req.session.admin, _id : req.body._id },
+    { admin: req.session.user.admin._id, _id : req.body._id },
     
     function( err) 
     {
@@ -775,7 +761,7 @@ function DeleteUser (req, res)
 
 function DeleteUser_admin (req, res) 
 {  
-    if (req.body.admin._id == req.session.admin){
+    if (req.body.admin._id == req.session.user.admin._id){
         db.user_preferencias.remove ({ preferencias: req.body.preferencias }, function (err){
             if (err)
             {
@@ -802,7 +788,7 @@ function DeleteUser_admin (req, res)
 function DeleteProduct (req, res) 
 {  
     db.products.remove(
-        { _id : req.body._id, admin: req.session.admin },
+        { _id : req.body._id, admin: req.session.user.admin._id },
         
         function( err) 
         {
@@ -819,7 +805,7 @@ function DeleteProduct (req, res)
 function DeleteIngredient (req, res) 
 {  
     db.ingredients.remove(
-        { _id : req.body._id, admin: req.session.admin },
+        { _id : req.body._id, admin: req.session.user.admin._id },
         
         function( err) 
         {
@@ -852,7 +838,7 @@ function DeleteMeasuremeants (req, res)
 
 function SearchClient (req, res) 
 {  
-	db.clients.find({admin: req.session.admin, $or: [ {nombre: { $regex : req.body.text.toUpperCase() }}, {apellidos: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
+	db.clients.find({admin: req.session.user.admin._id, $or: [ {nombre: { $regex : req.body.text.toUpperCase() }}, {apellidos: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
         if(err || data == "") {
             res.status(500).send("Cliente no encontrado")
         }else
@@ -894,7 +880,7 @@ function search_products_stock (req, res)
 {  
     if (req.body.text == null || req.body.text == '')
     {
-        db.products.find({ admin : req.session.admin, receta: null }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
+        db.products.find({ admin : req.session.user.admin._id, receta: null }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
         if(err) {
             res.status(500).send(err);
         }else
@@ -904,7 +890,7 @@ function search_products_stock (req, res)
         });
     }else
     {
-        db.products.find({admin : req.session.admin, receta: null, $or: [ {name: { $regex : req.body.text.toUpperCase() }}, {codebar: { $regex : req.body.text.toUpperCase() }} ,{description: { $regex : req.body.text.toUpperCase() }} ] }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
+        db.products.find({admin : req.session.user.admin._id, receta: null, $or: [ {name: { $regex : req.body.text.toUpperCase() }}, {codebar: { $regex : req.body.text.toUpperCase() }} ,{description: { $regex : req.body.text.toUpperCase() }} ] }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
         if(err) {
             res.status(500).send(err);
         }else
@@ -920,7 +906,7 @@ function search_products (req, res)
 {  
     if (req.body.text == null || req.body.text == '')
     {
-        db.products.find({ admin : req.session.admin }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
+        db.products.find({ admin : req.session.user.admin._id }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
         if(err) {
             res.status(500).send(err);
         }else
@@ -930,7 +916,7 @@ function search_products (req, res)
         });
     }else
     {
-        db.products.find({admin : req.session.admin, $or: [ {name: { $regex : req.body.text.toUpperCase() }}, {codebar: { $regex : req.body.text.toUpperCase() }} ,{description: { $regex : req.body.text.toUpperCase() }} ] }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
+        db.products.find({admin : req.session.user.admin._id, $or: [ {name: { $regex : req.body.text.toUpperCase() }}, {codebar: { $regex : req.body.text.toUpperCase() }} ,{description: { $regex : req.body.text.toUpperCase() }} ] }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
         if(err) {
             res.status(500).send(err);
         }else
@@ -984,7 +970,7 @@ function SearchIngredients (req, res)
 {  
     if (req.body.txt == null || req.body.txt == undefined)
     {
-        db.ingredients.find({admin: req.session.admin}).sort({name:1}).populate('measurements').exec(function(err, data) {
+        db.ingredients.find({admin: req.session.user.admin._id}).sort({name:1}).populate('measurements').exec(function(err, data) {
         if(err || data == "") {
             res.status(500).send("Ingrediente no encontrada")
         }else
@@ -993,7 +979,7 @@ function SearchIngredients (req, res)
         }
     })
     }else {
-        db.ingredients.find({admin: req.session.admin, $or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).sort({name:1}).populate('measurements').exec(function(err, data) {
+        db.ingredients.find({admin: req.session.user.admin._id, $or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).sort({name:1}).populate('measurements').exec(function(err, data) {
         if(err || data == "") {
             res.status(500).send("Ingrediente no encontrada")
         }else
@@ -1009,14 +995,14 @@ function SearchRecetas (req, res)
 {  
     if (req.body.txt == null || req.body.txt == undefined)
     {
-        db.recetas.find({admin: req.session.admin }).sort({name:1}).populate('admin').exec(function(err,doc){
+        db.recetas.find({admin: req.session.user.admin._id }).sort({name:1}).populate('admin').exec(function(err,doc){
             if (doc != null)
             {
                 res.json(doc)
             }
         })
     }else {
-        db.recetas.find({admin: req.session.admin, $or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).sort({name:1}).populate('admin').exec(function(err, data) {
+        db.recetas.find({admin: req.session.user.admin._id, $or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).sort({name:1}).populate('admin').exec(function(err, data) {
         if(err || data == "") {
             res.status(500).send("Receta no encontrada")
         }else
@@ -1051,7 +1037,7 @@ function GetMeasurementsJSON (req,res){
 }
 
 function getproductsJson (req,res){
-    db.products.find({ admin : req.session.admin}).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, data) {
+    db.products.find({ admin : req.session.user.admin._id}).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, data) {
         if(err) {
             res.status(500).send(err)
         }else
@@ -1062,7 +1048,7 @@ function getproductsJson (req,res){
 };
 
 function getproductsJson_stock (req,res){
-    db.products.find({ admin : req.session.admin, receta: null }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, data) {
+    db.products.find({ admin : req.session.user.admin._id, receta: null }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, data) {
         if(err) {
             res.status(500).send(err)
         }else
@@ -1073,7 +1059,7 @@ function getproductsJson_stock (req,res){
 };
 
 function getIngredientsJson (req,res){
-    db.ingredients.find({ admin : req.session.admin}).sort({name:1}).populate('admin').populate('measurements').exec(function(err, data) {
+    db.ingredients.find({ admin : req.session.user.admin._id}).sort({name:1}).populate('admin').populate('measurements').exec(function(err, data) {
         if(err) {
             res.status(500).send(err)
         }else
@@ -1085,7 +1071,7 @@ function getIngredientsJson (req,res){
 
 function getProductID (req, res)
 {
-    db.products.findOne({_id: req.params.id , admin: req.session.admin},function(err,doc){
+    db.products.findOne({_id: req.params.id , admin: req.session.user.admin._id},function(err,doc){
         if (doc != null)
         {
             res.json(doc)
@@ -1111,7 +1097,7 @@ function GetMeasuremetsJSON_ID (req, res)
 
 function GetRecetasJSON_ID (req, res)
 {
-    db.recetas.findOne({_id: req.params.id , admin: req.session.admin}).sort({name:1}).populate('admin').exec(function(err,doc){
+    db.recetas.findOne({_id: req.params.id , admin: req.session.user.admin._id}).sort({name:1}).populate('admin').exec(function(err,doc){
         if (doc != null)
         {
             res.json(doc)
@@ -1121,7 +1107,7 @@ function GetRecetasJSON_ID (req, res)
 
 function GetUseRecetasJSON_ID (req, res)
 {
-    db.use_recetas.find({ receta: req.params.id , admin: req.session.admin}).populate(
+    db.use_recetas.find({ receta: req.params.id , admin: req.session.user.admin._id}).populate(
             {path:     'ingrediente',         
                 populate: { path:  'measurements',
                             model: 'measurements' }
@@ -1135,7 +1121,7 @@ function GetUseRecetasJSON_ID (req, res)
 
 function GetUseRecetasJSON (req, res)
 {
-    db.use_recetas.find({ admin: req.session.admin}).populate(
+    db.use_recetas.find({ admin: req.session.user.admin._id}).populate(
             {path:     'ingrediente',         
                 populate: { path:  'measurements',
                             model: 'measurements' }
@@ -1149,7 +1135,7 @@ function GetUseRecetasJSON (req, res)
 
 function GetRecetasJSON (req, res)
 {
-    db.recetas.find({admin: req.session.admin }).sort({name:1}).populate('admin').exec(function(err,doc){
+    db.recetas.find({admin: req.session.user.admin._id }).sort({name:1}).populate('admin').exec(function(err,doc){
         if (doc != null)
         {
             res.json(doc)
@@ -1159,7 +1145,7 @@ function GetRecetasJSON (req, res)
 
 function getIngredientID (req, res)
 {
-    db.ingredients.findOne({_id: req.params.id , admin: req.session.admin}).populate('measurements').exec(function(err,doc){
+    db.ingredients.findOne({_id: req.params.id , admin: req.session.user.admin._id}).populate('measurements').exec(function(err,doc){
         if (doc != null)
         {
             res.json(doc)
@@ -1180,7 +1166,7 @@ function CreateCatProduct (req, res)
             var p = new db.catproducts({
             categoria: req.body.categoria.toUpperCase(),
             descripcion: req.body.descripcion.toUpperCase(),
-            creator: req.session.user_id
+            creator: req.session.user._id
 
             })
 
@@ -1208,13 +1194,13 @@ function CreateCatProductAdmin (req, res)
 {  
     if (req.body.categoria != null && req.body.descripcion != null)
     {
-            db.admin.findOne({ _id: req.session.user_id },function(err,doc){
+            db.admin.findOne({ _id: req.session.user._id },function(err,doc){
             if (doc)
             {
                 var p = new db.catproducts({
                 categoria: req.body.categoria.toUpperCase(),
                 descripcion: req.body.descripcion.toUpperCase(),
-                last_edit: req.session.user_id
+                last_edit: req.session.user._id
 
                 })
 
@@ -1245,7 +1231,7 @@ function CreateMeasurement (req, res)
 {  
     if (req.body.name != null && req.body.namefast != null)
     {
-            db.admin.findOne({ _id: req.session.user_id },function(err,doc){
+            db.admin.findOne({ _id: req.session.user._id },function(err,doc){
             if (doc)
             {
                 var p = new db.measurements({
@@ -1284,7 +1270,7 @@ function CreateReceta (req, res)
         name: req.body.name,
         description: req.body.description,
         receta: req.body.receta,
-        admin: req.session.admin
+        admin: req.session.user.admin._id
 
     })
 
@@ -1304,7 +1290,7 @@ function CreateReceta (req, res)
                 ingrediente: req.body.arr[i].id,
                 porcion: req.body.arr[i].porcion,
                 update_ingredients: req.body.arr[i].update_ingredients,
-                admin: req.session.admin
+                admin: req.session.user.admin._id
             })
             p.save (function (err1,doc1){
                 if (err1)
@@ -1361,7 +1347,7 @@ function UserIDLoad (req,res){
 
 function CatproductsUpdateAdmin (req, res) 
 {  
-    db.admin.findOne({ _id: req.session.user_id },function(err,doc){
+    db.admin.findOne({ _id: req.session.user._id },function(err,doc){
         if (doc)
         {
             db.catproducts.update(
@@ -1369,7 +1355,7 @@ function CatproductsUpdateAdmin (req, res)
             { 
                 categoria: req.body.categoria.toUpperCase(),
                 descripcion: req.body.descripcion.toUpperCase(),
-                last_edit: req.session.user_id
+                last_edit: req.session.user._id
             },
             function( err1) 
             {
@@ -1415,11 +1401,11 @@ function DeleteReceta (req, res)
 {  
     var r = true
     
-    db.recetas.remove({ _id: req.body._id, admin: req.session.admin },function( err) 
+    db.recetas.remove({ _id: req.body._id, admin: req.session.user.admin._id },function( err) 
     {
         if (!err)
         {
-            db.use_recetas.remove({ receta: req.body._id, admin: req.session.admin },function( err) 
+            db.use_recetas.remove({ receta: req.body._id, admin: req.session.user.admin._id },function( err) 
             {
                 if (!err)
                 {
@@ -1439,7 +1425,7 @@ function DeleteReceta (req, res)
 
 function UpdateReceta (req, res) 
 {  
-    db.use_recetas.remove({ receta: req.body._id, admin: req.session.admin },function( err) 
+    db.use_recetas.remove({ receta: req.body._id, admin: req.session.user.admin._id },function( err) 
     {
         if (!err)
         {
@@ -1472,7 +1458,7 @@ function UpdateReceta (req, res)
             ingrediente: req.body.arr[i].id,
             porcion: req.body.arr[i].porcion,
             update_ingredients: req.body.arr[i].update_ingredients,
-            admin: req.session.admin
+            admin: req.session.user.admin._id
         })
         p.save (function (err1,doc1){
             if (err1)
@@ -1491,7 +1477,7 @@ function UpdateReceta (req, res)
 
 function DeleteCatProducts (req, res) 
 {  
-    db.admin.findOne({ _id: req.session.user_id },function(err,doc){
+    db.admin.findOne({ _id: req.session.user._id },function(err,doc){
             if (doc)
             {
                 db.catproducts.remove({ _id : req.body._id },function( err) 
@@ -1533,7 +1519,7 @@ function InsertClientDirecciones (req,res)
 {
     
     var p = new db.direcciones({
-        admin: req.session.admin,
+        admin: req.session.user.admin._id,
         cliente: req.body.cliente, 
         calle: req.body.calle,
         numero: req.body.numero,
@@ -1593,5 +1579,3 @@ app.listen(port, function (err){
 		console.log("Arranque del servidor en el puerto " + port);	
 	}
 });
-
-
