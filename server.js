@@ -62,6 +62,7 @@ app.get('/api/clients_users/:id', ClientsUserIDLoad);
 
 app.get('/api/admin/values', AdminValuesjson)
 app.get('/api/users/values', UserValuesjson)
+app.get('/api/users_admin', User_adminValuesjson)
 app.get('/api/users/:id', UserIDLoad);
 app.get('/api/users/search/:id', Search_users_id );
 
@@ -106,7 +107,9 @@ app.post('/api/clients_users/delete', DeleteClientUser );
 app.post('/api/users/add', AddUser);
 app.post('/api/users/search', Search_users );
 app.post('/api/users/delete', DeleteUser );
+app.post('/api/users_admin/delete', DeleteUser_admin );
 app.post('/api/users/update', UpdateUser );
+app.post('/api/users/update_preferencias', UpdateUser_preferencias );
 
 app.post('/api/products/add', AddProduct);
 app.post('/api/updateproducts', UpdateProduct)
@@ -256,27 +259,35 @@ function AddUser (req,res){
 	db.user.findOne({ username: req.body.username},function(err,doc){
         if (doc == null && req.body.admin != null)
         {
-            var p = new db.user(
+            var p = new db.user_preferencias(
             {
-                username: req.body.username,
-                password: req.body.password,
-                nombre: req.body.nombre.toUpperCase(),
-                direccion: req.body.direccion,
-                telefono: req.body.telefono,
-                admin: req.body.admin
+                color_menubar: 'blue'
             });
-            p.save(function(){
-                    db.user.find(function(err,doc){
+
+            p.save(function (err){
+                if (!err)
+                {
+                    var p1 = new db.user(
+                    {
+                        username: req.body.username,
+                        password: req.body.password,
+                        nombre: req.body.nombre.toUpperCase(),
+                        direccion: req.body.direccion,
+                        telefono: req.body.telefono,
+                        preferencias: p._id,
+                        admin: req.body.admin
+                    })
+                    p1.save(function(err, doc ){
                         if (err)
                         {
-                               res.sendStatus(500); 
+                            res.sendStatus(500); 
                         }else {
+                            console.log(doc)
                             res.sendStatus(200);
-                            console.log(doc);
                         }
-                    });
-
-            });
+                    })
+                }
+            })
         }else {
             res.sendStatus(500); 
         }
@@ -359,7 +370,18 @@ function AdminValuesjson (req,res){
 };
 
 function UserValuesjson (req,res){
-    db.user.findOne({_id: req.session.user_id}).populate('admin').exec(function(err,doc){
+    db.user.findOne({_id: req.session.user_id}).populate('admin').populate('preferencias').exec(function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
+        }else {
+            console.log("Usuari no encontrado")
+        }
+    });
+};
+
+function User_adminValuesjson (req,res){
+    db.user.find({ admin: req.session.admin }).populate('admin').populate('preferencias').exec(function(err,doc){
         if (doc != null)
         {
             res.json(doc)
@@ -601,6 +623,30 @@ function UpdateUser (req, res)
         })  
 }
 
+function UpdateUser_preferencias (req, res) 
+{  
+    db.user_preferencias.update(
+        { _id : req.body.preferencias._id },
+        { 
+            color_menubar: req.body.preferencias.color_menubar,
+            admin: req.body.preferencias.admin,
+            ingredientes: req.body.preferencias.ingredientes,
+            recetas: req.body.preferencias.recetas,
+            products: req.body.preferencias.products,
+            clientes: req.body.preferencias.clientes
+        },
+        function( err) 
+        {
+            if (err)
+            {
+                res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
+            }else
+            {
+                res.status(200).send('Valores actualizados')
+            }
+        })  
+}
+
 function UpdateProduct (req, res) 
 {  
     db.products.update(
@@ -708,19 +754,49 @@ function DeleteClientDireccion (req, res)
 
 function DeleteUser (req, res) 
 {  
-    db.user.remove(
-        { _id : req.body._id },
-        
-        function( err) 
+    db.user_preferencias.remove ({ preferencias: req.body.preferencias }, function (err){
+        if (err)
         {
+            res.sendStatus(500, "Error, Intente nuevamente.")
+        }else
+        {
+            db.user.remove({ _id : req.body._id },function( err) {
+                if (err)
+                {
+                    res.sendStatus(500, "Error, Intente nuevamente.")
+                }else
+                {
+                    res.status(200).send('Usuario eliminado correctamente')
+                }
+            })
+        }
+    })
+}
+
+function DeleteUser_admin (req, res) 
+{  
+    if (req.body.admin._id == req.session.admin){
+        db.user_preferencias.remove ({ preferencias: req.body.preferencias }, function (err){
             if (err)
             {
                 res.sendStatus(500, "Error, Intente nuevamente.")
             }else
             {
-                res.sendStatus(200)
+                db.user.remove({ _id : req.body._id },function( err) {
+                    if (err)
+                    {
+                        res.sendStatus(500, "Error, Intente nuevamente.")
+                    }else
+                    {
+                        res.status(200).send('Usuario eliminado correctamente')
+                    }
+                })
             }
         })
+    }else
+    {
+        res.status(500).send('Error')
+    }
 }
 
 function DeleteProduct (req, res) 

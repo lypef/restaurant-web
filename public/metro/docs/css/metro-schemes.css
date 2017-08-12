@@ -169,88 +169,88 @@
   background-color: #1d1d1d;
   color: #ffffff;
 }
-.app-bar.navy {
-  background-color: #0072c6;
+.app-bar.indigo {
+  background-color: indigo;
 }
-.app-bar.navy .app-bar-element:hover,
-.app-bar.navy .app-bar-menu > li:hover,
-.app-bar.navy .app-bar-menu > li > a:hover,
-.app-bar.navy .app-bar-element:active,
-.app-bar.navy .app-bar-menu > li:active,
-.app-bar.navy .app-bar-menu > li > a:active {
-  background-color: #005696;
+.app-bar.indigo .app-bar-element:hover,
+.app-bar.indigo .app-bar-menu > li:hover,
+.app-bar.indigo .app-bar-menu > li > a:hover,
+.app-bar.indigo .app-bar-element:active,
+.app-bar.indigo .app-bar-menu > li:active,
+.app-bar.indigo .app-bar-menu > li > a:active {
+  background-color: #4b0096;
 }
-.app-bar.navy .app-bar-divider {
-  background-color: #4c9cd7;
+.app-bar.indigo .app-bar-divider {
+  background-color: #57169a;
 }
-.app-bar.navy .app-bar-element .d-menu,
-.app-bar.navy .app-bar-menu > li .d-menu {
-  background-color: #0072c6;
+.app-bar.indigo .app-bar-element .d-menu,
+.app-bar.indigo .app-bar-menu > li .d-menu {
+  background-color: indigo;
   border-color: transparent;
 }
-.app-bar.navy .app-bar-element .d-menu li:not(.disabled) > a,
-.app-bar.navy .app-bar-menu > li .d-menu li:not(.disabled) > a,
-.app-bar.navy .app-bar-element .d-menu li > a,
-.app-bar.navy .app-bar-menu > li .d-menu li > a {
-  background-color: #0072c6;
+.app-bar.indigo .app-bar-element .d-menu li:not(.disabled) > a,
+.app-bar.indigo .app-bar-menu > li .d-menu li:not(.disabled) > a,
+.app-bar.navindigoy .app-bar-element .d-menu li > a,
+.app-bar.indigo .app-bar-menu > li .d-menu li > a {
+  background-color: indigo;
   color: #ffffff;
 }
-.app-bar.navy .app-bar-element .d-menu li:not(.disabled) > a:hover,
-.app-bar.navy .app-bar-menu > li .d-menu li:not(.disabled) > a:hover,
-.app-bar.navy .app-bar-element .d-menu li > a:hover,
-.app-bar.navy .app-bar-menu > li .d-menu li > a:hover {
-  background-color: #005696;
+.app-bar.indigo .app-bar-element .d-menu li:not(.disabled) > a:hover,
+.app-bar.indigo .app-bar-menu > li .d-menu li:not(.disabled) > a:hover,
+.app-bar.indigo .app-bar-element .d-menu li > a:hover,
+.app-bar.indigo .app-bar-menu > li .d-menu li > a:hover {
+  background-color: #57169a;
   color: #ffffff;
 }
-.app-bar.navy .app-bar-element .d-menu li:hover > a,
-.app-bar.navy .app-bar-menu > li .d-menu li:hover > a {
-  background-color: #005696;
+.app-bar.indigo .app-bar-element .d-menu li:hover > a,
+.app-bar.indigo .app-bar-menu > li .d-menu li:hover > a {
+  background-color: #57169a;
 }
-.app-bar.navy .app-bar-element .d-menu .divider,
-.app-bar.navy .app-bar-menu > li .d-menu .divider {
+.app-bar.indigo .app-bar-element .d-menu .divider,
+.app-bar.indigo .app-bar-menu > li .d-menu .divider {
   background-color: #4c9cd7;
 }
-.app-bar.navy .app-bar-element .d-menu .divider:hover,
-.app-bar.navy .app-bar-menu > li .d-menu .divider:hover {
+.app-bar.indigo .app-bar-element .d-menu .divider:hover,
+.app-bar.indigo .app-bar-menu > li .d-menu .divider:hover {
   background-color: #4c9cd7;
 }
-.app-bar.navy .app-bar-element .dropdown-toggle:before,
-.app-bar.navy .app-bar-menu li .dropdown-toggle:before {
+.app-bar.indigo .app-bar-element .dropdown-toggle:before,
+.app-bar.indigo .app-bar-menu li .dropdown-toggle:before {
   border-color: #ffffff;
 }
-.app-bar.navy .app-bar-element.disabled,
-.app-bar.navy .app-bar-menu li.disabled,
-.app-bar.navy .app-bar-element:disabled,
-.app-bar.navy .app-bar-menu li:disabled {
+.app-bar.indigo .app-bar-element.disabled,
+.app-bar.indigo .app-bar-menu li.disabled,
+.app-bar.indigo .app-bar-element:disabled,
+.app-bar.indigo .app-bar-menu li:disabled {
   color: #555555;
 }
-.app-bar.navy .app-bar-element.disabled a,
-.app-bar.navy .app-bar-menu li.disabled a,
-.app-bar.navy .app-bar-element:disabled a,
-.app-bar.navy .app-bar-menu li:disabled a {
+.app-bar.indigo .app-bar-element.disabled a,
+.app-bar.indigo .app-bar-menu li.disabled a,
+.app-bar.indigo .app-bar-element:disabled a,
+.app-bar.indigo .app-bar-menu li:disabled a {
   color: inherit !important;
 }
-.app-bar.navy .app-bar-pullbutton:hover {
-  background-color: #005696;
+.app-bar.indigo .app-bar-pullbutton:hover {
+  background-color: #57169a;
 }
-.app-bar.navy .app-bar-drop-container {
-  border: 2px solid #0072c6;
-  background-color: #0072c6;
+.app-bar.indigo .app-bar-drop-container {
+  border: 2px solid indigo;
+  background-color: indigo;
   color: #ffffff;
 }
-.app-bar.navy .app-bar-drop-container:before {
+.app-bar.indigo .app-bar-drop-container:before {
   background-color: #0072c6;
   border-color: #0072c6;
 }
-.app-bar.navy .app-bar-pullmenu .app-bar-menu {
+.app-bar.indigo .app-bar-pullmenu .app-bar-menu {
   border-top: 1px solid #4c9cd7;
-  background-color: #4c9cd7;
+  background-color: indigo;
 }
-.app-bar.navy .app-bar-pullmenu .app-bar-menu li:hover {
+.app-bar.indigo .app-bar-pullmenu .app-bar-menu li:hover {
   background-color: #0072c6;
 }
-.app-bar.navy .app-bar-pullmenu .app-bar-menu li:hover a {
-  background-color: #005696;
+.app-bar.indigo .app-bar-pullmenu .app-bar-menu li:hover a {
+  background-color: #57169a;
   color: #ffffff;
 }
 .app-bar.red {
@@ -841,37 +841,37 @@
 .t-menu.pink .horizontal > li > a {
   border-right-color: #f472d0;
 }
-.t-menu.navy {
+.t-menu.indigo {
   background-color: #0072c6;
 }
-.t-menu.navy .t-menu {
+.t-menu.indigo .t-menu {
   background-color: #0072c6;
 }
-.t-menu.navy li > a {
+.t-menu.indigo li > a {
   background: #0072c6;
   color: #ffffff;
   border-bottom-color: #4c9cd7;
 }
-.t-menu.navy li > a.dropdown-toggle:after,
-.t-menu.navy li > a.dropdown-toggle:hover:after {
+.t-menu.indigo li > a.dropdown-toggle:after,
+.t-menu.indigo li > a.dropdown-toggle:hover:after {
   border-color: transparent transparent #ffffff;
 }
-.t-menu.navy li:hover > a {
+.t-menu.indigo li:hover > a {
   background: #005696;
   color: #ffffff;
 }
-.t-menu.navy li:hover > a.dropdown-toggle:after {
+.t-menu.indigo li:hover > a.dropdown-toggle:after {
   border-color: transparent transparent #ffffff;
 }
-.t-menu.navy li.disabled > a {
+.t-menu.indigo li.disabled > a {
   background: #0072c6;
   color: #555555;
 }
-.t-menu.navy li.disabled > a:hover {
+.t-menu.indigo li.disabled > a:hover {
   background: #0072c6;
 }
-.t-menu.navy.horizontal > li > a,
-.t-menu.navy .horizontal > li > a {
+.t-menu.indigo.horizontal > li > a,
+.t-menu.indigo .horizontal > li > a {
   border-right-color: #4c9cd7;
 }
 .t-menu.red {

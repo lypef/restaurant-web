@@ -12,7 +12,17 @@ var user_scheme = new mongoose.Schema({
 	nombre: {type: String, required: true},
 	direccion: String,
 	telefono: String,
+	preferencias: { type: Schema.Types.ObjectId, ref: 'user_preferencias'},
 	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'}
+})
+
+var preferencias_user_scheme = new mongoose.Schema({
+	color_menubar: String,
+	admin: { type: Boolean, default: false },
+	ingredientes: { type: Boolean, default: false },
+	recetas: { type: Boolean, default: false },
+	products: { type: Boolean, default: false },
+	clientes: { type: Boolean, default: false }
 })
 
 var clients_scheme = new mongoose.Schema({
@@ -108,5 +118,6 @@ module.exports.measurements = mongoose.model("measurements",measurement_scheme);
 module.exports.recetas = mongoose.model("recetas",recetas_scheme);
 module.exports.use_recetas = mongoose.model("use_recetas",use_ingredients_scheme);
 module.exports.direcciones = mongoose.model("clients_direcciones",clientsDirecciones_scheme);
+module.exports.user_preferencias = mongoose.model("user_preferencias",preferencias_user_scheme);
 
 

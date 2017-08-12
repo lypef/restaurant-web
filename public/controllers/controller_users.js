@@ -47,6 +47,9 @@ app.config(function($routeProvider){
         .when('/view_recetas/:id', {
             templateUrl : '/clients_users/recetas/view.html'
         })
+        .when('/admin', {
+            templateUrl : '/clients_users/admin.html'
+        })
         .otherwise({
             redirectTo : '/'
         })
@@ -55,7 +58,6 @@ app.config(function($routeProvider){
 app.controller("UserValues", function($scope, $http){
     $http.defaults.headers.common['x-access-token']=token;
     $scope.usuario = {};
-    $scope.color = 'blue'
 
     $scope.$on('load', function(){$scope.loading = true})
     $scope.$on('unload', function(){$scope.loading = false})
@@ -63,12 +65,7 @@ app.controller("UserValues", function($scope, $http){
     $scope.$on('loadasc', function(){$scope.loadinasc = true})
     $scope.$on('unloadasc', function(){$scope.loadinasc = false})
     
-    $scope.setcolor = function (color)
-    {
-        $scope.color = color
-        pushMessage('success', 'HECHO', 'msg', "checkmark")
-    }
-    $scope.load = function (){
+    $scope.$on('loadvalues', function(){
         $scope.loadinasc = true
         $http.get('/api/users/values')
         .success(function(data) {
@@ -81,7 +78,7 @@ app.controller("UserValues", function($scope, $http){
         .finally (function (){
             $scope.loadinasc = false
         })
-    }
+    })
 
     loadasc = function (){
         $scope.loadinasc = true
@@ -97,7 +94,7 @@ app.controller("UserValues", function($scope, $http){
             $scope.loadinasc = false
         })
     }
-    $scope.load()
+    $scope.$emit('loadvalues')
 
     $scope.updateuser = function (){
         if ($scope.usuario.password == $scope.usuario.passwordtmp)
@@ -106,7 +103,6 @@ app.controller("UserValues", function($scope, $http){
             $http.post('/api/users/update', $scope.usuario)
             .success (function (msg){
                 loadasc()
-                pushMessage('success', 'HECHO', msg, "checkmark")
             })
             .error (function (msg){
                 pushMessage('alert','ERROR', msg, "cross")
@@ -119,6 +115,100 @@ app.controller("UserValues", function($scope, $http){
             pushMessage('alert','ERROR', 'Contraseña son iguales', "cross")
         }
     }
+
+    $scope.updateuser_preferencias = function (){
+        $scope.$emit('loadasc')
+        $http.post('/api/users/update_preferencias', $scope.usuario)
+        .success (function (msg){
+            loadasc()
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+});
+
+app.controller("users_administrator", function($scope, $http){
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.users = {}
+    $scope.tmp = {}
+
+    GetUsers = function (){
+        $scope.$emit('load')
+        $http.get('/api/users_admin')
+        .success(function(data){
+            $scope.users = data
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    GetUsersAsc = function (){
+        $http.get('/api/users_admin')
+        .success(function(data){
+            $scope.users = data
+        })
+    }
+
+    GetUsers()
+
+    $scope.load = function (item)
+    {
+        $scope.tmp = item
+        $scope.tmp.passwordtmp = item.password
+    }
+
+    $scope.delete = function ()
+    {
+        $scope.$emit('loadasc')
+
+        $http.post('/api/users_admin/delete', $scope.tmp)
+        .success (function (msg){
+            pushMessage('success', 'HECHO', msg, "checkmark")
+            GetUsersAsc()
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+
+    $scope.update = function ()
+    {
+        if ($scope.tmp.password == $scope.tmp.passwordtmp)
+        {
+            $scope.$emit('loadasc')
+
+            $http.post('/api/users/update_preferencias', $scope.tmp)
+            .success (function (msg){
+                $http.post('/api/users/update', $scope.tmp)
+                GetUsersAsc()
+                pushMessage('success', 'HECHO', msg, "checkmark")
+            })
+            .error (function (msg){
+                pushMessage('alert','ERROR', msg, "cross")
+            })
+            .finally (function (){
+                $scope.$emit('unloadasc')
+                $scope.$emit('loadvalues')
+            })
+        }else
+        {
+            pushMessage('alert','ERROR', 'Contraseñas no son iguales', "cross")
+        }
+        
+    }
+
 });
 
 app.controller("clients", ['$scope','$http','$window', function ($scope, $http, $window) {

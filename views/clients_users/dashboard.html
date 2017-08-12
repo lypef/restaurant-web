@@ -90,7 +90,7 @@
 
 <body ng-controller="UserValues">
         
-        <div class="app-bar fixed-top {{ color }}" data-role="appbar">
+        <div class="app-bar fixed-top {{ usuario.preferencias.color_menubar }}" data-role="appbar">
 
         <a href="dashboard#/" class="app-bar-element branding"><span class="mif-shop mif-2x"></span></a>
 
@@ -139,14 +139,14 @@
                 <ul class="d-menu" data-role="dropdown">
                     <li><a href="dashboard#/catproducts"><span class="mif-flow-line mif-2x"></span> Categorias</a></li>
                     
-                    <li><a href="" class="dropdown-toggle"><span class="mif-flow-line mif-2x"></span> Ingredientes</a>
+                    <li ng-show='usuario.preferencias.ingredientes'><a href="" class="dropdown-toggle"><span class="mif-flow-line mif-2x"></span> Ingredientes</a>
                     <ul class="d-menu" data-role="dropdown">
                         <li><a href="dashboard#/ingredientes"><span class="mif-chart-bars mif-2x"></span> Gestionar</a></li>
                         <li><a href="dashboard#/ingredientes_shopping"><span class="mif-plus "></span>  Compras</a></li>
                     </ul>
                 </li>
                 
-                <li>
+                <li ng-show='usuario.preferencias.recetas'>
                 <a href="" class="dropdown-toggle"><span class="mif-flow-line mif-2x"></span> Recetas</a>
                     <ul class="d-menu" data-role="dropdown">
                         <li><a href="dashboard#/recetas"><span class="mif-chart-bars mif-2x"></span> Gestionar</a></li>
@@ -154,7 +154,7 @@
                     </ul>
                 </li>
 
-                <li>
+                <li ng-show='usuario.preferencias.products'>
                 <a href="" class="dropdown-toggle"><span class="mif-flow-line mif-2x"></span> Productos</a>
                     <ul class="d-menu" data-role="dropdown">
                         <li><a href="dashboard#/products"><span class="mif-chart-bars mif-2x"></span> Gestionar</a></li>
@@ -164,7 +164,7 @@
 
                     </ul>
             </li>
-            <li><a href="dashboard#/clients"><span class="mif-users mif-2x"></span> Clientes</a></li>
+            <li ng-show='usuario.preferencias.clientes'><a href="dashboard#/clients"><span class="mif-users mif-2x"></span> Clientes</a></li>
         </ul>
 
         <div class="app-bar-element place-right" ng-show="loadinasc">
@@ -189,6 +189,9 @@
                     </li>
                     <li>
                     <a onclick="toggleMetroDialog('#modelAjustes')"><span class="mif-cogs icon"> Ajustes</span></a>
+                    </li>
+                    <li ng-show='usuario.preferencias.admin'>
+                    <a href="dashboard#/admin"><span class="mif-cogs icon"> Administrar</span></a>
                     </li>
                     <li class="divider"></li>
                     <li>
@@ -298,21 +301,22 @@
       <p><h3><span class="mif-cogs icon"> Ajustes</span></h3></p>
       
         
-            <h5>Color menu bar</h5>
-            <label class="input-control radio">
-                <input type="radio" name="n1">
-                <span class="check" ng-checked=" setcolor(s) "></span>
-                <span class="caption">Darcula</span>
-            </label>
-
-            <label class="input-control radio">
-                <input type="radio" name="n1" ng-checked=" setcolor(sa) ">
-                <span class="check"></span>
-                <span class="caption">Blue</span>
-            </label>
+            <div class="input-control select">
+                <select ng-model="usuario.preferencias.color_menubar" ng-change="setcolor()" style="text-align: center; text-align-last: center;">
+                    <option value="">---Color menu bar---</option>
+                    <option value="darcula">Darcula</option>
+                    <option value="indigo">Indigo</option>
+                    <option value="blue">Blue</option>
+                    <option value="pink">Pink</option>
+                    <option value="green">Green</option>
+                    <option value="red">Red</option>
+                    <option value="orange">Orange</option>
+                </select>
+                </div>
+            
 
       <br>
-      <button class="button success" onclick="hideMetroDialog('#modelAjustes')"><span class="mif-floppy-disk"></span> ok</button>
+      <button class="button success" ng-click="updateuser_preferencias()" onclick="hideMetroDialog('#modelAjustes')"><span class="mif-floppy-disk"></span> Guardar</button>
 
       
 
