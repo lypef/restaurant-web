@@ -4,7 +4,7 @@ module.exports = function(req,res,next)
 {
 	if (req.session.clients)
 	{
-		db.clients_users.findOne({_id: req.session.admin},function(err,doc){
+		db.clients_users.findOne({_id: req.session.user.admin._id},function(err,doc){
 			if (doc.status)
 			{
 				next();
