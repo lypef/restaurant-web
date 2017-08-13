@@ -165,6 +165,8 @@
                     </ul>
             </li>
             <li ng-show='usuario.preferencias.clientes'><a href="dashboard#/clients"><span class="mif-users mif-2x"></span> Clientes</a></li>
+
+            <li ng-show='usuario.preferencias.admin'><a href="dashboard#/admin"><span class="mif-cogs mif-2x"></span> Administrar</a></li>
         </ul>
 
         <div class="app-bar-element place-right" ng-show="loadinasc">
@@ -195,9 +197,6 @@
                     </li>
                     <li>
                     <a onclick="toggleMetroDialog('#modelAjustes')"><span class="mif-cogs icon fg-white"> Ajustes</span></a>
-                    </li>
-                    <li ng-show='usuario.preferencias.admin'>
-                    <a href="dashboard#/admin"><span class="mif-cogs icon fg-white"> Administrar</span></a>
                     </li>
                     <li class="divider"></li>
                     <li>

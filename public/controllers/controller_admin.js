@@ -69,7 +69,7 @@ app.controller("clients_users", function($scope, $http, $window)
 
     $scope.GetClientsuser = function (){
         $scope.$emit('load')
-        $http.get('/api/clients_users/')
+        $http.get('/api/admin/accounts/')
         .success(function(data) {
             $scope.all = data;
         })

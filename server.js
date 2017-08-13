@@ -127,7 +127,6 @@ app.get('/api/account/users', User_adminValuesjson)
 app.post('/api/account/users/delete', DeleteUser_admin )
 app.post('/api/account/users/add', AddUserAccount);
 app.post('/api/account/users/update', UpdateUser );
-app.post('/api/account/users/update_preferencias', UpdateUser_preferencias );
 
 //Api gloables
 app.get('/api/catproducts/:id', CatProductsEditsJson)
@@ -145,6 +144,7 @@ app.post('/api/measurement/update', UpdateMeasurements )
 app.post('/api/measurement/delete', DeleteMeasuremeants )
 app.post('/api/measurement/search', SearchMeasurements )
 app.post('/api/users/update', UpdateUser );
+app.post('/api/users/update_preferencias', UpdateUser_preferencias );
 
 //Enlaces globales de inicio de session
 app.post("/login", Login )
@@ -161,6 +161,8 @@ app.get("/admin_login_incorrect", AdminIncorrect )
 app.get("/admin_dashboard", Dashboard_Admin )
 
 //add user desde el admin
+app.get('/api/admin/accounts/', ClientsUsersJson);
+
 app.post('/api/users/add', AddUser);
 app.post('/api/users/search', Search_users );
 app.post('/api/users/delete', DeleteUser );
@@ -172,7 +174,6 @@ app.post('/api/users/delete', DeleteUser );
 
 // Enlaces pendientes de ordenar
 
-app.get('/api/clients_users/', ClientsUsersJson);
 app.get('/api/clients_users/:id', ClientsUserIDLoad);
 app.post('/api/users_admin/delete', DeleteUser_admin );
 app.post("/api/clients_users/add", InsertClientUser );
