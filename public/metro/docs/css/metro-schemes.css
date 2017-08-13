@@ -235,12 +235,12 @@
 }
 .app-bar.indigo .app-bar-drop-container {
   border: 2px solid indigo;
-  background-color: indigo;
+  background-color: #57169a;
   color: #ffffff;
 }
 .app-bar.indigo .app-bar-drop-container:before {
-  background-color: #0072c6;
-  border-color: #0072c6;
+  background-color: #57169a;
+  border-color: #57169a;
 }
 .app-bar.indigo .app-bar-pullmenu .app-bar-menu {
   border-top: 1px solid #4c9cd7;

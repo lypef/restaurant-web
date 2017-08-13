@@ -10,6 +10,7 @@ var user_scheme = new mongoose.Schema({
 	username: {type: String, required: true},
 	password: {type: String, required: true},
 	nombre: {type: String, required: true},
+	img: String,
 	direccion: String,
 	telefono: String,
 	preferencias: { type: Schema.Types.ObjectId, ref: 'user_preferencias'},

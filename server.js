@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var sessiontrue = require('./middlewares/session');
 var tokenApi = require('./middlewares/TokenApi');
+var AccesClients = require('./middlewares/TokenApi');
 var StatusTrue = require('./middlewares/StatusTrue');
 var ValidateEmail = require("email-validator");
 var db = require("./models/models");
@@ -30,107 +31,168 @@ app.use("/admin_dashboard",sessiontrue);
 app.use('/api/', tokenApi);
 app.use('/api/', StatusTrue);
 
+// Api clientes
+app.use('/api/clients/', function(req,res,next){
+    if (req.session.user.preferencias.clientes)
+    {
+        next()
+    }else
+    {
+        res.status(500).send('No autorizado')
+    }
+});
+app.get('/api/clients/', GetClients);
+app.get('/api/clients/direcciones/:id', GetClient);
+app.post('/api/clients/add', CreateClient );
+app.post('/api/clients/update', ClientUpdate );
+app.post('/api/clients/delete', DeleteClient );
+app.post('/api/clients/search', SearchClient );
+app.post('/api/clients/direcciones/add', AddDireccion );
+app.post('/api/clients/direcciones/update', UpdateDireccion );
+app.post('/api/clients/direcciones/delete', DeleteDireccion );
 
-// Enlaces GET
-app.get('/', Inicio );
-app.get("/dashboard", Dashboard );
-app.get('/logout', Logout);
-app.get('/admin_login', AdminLogin);
-app.get("/admin_dashboard", Dashboard_Admin );
-app.get("/membership_off", Membership_Off );
-app.get("/user_incorrect", user_incorrect );
-app.get("/admin_login_incorrect", AdminIncorrect );
+//Api ingredientes
+app.use('/api/ingredients/', function(req,res,next){
+    if (req.session.user.preferencias.ingredientes)
+    {
+        next()
+    }else
+    {
+        res.status(500).send('No autorizado')
+    }
+});
+app.get('/api/ingredients/', getIngredientsJson)
+app.get('/api/ingredients/:id', getIngredientID)
 
-// Enlaces POST
-app.post("/login", Login );
-app.post("/login_admin", login_admin );
+app.post('/api/ingredients/add', AddIngredient)
+app.post('/api/ingredients/search', SearchIngredients )
+app.post('/api/ingredients/update', UpdateIngredient)
+app.post('/api/ingredient/delete', DeleteIngredient )
 
-// Api get
-app.get('/api/clients/', ClientsJson);
-app.get('/api/clientedit/:id', ClienteditsJson);
+//Api recetas
+app.use('/api/recipes/', function(req,res,next){
+    if (req.session.user.preferencias.recetas)
+    {
+        next()
+    }else
+    {
+        res.status(500).send('No autorizado')
+    }
+});
+app.get('/api/recipes/', GetRecetasJSON)
+app.get('/api/recipes/:id', GetRecetasJSON_ID)
+app.get('/api/recipes/ingredientes/:id', GetUseRecetasJSON_ID)
+
+app.post('/api/recipes/search', SearchRecetas )
+app.post('/api/recipes/delete', DeleteReceta )
+app.post('/api/recipes/ingredients/search', SearchIngredients )
+app.post('/api/recipes/add', CreateReceta );
+app.post('/api/recipes/update', UpdateReceta )
+app.post('/api/recipes/ingredients/update', UpdateIngredient)
+
+//Api products
+app.use('/api/products/', function(req,res,next){
+    if (req.session.user.preferencias.products)
+    {
+        next()
+    }else
+    {
+        res.status(500).send('No autorizado')
+    }
+});
+app.get('/api/products/', getproductsJson)
+app.get('/api/products/recipes/', GetRecetasJSON)
+app.get('/api/products/use_recetas/', GetUseRecetasJSON)
+app.get('/api/products/stock', getproductsJson_stock)
+app.get('/api/products/product/:id', getProductID)
+
+app.post('/api/products/add', AddProduct)
+app.post('/api/products/search', search_products )
+app.post('/api/products/search_stock', search_products_stock )
+app.post('/api/products/update', UpdateProduct)
+app.post('/api/products/delete', DeleteProduct )
 
 
-app.get('/api/get_direcciones/:id', ClienteDireccionesJson);
+//Api accounts admin
+app.use('/api/account/', function(req,res,next){
+    if (req.session.user.preferencias.admin)
+    {
+        next()
+    }else
+    {
+        res.status(500).send('No autorizado')
+    }
+});
+app.get('/api/account/users', User_adminValuesjson)
+app.post('/api/account/users/delete', DeleteUser_admin )
+app.post('/api/account/users/add', AddUserAccount);
+app.post('/api/account/users/update', UpdateUser );
+app.post('/api/account/users/update_preferencias', UpdateUser_preferencias );
 
-app.get('/api/catproducts/:id', CatProductsEditsJson);
+//Api gloables
+app.get('/api/catproducts/:id', CatProductsEditsJson)
 app.get('/api/catproducts/', catproductsJson)
-
-app.get('/api/users/', usersjson)
-
-app.get('/api/clients_users/', ClientsUsersJson);
-app.get('/api/clients_users/:id', ClientsUserIDLoad);
-
-app.get('/api/admin/values', AdminValuesjson)
-app.get('/api/users/values', UserValuesjson)
-app.get('/api/users_admin', User_adminValuesjson)
-app.get('/api/users/:id', UserIDLoad);
-app.get('/api/users/search/:id', Search_users_id );
-
-app.get('/api/getproducts/', getproductsJson)
-app.get('/api/getproducts_stock/', getproductsJson_stock)
-app.get('/api/getproducts/:id', getProductID)
-
-app.get('/api/getingredients/', getIngredientsJson)
-app.get('/api/getingredients/:id', getIngredientID)
+app.post('/api/catproducts/update/admin', CatproductsUpdateAdmin )
+app.post('/api/catproducts/delete/admin', DeleteCatProducts )
+app.post('/api/catproducts/add', CreateCatProduct )
+app.post('/api/catproducts/add/admin', CreateCatProductAdmin )
+app.post('/api/catproducts/search', SearchCatProducts )
 
 app.get('/api/get_measurements/', GetMeasurementsJSON)
 app.get('/api/get_measurements/:id', GetMeasuremetsJSON_ID)
-
-app.get('/api/get_receta/', GetRecetasJSON)
-app.get('/api/get_receta/:id', GetRecetasJSON_ID)
-app.get('/api/get_use_recetas/:id', GetUseRecetasJSON_ID)
-app.get('/api/get_use_recetas/', GetUseRecetasJSON)
-
-// Api POST
-app.post('/api/clients/add', CreateClient );
-app.post('/api/client/update', UpdateClientAdmin );
-app.post('/api/client/update/clients', UpdateClient_User );
-app.post('/api/client/delete', DeleteClient );
-app.post('/api/client/search', SearchClient );
-
-app.post('/api/clients_direcciones/add', InsertClientDirecciones );
-app.post('/api/clients_direcciones/update', UpdateClientDireccion );
-app.post('/api/clients_direcciones/delete', DeleteClientDireccion );
-
-app.post('/api/catproducts/update/admin', CatproductsUpdateAdmin );
-app.post('/api/catproducts/delete/admin', DeleteCatProducts );
-app.post('/api/catproducts/add', CreateCatProduct );
-app.post('/api/catproducts/add/admin', CreateCatProductAdmin );
-app.post('/api/catproducts/search', SearchCatProducts );
-
-app.post("/api/clients_users/add", InsertClientUser );
-app.post('/api/clients_users/search', SearchClient_users );
-app.post('/api/clients_users/update', UpdateClient_User );
-app.post('/api/account/update', UpdateAccount );
-app.post('/api/clients_users/delete', DeleteClientUser );
-
-app.post('/api/users/add', AddUser);
-app.post('/api/users/search', Search_users );
-app.post('/api/users/delete', DeleteUser );
-app.post('/api/users_admin/delete', DeleteUser_admin );
-app.post('/api/users/update', UpdateUser );
-app.post('/api/users/update_preferencias', UpdateUser_preferencias );
-
-app.post('/api/products/add', AddProduct);
-app.post('/api/updateproducts', UpdateProduct)
-app.post('/api/deleteproducts', DeleteProduct );
-app.post('/api/search_products', search_products );
-app.post('/api/search_products_stock', search_products_stock );
-
-app.post('/api/add_ingredient', AddIngredient);
-app.post('/api/ingredient/search', SearchIngredients )
-app.post('/api/update_ingredient', UpdateIngredient)
-app.post('/api/ingredient/delete', DeleteIngredient )
-
 app.post('/api/measurement/add', CreateMeasurement )
 app.post('/api/measurement/update', UpdateMeasurements )
 app.post('/api/measurement/delete', DeleteMeasuremeants )
-app.post('/api/measurement/search', SearchMeasurements );
+app.post('/api/measurement/search', SearchMeasurements )
 
-app.post('/api/receta/add', CreateReceta );
-app.post('/api/receta/search', SearchRecetas )
-app.post('/api/receta/update', UpdateReceta )
-app.post('/api/receta/delete', DeleteReceta )
+//Enlaces globales de inicio de session
+app.post("/login", Login )
+app.post("/login_admin", login_admin )
+
+app.get('/', Inicio )
+app.get("/user_incorrect", user_incorrect )
+app.get("/membership_off", Membership_Off )
+app.get("/dashboard", Dashboard )
+app.get('/logout', Logout)
+
+app.get('/admin_login', AdminLogin)
+app.get("/admin_login_incorrect", AdminIncorrect )
+app.get("/admin_dashboard", Dashboard_Admin )
+
+//add user desde el admin
+app.post('/api/users/add', AddUser);
+app.post('/api/users/search', Search_users );
+app.post('/api/users/delete', DeleteUser );
+
+
+
+
+
+
+// Enlaces pendientes de ordenar
+
+app.get('/api/clients_users/', ClientsUsersJson);
+app.get('/api/clients_users/:id', ClientsUserIDLoad);
+app.post('/api/users_admin/delete', DeleteUser_admin );
+app.post("/api/clients_users/add", InsertClientUser );
+app.post('/api/clients_users/search', SearchClient_users );
+app.post('/api/clients_users/update', updatecuenta );
+app.post('/api/account/update', UpdateAccount );
+
+app.get('/api/users/', usersjson)
+
+
+app.get('/api/admin/values', AdminValuesjson)
+app.get('/api/users/values', UserValuesjson)
+
+app.get('/api/users/:id', UserIDLoad);
+app.get('/api/users/search/:id', Search_users_id );
+
+// Api POST
+
+
+
+
 
 //Funciones
 function Inicio (req, res) 
@@ -253,9 +315,45 @@ function Logout (req, res, next) {
 	})
 };
 
+function updatecuenta (req, res) 
+{  
+    db.admin.findOne({_id: req.session.user.admin._id},function(err,doc){
+        if (doc == null)
+        {
+            if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null)
+            {
+                db.clients.update(
+                { _id : req.body._id },
+                { 
+                    nombre: req.body.nombre.toUpperCase(),
+                    telefono: req.body.telefono.toUpperCase(),
+                    mail: req.body.mail
+                },
+                function( err) 
+                {
+                    if (err)
+                    {
+                        res.status(404).send("Algo desconocido sucedio, intente nuevamente")
+                    }else
+                    {
+                        res.status(200).send("Algo desconocido sucedio, intente nuevamente")
+                    }
+                })  
+            }else
+            {
+                res.status(500).send("Email no valido.")
+            }
+        }else
+        {
+            res.status(500).send("Este cliente no pertenece a su cuenta")
+        }
+    })
+
+}
+
 
 function AddUser (req,res){
-	db.user.findOne({ username: req.body.username},function(err,doc){
+    db.user.findOne({ username: req.body.username},function(err,doc){
         if (doc == null && req.body.admin != null)
         {
             var p = new db.user_preferencias(
@@ -289,6 +387,45 @@ function AddUser (req,res){
             })
         }else {
             res.sendStatus(500); 
+        }
+    });
+};
+
+function AddUserAccount (req,res){
+	db.user.findOne({ username: req.body.username},function(err,doc){
+        if (!doc)
+        {
+            var p = new db.user_preferencias(
+            {
+                color_menubar: 'blue'
+            });
+
+            p.save(function (err){
+                if (!err)
+                {
+                    var p1 = new db.user(
+                    {
+                        username: req.body.username,
+                        password: req.body.password,
+                        nombre: req.body.nombre.toUpperCase(),
+                        img: req.body.img,
+                        direccion: req.body.direccion,
+                        telefono: req.body.telefono,
+                        preferencias: p._id,
+                        admin: req.session.user.admin._id
+                    })
+                    p1.save(function(err, doc ){
+                        if (err)
+                        {
+                            res.status(500).send('Error'); 
+                        }else {
+                            res.status(200).send('usuario agregado');
+                        }
+                    })
+                }
+            })
+        }else {
+            res.status(500).send('Error'); 
         }
     });
 };
@@ -377,7 +514,7 @@ function User_adminValuesjson (req,res){
     });
 };
 
-function ClientsJson (req,res){
+function GetClients (req,res){
 	db.clients.find({ admin: req.session.user.admin._id}, function(err, data) {
         if(err) {
             res.status(500).send(err);
@@ -410,19 +547,7 @@ function GetProducts (req,res){
     }).sort({nombre:1});
 };
 
-function ClienteditsJson (req,res){
-    db.clients.findOne({_id:req.params.id , admin: req.session.user.admin._id},function(err,doc){
-        if (doc != null)
-        {
-            res.json(doc)
-        }else
-        {
-            res.sendStatus(404);
-        }
-    });
-};
-
-function ClienteDireccionesJson (req,res){
+function GetClient (req,res){
 	db.direcciones.find({ admin: req.session.user.admin._id, cliente: req.params.id }).sort({ calle:1 }).populate('cliente').exec(function(err,doc){
 		if (doc != null)
 		{
@@ -461,41 +586,7 @@ function CreateClient (req, res)
     }
 }
 
-function UpdateClientAdmin (req, res) 
-{  
-    if (req.body.admin == req.session.user.admin._id)
-    {
-        if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null)
-        {
-            db.clients.update(
-            { _id : req.body._id },
-            { 
-                nombre: req.body.nombre.toUpperCase(),
-                direccion: req.body.direccion.toUpperCase(),
-                telefono: req.body.telefono,
-                mail: req.body.mail
-            },
-            function( err) 
-            {
-                if (err)
-                {
-                    res.status(404).send("Algo desconocido sucedio, intente nuevamente");
-                }else
-                {
-                    res.status(200)
-                }
-            })  
-        }else
-        {
-            res.sendStatus(500, "Email no valido.")
-        }
-    }else
-    {
-        res.status(500).send("Este cliente no esta asociado a la cuenta actual.");
-    }
-}
-
-function UpdateClientDireccion (req, res) 
+function UpdateDireccion (req, res) 
 {  
 	db.direcciones.update(
     { _id : req.body._id, admin: req.session.user.admin._id },
@@ -518,7 +609,7 @@ function UpdateClientDireccion (req, res)
     })
 }
 
-function UpdateClient_User (req, res) 
+function ClientUpdate (req, res) 
 {  
     db.admin.findOne({_id: req.session.user.admin._id},function(err,doc){
         if (doc == null)
@@ -594,6 +685,7 @@ function UpdateUser (req, res)
         { 
             password: req.body.password, 
             nombre: req.body.nombre.toUpperCase(),
+            img: req.body.img,
             direccion: req.body.direccion.toUpperCase(),
             telefono: req.body.telefono,
             admin: req.body.admin
@@ -733,7 +825,7 @@ function DeleteClient (req, res)
     
 }
 
-function DeleteClientDireccion (req, res) 
+function DeleteDireccion (req, res) 
 {  
 	db.direcciones.remove(
     { admin: req.session.user.admin._id, _id : req.body._id },
@@ -1527,9 +1619,8 @@ function DeleteClientUser (req, res)
         })
 }
 
-function InsertClientDirecciones (req,res)
+function AddDireccion (req,res)
 {
-    
     var p = new db.direcciones({
         admin: req.session.user.admin._id,
         cliente: req.body.cliente, 
@@ -1541,7 +1632,6 @@ function InsertClientDirecciones (req,res)
     })
 
     p.save(function (err) {
-        console.log(p)
         if (err)
         {
             res.status(500).send("No fue posible crear la direccion, intente de nuevo.")

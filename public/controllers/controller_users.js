@@ -131,15 +131,55 @@ app.controller("UserValues", function($scope, $http){
     }
 });
 
-app.controller("users_administrator", function($scope, $http){
+app.controller("users_administrator", function($scope, $http, $timeout){
     $http.defaults.headers.common['x-access-token']=token;
     
     $scope.users = {}
+    $scope.user = {}
     $scope.tmp = {}
+
+    $scope.user.img = '/images/no-imagen.jpg'
+
+    $scope.fileReaderSupported = window.FileReader != null;
+    $scope.photoChanged = function(files){
+        if (files != null) {
+            var file = files[0];
+        if ($scope.fileReaderSupported && file.type.indexOf('image') > -1) {
+            $timeout(function() {
+                var fileReader = new FileReader();
+                fileReader.readAsDataURL(file);
+                fileReader.onload = function(e) {
+                    $timeout(function(){
+                        $scope.user.img = e.target.result;
+                    });
+                }
+            }
+            );
+        }
+    }
+    };
+
+    $scope.photoChangedupdate = function(files){
+        if (files != null) {
+            var file = files[0];
+        if ($scope.fileReaderSupported && file.type.indexOf('image') > -1) {
+            $timeout(function() {
+                var fileReader = new FileReader();
+                fileReader.readAsDataURL(file);
+                fileReader.onload = function(e) {
+                    $timeout(function(){
+                        $scope.tmp.img = e.target.result;
+                    });
+                }
+            }
+            );
+        }
+    }
+    };
 
     GetUsers = function (){
         $scope.$emit('load')
-        $http.get('/api/users_admin')
+        $http.get('/api/account/users')
         .success(function(data){
             $scope.users = data
         })
@@ -152,7 +192,7 @@ app.controller("users_administrator", function($scope, $http){
     }
 
     GetUsersAsc = function (){
-        $http.get('/api/users_admin')
+        $http.get('/api/account/users')
         .success(function(data){
             $scope.users = data
         })
@@ -170,7 +210,7 @@ app.controller("users_administrator", function($scope, $http){
     {
         $scope.$emit('loadasc')
 
-        $http.post('/api/users_admin/delete', $scope.tmp)
+        $http.post('/api/account/users/delete', $scope.tmp)
         .success (function (msg){
             pushMessage('success', 'HECHO', msg, "checkmark")
             GetUsersAsc()
@@ -189,9 +229,9 @@ app.controller("users_administrator", function($scope, $http){
         {
             $scope.$emit('loadasc')
 
-            $http.post('/api/users/update_preferencias', $scope.tmp)
+            $http.post('/api/account/users/update_preferencias', $scope.tmp)
             .success (function (msg){
-                $http.post('/api/users/update', $scope.tmp)
+                $http.post('/api/account/users/update', $scope.tmp)
                 GetUsersAsc()
                 pushMessage('success', 'HECHO', msg, "checkmark")
             })
@@ -209,6 +249,28 @@ app.controller("users_administrator", function($scope, $http){
         
     }
 
+    $scope.create = function (){
+        if ($scope.user.password == $scope.user.passwordtmp)
+        {
+            $scope.$emit('loadasc')
+            $http.post('/api/account/users/add', $scope.user)
+            .success (function (msg){
+                pushMessage('success', 'HECHO', msg, "checkmark")
+                $scope.user = {}
+                $scope.user.img = '/images/no-imagen.jpg'
+            })
+            .error (function (msg){
+                pushMessage('alert','ERROR', msg, "cross")
+            })
+            .finally (function (){
+                GetUsersAsc()
+                $scope.$emit('unloadasc')
+            })
+        }else
+        {
+            pushMessage('alert','ERROR', 'Contraseñas no son iguales', "cross")
+        }
+    }
 });
 
 app.controller("clients", ['$scope','$http','$window', function ($scope, $http, $window) {
@@ -225,7 +287,7 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
     $scope.update = function()
     {
         $scope.$emit('loadasc')
-        $http.post('/api/client/update/clients', $scope.tmp)
+        $http.post('/api/clients/update', $scope.tmp)
         .success(function(err) 
         {
             pushMessage('success', 'HECHO', 'Cliente actualizado con exito', "checkmark")
@@ -244,7 +306,7 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
     $scope.delete = function()
     {
         $scope.$emit('loadasc')
-        $http.post('/api/client/delete', $scope.tmp)
+        $http.post('/api/clients/delete', $scope.tmp)
         .success(function(msg) 
         {
             pushMessage('success', 'HECHO', msg, "checkmark")
@@ -319,7 +381,7 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
     $scope.SearchClient = function(){
         $scope.$emit('loadasc')
         $scope.inputbox
-        $http.post('/api/client/search', $scope.inputbox)
+        $http.post('/api/clients/search', $scope.inputbox)
         .success(function(data) {
             pushMessage('success','FOUNT',"Cliente's encontrados", "checkmark")
             $scope.all = data;
@@ -400,7 +462,7 @@ app.controller ("c_direcciones", function ($scope, $http, $routeParams){
     $scope.GetDirecciones = function ()
     {
         $scope.$emit('load')
-        $http.get('/api/get_direcciones/' + $routeParams.id)
+        $http.get('/api/clients/direcciones/' + $routeParams.id)
         .success(function(data) {
             $scope.direcciones = data;
         })
@@ -416,7 +478,7 @@ app.controller ("c_direcciones", function ($scope, $http, $routeParams){
     $scope.GetDireccionesAsc = function ()
     {
         $scope.$emit('loadasc')
-        $http.get('/api/get_direcciones/' + $routeParams.id)
+        $http.get('/api/clients/direcciones/' + $routeParams.id)
         .success(function(data) {
             $scope.direcciones = data;
         })
@@ -436,7 +498,7 @@ app.controller ("c_direcciones", function ($scope, $http, $routeParams){
 
     $scope.create = function(){
         $scope.$emit('loadasc')
-        $http.post('/api/clients_direcciones/add', $scope.direccion)
+        $http.post('/api/clients/direcciones/add', $scope.direccion)
         .success(function(msg) {
             $scope.direccion = {}
             pushMessage('success', 'HECHO', msg, "checkmark")
@@ -445,14 +507,14 @@ app.controller ("c_direcciones", function ($scope, $http, $routeParams){
             pushMessage('alert','ERROR',msg, "cross")
         })
         .finally (function (){
-            $scope.$emit('unloadasc')
             $scope.GetDireccionesAsc()
+            $scope.$emit('unloadasc')
         })
     };
 
     $scope.update = function (){
         $scope.$emit('loadasc')
-        $http.post('/api/clients_direcciones/update', $scope.tmp)
+        $http.post('/api/clients/direcciones/update', $scope.tmp)
         .success(function (msg){
             pushMessage('success', 'HECHO', msg, "checkmark")
         })
@@ -467,7 +529,7 @@ app.controller ("c_direcciones", function ($scope, $http, $routeParams){
 
     $scope.delete = function (){
         $scope.$emit('loadasc')
-        $http.post('/api/clients_direcciones/delete', $scope.tmp)
+        $http.post('/api/clients/direcciones/delete', $scope.tmp)
         .success(function (msg){
             pushMessage('success', 'HECHO', msg, "checkmark")
         })
@@ -727,7 +789,7 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
         if ($scope.use_receta.status)
         {
             $scope.use_receta_load = true
-            $http.get('/api/get_receta/')
+            $http.get('/api/products/recipes/')
             .success(function(data) {
                 $scope.use_receta_create = true
                 $scope.recetas = data;
@@ -747,8 +809,7 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
     $scope.GetIngredientes = function ()
     {
         $scope.$emit('load')
-        //Load ingredientes
-        $http.get('/api/get_use_recetas/')
+        $http.get('/api/products/use_recetas/')
         .success(function(data0) {
             $scope.ingredientes = data0;
         })
@@ -766,7 +827,7 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
     }
     
     $scope.Getproducts = function (){
-        $http.get('/api/getproducts/')
+        $http.get('/api/products/')
         .success(function(data) {
             $scope.products = data;
             $scope.LoadPages()
@@ -803,7 +864,7 @@ app.controller("products", ['$scope', '$http','$timeout', function ($scope, $htt
 
     $scope.search = function(){
         $scope.$emit('loadasc')
-        $http.post('/api/search_products', $scope.inputbox)
+        $http.post('/api/products/search', $scope.inputbox)
         .success(function(data) {
             pushMessage('success','FOUNT',"Productos encontrados", "checkmark")
             $scope.products = data;
@@ -897,7 +958,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
         $scope.GetIngredients = function ()
         {
             $scope.$emit('load')
-            $http.get('/api/getingredients/')
+            $http.get('/api/ingredients/')
                 .success(function(data) {
                     $scope.ingredients = data
                     $scope.IngredientUpdate = data
@@ -915,7 +976,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
         $scope.GetIngredientsasc = function ()
         {
             $scope.$emit('loadasc')
-            $http.get('/api/getingredients/')
+            $http.get('/api/ingredients/')
                 .success(function(data) {
                     $scope.ingredients = data
                     $scope.IngredientUpdate = data
@@ -962,7 +1023,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
         $scope.LoadValuesEdit = function(){
 
         $scope.$emit('loadasc')
-        $http.get('/api/getingredients/' + $scope.select.select)
+        $http.get('/api/ingredients/' + $scope.select.select)
             .success(function(data) {
                 $scope.select = data
                 pushMessage('warning', 'HECHO', 'Ingrediente encontrado', "checkmark")
@@ -977,7 +1038,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
 
         $scope.create = function(){
             $scope.$emit('loadasc')
-            $http.post('/api/add_ingredient', $scope.ingredient)
+            $http.post('/api/ingredients/add', $scope.ingredient)
             .success(function(msg) {
                 $scope.ingredient = {}
                 pushMessage('success', 'HECHO', msg, "checkmark")
@@ -993,7 +1054,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
 
         $scope.update = function(){
             $scope.$emit('loadasc')
-            $http.post('/api/update_ingredient', $scope.select)
+            $http.post('/api/ingredients/update', $scope.select)
             .success(function(msg){
                 $scope.select = {}
                 pushMessage('success', 'HECHO', msg, "checkmark")
@@ -1026,7 +1087,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
         $scope.search = function(){
         $scope.$emit('loadasc')
         $scope.inputbox
-        $http.post('/api/ingredient/search', $scope.inputbox)
+        $http.post('/api/ingredients/search', $scope.inputbox)
             .success(function(data) {
                 $scope.inputbox = {}
                 $scope.ingredients = data;
@@ -1068,7 +1129,7 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
 
         $scope.GetIngredients = function (){
             $scope.$emit('load')
-            $http.get('/api/getingredients/')
+            $http.get('/api/ingredients/')
             .success(function(data) {
                 $scope.ingredients = data
                 $scope.IngredientUpdate = data
@@ -1121,7 +1182,7 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
         
         $scope.update = function(item){
             $scope.$emit('loadasc')
-            $http.post('/api/update_ingredient', item)
+            $http.post('/api/ingredients/update', item)
             .success(function(data) {
                 pushMessage('success', 'HECHO', 'Producto actualizado', "checkmark")
             })
@@ -1137,7 +1198,7 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
         $scope.search = function(){
         $scope.$emit('loadasc')
         $scope.inputbox
-        $http.post('/api/ingredient/search', $scope.inputbox)
+        $http.post('/api/ingredients/search', $scope.inputbox)
             .success(function(data) {
                 $scope.inputbox = {}
                 $scope.ingredients = data;
@@ -1194,7 +1255,7 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.GetIngredients = function ()
         {
             $scope.$emit('load')
-            $http.get('/api/getingredients/')
+            $http.post('/api/recipes/ingredients/search')
             .success(function(data) {
                 $scope.ingredients = data
                 $scope.LoadPages()
@@ -1213,7 +1274,7 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.search = function(){
         $scope.$emit('loadasc')
         $scope.inputbox
-        $http.post('/api/ingredient/search', $scope.inputbox)
+        $http.post('/api/recipes/ingredients/search', $scope.inputbox)
             .success(function(data) {
                 pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
                 $scope.inputbox = {}
@@ -1264,7 +1325,7 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
             $scope.$emit('loadasc')
             $scope.receta.arr = $scope.arr
 
-            $http.post('/api/receta/add', $scope.receta)
+            $http.post('/api/recipes/add', $scope.receta)
             .success(function(msg) {
                 pushMessage('success', 'HECHO', msg, "checkmark")
                 $scope.clean()
@@ -1348,7 +1409,7 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.GetReceta = function ()
         {
             $scope.$emit('load')
-            $http.get('/api/get_receta/')
+            $http.get('/api/recipes/')
             .success(function(data) {
                 $scope.recetas = data
                 $scope.LoadPages()
@@ -1364,7 +1425,7 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.GetRecetaasc = function ()
         {
             $scope.$emit('loadasc')
-            $http.get('/api/get_receta/')
+            $http.get('/api/recipes/')
             .success(function(data) {
                 $scope.recetas = data
                 $scope.LoadPages()
@@ -1387,7 +1448,7 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.delete = function ()
         {
             $scope.$emit('loadasc')
-            $http.post('/api/receta/delete', $scope.receta)
+            $http.post('/api/recipes/delete', $scope.receta)
             .success(function(msg) {
                 pushMessage('success', 'HECHO', msg, "checkmark")
             })
@@ -1402,7 +1463,7 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.search = function(){
             $scope.$emit('loadasc')
             $scope.inputbox
-            $http.post('/api/receta/search', $scope.inputbox)
+            $http.post('/api/recipes/search', $scope.inputbox)
             .success(function(data) {
                 pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
                 $scope.inputbox = {}
@@ -1499,7 +1560,7 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
             $scope.measurements = data
         })
 
-        $http.get('/api/get_receta/' + $routeParams.id)
+        $http.get('/api/recipes/' + $routeParams.id)
             .success(function(data) {
                 $scope.receta = data
             })
@@ -1507,7 +1568,7 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
                 pushMessage('alert','ERROR',data, "cross")
         });
 
-        $http.get('/api/get_use_recetas/' + $routeParams.id )
+        $http.get('/api/recipes/ingredientes/' + $routeParams.id )
             .success(function(data) {
                 for (var i = 0; i < data.length; i++)
                 {
@@ -1523,7 +1584,8 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
         $scope.GetIngredients = function ()
         {
             $scope.$emit('load')
-            $http.get('/api/getingredients/')
+            $scope.inputbox
+            $http.post('/api/recipes/ingredients/search', $scope.inputbox)
             .success(function(data) {
                 $scope.ingredientes = data
                 $scope.LoadPages()
@@ -1544,7 +1606,7 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
             $scope.$emit('load')
             $scope.receta.arr = $scope.arr
 
-            $http.post('/api/receta/update', $scope.receta)
+            $http.post('/api/recipes/update', $scope.receta)
             .success(function(msg) {
                 $window.location = "dashboard#/recetas"
                 pushMessage('success', 'HECHO', msg, "checkmark")
@@ -1559,7 +1621,7 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
 
         $scope.delete = function(_id){
             $scope.$emit('load')
-            $http.post('/api/receta/delete', $scope.receta)
+            $http.post('/api/recipes/delete', $scope.receta)
             .success(function(msg) {
                 $window.location = "dashboard#/recetas"
                 pushMessage('success', 'HECHO', msg, "checkmark")
@@ -1575,13 +1637,12 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
         $scope.search = function(){
         $scope.$emit('loadasc')
         $scope.inputbox
-        $http.post('/api/ingredient/search', $scope.inputbox)
+        $http.post('/api/recipes/ingredients/search', $scope.inputbox)
             .success(function(data) {
                 pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
                 $scope.inputbox = {}
                 $scope.ingredientes = data;
                 $scope.LoadPages()
-                $scope.ChangePageItems()
             })
             .error(function(msg) {
                 pushMessage('danger','NOT FOUND',msg, "question")
@@ -1703,7 +1764,7 @@ app.controller("view_receta", function($scope, $http, $routeParams, $window)
     
     $scope.GetReceta = function (){
         $scope.$emit('load')
-        $http.get('/api/get_receta/' + $routeParams.id)
+        $http.get('/api/recipes/' + $routeParams.id)
         .success(function(data) 
         {
             $scope.receta = data;
@@ -1719,7 +1780,7 @@ app.controller("view_receta", function($scope, $http, $routeParams, $window)
 
     $scope.GetIngredientes = function (){
         $scope.$emit('load')
-        $http.get('/api/get_use_recetas/' + $routeParams.id)
+        $http.get('/api/recipes/ingredientes/' + $routeParams.id)
         .success(function(data) 
         {
             $scope.ingredientes = data;
@@ -1752,7 +1813,7 @@ app.controller("update_products", function ($scope, $http, $timeout, $routeParam
     $scope.update = function()
     {
         $scope.$emit('loadasc')
-        $http.post('/api/updateproducts', $scope.product)
+        $http.post('/api/products/update', $scope.product)
         .success(function(err) 
         {
             pushMessage('success', 'HECHO', 'Producto actualizado con exito', "checkmark")
@@ -1771,7 +1832,7 @@ app.controller("update_products", function ($scope, $http, $timeout, $routeParam
     $scope.delete = function()
     {
         $scope.$emit('loadasc')
-        $http.post('/api/deleteproducts', $scope.product)
+        $http.post('/api/products/delete', $scope.product)
         .success(function(err) 
         {
             pushMessage('success', 'HECHO', err, "checkmark")
@@ -1795,7 +1856,7 @@ app.controller("update_products", function ($scope, $http, $timeout, $routeParam
 
     $scope.loadvalues = function (){
         $scope.use_receta_load = true
-        $http.get('/api/getproducts/' + $routeParams.id)
+        $http.get('/api/products/product/' + $routeParams.id)
         .success(function(data) {
             $scope.product = data;
             if ($scope.product.receta)
@@ -1813,7 +1874,7 @@ app.controller("update_products", function ($scope, $http, $timeout, $routeParam
 
     $scope.GetReceta = function (){
         $scope.$emit('load')
-        $http.get('/api/get_receta/')
+        $http.get('/api/products/recipes/')
         .success(function(data) 
         {
             $scope.recetas = data;
@@ -1879,9 +1940,12 @@ app.controller('surtir_recetea', function ($scope, $http, $routeParams){
 
     $scope.GetReceta = function (){
         $scope.$emit('load')
-        $http.get('/api/get_receta/'+ $routeParams.id)
+        $http.get('/api/recipes/'+ $routeParams.id)
         .success(function(data){
             $scope.receta = data
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR',msg, "cross")
         })
         .finally (function (){
             $scope.$emit('unload')
@@ -1890,9 +1954,12 @@ app.controller('surtir_recetea', function ($scope, $http, $routeParams){
 
     $scope.GetIngredientes = function (){
         $scope.$emit('load')
-        $http.get('/api/get_use_recetas/'+ $routeParams.id)
+        $http.get('/api/recipes/ingredientes/'+ $routeParams.id)
         .success (function (data){
             $scope.ingredients = data
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR',msg, "cross")
         })
         .finally (function (){
             $scope.$emit('unload')
@@ -1904,6 +1971,9 @@ app.controller('surtir_recetea', function ($scope, $http, $routeParams){
         $http.get('/api/get_measurements/')
         .success(function(data) {
             $scope.measuremeants = data
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR',msg, "cross")
         })
         .finally (function (){
             $scope.$emit('unload')
@@ -1917,7 +1987,7 @@ app.controller('surtir_recetea', function ($scope, $http, $routeParams){
     $scope.update = function(item){
         item = item.ingrediente
         $scope.$emit('loadasc')
-        $http.post('/api/update_ingredient', item)
+        $http.post('/api/recipes/ingredients/update', item)
         .success(function(data) {
             pushMessage('success', 'HECHO', 'Producto actualizado', "checkmark")
         })
@@ -1948,7 +2018,7 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
 
     $scope.update = function(item){
         $scope.$emit('loadasc')
-        $http.post('/api/updateproducts', item)
+        $http.post('/api/products/update', item)
         .success(function(data) {
             pushMessage('success', 'HECHO', 'Producto actualizado', "checkmark")
         })
@@ -1963,7 +2033,7 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
 
     $scope.Getproducts = function (){
         $scope.$emit('load')
-        $http.get('/api/getproducts_stock')
+        $http.get('/api/products/stock')
         .success(function(data) {
             $scope.products = data;
             $scope.LoadPages()
@@ -1981,7 +2051,7 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
     
     $scope.search = function(){
         $scope.$emit('loadasc')
-        $http.post('/api/search_products_stock', $scope.inputbox)
+        $http.post('/api/products/search_stock', $scope.inputbox)
         .success(function(data) {
             pushMessage('success','FOUNT',"Productos encontrados", "checkmark")
             $scope.products = data;

@@ -134,7 +134,7 @@
                     <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Corte Z</a></li>
                     </ul>
             </li>
-            <li>
+            <li ng-show="usuario.preferencias.ingredientes || usuario.preferencias.recetas || usuario.preferencias.products">
                 <a href="" class="dropdown-toggle"><span class="mif-stack3 mif-2x"></span> Productos</a>
                 <ul class="d-menu" data-role="dropdown">
                     <li><a href="dashboard#/catproducts"><span class="mif-flow-line mif-2x"></span> Categorias</a></li>
@@ -176,7 +176,13 @@
 
         <div class="app-bar-element place-right" ng-show="!loadinasc">
 
-            <a class="dropdown-toggle fg-white"><span class="mif-enter"></span> {{ usuario.admin.namefast }}</a>
+            <a class="dropdown-toggle fg-white"><img ng-src="{{ usuario.img }}" style="
+                width: 50px;
+                height: 50px;
+                border-radius: 150px;
+                -webkit-border-radius: 150px;
+                -moz-border-radius: 150px;
+                "> {{ usuario.admin.namefast }}</a>
             <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
                 <ul class="unstyled-list">
                     <li>
