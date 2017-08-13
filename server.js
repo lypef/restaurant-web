@@ -144,6 +144,7 @@ app.post('/api/measurement/add', CreateMeasurement )
 app.post('/api/measurement/update', UpdateMeasurements )
 app.post('/api/measurement/delete', DeleteMeasuremeants )
 app.post('/api/measurement/search', SearchMeasurements )
+app.post('/api/users/update', UpdateUser );
 
 //Enlaces globales de inicio de session
 app.post("/login", Login )
@@ -701,7 +702,8 @@ function UpdateUser (req, res)
                 {
                     req.session.user.nombre = req.body.nombre.toUpperCase(),
                     req.session.user.direccion = req.body.direccion.toUpperCase(),
-                    req.session.user.telefono = req.body.telefono
+                    req.session.user.telefono = req.body.telefono,
+                    req.session.user.img = req.body.img
 
                 }
                 res.status(200).send('Valores actualizados')

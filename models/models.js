@@ -11,7 +11,7 @@ var user_scheme = new mongoose.Schema({
 	password: {type: String, required: true},
 	nombre: {type: String, required: true},
 	img: String,
-	direccion: String,
+	direccion: {type: String, required: true},
 	telefono: String,
 	preferencias: { type: Schema.Types.ObjectId, ref: 'user_preferencias'},
 	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'}

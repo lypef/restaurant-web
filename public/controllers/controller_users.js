@@ -55,7 +55,7 @@ app.config(function($routeProvider){
         })
 })
 
-app.controller("UserValues", function($scope, $http){
+app.controller("UserValues", function($scope, $http, $timeout){
     $http.defaults.headers.common['x-access-token']=token;
     $scope.usuario = {};
 
@@ -79,6 +79,25 @@ app.controller("UserValues", function($scope, $http){
             $scope.loadinasc = false
         })
     })
+
+    $scope.fileReaderSupported = window.FileReader != null;
+    $scope.photoChanged = function(files){
+        if (files != null) {
+            var file = files[0];
+        if ($scope.fileReaderSupported && file.type.indexOf('image') > -1) {
+            $timeout(function() {
+                var fileReader = new FileReader();
+                fileReader.readAsDataURL(file);
+                fileReader.onload = function(e) {
+                    $timeout(function(){
+                        $scope.usuario.img = e.target.result;
+                    });
+                }
+            }
+            );
+        }
+    }
+    };
 
     loadasc = function (){
         $scope.loadinasc = true

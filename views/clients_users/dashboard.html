@@ -249,7 +249,13 @@
       data-close-button="true"
       data-width="auto"
       data-overlay="true">
-      <p><h3>{{ usuario.admin.nombre }}</h3></p>
+      <p><h3><img ng-src="{{ usuario.img }}" style="
+                width: 50px;
+                height: 50px;
+                border-radius: 150px;
+                -webkit-border-radius: 150px;
+                -moz-border-radius: 150px;
+                "> {{ usuario.admin.nombre }}</h3></p>
       
       <form>
           <div class="input-control modern text iconic" id="widthfull">
@@ -287,6 +293,12 @@
         <span class="label">Telefono</span>
         <span class="icon mif-phone"></span>
       </div>
+      <br>
+      <div class="input-control file" data-role="input" ng-model="tmp.img">
+            <input type="file" placeholder="Imagen" onchange="angular.element(this).scope().photoChanged(this.files)">
+            <button class="button" ><span class="mif-folder"></span></button>
+
+        </div>
         <br>
 
       
