@@ -51,6 +51,8 @@ app.post('/api/clients/direcciones/add', AddDireccion );
 app.post('/api/clients/direcciones/update', UpdateDireccion );
 app.post('/api/clients/direcciones/delete', DeleteDireccion );
 
+
+
 //Api ingredientes
 app.use('/api/ingredients/', function(req,res,next){
     if (req.session.user.preferencias.ingredientes)
@@ -68,6 +70,8 @@ app.post('/api/ingredients/add', AddIngredient)
 app.post('/api/ingredients/search', SearchIngredients )
 app.post('/api/ingredients/update', UpdateIngredient)
 app.post('/api/ingredient/delete', DeleteIngredient )
+
+
 
 //Api recetas
 app.use('/api/recipes/', function(req,res,next){
@@ -90,6 +94,8 @@ app.post('/api/recipes/add', CreateReceta );
 app.post('/api/recipes/update', UpdateReceta )
 app.post('/api/recipes/ingredients/update', UpdateIngredient)
 
+
+
 //Api products
 app.use('/api/products/', function(req,res,next){
     if (req.session.user.preferencias.products)
@@ -111,6 +117,7 @@ app.post('/api/products/search', search_products )
 app.post('/api/products/search_stock', search_products_stock )
 app.post('/api/products/update', UpdateProduct)
 app.post('/api/products/delete', DeleteProduct )
+
 
 
 //Api accounts admin
@@ -150,6 +157,9 @@ app.post('/api/users/update_preferencias', UpdateUser_preferencias );
 app.post("/login", Login )
 app.post("/login_admin", login_admin )
 
+app.get('/api/admin/values', AdminValuesjson)
+app.get('/api/users/values', UserValuesjson)
+
 app.get('/', Inicio )
 app.get("/user_incorrect", user_incorrect )
 app.get("/membership_off", Membership_Off )
@@ -160,41 +170,25 @@ app.get('/admin_login', AdminLogin)
 app.get("/admin_login_incorrect", AdminIncorrect )
 app.get("/admin_dashboard", Dashboard_Admin )
 
-//add user desde el admin
+// Gescion admin
 app.get('/api/admin/accounts/', ClientsUsersJson);
+app.get('/api/admin/users', usersjson)
+app.get('/api/admin/accounts/user/:id', UserIDLoad);
+app.get('/api/admin/accounts/:id', ClientsUserIDLoad);
+app.get('/api/admin/accounts/users/:id', Search_users_id );
 
-app.post('/api/users/add', AddUser);
-app.post('/api/users/search', Search_users );
-app.post('/api/users/delete', DeleteUser );
-
-
-
-
-
+app.post('/api/admin/accounts/create', InsertClientUser );
+app.post('/api/admin/accounts/update', UpdateAccount );
+app.post('/api/admin/accounts/delete', DeleteAcconunt );
+app.post('/api/admin/accounts/user/update', UpdateUser_admin );
+app.post('/api/admin/accounts/users/search', Search_users );
+app.post('/api/admin/accounts/users/delete', DeleteUser );
+app.post('/api/admin/accounts/users/create', AddUser);
+app.post('/api/admin/accounts/search', SearchClient_users );
 
 // Enlaces pendientes de ordenar
 
-app.get('/api/clients_users/:id', ClientsUserIDLoad);
 app.post('/api/users_admin/delete', DeleteUser_admin );
-app.post("/api/clients_users/add", InsertClientUser );
-app.post('/api/clients_users/search', SearchClient_users );
-app.post('/api/clients_users/update', updatecuenta );
-app.post('/api/account/update', UpdateAccount );
-
-app.get('/api/users/', usersjson)
-
-
-app.get('/api/admin/values', AdminValuesjson)
-app.get('/api/users/values', UserValuesjson)
-
-app.get('/api/users/:id', UserIDLoad);
-app.get('/api/users/search/:id', Search_users_id );
-
-// Api POST
-
-
-
-
 
 //Funciones
 function Inicio (req, res) 
@@ -316,42 +310,6 @@ function Logout (req, res, next) {
 		}
 	})
 };
-
-function updatecuenta (req, res) 
-{  
-    db.admin.findOne({_id: req.session.user.admin._id},function(err,doc){
-        if (doc == null)
-        {
-            if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null)
-            {
-                db.clients.update(
-                { _id : req.body._id },
-                { 
-                    nombre: req.body.nombre.toUpperCase(),
-                    telefono: req.body.telefono.toUpperCase(),
-                    mail: req.body.mail
-                },
-                function( err) 
-                {
-                    if (err)
-                    {
-                        res.status(404).send("Algo desconocido sucedio, intente nuevamente")
-                    }else
-                    {
-                        res.status(200).send("Algo desconocido sucedio, intente nuevamente")
-                    }
-                })  
-            }else
-            {
-                res.status(500).send("Email no valido.")
-            }
-        }else
-        {
-            res.status(500).send("Este cliente no pertenece a su cuenta")
-        }
-    })
-
-}
 
 
 function AddUser (req,res){
@@ -489,7 +447,7 @@ function AddIngredient (req,res){
 function usersjson (req,res){
 	db.user.find().populate('admin').exec(function(err, doc) {
         if(err) {
-            res.sendStatus(err);
+            res.status(500).send(err);
         }else
         {   
             res.json(doc);    
@@ -712,6 +670,38 @@ function UpdateUser (req, res)
         })  
 }
 
+function UpdateUser_admin (req, res) 
+{  
+    db.user.update(
+        { _id : req.body._id },
+        { 
+            password: req.body.password, 
+            nombre: req.body.nombre.toUpperCase(),
+            img: req.body.img,
+            direccion: req.body.direccion.toUpperCase(),
+            telefono: req.body.telefono,
+            admin: req.body.admin
+        },
+        function( err) 
+        {
+            if (err)
+            {
+                res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
+            }else
+            {
+                if (req.session.user._id == req.body._id)
+                {
+                    req.session.user.nombre = req.body.nombre.toUpperCase(),
+                    req.session.user.direccion = req.body.direccion.toUpperCase(),
+                    req.session.user.telefono = req.body.telefono,
+                    req.session.user.img = req.body.img
+
+                }
+                res.status(200).send('Valores actualizados')
+            }
+        })  
+}
+
 function UpdateUser_preferencias (req, res) 
 {  
     db.user_preferencias.update(
@@ -843,6 +833,19 @@ function DeleteDireccion (req, res)
             res.status(200).send('Direccion eliminada')
         }
     })    
+}
+
+function DeleteAcconunt (req, res) 
+{  
+    db.clients_users.remove({ _id : req.body._id },function( err) {
+        if (err)
+        {
+            res.status(500).send("Error, Intente nuevamente.")
+        }else
+        {
+            res.status(200).send('Usuario eliminado correctamente')
+        }
+    })
 }
 
 function DeleteUser (req, res) 

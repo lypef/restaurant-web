@@ -82,23 +82,10 @@ app.controller("clients_users", function($scope, $http, $window)
     }
     $scope.GetClientsuser()
 
-    $scope.CreateClient = function(){
-        $http.post('/api/clients', $scope.NewClient)
-            .success(function(id) {
-                $scope.NewClient = {};
-                pushMessage('success', 'HECHO', 'Cliente agregado con exito', "checkmark")
-                $window.location = "dashboard#/editclient/" + id;
-            })
-            .error(function(msg) {
-                console.log(msg);
-                pushMessage('alert','ERROR','VERIFIQUE LA INFORMACION', "cross")
-            });
-    };  
-
     $scope.SearchClient = function(){
         $scope.$emit('loadasc')
         $scope.inputbox
-        $http.post('/api/clients_users/search', $scope.inputbox)
+        $http.post('/api/admin/accounts/search', $scope.inputbox)
         .success(function(data) {
             pushMessage('success','FOUNT',"Cliente's encontrados", "checkmark")
             $scope.all = data;
@@ -112,7 +99,6 @@ app.controller("clients_users", function($scope, $http, $window)
         })
     };  
 
-
 })
 
 app.controller("add_client", function($scope, $http,$window){
@@ -121,7 +107,7 @@ app.controller("add_client", function($scope, $http,$window){
     
     $scope.addClient_user = function(){
         $scope.$emit('loadasc')
-        $http.post('/api/clients_users/add', $scope.add)
+        $http.post('/api/admin/accounts/create', $scope.add)
         .success(function(data) {
             pushMessage('success', 'HECHO', 'Cliente agregado', "checkmark")
             $window.location = "admin_dashboard#/management_clients";
@@ -147,7 +133,7 @@ app.controller("clientUpdate", function($scope, $http, $routeParams, $window)
     
     $scope.GetClientsuser = function (){
         $scope.$emit('load')
-        $http.get('/api/clients_users/' + $routeParams.id)
+        $http.get('/api/admin/accounts/' + $routeParams.id)
         .success(function(data) 
         {
             $scope.Client = data;
@@ -161,7 +147,7 @@ app.controller("clientUpdate", function($scope, $http, $routeParams, $window)
     }
     
     $scope.Getusers = function (){
-        $http.get('/api/users/search/' + $routeParams.id)
+        $http.get('/api/admin/accounts/users/' + $routeParams.id)
         .success(function(data) 
         {
             $scope.all = data;
@@ -182,7 +168,7 @@ app.controller("clientUpdate", function($scope, $http, $routeParams, $window)
     $scope.Update = function()
     {
         $scope.$emit('loadasc')
-        $http.post('/api/account/update', $scope.Client)
+        $http.post('/api/admin/accounts/update', $scope.Client)
         .success(function(err) 
         {
             pushMessage('success', 'HECHO', err, "checkmark")
@@ -202,7 +188,7 @@ app.controller("clientUpdate", function($scope, $http, $routeParams, $window)
     
     $scope.Delete = function()
     {
-        $http.post('/api/clients_users/delete', $scope.Client)
+        $http.post('/api/admin/accounts/delete', $scope.Client)
         .success(function(err) 
         {
             pushMessage('success', 'HECHO', 'Cliente eliminado con exito', "checkmark")
@@ -228,7 +214,7 @@ app.controller("AddUser_Client", function($scope, $http, $routeParams, $window)
     
     $scope.Getclient_user = function (){
         $scope.$emit('load')
-        $http.get('/api/clients_users/')
+        $http.get('/api/admin/accounts/')
         .success(function(data) 
         {
             $scope.Clients = data;
@@ -245,7 +231,7 @@ app.controller("AddUser_Client", function($scope, $http, $routeParams, $window)
 
     $scope.CreateUser = function(){
         $scope.$emit('loadasc')
-        $http.post('/api/users/add', $scope.variables)
+        $http.post('/api/admin/accounts/users/create', $scope.variables)
         .success(function(data) {
             pushMessage('success', 'HECHO', 'Usuario creado', "checkmark")
             $window.location = "admin_dashboard#/edit_client/" + $scope.variables.admin;
@@ -270,7 +256,7 @@ app.controller("clients_users_user", function($scope, $http, $window)
 
     $scope.GetClientsuser = function (){
         $scope.$emit('load')
-        $http.get('/api/users/')
+        $http.get('/api/admin/users')
         .success(function(data) {
             $scope.all = data;
         })
@@ -286,7 +272,7 @@ app.controller("clients_users_user", function($scope, $http, $window)
     $scope.SearchClient = function(){
         $scope.$emit('loadasc')
         $scope.inputbox
-        $http.post('/api/users/search', $scope.inputbox)
+        $http.post('/api/admin/accounts/users/search', $scope.inputbox)
         .success(function(data) {
             pushMessage('success','FOUNT',"Usuario's encontrados", "checkmark")
             $scope.all = data;
@@ -312,7 +298,7 @@ app.controller("ClientUserUpdate", function($scope, $http, $routeParams, $window
     
     $scope.GetUser = function (){
         $scope.$emit('load')
-        $http.get('/api/users/' + $routeParams.id)
+        $http.get('/api/admin/accounts/user/' + $routeParams.id)
         .success(function(data) 
         {
             $scope.variables = data;
@@ -326,7 +312,7 @@ app.controller("ClientUserUpdate", function($scope, $http, $routeParams, $window
     }
 
     $scope.GetUser_client = function (){
-        $http.get('/api/clients_users/')
+        $http.get('/api/admin/accounts/')
         .success(function(data) 
         {
             $scope.Clients = data;
@@ -345,24 +331,24 @@ app.controller("ClientUserUpdate", function($scope, $http, $routeParams, $window
     
     $scope.Update = function()
     {
-        $http.post('/api/users/update', $scope.variables)
-            .success(function(err) 
-            {
-                pushMessage('success', 'HECHO', 'Cliente actualizado con exito', "checkmark")
-                $window.location = "admin_dashboard#/edit_client/" + $scope.variables.admin;
-                $scope.variables = {};
-            })
-            .error(function(msg) 
-            {
-                console.log(msg);
-                pushMessage('alert','ERROR', 'VERIFIQUE LA INFORMACION', "cross")
-            })
+        $http.post('/api/admin/accounts/user/update', $scope.variables)
+        .success(function(err) 
+        {
+            pushMessage('success', 'HECHO', 'Cliente actualizado con exito', "checkmark")
+            $window.location = "admin_dashboard#/edit_client/" + $scope.variables.admin;
+            $scope.variables = {};
+        })
+        .error(function(msg) 
+        {
+            console.log(msg);
+            pushMessage('alert','ERROR', 'VERIFIQUE LA INFORMACION', "cross")
+        })
     }  
 
     
     $scope.Delete = function()
     {
-        $http.post('/api/users/delete', $scope.variables)
+        $http.post('/api/admin/accounts/users/delete', $scope.variables)
             .success(function(err) 
             {
                 pushMessage('success', 'HECHO', 'Cliente eliminado con exito', "checkmark")
