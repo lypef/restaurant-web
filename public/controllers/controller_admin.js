@@ -334,13 +334,18 @@ app.controller("ClientUserUpdate", function($scope, $http, $routeParams, $window
         $http.post('/api/admin/accounts/user/update', $scope.variables)
         .success(function(err) 
         {
-            pushMessage('success', 'HECHO', 'Cliente actualizado con exito', "checkmark")
-            $window.location = "admin_dashboard#/edit_client/" + $scope.variables.admin;
-            $scope.variables = {};
+            $http.post('/api/admin/accounts/user/preferencias/update', $scope.variables)
+            .success(function (msg){
+                pushMessage('success', 'HECHO', 'Cliente actualizado con exito', "checkmark")
+                $window.location = "admin_dashboard#/edit_client/" + $scope.variables.admin;
+                $scope.variables = {};
+            })
+            .error (function (msg){
+                pushMessage('alert','ERROR', msg, "cross")
+            })
         })
         .error(function(msg) 
         {
-            console.log(msg);
             pushMessage('alert','ERROR', 'VERIFIQUE LA INFORMACION', "cross")
         })
     }  

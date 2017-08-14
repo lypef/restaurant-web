@@ -135,7 +135,7 @@ app.post('/api/account/users/delete', DeleteUser_admin )
 app.post('/api/account/users/add', AddUserAccount);
 app.post('/api/account/users/update', UpdateUser );
 
-//Api gloables
+//Api globales
 app.get('/api/catproducts/:id', CatProductsEditsJson)
 app.get('/api/catproducts/', catproductsJson)
 app.post('/api/catproducts/update/admin', CatproductsUpdateAdmin )
@@ -181,6 +181,7 @@ app.post('/api/admin/accounts/create', InsertClientUser );
 app.post('/api/admin/accounts/update', UpdateAccount );
 app.post('/api/admin/accounts/delete', DeleteAcconunt );
 app.post('/api/admin/accounts/user/update', UpdateUser_admin );
+app.post('/api/admin/accounts/user/preferencias/update', Admin_user_preferencias_update );
 app.post('/api/admin/accounts/users/search', Search_users );
 app.post('/api/admin/accounts/users/delete', DeleteUser );
 app.post('/api/admin/accounts/users/create', AddUser);
@@ -191,6 +192,23 @@ app.post('/api/admin/accounts/search', SearchClient_users );
 app.post('/api/users_admin/delete', DeleteUser_admin );
 
 //Funciones
+function AddMovement (session, description)
+{
+    var p = new db.movements(
+    {
+        admin: session.admin._id,
+        user: session._id,
+        fecha: Date.now(),
+        description: description
+    });
+
+    p.save(function (err){
+        if (!err){
+            console.log(p)
+        }
+    })
+}
+
 function Inicio (req, res) 
 {
 	if (req.session.user)
@@ -266,10 +284,10 @@ function Login (req,res){
             {
                 req.session.user = doc
                 req.session.clients = true;
+                AddMovement(req.session.user, 'Inicio de session')
                 res.redirect("/dashboard");
             }else
             {
-                console.log("Membresia vencida")
                 res.redirect("/membership_off");
             }
 		}
@@ -298,7 +316,8 @@ function login_admin (req,res){
 };
 
 function Logout (req, res, next) {
-	req.session.clients = false;
+	AddMovement(req.session.user, 'Cierre de session')
+    req.session.clients = false;
     req.session.destroy(function(err){
 		if (err)
 		{
@@ -318,7 +337,13 @@ function AddUser (req,res){
         {
             var p = new db.user_preferencias(
             {
-                color_menubar: 'blue'
+                adminadmin: req.body.admin,
+                color_menubar: 'blue',
+                admin: req.body.preferencias.admin,
+                ingredientes: req.body.preferencias.ingredientes,
+                recetas: req.body.preferencias.recetas,
+                products: req.body.preferencias.products,
+                clientes: req.body.preferencias.clientes
             });
 
             p.save(function (err){
@@ -357,6 +382,7 @@ function AddUserAccount (req,res){
         {
             var p = new db.user_preferencias(
             {
+                adminadmin: req.session.user.admin._id,
                 color_menubar: 'blue'
             });
 
@@ -413,6 +439,7 @@ function AddProduct (req,res){
                 }else
                 {
                     res.status(200).json(data)
+                    AddMovement(req.session.user, 'Se agrego nuevo producto: ' + req.body.name)
                 }
             })
 
@@ -437,6 +464,7 @@ function AddIngredient (req,res){
                     res.status(500).send("Error desconocido")
                 }else {
                     res.status(200).send("Ingrediente agregado")
+                    AddMovement(req.session.user, 'Nuevo ingrediente: ' + req.body.name)
                 }
         });
     }else {
@@ -480,7 +508,7 @@ function GetClients (req,res){
             res.status(500).send(err);
         }else
         {
-        	res.json(data);	
+        	res.json(data);
         }
     }).sort({nombre:1});
 };
@@ -538,6 +566,7 @@ function CreateClient (req, res)
     	 }else
     	 {
     	 	res.status(200).send('Cliente creado con exito')
+            AddMovement(req.session.user, 'Se creo cliente: ' + p.nombre)
     	 }
     	})	
     }else
@@ -565,6 +594,7 @@ function UpdateDireccion (req, res)
         }else
         {
             res.status(200).send('Direccion actualizada')
+            AddMovement(req.session.user,'Direccion actualizada: ' + req.body.calle)
         }
     })
 }
@@ -590,7 +620,8 @@ function ClientUpdate (req, res)
                         res.status(404).send("Algo desconocido sucedio, intente nuevamente")
                     }else
                     {
-                        res.status(200).send("Algo desconocido sucedio, intente nuevamente")
+                        res.status(200).send('cliente actualizado')
+                        AddMovement(req.session.user, 'Se actualizo cliente: ' + req.body.nombre )
                     }
                 })  
             }else
@@ -730,8 +761,32 @@ function UpdateUser_preferencias (req, res)
         })  
 }
 
+function Admin_user_preferencias_update (req, res) 
+{  
+    db.user_preferencias.update(
+        { _id : req.body.preferencias._id },
+        { 
+            admin: req.body.preferencias.admin,
+            ingredientes: req.body.preferencias.ingredientes,
+            recetas: req.body.preferencias.recetas,
+            products: req.body.preferencias.products,
+            clientes: req.body.preferencias.clientes
+        },
+        function( err) 
+        {
+            if (err)
+            {
+                res.sendStatus(404, "Algo desconocido sucedio, intente nuevamente")
+            }else
+            {
+                res.status(200).send('Valores actualizados')
+            }
+        })  
+}
+
 function UpdateProduct (req, res) 
 {  
+    if (!req.body.stock || req.body.stock == null){ req.body.stock = 0 }
     db.products.update(
         { _id : req.body._id, admin: req.session.user.admin._id },
         { 
@@ -747,6 +802,7 @@ function UpdateProduct (req, res)
         {
             if (err)
             {
+                console.log(err)
                 res.status(404).send("Algo desconocido sucedio, intente nuevamente")
             }else
             {
@@ -756,6 +812,7 @@ function UpdateProduct (req, res)
                     }else
                     {
                         res.json(data); 
+                        AddMovement(req.session.user, 'Se actualizo producto: ' + req.body.name)
                     }
                 })
             }
@@ -779,6 +836,7 @@ function UpdateIngredient (req, res)
             }else
             {
                 res.status(200).send('Ingrediente actualizado')
+                AddMovement(req.session.user, 'Se actualizo ingrediente: ' + req.body.name)
             }
         })  
 }
@@ -807,6 +865,7 @@ function DeleteClient (req, res)
                         res.status(500).send("Error, Intente nuevamente.")
                     }else
                     {
+                        AddMovement(req.session.user,'Se elimino cliente: ' + req.body.nombre)
                         res.status(200).send('Cliente eliminado')
                     }
                 })
@@ -831,21 +890,61 @@ function DeleteDireccion (req, res)
         }else
         {
             res.status(200).send('Direccion eliminada')
+            AddMovement(req.session.user, 'Direccion eliminada: ' + req.body.calle )
         }
     })    
 }
 
 function DeleteAcconunt (req, res) 
 {  
+    var r = true
+
     db.clients_users.remove({ _id : req.body._id },function( err) {
-        if (err)
+        if (!err)
         {
-            res.status(500).send("Error, Intente nuevamente.")
-        }else
-        {
-            res.status(200).send('Usuario eliminado correctamente')
-        }
+            db.user.remove ({ admin: req.body._id }, function (err){
+                if (!err){
+                    db.clients.remove ({ admin: req.body._id }, function (err){
+                        if (!err){
+                            db.direcciones.remove ({ admin: req.body._id }, function (err){
+                                if (!err){
+                                    db.products.remove ({ admin: req.body._id }, function (err){
+                                        if (!err){
+                                            db.ingredients.remove ({ admin: req.body._id }, function (err){
+                                                if (!err){
+                                                    db.recetas.remove ({ admin: req.body._id }, function (err){
+                                                    if (!err){
+                                                        db.use_recetas.remove ({ admin: req.body._id }, function (err){
+                                                        if (!err){
+                                                            db.user_preferencias.remove ({ adminadmin: req.body._id }, function (err){
+                                                            if (!err){
+                                                                r = true
+                                                            }else { r = false }
+                                                            })
+                                                        }else { r = false }
+                                                        })
+                                                    }else { r = false }               
+                                                    })
+                                                }else { r = false }
+                                            })        
+                                        }else { r = false }
+                                    })
+                                }else { r = false }
+                            })
+                        }else { r = false }
+                    })
+                }else { r = false }
+            })
+        }    
+        else{ r = false }
     })
+
+    if (r){
+        res.status(200).send('Cuenta eliminada')
+    }else
+    {
+        res.status(500).send('Error')
+    }
 }
 
 function DeleteUser (req, res) 
@@ -884,7 +983,12 @@ function DeleteUser_admin (req, res)
                         res.sendStatus(500, "Error, Intente nuevamente.")
                     }else
                     {
-                        res.status(200).send('Usuario eliminado correctamente')
+                        db.user_preferencias.remove({ _id: req.body.preferencias._id }, function (err){
+                            if (!err)
+                            {
+                                res.status(200).send('Usuario eliminado correctamente')
+                            }
+                        })
                     }
                 })
             }
@@ -908,6 +1012,7 @@ function DeleteProduct (req, res)
             }else
             {
                 res.status(200).send('Producto eliminado con exito')
+                AddMovement(req.session.user, 'Se elimino producto: ' + req.body.name)
             }
         })
 }
@@ -925,6 +1030,7 @@ function DeleteIngredient (req, res)
             }else
             {
                 res.status(200).send("Ingrediente Eliminado")
+                AddMovement(req.session.user, 'Se elimino ingrediente: ' + req.body.name)
             }
         })
 }
@@ -1412,8 +1518,9 @@ function CreateReceta (req, res)
         if (insert)
         {
             res.status(200).send("Receta creada")
+            AddMovement(req.session.user, 'Se agrego receta: ' + req.body.name)
         }else {
-            res.status(500).send("Alo desconocido sucedio")
+            res.status(500).send("Algo desconocido sucedio")
         }
      }
     })  
@@ -1444,7 +1551,7 @@ function ClientsUserIDLoad (req,res){
 };
 
 function UserIDLoad (req,res){
-    db.user.findOne({_id:req.params.id},function(err,doc){
+    db.user.findOne({_id:req.params.id}).populate('preferencias').exec(function(err,doc){
         if (doc != null)
         {
             res.json(doc)
@@ -1528,20 +1635,15 @@ function DeleteReceta (req, res)
     if (r)
     {
         res.status(200).send('Receta eliminada')
+        AddMovement(req.session.user, 'Se elimino receta: ' + req.body.name)
     }else {
-        res.status(500).send('No se pueod eliminar la receta')
+        res.status(500).send('No se pudo eliminar la receta')
     }
 }
 
 function UpdateReceta (req, res) 
 {  
-    db.use_recetas.remove({ receta: req.body._id, admin: req.session.user.admin._id },function( err) 
-    {
-        if (!err)
-        {
-            console.log('Recetas eliminada')
-        }
-    })
+    db.use_recetas.remove({ receta: req.body._id, admin: req.session.user.admin._id },function( err) {})
 
     var insert_receta = true
     var insert_ingredients = true
@@ -1580,6 +1682,7 @@ function UpdateReceta (req, res)
     if (insert_ingredients || insert_receta)
     {
         res.status(200).send('Receta actualizada')
+        AddMovement(req.session.user, 'Se actualizo receta: ' + req.body.name)
     }else {
         res.status(500).send('Al parecer la actualizacion no se completo. Verifiquela')
     }
@@ -1643,6 +1746,7 @@ function AddDireccion (req,res)
             res.status(500).send("No fue posible crear la direccion, intente de nuevo.")
         }else
         {
+            AddMovement(req.session.user,'Se agrego direccion: ' + req.body.calle + ', cliente: ' + req.body.cliente)
             res.status(200).send('Direccion agregada correctamente')
         }
     })

@@ -116,19 +116,23 @@
             <li>
                 <a href="" class="dropdown-toggle"><span class="mif-money mif-2x"></span> Caja</a>
                 <ul class="d-menu" data-role="dropdown">
-                    <li>
-                        <a href="tables"><span class="mif-flow-line mif-2x"></span> Ventas</a>
+                    <li ng-show="usuario.preferencias.admin">
+                        <a href="tables"><span class="mif-flow-line mif-2x"></span> Finanzas</a>
                         </li>
-                        <li>
+                        <li ng-show="usuario.preferencias.admin">
                         <a href="#"><span class="mif-flow-line mif-2x"></span> Movimientos</a>
                         </li>
                         <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Ingresar efectivo</a></li>
 
-                    <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Retirar efectivo</a></li>
+                    <li ng-show="usuario.preferencias.admin"><a href="tables"><span class="mif-flow-line mif-2x"></span> Retirar efectivo</a></li>
 
                     <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Corte X</a></li>
 
                     <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Corte Z</a></li>
+
+                    <li ng-show="usuario.preferencias.admin"><a href="tables"><span class="mif-flow-line mif-2x"></span> Corte x global</a></li>
+
+                    <li ng-show="usuario.preferencias.admin"><a href="tables"><span class="mif-flow-line mif-2x"></span> Corte Z global</a></li>
                     </ul>
             </li>
             <li ng-show="usuario.preferencias.ingredientes || usuario.preferencias.recetas || usuario.preferencias.products">
@@ -163,7 +167,6 @@
             </li>
             <li ng-show='usuario.preferencias.clientes'><a href="dashboard#/clients"><span class="mif-users mif-2x"></span> Clientes</a></li>
 
-            <li ng-show='usuario.preferencias.admin'><a href="dashboard#/admin"><span class="mif-cogs mif-2x"></span> Administrar</a></li>
         </ul>
 
         <div class="app-bar-element place-right" ng-show="loadinasc">
@@ -184,10 +187,17 @@
                 "> {{ usuario.admin.namefast }}</a>
             <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
                 <ul class="unstyled-list">
-                    <li>
-                    <a href="#"><i class="fa fa-fw fa-user"></i><span class="mif-earth2 icon fg-white"> {{ usuario.admin.nombre }}</span></a>
+                    <li ng-show='usuario.preferencias.admin'>
+                    <a href="dashboard#/admin"><i class="fa fa-fw fa-user"></i><span class="mif-cogs icon fg-white"> {{ usuario.admin.nombre }}</span></a>
 
                     </li>
+
+                    <li ng-show='!usuario.preferencias.admin'>
+                    <a href="dashboard#/"><i class="fa fa-fw fa-user"></i><span class="mif-earth2 icon fg-white"> {{ usuario.admin.nombre }}</span></a>
+
+                    </li>
+
+
                     <br>
                     <li>
                     <a onclick="toggleMetroDialog('#modelperfil')"><span class="mif-user icon fg-white"> Perfil</span></a>

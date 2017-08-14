@@ -4,6 +4,17 @@
                 <span class="title">Actualizar usuario</span>
                 </div>
                 <div class="content">
+
+                <br>
+                <div align="center">
+                    <img ng-src="{{ variables.img }}" style="
+                    width: 200px;
+                    height: 200px;
+                    border-radius: 150px;
+                    -webkit-border-radius: 150px;
+                    -moz-border-radius: 150px;
+                    ">
+                </div>
                 <form align="center">  
 				
 				<span>Seleccione un cliente: </span>
@@ -45,7 +56,32 @@
                         <span class="icon mif-phone"></span>
                         </div>
 
-
+<hr>
+<br>
+                        <label class="switch-original">
+            <input type="checkbox" ng-model="variables.preferencias.admin">Administrador
+            <span class="check"></span>
+        </label>
+        
+        <label class="switch-original">
+            <input type="checkbox" ng-model="variables.preferencias.ingredientes">Gestion ingredientes
+            <span class="check"></span>
+        </label>
+        
+        <label class="switch-original">
+            <input type="checkbox" ng-model="variables.preferencias.recetas">Gestion recetas
+            <span class="check"></span>
+        </label>
+        
+        <label class="switch-original">
+            <input type="checkbox" ng-model="variables.preferencias.products">Gestion productos
+            <span class="check"></span>
+        </label>
+        
+        <label class="switch-original">
+            <input type="checkbox" ng-model="variables.preferencias.clientes">Gestion clientes
+            <span class="check"></span>
+        </label>
                         
                         <br><br>
                         

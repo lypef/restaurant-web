@@ -11,6 +11,7 @@
 	
 	<table class="table striped hovered">
 		<tr>
+			<th>IMAGEN</th>
 			<th>NOMBRE DE USUARIO</th>
 			<th>NOMBRE</th>
 			<th>ADMINISTRADOR</th>
@@ -18,6 +19,15 @@
 			<th>OPCIONES</th>
 		</tr>
 		<tr ng-repeat="todo in all" align="center">
+			<td>
+				<img ng-src="{{ todo.img }}" style="
+                width: 80px;
+                height: 80px;
+                border-radius: 150px;
+                -webkit-border-radius: 150px;
+                -moz-border-radius: 150px;
+                ">
+			</td>
 			<td><a href="/admin_dashboard#/update_users/{{todo._id}}">{{ todo.username }}</a></td>
 			<td>{{ todo.nombre }}</td>
 			<td><a href="/admin_dashboard#/edit_client/{{ todo.admin._id }}">{{ todo.admin.nombre }} </a></td>

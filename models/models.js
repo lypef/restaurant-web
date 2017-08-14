@@ -18,6 +18,7 @@ var user_scheme = new mongoose.Schema({
 })
 
 var preferencias_user_scheme = new mongoose.Schema({
+	adminadmin: { type: Schema.Types.ObjectId, ref: 'clients_users'},
 	color_menubar: String,
 	admin: { type: Boolean, default: false },
 	ingredientes: { type: Boolean, default: false },
@@ -108,6 +109,26 @@ var use_ingredients_scheme = new mongoose.Schema({
 	admin: { type: Schema.Types.ObjectId, ref: 'clients_users', required: true}
 })
 
+var movements_scheme = new mongoose.Schema({
+	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'},
+	user: { type: Schema.Types.ObjectId, ref: 'user'},
+	fecha: Date,
+	description: {type: String, required: true}
+})
+
+var sales_scheme = new mongoose.Schema({
+	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'},
+	user: { type: Schema.Types.ObjectId, ref: 'user'},
+	fecha: Date,
+	monto: Number
+})
+
+var sales_products_scheme = new mongoose.Schema({
+	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'},
+	sale: { type: Schema.Types.ObjectId, ref: 'sales'},
+	product: { type: Schema.Types.ObjectId, ref: 'products'},
+})
+
 module.exports.user = mongoose.model("user",user_scheme);
 module.exports.admin = mongoose.model("admin",Admin_scheme);
 module.exports.clients = mongoose.model("clients",clients_scheme);
@@ -120,5 +141,8 @@ module.exports.recetas = mongoose.model("recetas",recetas_scheme);
 module.exports.use_recetas = mongoose.model("use_recetas",use_ingredients_scheme);
 module.exports.direcciones = mongoose.model("clients_direcciones",clientsDirecciones_scheme);
 module.exports.user_preferencias = mongoose.model("user_preferencias",preferencias_user_scheme);
+module.exports.movements = mongoose.model("movements",movements_scheme);
+module.exports.sales = mongoose.model("sales",sales_scheme);
+module.exports.sales_products = mongoose.model("sales_products",sales_products_scheme);
 
 

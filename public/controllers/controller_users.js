@@ -248,7 +248,7 @@ app.controller("users_administrator", function($scope, $http, $timeout){
         {
             $scope.$emit('loadasc')
 
-            $http.post('/api/account/users/update_preferencias', $scope.tmp)
+            $http.post('/api/users/update_preferencias', $scope.tmp)
             .success (function (msg){
                 $http.post('/api/account/users/update', $scope.tmp)
                 GetUsersAsc()
