@@ -1,5 +1,58 @@
 <div ng-controller="users_administrator">            
-<!-- Nuevo producto-->
+<!-- Acordeon-->
+<div class="accordion large-heading" data-role="accordion">
+  <div class="frame">
+
+    <div class="heading"><span class="mif-database icon"></span> {{ usuario.admin.nombre }}</span></div>
+    <div class="content">
+    <form align="center">  
+                        <div class="input-control  modern text iconic" id="widthfull" >
+                        <input type="text" placeholder="Nombre" ng-model="Client.nombre" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-user"></span>
+                        </div>
+    
+                        <div class="input-control  modern text iconic" id="widthfull" >
+                        <input type="text" placeholder="Nombre rapido" ng-model="Client.namefast" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-user"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Direccion" ng-model="Client.direccion" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-paragraph-left"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Telefono" ng-model="Client.telefono" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-phone"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Mail" ng-model="Client.mail" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-mail"></span>
+                        </div>
+                        
+                        <br><br>
+                        
+                        <button class="button success loading-pulse" ng-click="Update()">ACTUALIZAR</button>
+        
+                    </form>
+    </div>  
+
+  </div>  
+</div>
+<!-- Finaliza Acordeon-->
+<!-- Acordeon-->
+<div class="accordion large-heading" data-role="accordion">
+  <div class="frame">
+
+    <div class="heading"><span class="mif-plus icon"></span> Agregar usuario</span></div>
+    <div class="content" align="center">
+    <!-- Nuevo producto-->
         <div class="panel info">
         <div class="heading">
         
@@ -80,13 +133,19 @@
     </div>
 </div>
     <!-- Finaliza Nuevo producto-->
-<!-- Crud -->
-<div class="grid">
-    <div class="row flex-just-sa">
-    
-<div class="cell-auto-size" style="width: 100%">
-	
-			<div class="panel success" style="border: 2px solid #fff">
+    </div>  
+
+  </div>  
+</div>
+<!-- Finaliza Acordeon-->
+
+<!-- Acordeon-->
+<div class="accordion large-heading" data-role="accordion">
+  <div class="frame">
+
+    <div class="heading"><span class="mif-list icon"></span> Lista de usuarios</span></div>
+    <div class="content">
+    <div class="panel success" style="border: 2px solid #fff">
                 <div class="heading">
                 
                 <span class="title">Usuarios</span>
@@ -95,11 +154,11 @@
                 <div class="content">
 
                 <form >
-                	<div class="input-control text " data-role="input" style="width: 100%">
+                  <div class="input-control text " data-role="input" style="width: 100%">
         
-        		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar">
+            <input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar">
         
-        		<button class="button" ng-click="search()"><span class="mif-search"></span></button></div>
+            <button class="button" ng-click="search()"><span class="mif-search"></span></button></div>
                 </form>
 <div style="overflow-x:auto;">
     <table class="table striped hovered bordered border">
@@ -130,7 +189,7 @@
               mif-cross fg-red mif-2x"></span></td> 
               
               <td align="center">
-              	<div class="dropdown-button">
+                <div class="dropdown-button">
                     <button class="button success dropdown-toggle">Opciones</button>
                         <ul class="split-content d-menu place-right" data-role="dropdown">
                             <li><a class="mif-plus" ng-click="load(a)" onclick="toggleMetroDialog('#delete')"> Eliminar</a></li>
@@ -167,10 +226,51 @@
 </div>
 <hr>
 </div></div>
-</div>
+    </div>  
 
+  </div>  
 </div>
+<!-- Finaliza Acordeon-->
+
+<!-- Acordeon-->
+<div class="accordion large-heading" data-role="accordion">
+  <div class="frame">
+
+    <div class="heading"><span class="mif-plus icon"></span> Agregar</span></div>
+    <div class="content" align="center">
+    ss
+    </div>  
+
+  </div>  
 </div>
+<!-- Finaliza Acordeon-->
+
+<!-- Acordeon-->
+<div class="accordion large-heading" data-role="accordion">
+  <div class="frame">
+
+    <div class="heading"><span class="mif-plus icon"></span> Agregar</span></div>
+    <div class="content" align="center">
+    ss
+    </div>  
+
+  </div>  
+</div>
+<!-- Finaliza Acordeon-->
+
+<!-- Acordeon-->
+<div class="accordion large-heading" data-role="accordion">
+  <div class="frame">
+
+    <div class="heading"><span class="mif-plus icon"></span> Agregar</span></div>
+    <div class="content" align="center">
+    ss
+    </div>  
+
+  </div>  
+</div>
+<!-- Finaliza Acordeon-->
+
 <!--Ventana edit modal-->
 <div data-role="dialog" id="update" class="padding30" data-type="" 
       data-close-button="true"
@@ -223,43 +323,43 @@
 
       <hr>
       <div class="input-control select">
-	    <select ng-model="tmp.preferencias.color_menubar" style="text-align: center; text-align-last: center;">
-	        <option value="">---Color menu bar---</option>
-	        <option value="darcula">Darcula</option>
-	        <option value="indigo">Indigo</option>
-	        <option value="blue">Blue</option>
-	        <option value="pink">Pink</option>
-	        <option value="green">Green</option>
-	        <option value="red">Red</option>
-	        <option value="orange">Orange</option>
-	    </select>
-	    </div>
+      <select ng-model="tmp.preferencias.color_menubar" style="text-align: center; text-align-last: center;">
+          <option value="">---Color menu bar---</option>
+          <option value="darcula">Darcula</option>
+          <option value="indigo">Indigo</option>
+          <option value="blue">Blue</option>
+          <option value="pink">Pink</option>
+          <option value="green">Green</option>
+          <option value="red">Red</option>
+          <option value="orange">Orange</option>
+      </select>
+      </div>
       <br><br>
-		<label class="switch-original">
-			<input type="checkbox" ng-model="tmp.preferencias.admin">Administrador
-			<span class="check"></span>
-		</label>
-		
-		<label class="switch-original">
-			<input type="checkbox" ng-model="tmp.preferencias.ingredientes">Gestion ingredientes
-			<span class="check"></span>
-		</label>
-		
-		<label class="switch-original">
-			<input type="checkbox" ng-model="tmp.preferencias.recetas">Gestion recetas
-			<span class="check"></span>
-		</label>
-		
-		<label class="switch-original">
-			<input type="checkbox" ng-model="tmp.preferencias.products">Gestion productos
-			<span class="check"></span>
-		</label>
-		
-		<label class="switch-original">
-			<input type="checkbox" ng-model="tmp.preferencias.clientes">Gestion clientes
-			<span class="check"></span>
-		</label>
-		<br><br>
+    <label class="switch-original">
+      <input type="checkbox" ng-model="tmp.preferencias.admin">Administrador
+      <span class="check"></span>
+    </label>
+    
+    <label class="switch-original">
+      <input type="checkbox" ng-model="tmp.preferencias.ingredientes">Gestion ingredientes
+      <span class="check"></span>
+    </label>
+    
+    <label class="switch-original">
+      <input type="checkbox" ng-model="tmp.preferencias.recetas">Gestion recetas
+      <span class="check"></span>
+    </label>
+    
+    <label class="switch-original">
+      <input type="checkbox" ng-model="tmp.preferencias.products">Gestion productos
+      <span class="check"></span>
+    </label>
+    
+    <label class="switch-original">
+      <input type="checkbox" ng-model="tmp.preferencias.clientes">Gestion clientes
+      <span class="check"></span>
+    </label>
+    <br><br>
       
         <button class="button success" ng-click="update()" onclick="hideMetroDialog('#update')"><span class="mif-floppy-disk"></span> Guardar</button>
 
@@ -284,6 +384,5 @@
         <button class="button alert" ng-click="delete()" onclick="hideMetroDialog('#delete')">SI</button>
         <button class="button success" onclick="hideMetroDialog('#delete')">NO</button>
 </div>
-
-
+<!--Finaliza Ventana edit modal-->        
 </div>
