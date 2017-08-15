@@ -130,10 +130,14 @@ app.use('/api/account/', function(req,res,next){
         res.status(500).send('No autorizado')
     }
 });
+app.get('/api/account/', getAccount)
+app.get('/api/account/movements', getAccountMovements)
+app.get('/api/account/movements/:id', getAccountMovementsID)
 app.get('/api/account/users', User_adminValuesjson)
 app.post('/api/account/users/delete', DeleteUser_admin )
 app.post('/api/account/users/add', AddUserAccount);
 app.post('/api/account/users/update', UpdateUser );
+app.post('/api/account/update', UpdateAccountthis );
 
 //Api globales
 app.get('/api/catproducts/:id', CatProductsEditsJson)
@@ -284,7 +288,6 @@ function Login (req,res){
             {
                 req.session.user = doc
                 req.session.clients = true;
-                AddMovement(req.session.user, 'Inicio de session')
                 res.redirect("/dashboard");
             }else
             {
@@ -316,8 +319,7 @@ function login_admin (req,res){
 };
 
 function Logout (req, res, next) {
-	AddMovement(req.session.user, 'Cierre de session')
-    req.session.clients = false;
+	req.session.clients = false;
     req.session.destroy(function(err){
 		if (err)
 		{
@@ -491,6 +493,39 @@ function UserValuesjson (req,res){
     res.json(req.session.user)
 };
 
+function getAccount (req,res){
+    db.clients_users.findOne({ _id: req.session.user.admin._id }, function(err,doc){
+        if (!err)
+        {
+            res.json(doc)
+        }else {
+            console.log("Usuario no encontrado")
+        }
+    });
+};
+
+function getAccountMovements (req,res){
+    db.movements.find({ admin: req.session.user.admin }).sort({fecha:-1}).populate('admin').populate('user').exec(function(err,doc){
+        if (!err)
+        {
+            res.json(doc)
+        }else {
+            console.log("Usuario no encontrado")
+        }
+    });
+};
+
+function getAccountMovementsID (req,res){
+    db.movements.find({ admin: req.session.user.admin, user: req.params.id }).sort({fecha:-1}).populate('admin').populate('user').exec(function(err,doc){
+        if (!err)
+        {
+            res.json(doc)
+        }else {
+            console.log("Usuario no encontrado")
+        }
+    });
+};
+
 function User_adminValuesjson (req,res){
     db.user.find({ admin: req.session.user.admin._id }).populate('admin').populate('preferencias').exec(function(err,doc){
         if (doc != null)
@@ -652,6 +687,35 @@ function UpdateAccount (req, res)
             number_identificacion: req.body.number_identificacion.toUpperCase(),
             status: req.body.status,
             vence_pago: req.body.vence_pago.replace(/-/, '.').substring(0, 10)
+        },
+        function( err) 
+        {
+            if (err)
+            {
+                res.status(404).send("Algo desconocido sucedio, intente nuevamente")
+            }else
+            {
+                res.status(200).send("Cuenta actualizado con exito")
+            }
+        })  
+    }else
+    {
+        res.sendStatus(500, "Email no valido.")
+    }
+}
+
+function UpdateAccountthis (req, res) 
+{  
+    if ( ValidateEmail.validate(req.body.mail) == true)
+    {
+        db.clients_users.update(
+        { _id : req.session.user.admin._id },
+        { 
+            nombre: req.body.nombre.toUpperCase(),
+            direccion: req.body.direccion.toUpperCase(),
+            namefast: req.body.namefast.toUpperCase(),
+            telefono: req.body.telefono,
+            mail: req.body.mail
         },
         function( err) 
         {

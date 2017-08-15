@@ -150,12 +150,22 @@ app.controller("UserValues", function($scope, $http, $timeout){
     }
 });
 
-app.controller("users_administrator", function($scope, $http, $timeout){
+app.controller("users_administrator", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
+    
     $http.defaults.headers.common['x-access-token']=token;
     
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
+    $scope.pageSizetmp = {}
+
     $scope.users = {}
     $scope.user = {}
+    $scope.account = {}
+    $scope.movements = {}
     $scope.tmp = {}
+    $scope.loadmovements = false
+
 
     $scope.user.img = '/images/no-imagen.jpg'
 
@@ -196,17 +206,47 @@ app.controller("users_administrator", function($scope, $http, $timeout){
     }
     };
 
-    GetUsers = function (){
+    $scope.updateAccount = function (){
+        $scope.$emit('loadasc')
+        $http.post('/api/account/update', $scope.account)
+        .success (function (msg){
+            pushMessage('success', 'HECHO', msg, "checkmark")
+            GetAcccountAsc()
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+            $scope.$emit('loadvalues')
+        })
+    }
+
+    GetAcccount = function (){
         $scope.$emit('load')
+        $http.get('/api/account')
+        .success(function(data){
+            $scope.account = data
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+    }
+
+    GetAcccountAsc = function (){
+        $http.get('/api/account')
+        .success(function(data){
+            $scope.account = data
+        })
+    }
+
+    GetUsers = function (){
         $http.get('/api/account/users')
         .success(function(data){
             $scope.users = data
         })
         .error (function (msg){
             pushMessage('alert','ERROR', msg, "cross")
-        })
-        .finally (function (){
-            $scope.$emit('unload')
         })
     }
 
@@ -217,7 +257,23 @@ app.controller("users_administrator", function($scope, $http, $timeout){
         })
     }
 
+    GetMovements = function (){
+        $http.get('/api/account/movements')
+        .success(function(data){
+            $scope.movements = data
+            $scope.LoadPages()
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    GetAcccount()
     GetUsers()
+    GetMovements()
 
     $scope.load = function (item)
     {
@@ -290,7 +346,75 @@ app.controller("users_administrator", function($scope, $http, $timeout){
             pushMessage('alert','ERROR', 'Contraseñas no son iguales', "cross")
         }
     }
-});
+    
+    $scope.ChangePageItems = function() {
+        if ($scope.pageSizetmp.items == 'todos')
+        {
+            $scope.pageSize = $scope.movements.length
+        }else {
+            $scope.pageSize = $scope.pageSizetmp.items    
+        }
+        $scope.LoadPages()
+    };
+
+    $scope.LoadPages = function ()
+    {
+        $scope.pages.length = 0;
+            var ini = $scope.currentPage - 4;
+            var fin = $scope.currentPage + 5;
+            if (ini < 1) {
+              ini = 1;
+              if (Math.ceil($scope.movements.length / $scope.pageSize) > 10)
+                fin = 10;
+              else
+                fin = Math.ceil($scope.movements.length / $scope.pageSize);
+            } else {
+              if (ini >= Math.ceil($scope.movements.length / $scope.pageSize) - 10) {
+                ini = Math.ceil($scope.movements.length / $scope.pageSize) - 10;
+                fin = Math.ceil($scope.movements.length / $scope.pageSize);
+              }
+            }
+            if (ini < 1) ini = 1;
+            for (var i = ini; i <= fin; i++) {
+              $scope.pages.push({
+                no: i
+              });
+            }
+
+            if ($scope.currentPage >= $scope.pages.length)
+            $scope.currentPage = $scope.pages.length - 1;
+    }
+    
+      
+    $scope.setPage = function(index) {
+        $scope.currentPage = index - 1;
+    };
+
+    $scope.ViewMovementsUser = function () {
+        $scope.loadmovements = true
+        $http.get('/api/account/movements/' + $scope.tmp.user)
+        .success(function(data){
+            $scope.movements = data
+            $scope.LoadPages()
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.loadmovements = false
+        })
+    }
+    
+}
+  ]).filter('startFromGrid', function() {
+    return function(input, start) 
+    {
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
+    }       
+})
+
 
 app.controller("clients", ['$scope','$http','$window', function ($scope, $http, $window) {
     $http.defaults.headers.common['x-access-token']=token;
