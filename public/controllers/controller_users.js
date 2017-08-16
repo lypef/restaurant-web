@@ -2275,8 +2275,75 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
     $scope.pageSizetmp = {}
 
     $scope.products = {};
+    $scope.products_hold = {};
+    $scope.comanda = [];
     $scope.ingredientes = {}
     
+    GetTotal_Comanda = function ()
+    {
+        $scope.comanda.total = 0
+        for (var i = 0; i < $scope.comanda.length; i++)
+        {
+            $scope.comanda.total += $scope.comanda[i].total
+        }
+    }
+
+    $scope.add = function (item){
+        var exist = false
+
+        for (var i = 0; i < $scope.comanda.length; i++)
+        {
+            if ($scope.comanda[i]._id == item._id)
+            {
+                $scope.comanda[i].unidades ++
+                $scope.comanda[i].total = $scope.comanda[i].unidades * $scope.comanda[i].price
+                exist = true
+            }
+        }
+
+        if (!exist)
+        {
+            item.unidades = 1;
+            item.total = item.price;
+            $scope.comanda.push (item)
+        }
+        GetTotal_Comanda()
+    }
+
+    $scope.remove = function (item){
+        for (var i = 0; i < $scope.comanda.length; i++)
+        {
+            if ($scope.comanda[i]._id == item._id && $scope.comanda[i].unidades == 1)
+            {
+                $scope.comanda.splice($scope.comanda.indexOf(item),1);
+                GetTotal_Comanda()
+            }
+            if ($scope.comanda[i]._id == item._id && $scope.comanda[i].unidades > 1)
+            {
+                $scope.comanda[i].unidades --
+                $scope.comanda[i].total = $scope.comanda[i].unidades * $scope.comanda[i].price
+            }
+        }
+        GetTotal_Comanda()
+    }
+
+    $scope.search = function (){
+        if ($scope.inputbox.txt == null || $scope.inputbox.txt == '')
+        {
+            $scope.products = $scope.products_hold
+        }else
+        {
+            $scope.products =[]    
+            for (var i = 0; i < $scope.products_hold.length; i++)
+            {
+                if ($scope.products_hold[i].name.includes($scope.inputbox.txt.toUpperCase()))
+                {
+                    $scope.products.push($scope.products_hold[i])
+                }
+            }
+        }
+    }
+
     GetIngredientes = function ()
     {
         $scope.$emit('load')
@@ -2290,6 +2357,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
         $http.get('/api/sales/products')
         .success(function(data) {
             $scope.products = data;
+            $scope.products_hold = data;
         })
         .error(function(data) {
             pushMessage('alert','ERROR',data, "cross")
