@@ -75,7 +75,21 @@
                     <span class="informer"></span>
                     <span class="icon mif-list-numbered"></span>
                     </div>
+                    
+                    <div class="input-control modern text iconic" id="widthfull">
+                    <input type="number" placeholder="0.0" ng-model="product.price" class="input-full" >
+                    <span class="label">Precio</span>
+                    <span class="informer"></span>
+                    <span class="icon mif-dollar"></span>
+                    </div>
+
                     <br>
+                    <label class="switch-original">
+                        <input type="checkbox" ng-model="product.cocina">
+                        Cocinar
+                        <span class="check"></span>
+                    </label>
+                    
                     <label class="switch-original">
                         <input type="checkbox" ng-disabled="use_receta_load" ng-model="use_receta_create" ng-change="changerecet()"> Usar receta
                         <span class="check"></span>

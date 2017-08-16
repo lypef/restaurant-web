@@ -8,6 +8,9 @@ app.config(function($routeProvider){
         .when('/', {
             templateUrl : '/clients_users/index.html'
         })
+        .when('/sales/vtd', {
+            templateUrl : 'clients_users/sales/vtd.html'
+        })
         .when('/clients', {
         	templateUrl : '/clients_users/clients/Clients.html'
         })
@@ -858,7 +861,7 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
     }       
 })  
 
-app.controller("products", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
+app.controller('products', ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
     
     $http.defaults.headers.common['x-access-token']=token;
     
@@ -2208,6 +2211,111 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
             $scope.$emit('unloadasc')
         })
     };
+
+    $scope.ChangePageItems = function() {
+        if ($scope.pageSizetmp.items == 'todos')
+        {
+            $scope.pageSize = $scope.products.length
+        }else {
+            $scope.pageSize = $scope.pageSizetmp.items    
+        }
+        $scope.LoadPages();
+    };
+
+    $scope.LoadPages = function ()
+    {
+        $scope.pages.length = 0;
+        var ini = $scope.currentPage - 4;
+        var fin = $scope.currentPage + 5;
+        if (ini < 1) {
+          ini = 1;
+          if (Math.ceil($scope.products.length / $scope.pageSize) > 10)
+            fin = 10;
+          else
+            fin = Math.ceil($scope.products.length / $scope.pageSize);
+        } else {
+          if (ini >= Math.ceil($scope.products.length / $scope.pageSize) - 10) {
+            ini = Math.ceil($scope.products.length / $scope.pageSize) - 10;
+            fin = Math.ceil($scope.products.length / $scope.pageSize);
+          }
+        }
+        if (ini < 1) ini = 1;
+        for (var i = ini; i <= fin; i++) {
+          $scope.pages.push({
+            no: i
+          });
+        }
+
+        if ($scope.currentPage >= $scope.pages.length)
+        $scope.currentPage = $scope.pages.length - 1;
+    }
+    
+      
+    $scope.setPage = function(index) {
+        $scope.currentPage = index - 1;
+    };
+    
+}
+  ]).filter('startFromGrid', function() {
+    return function(input, start) 
+    {
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
+    }       
+})
+
+app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
+    
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
+    $scope.pageSizetmp = {}
+
+    $scope.products = {};
+    $scope.ingredientes = {}
+    
+    GetIngredientes = function ()
+    {
+        $scope.$emit('load')
+        $http.get('/api/sales/ingredientes/')
+        .success(function(data) {
+            $scope.ingredientes = data;
+        })
+    }
+
+    Getproducts = function (){
+        $http.get('/api/sales/products')
+        .success(function(data) {
+            $scope.products = data;
+        })
+        .error(function(data) {
+            pushMessage('alert','ERROR',data, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    GetIngredientes()
+    Getproducts()
+
+    $scope.calulate = function (receta){
+        var r = [];
+        
+        for (var i = 0; i < $scope.ingredientes.length; i++)
+        {
+            
+            if ($scope.ingredientes[i].receta == receta)
+            {
+                r.push(Math.round($scope.ingredientes[i].ingrediente.stock / $scope.ingredientes[i].porcion));
+            }
+        }
+        
+        return Math.min.apply(null, r);
+    }
 
     $scope.ChangePageItems = function() {
         if ($scope.pageSizetmp.items == 'todos')

@@ -75,6 +75,8 @@ var products_scheme = new mongoose.Schema({
 	codebar: {type: String, required: true, uppercase:true },
 	description: {type: String, uppercase:true},
 	stock: Number,
+	price: { type: Number, required: true},
+	cocina: { type: Boolean, required: true, default: false },
 	img: String,
 	category: { type: Schema.Types.ObjectId, ref: 'catproducts', required: true},
 	receta: { type: Schema.Types.ObjectId, ref: 'recetas' },

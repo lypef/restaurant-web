@@ -195,6 +195,10 @@ app.post('/api/admin/accounts/search', SearchClient_users );
 
 app.post('/api/users_admin/delete', DeleteUser_admin );
 
+// Sales
+app.get('/api/sales/products', getproductsJson)
+app.get('/api/sales/ingredientes/', GetUseRecetasJSON)
+
 //Funciones
 function AddMovement (session, description)
 {
@@ -419,12 +423,17 @@ function AddUserAccount (req,res){
 };
 
 function AddProduct (req,res){
-    var p = new db.products(
+    if (!req.body.stock || req.body.stock == null){ req.body.stock = 0 }
+    if (!req.body.price || req.body.price == null){ req.body.price = 0 }
+
+        var p = new db.products(
         {
             name: req.body.name,
             codebar: req.body.codebar,
             description: req.body.description,
             stock: req.body.stock,
+            price: req.body.price,
+            cocina: req.body.cocina,
             img: req.body.img,
             category: req.body.category,
             receta: req.body.receta,
@@ -851,6 +860,7 @@ function Admin_user_preferencias_update (req, res)
 function UpdateProduct (req, res) 
 {  
     if (!req.body.stock || req.body.stock == null){ req.body.stock = 0 }
+    if (!req.body.price || req.body.price == null){ req.body.price = 0 }
     db.products.update(
         { _id : req.body._id, admin: req.session.user.admin._id },
         { 
@@ -860,7 +870,9 @@ function UpdateProduct (req, res)
             stock: req.body.stock,
             img: req.body.img,
             category: req.body.category,
-            receta: req.body.receta
+            receta: req.body.receta,
+            price: req.body.price,
+            cocina: req.body.cocina
         },
         function( err) 
         {

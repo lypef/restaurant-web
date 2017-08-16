@@ -112,7 +112,7 @@
 
                     </ul>
             </li>
-            <li ><a href="dashboard#/admin"><span class="mif-shopping-basket2 mif-2x"></span> Venta directa</a></li>
+            <li ><a href="dashboard#/sales/vtd"><span class="mif-shopping-basket2 mif-2x"></span> Venta directa</a></li>
             <li>
                 <a href="" class="dropdown-toggle"><span class="mif-money mif-2x"></span> Caja</a>
                 <ul class="d-menu" data-role="dropdown">
@@ -178,13 +178,7 @@
 
         <div class="app-bar-element place-right" ng-show="!loadinasc">
 
-            <a class="dropdown-toggle fg-white"><img ng-src="{{ usuario.img }}" style="
-                width: 50px;
-                height: 50px;
-                border-radius: 150px;
-                -webkit-border-radius: 150px;
-                -moz-border-radius: 150px;
-                "> {{ usuario.admin.namefast }}</a>
+            <a class="dropdown-toggle fg-white"><img class="img-round50" ng-src="{{ usuario.img }}"> {{ usuario.admin.namefast }}</a>
             <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
                 <ul class="unstyled-list">
                     <li ng-show='usuario.preferencias.admin'>
@@ -255,13 +249,7 @@
       data-close-button="true"
       data-width="auto"
       data-overlay="true">
-      <p><h3><img ng-src="{{ usuario.img }}" style="
-                width: 50px;
-                height: 50px;
-                border-radius: 150px;
-                -webkit-border-radius: 150px;
-                -moz-border-radius: 150px;
-                "> {{ usuario.admin.nombre }}</h3></p>
+      <p><h3><img class="img-round50" ng-src="{{ usuario.img }}"> {{ usuario.admin.nombre }}</h3></p>
       
       <form>
           <div class="input-control modern text iconic" id="widthfull">
