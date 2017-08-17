@@ -7,12 +7,35 @@
 		<div class="heading">
 		<span class="title">Productos</span></div>
 		<div class="content" align="center">
+		
+		<div class="input-control select" style="width: 95%">
+        <select ng-model="categories.select" style="text-align: center; text-align-last: center;" ng-change="show_categories()">
+            <option value="">---Cetegorias---</option>
+            <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
+        </select>
+        </div>
+
 		<div class="input-control text " data-role="input"style="width: 95%">
         
         		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" ng-change="search()">
         
         		<button class="button" ng-click="search()"><span class="mif-search"></span></button></div>
                 </form>
+                <div class="">
+    
+        <div class='pagination' align="center">
+          <button type='button ' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = 0'>Principio</button>
+
+          <button type='button' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
+          
+          <button type='button' class='item current' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{ page.no }}</button>
+          
+          <button type='button' class='item' ng-disabled='currentPage >= products.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
+
+          <button type='button' class='item' ng-disabled='currentPage == products.length/pageSize - 1' ng-click='currentPage = products.length/pageSize - 1'>Final</button>
+        </div>
+    </div>    
+    
                 <table class="table striped hovered bordered">
          <thead>
             <tr>
@@ -22,7 +45,7 @@
             </tr>
           </thead>
           <tbody>
-              <tr ng-repeat="a in products" ng-model="products" >
+              <tr ng-repeat="a in products | startFromGrid: currentPage * pageSize | limitTo: pageSize" ng-model="products" >
                 <td align="center">{{ a.name }} - $ {{ a.price }}</td>
                 <td ng-if="a.receta.name == null" align="center">{{ a.stock }}</td>
                 <td ng-if="a.receta.name != null" align="center">{{ calulate(a.receta._id) }}</td>
@@ -34,6 +57,7 @@
               </tr>
           </tbody>
     </table>
+    <hr>
 		</div>
 	</div>
 </div>
@@ -73,7 +97,7 @@
           </tbody>
         </table>
         <div align="right" style="border-right: 8px solid transparent;">
-        	<span class="tag alert"><h1> Total $ {{ comanda.total }}</h1></span>
+        	<button class="button danger large-button">Total $ {{ comanda.total }}</button>
         </div>
         </div>
 <hr>

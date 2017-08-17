@@ -2275,10 +2275,41 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
     $scope.pageSizetmp = {}
 
     $scope.products = {};
+    $scope.categories = {};
     $scope.products_hold = {};
     $scope.comanda = [];
     $scope.ingredientes = {}
     
+    $scope.show_categories = function ()
+    {
+        if ($scope.categories.select == null || $scope.categories.select == '')
+        {
+            $scope.products = $scope.products_hold
+        }else
+        {
+            $scope.products =[]    
+            for (var i = 0; i < $scope.products_hold.length; i++)
+            {
+                if ($scope.products_hold[i].category._id == $scope.categories.select)
+                {
+                    $scope.products.push($scope.products_hold[i])
+                }
+            }
+        }
+        $scope.LoadPages()
+    }
+
+    GetCategories = function ()
+    {
+        $http.get('/api/catproducts/')
+        .success(function(data) {
+            $scope.categories = data;
+        })
+        .error(function(data) {
+            pushMessage('alert','ERROR',data, "cross")
+        })
+    }
+
     GetTotal_Comanda = function ()
     {
         $scope.comanda.total = 0
@@ -2286,6 +2317,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
         {
             $scope.comanda.total += $scope.comanda[i].total
         }
+        $scope.comanda.total = $scope.comanda.total.toFixed(2)
     }
 
     $scope.add = function (item){
@@ -2307,6 +2339,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
             item.total = item.price;
             $scope.comanda.push (item)
         }
+        pushMessage('success','',item.unidades + ' ' + item.name, "checkmark")
         GetTotal_Comanda()
     }
 
@@ -2325,9 +2358,11 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
             }
         }
         GetTotal_Comanda()
+        pushMessage('warning','',item.unidades + ' ' + item.name, "checkmark")
     }
 
     $scope.search = function (){
+        $scope.categories.select = null
         if ($scope.inputbox.txt == null || $scope.inputbox.txt == '')
         {
             $scope.products = $scope.products_hold
@@ -2342,6 +2377,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
                 }
             }
         }
+        $scope.LoadPages()
     }
 
     GetIngredientes = function ()
@@ -2358,6 +2394,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
         .success(function(data) {
             $scope.products = data;
             $scope.products_hold = data;
+            $scope.LoadPages()
         })
         .error(function(data) {
             pushMessage('alert','ERROR',data, "cross")
@@ -2368,6 +2405,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
     }
 
     GetIngredientes()
+    GetCategories()
     Getproducts()
 
     $scope.calulate = function (receta){
