@@ -2279,6 +2279,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
     $scope.products_hold = {};
     $scope.comanda = [];
     $scope.ingredientes = {}
+    $scope.inputbox = {}
     
     $scope.show_categories = function ()
     {
@@ -2321,6 +2322,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
     }
 
     $scope.add = function (item){
+        $scope.inputbox.txt = null
         var exist = false
 
         for (var i = 0; i < $scope.comanda.length; i++)
@@ -2344,6 +2346,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
     }
 
     $scope.remove = function (item){
+        $scope.inputbox.txt = null
         for (var i = 0; i < $scope.comanda.length; i++)
         {
             if ($scope.comanda[i]._id == item._id && $scope.comanda[i].unidades == 1)
