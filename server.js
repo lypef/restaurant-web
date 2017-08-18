@@ -196,8 +196,19 @@ app.post('/api/admin/accounts/search', SearchClient_users );
 app.post('/api/users_admin/delete', DeleteUser_admin );
 
 // Sales
+app.use('/api/sales/', function(req,res,next){
+    if (req.session.user.preferencias.sales)
+    {
+        next()
+    }else
+    {
+        res.status(500).send('No autorizado')
+    }
+});
 app.get('/api/sales/products', getproductsJson)
 app.get('/api/sales/ingredientes/', GetUseRecetasJSON)
+
+app.post('/api/sales/vtd/', addvtd)
 
 //Funciones
 function AddMovement (session, description)
@@ -816,7 +827,10 @@ function UpdateUser_preferencias (req, res)
             ingredientes: req.body.preferencias.ingredientes,
             recetas: req.body.preferencias.recetas,
             products: req.body.preferencias.products,
-            clientes: req.body.preferencias.clientes
+            clientes: req.body.preferencias.clientes,
+            cocina: req.body.preferencias.cocina,
+            sales: req.body.preferencias.sales,
+            caja: req.body.preferencias.caja
         },
         function( err) 
         {
@@ -1857,6 +1871,72 @@ function InsertClientUser (req,res)
     }else {
         res.sendStatus(500, "Email no valido.")
     }  
+}
+
+function addvtd (req, res ){
+    var total = 0
+
+    for (var i = 0; i < req.body.length; i ++)
+    {
+        total += req.body[i].total   
+    }    
+
+    var r = true
+    var ticket = new db.sales(
+    {
+        admin: req.session.user.admin._id,
+        user: req.session.user._id,
+        fecha: Date.now(),
+        monto: total
+    });
+
+    ticket.save(function (err){
+        if (!err){
+            for (var i = 0; i < req.body.length; i ++)
+            {
+                if (req.body[i].unidades == 1)
+                {
+                    add_sale_product(req.body[i]._id, req.session.user.admin._id, ticket._id)
+                }else
+                {
+                    for (var b = 1; b <= req.body[i].unidades; b++)
+                    {
+                        add_sale_product(req.body[i]._id, req.session.user.admin._id, ticket._id)
+                    }
+                }
+                if (req.body[i].cocina){
+                    add_comanda_cocina(req.body[i])
+                }
+            }
+        }else {r = false}
+    })
+    
+    if (r)
+    {
+        res.status(200).send('Venta correcta')
+        AddMovement(req.session.user,'venta realizada con folio: ' + ticket._id)
+    }else{res.status(500).send('Error desconocido')}
+
+}
+
+function add_sale_product (product, admin, ticket)
+{
+    var sale_produc_add = new db.sales_products({
+        admin: admin,
+        sale: ticket,
+        product: product
+    })
+
+    sale_produc_add.save (function(err){
+        if (err)
+        {
+            console.log(err)
+        }
+    })
+}
+
+function add_comanda_cocina(item){
+    console.log('Enviar a la cocina. ' + item.name)
 }
 //Config
 const port = "8080"

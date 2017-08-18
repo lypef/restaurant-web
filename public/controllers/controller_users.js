@@ -51,7 +51,10 @@ app.config(function($routeProvider){
             templateUrl : '/clients_users/recetas/view.html'
         })
         .when('/admin', {
-            templateUrl : '/clients_users/admin.html'
+            templateUrl : '/clients_users/admin/admin.html'
+        })
+        .when('/admin_movements', {
+            templateUrl : '/clients_users/admin/movements.html'
         })
         .otherwise({
             redirectTo : '/'
@@ -2281,8 +2284,24 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
     $scope.ingredientes = {}
     $scope.inputbox = {}
     
+    $scope.vtd = function (){
+        $scope.$emit('loadasc')
+        $http.post('/api/sales/vtd/', $scope.comanda)
+        .success(function(msg){
+            pushMessage('success','OK', msg, "checkmark")
+            $scope.clean()
+        })
+        .error (function (msg){
+            pushMessage('alert','OK', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+
     $scope.show_categories = function ()
     {
+        $scope.inputbox.txt = null
         if ($scope.categories.select == null || $scope.categories.select == '')
         {
             $scope.products = $scope.products_hold
@@ -2298,6 +2317,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
             }
         }
         $scope.LoadPages()
+        document.getElementById('input_search').focus();
     }
 
     GetCategories = function ()
@@ -2319,6 +2339,31 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
             $scope.comanda.total += $scope.comanda[i].total
         }
         $scope.comanda.total = $scope.comanda.total.toFixed(2)
+    }
+
+    $scope.addonelist = function (){
+        $scope.inputbox.txt = null
+        var exist = false
+
+        for (var i = 0; i < $scope.comanda.length; i++)
+        {
+            if ($scope.comanda[i]._id == $scope.products[0]._id)
+            {
+                $scope.comanda[i].unidades ++
+                $scope.comanda[i].total = $scope.comanda[i].unidades * $scope.comanda[i].price
+                exist = true
+            }
+        }
+
+        if (!exist)
+        {
+            $scope.products[0].unidades = 1;
+            $scope.products[0].total = $scope.products[0].price;
+            $scope.comanda.push ($scope.products[0])
+        }
+        pushMessage('success','',$scope.products[0].unidades + ' ' + $scope.products[0].name, "checkmark")
+        GetTotal_Comanda()
+        document.getElementById('input_search').focus();
     }
 
     $scope.add = function (item){
@@ -2343,6 +2388,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
         }
         pushMessage('success','',item.unidades + ' ' + item.name, "checkmark")
         GetTotal_Comanda()
+        document.getElementById('input_search').focus();
     }
 
     $scope.remove = function (item){
@@ -2361,7 +2407,25 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
             }
         }
         GetTotal_Comanda()
+        document.getElementById('input_search').focus();
         pushMessage('warning','',item.unidades + ' ' + item.name, "checkmark")
+    }
+
+    $scope.show_all = function (){
+        $scope.categories.select = null
+        $scope.inputbox.txt = null
+        $scope.products = $scope.products_hold
+        $scope.LoadPages()
+        document.getElementById('input_search').focus();
+    }
+
+    $scope.clean = function (){
+        $scope.categories.select = null
+        $scope.inputbox.txt = null
+        $scope.products = $scope.products_hold
+        $scope.comanda = []
+        $scope.LoadPages()
+        document.getElementById('input_search').focus();
     }
 
     $scope.search = function (){
@@ -2374,7 +2438,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
             $scope.products =[]    
             for (var i = 0; i < $scope.products_hold.length; i++)
             {
-                if ($scope.products_hold[i].name.includes($scope.inputbox.txt.toUpperCase()))
+                if ($scope.products_hold[i].name.includes($scope.inputbox.txt.toUpperCase()) || $scope.products_hold[i].codebar.includes($scope.inputbox.txt.toUpperCase()))
                 {
                     $scope.products.push($scope.products_hold[i])
                 }

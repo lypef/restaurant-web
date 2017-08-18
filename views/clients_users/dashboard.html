@@ -97,7 +97,7 @@
         <span class="app-bar-divider"></span>
         <ul class="app-bar-menu">
             
-            <li>
+            <li ng-show="usuario.preferencias.sales">
                 <a href="" class="dropdown-toggle"><span class="mif-spoon-fork mif-2x"></span> Restaurante</a>
                 <ul class="d-menu" data-role="dropdown">
                     <li>
@@ -112,15 +112,17 @@
 
                     </ul>
             </li>
-            <li ><a href="dashboard#/sales/vtd"><span class="mif-shopping-basket2 mif-2x"></span> Venta directa</a></li>
+            <li ng-show="usuario.preferencias.cocina"><a href="dashboard#/sales/vtd"><span class="mif-fire mif-2x"></span> Cocina</a></li>
             <li>
+            <li ng-show="usuario.preferencias.sales"><a href="dashboard#/sales/vtd"><span class="mif-shopping-basket2 mif-2x"></span> Venta directa</a></li>
+            <li ng-show="usuario.preferencias.caja">
                 <a href="" class="dropdown-toggle"><span class="mif-money mif-2x"></span> Caja</a>
                 <ul class="d-menu" data-role="dropdown">
                     <li ng-show="usuario.preferencias.admin">
                         <a href="tables"><span class="mif-flow-line mif-2x"></span> Finanzas</a>
                         </li>
                         <li ng-show="usuario.preferencias.admin">
-                        <a href="#"><span class="mif-flow-line mif-2x"></span> Movimientos</a>
+                        <a href="/dashboard#/admin_movements"><span class="mif-flow-line mif-2x"></span> Movimientos</a>
                         </li>
                         <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Ingresar efectivo</a></li>
 

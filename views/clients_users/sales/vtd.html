@@ -7,20 +7,21 @@
 		<div class="heading">
 		<span class="title">Productos</span></div>
 		<div class="content" align="center">
+		<button class="button success large-button" style="width: 95%" ng-click="show_all()">Mostrar todos</button>
 		
-		<div class="input-control select" style="width: 95%">
+    <div class="input-control select warning" style="width: 95%">
         <select ng-model="categories.select" style="text-align: center; text-align-last: center;" ng-change="show_categories()">
             <option value="">---Cetegorias---</option>
             <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
         </select>
         </div>
+        <form>
+    		<div class="input-control text " data-role="input" style="width: 95%">
+            
+    		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" ng-change="search()" autofocus id="input_search">
 
-		<div class="input-control text " data-role="input" style="width: 95%">
-        
-        		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" ng-change="search()">
-        
-        		<button class="button" ng-click="search()"><span class="mif-search"></span></button></div>
-                </form>
+    		<button class="button" ng-click="addonelist()"><span class="mif-plus"></span></button></div>
+        </form>
                 <div class="">
     
         <div class='pagination' align="center">
@@ -97,10 +98,26 @@
           </tbody>
         </table>
         <div align="right" style="border-right: 8px solid transparent;">
-        	<button class="button danger large-button">Total $ {{ comanda.total }}</button>
+        	<button class="button warning large-button mif-bin" ng-disabled="!comanda[0]" ng-click="clean()">Limpiar</button>
+          <button class="button primary large-button" ng-disabled="!comanda[0]" onclick="toggleMetroDialog('#vtd')">Total $ {{ comanda.total }}</button>
         </div>
         </div>
 <hr>
 </div></div>
+</div>
+<div data-role="dialog" id="vtd" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+
+      <p>
+      <font face="Segoe UI Bold">
+      <h4>Realizar venta por total de: {{ comanda.t.total }}</h4>
+      </font>
+      </p>
+
+      <button class="button success" ng-click="vtd()" onclick="hideMetroDialog('#vtd')">SI</button>
+      <button class="button alert" onclick="hideMetroDialog('#vtd')">NO</button>
+      </div>
 </div>  
 </div>

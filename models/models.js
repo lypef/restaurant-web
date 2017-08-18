@@ -24,7 +24,10 @@ var preferencias_user_scheme = new mongoose.Schema({
 	ingredientes: { type: Boolean, default: false },
 	recetas: { type: Boolean, default: false },
 	products: { type: Boolean, default: false },
-	clientes: { type: Boolean, default: false }
+	clientes: { type: Boolean, default: false },
+	cocina: { type: Boolean, default: false },
+	sales: { type: Boolean, default: false },
+	caja: { type: Boolean, default: false }
 })
 
 var clients_scheme = new mongoose.Schema({
@@ -115,7 +118,7 @@ var movements_scheme = new mongoose.Schema({
 	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'},
 	user: { type: Schema.Types.ObjectId, ref: 'user'},
 	fecha: Date,
-	description: {type: String, required: true}
+	description: {type: String, required: true, uppercase: true}
 })
 
 var sales_scheme = new mongoose.Schema({
