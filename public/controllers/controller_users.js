@@ -64,6 +64,8 @@ app.config(function($routeProvider){
 app.controller("UserValues", function($scope, $http, $timeout){
     $http.defaults.headers.common['x-access-token']=token;
     $scope.usuario = {};
+    $scope.addmoneyvar = {}
+    $scope.removemoneyvar = {}
 
     $scope.$on('load', function(){$scope.loading = true})
     $scope.$on('unload', function(){$scope.loading = false})
@@ -146,6 +148,35 @@ app.controller("UserValues", function($scope, $http, $timeout){
         $http.post('/api/users/update_preferencias', $scope.usuario)
         .success (function (msg){
                 loadasc()
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+
+    $scope.addmoney = function (){
+        $scope.$emit('loadasc')
+        $http.post('/api/public/add_sale', $scope.addmoneyvar)
+        .success (function (msg){
+            pushMessage('success', 'HECHO', msg, "checkmark")
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+
+    $scope.removemoney = function (){
+        $scope.$emit('loadasc')
+        $scope.removemoneyvar.monto = '-'+$scope.removemoneyvar.monto
+        $http.post('/api/public/add_sale', $scope.removemoneyvar)
+        .success (function (msg){
+            pushMessage('success', 'HECHO', msg, "checkmark")
         })
         .error (function (msg){
             pushMessage('alert','ERROR', msg, "cross")
@@ -2288,11 +2319,11 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
         $scope.$emit('loadasc')
         $http.post('/api/sales/vtd/', $scope.comanda)
         .success(function(msg){
-            pushMessage('success','OK', msg, "checkmark")
+            pushMessage('success','', msg, "checkmark")
             $scope.clean()
         })
         .error (function (msg){
-            pushMessage('alert','OK', msg, "cross")
+            pushMessage('alert','', msg, "cross")
         })
         .finally (function (){
             $scope.$emit('unloadasc')
@@ -2350,6 +2381,13 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
             if ($scope.comanda[i]._id == $scope.products[0]._id)
             {
                 $scope.comanda[i].unidades ++
+                if ($scope.products[0].receta)
+                {
+                    $scope.products[0].stockc --
+                }else
+                {
+                    $scope.products[0].stock --
+                }
                 $scope.comanda[i].total = $scope.comanda[i].unidades * $scope.comanda[i].price
                 exist = true
             }
@@ -2359,6 +2397,13 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
         {
             $scope.products[0].unidades = 1;
             $scope.products[0].total = $scope.products[0].price;
+            if ($scope.products[0].receta)
+            {
+                $scope.products[0].stockc --
+            }else
+            {
+                $scope.products[0].stock --
+            }
             $scope.comanda.push ($scope.products[0])
         }
         pushMessage('success','',$scope.products[0].unidades + ' ' + $scope.products[0].name, "checkmark")
@@ -2375,6 +2420,13 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
             if ($scope.comanda[i]._id == item._id)
             {
                 $scope.comanda[i].unidades ++
+                if (item.receta)
+                {
+                    item.stockc --
+                }else
+                {
+                    item.stock --
+                }
                 $scope.comanda[i].total = $scope.comanda[i].unidades * $scope.comanda[i].price
                 exist = true
             }
@@ -2384,6 +2436,13 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
         {
             item.unidades = 1;
             item.total = item.price;
+            if (item.receta)
+            {
+                item.stockc --
+            }else
+            {
+                item.stock --
+            }
             $scope.comanda.push (item)
         }
         pushMessage('success','',item.unidades + ' ' + item.name, "checkmark")
@@ -2398,12 +2457,26 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
             if ($scope.comanda[i]._id == item._id && $scope.comanda[i].unidades == 1)
             {
                 $scope.comanda.splice($scope.comanda.indexOf(item),1);
+                if (item.receta)
+                {
+                    item.stockc ++
+                }else
+                {
+                    item.stock ++
+                }
                 GetTotal_Comanda()
             }
             if ($scope.comanda[i]._id == item._id && $scope.comanda[i].unidades > 1)
             {
                 $scope.comanda[i].unidades --
                 $scope.comanda[i].total = $scope.comanda[i].unidades * $scope.comanda[i].price
+                if (item.receta)
+                {
+                    item.stockc ++
+                }else
+                {
+                    item.stock ++
+                }
             }
         }
         GetTotal_Comanda()
@@ -2416,6 +2489,19 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
         $scope.inputbox.txt = null
         $scope.products = $scope.products_hold
         $scope.LoadPages()
+        document.getElementById('input_search').focus();
+    }
+
+
+    $scope.cleanbtn = function (){
+        $scope.categories.select = null
+        $scope.inputbox.txt = null
+        $scope.products = $scope.products_hold
+        $scope.comanda = []
+        $scope.LoadPages()
+        GetIngredientes()
+        GetCategories()
+        Getproducts()
         document.getElementById('input_search').focus();
     }
 
@@ -2475,19 +2561,26 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
     GetCategories()
     Getproducts()
 
-    $scope.calulate = function (receta){
+    $scope.calulate = function (product){
         var r = [];
         
         for (var i = 0; i < $scope.ingredientes.length; i++)
         {
             
-            if ($scope.ingredientes[i].receta == receta)
+            if ($scope.ingredientes[i].receta == product.receta._id)
             {
                 r.push(Math.round($scope.ingredientes[i].ingrediente.stock / $scope.ingredientes[i].porcion));
             }
         }
-        
-        return Math.min.apply(null, r);
+
+        for (var i = 0; i < $scope.products.length; i++)
+        {
+            
+            if ($scope.products[i]._id == product._id)
+            {
+                $scope.products[i].stockc = Math.min.apply(null, r);
+            }
+        }
     }
 
     $scope.ChangePageItems = function() {

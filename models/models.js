@@ -125,7 +125,10 @@ var sales_scheme = new mongoose.Schema({
 	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'},
 	user: { type: Schema.Types.ObjectId, ref: 'user'},
 	fecha: Date,
-	monto: Number
+	monto: Number,
+	description: {type: String, required: true, uppercase: true},
+	cut_user: { type: Boolean, default: false },
+	cut_global: { type: Boolean, default: false }
 })
 
 var sales_products_scheme = new mongoose.Schema({

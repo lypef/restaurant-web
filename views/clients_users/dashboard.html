@@ -124,9 +124,9 @@
                         <li ng-show="usuario.preferencias.admin">
                         <a href="/dashboard#/admin_movements"><span class="mif-flow-line mif-2x"></span> Movimientos</a>
                         </li>
-                        <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Ingresar efectivo</a></li>
+                        <li><a onclick="toggleMetroDialog('#addmoney')"><span class="mif-flow-line mif-2x"></span> Ingresar efectivo</a></li>
 
-                    <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Retirar efectivo</a></li>
+                    <li><a onclick="toggleMetroDialog('#removemoney')"><span class="mif-flow-line mif-2x"></span> Retirar efectivo</a></li>
 
                     <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Corte X</a></li>
 
@@ -336,6 +336,54 @@
 
     </div>
     <!--Ventana modal Ajustes-->
+    <!--Ventana modal addmoney-->
+    <div data-role="dialog" id="addmoney" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round50" ng-src="{{ usuario.img }}"> Agregar efectivo</span></h3></p>
+      
+    <form>
+        <div class="input-control  modern text iconic" id="widthfull" >
+    <input type="text" placeholder="Descripcion" ng-model="addmoneyvar.description" class="input-full" autofocus>
+    <span class="informer"></span>
+    <span class="icon mif-clipboard"></span>
+    </div>  
+
+    <div class="input-control  modern text iconic" id="widthfull" >
+    <input type="text" placeholder="Monto" ng-model="addmoneyvar.monto" class="input-full">
+    <span class="informer"></span>
+    <span class="icon mif-dollar2"></span>
+    </div>  
+          <br>  
+      <button class="button success" ng-click="addmoney()" onclick="hideMetroDialog('#addmoney')"><span class="mif-dollar2"></span> Agregar</button>
+    </form>
+    </div>
+    <!--Ventana modal addmoney-->
+    <!--Ventana modal removemoney-->
+    <div data-role="dialog" id="removemoney" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round50" ng-src="{{ usuario.img }}"> Retirar efectivo</span></h3></p>
+      
+    <form>
+        <div class="input-control  modern text iconic" id="widthfull" >
+    <input type="text" placeholder="Descripcion" ng-model="removemoneyvar.description" class="input-full" autofocus>
+    <span class="informer"></span>
+    <span class="icon mif-clipboard"></span>
+    </div>  
+
+    <div class="input-control  modern text iconic" id="widthfull" >
+    <input type="text" placeholder="Monto" ng-model="removemoneyvar.monto" class="input-full">
+    <span class="informer"></span>
+    <span class="icon mif-dollar2"></span>
+    </div>  
+          <br>  
+      <button class="button alert" ng-click="removemoney()" onclick="hideMetroDialog('#removemoney')"><span class="mif-dollar2"></span> Retirar</button>
+    </form>
+    </div>
+    <!--Ventana modal removemoney-->
     
 </body>
 </html>

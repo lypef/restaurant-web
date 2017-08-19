@@ -156,6 +156,7 @@ app.post('/api/measurement/delete', DeleteMeasuremeants )
 app.post('/api/measurement/search', SearchMeasurements )
 app.post('/api/users/update', UpdateUser );
 app.post('/api/users/update_preferencias', UpdateUser_preferencias );
+app.post('/api/public/add_sale', addmoney );
 
 //Enlaces globales de inicio de session
 app.post("/login", Login )
@@ -174,7 +175,7 @@ app.get('/admin_login', AdminLogin)
 app.get("/admin_login_incorrect", AdminIncorrect )
 app.get("/admin_dashboard", Dashboard_Admin )
 
-// Gescion admin
+// Gestion admin
 app.get('/api/admin/accounts/', ClientsUsersJson);
 app.get('/api/admin/users', usersjson)
 app.get('/api/admin/accounts/user/:id', UserIDLoad);
@@ -1554,6 +1555,7 @@ function CreateMeasurement (req, res)
                     res.status(500).send("No fue posible crear la cetegoria, intente de nuevo.")
                  }else
                  {
+                    AddMovement(req.session.user, req.body.description + ' $ ' +req.body.monto)
                     res.status(200).send("Unidad de medida agregada")
                  }
                 })  
@@ -1568,6 +1570,29 @@ function CreateMeasurement (req, res)
         res.status(500).send("Verifique su informacion")
     }
     
+}
+
+function addmoney (req, res) 
+{  
+    var p = new db.sales({
+        admin: req.session.user.admin._id,
+        user: req.session.user._id,
+        fecha: Date.now(),
+        monto: req.body.monto,
+        description: req.body.description
+
+    })
+
+    p.save(function (err) {
+         if (err)
+         {
+            res.status(500).send(err)
+         }else
+         {
+            AddMovement(req.session.user, req.body.description + ' $ ' + req.body.monto)
+            res.status(200).send("Operacion realizada con exito")
+         }
+    }) 
 }
 
 function CreateReceta (req, res) 
@@ -1887,7 +1912,8 @@ function addvtd (req, res ){
         admin: req.session.user.admin._id,
         user: req.session.user._id,
         fecha: Date.now(),
-        monto: total
+        monto: total,
+        description: 'se realizo venta'
     });
 
     ticket.save(function (err){
@@ -1907,14 +1933,18 @@ function addvtd (req, res ){
                 if (req.body[i].cocina){
                     add_comanda_cocina(req.body[i])
                 }
+
+                if (!req.body[i].receta){
+                    RemoveStockproduct(req.body[i])
+                }
             }
         }else {r = false}
     })
     
     if (r)
     {
-        res.status(200).send('Venta correcta')
-        AddMovement(req.session.user,'venta realizada con folio: ' + ticket._id)
+        res.status(200).send('Venta realizada')
+        AddMovement(req.session.user,'venta realizada con exito. Folio: ' + ticket._id + ' $: ' + total)
     }else{res.status(500).send('Error desconocido')}
 
 }
@@ -1938,6 +1968,30 @@ function add_sale_product (product, admin, ticket)
 function add_comanda_cocina(item){
     console.log('Enviar a la cocina. ' + item.name)
 }
+
+function RemoveStockproduct(item){
+    db.products.findOne({_id: item._id},function(err,doc){
+        if (!err)
+        {
+            db.products.update(
+                { _id : item._id},
+                { 
+                    stock: doc.stock - item.unidades
+                },
+                function( err) 
+                {
+                    if (err)
+                    {
+                        console.log(err)
+                    }
+                })  
+        }else
+        {
+            console.log(err)
+        }
+    })
+}
+
 //Config
 const port = "8080"
 
