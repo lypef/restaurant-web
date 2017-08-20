@@ -118,7 +118,8 @@ var movements_scheme = new mongoose.Schema({
 	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'},
 	user: { type: Schema.Types.ObjectId, ref: 'user'},
 	fecha: Date,
-	description: {type: String, required: true, uppercase: true}
+	description: {type: String, required: true, uppercase: true},
+	sale: { type: Schema.Types.ObjectId, ref: 'sales'}
 })
 
 var sales_scheme = new mongoose.Schema({

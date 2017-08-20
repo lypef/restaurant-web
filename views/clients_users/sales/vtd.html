@@ -2,8 +2,8 @@
 <!-- Crud -->
 <div class="grid">
 <div class="row flex-just-sa">
-<div class="cell-auto-size">
-	<div class="panel info" style="border: 2px solid #fff;">
+<div class="cell-auto-size" style="width: 100%">
+	<div class="panel info" style="border: 2px solid #fff;" >
 		<div class="heading">
 		<span class="title">Productos</span></div>
 		<div class="content" align="center">
@@ -47,7 +47,9 @@
           </thead>
           <tbody>
               <tr ng-repeat="a in products | startFromGrid: currentPage * pageSize | limitTo: pageSize" ng-model="products" >
-                <td align="center">{{ a.name }} - $ {{ a.price }}</td>
+                <td align="center">
+                <img class= "img-round50" ng-src="{{a.img}}"><br>
+                {{ a.name }} - $ {{ a.price }}</td>
                 <td ng-if="a.receta.name == null" align="center">{{ a.stock }}</td>
                 <td ng-if="a.receta.name != null" align="center" ng-init="calulate(a)">{{ a.stockc }}</td>
                 <td align="center">

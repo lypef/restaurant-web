@@ -135,6 +135,7 @@ app.get('/api/account/movements', getAccountMovements)
 app.get('/api/account/movements/:id', getAccountMovementsID)
 app.get('/api/account/users', User_adminValuesjson)
 app.get('/api/account/cut_x', GetSalesAdmin)
+app.get('/api/account/product_sale', GetProducts_sale)
 
 app.post('/api/account/users/delete', DeleteUser_admin )
 app.post('/api/account/users/add', AddUserAccount);
@@ -217,14 +218,15 @@ app.get('/api/sales/ingredientes/', GetUseRecetasJSON)
 app.post('/api/sales/vtd/', addvtd)
 
 //Funciones
-function AddMovement (session, description)
+function AddMovement (session, description, sale)
 {
     var p = new db.movements(
     {
         admin: session.admin._id,
         user: session._id,
         fecha: Date.now(),
-        description: description
+        description: description,
+        sale: sale
     });
 
     p.save(function (err){
@@ -1465,6 +1467,16 @@ function GetUseRecetasJSON_ID (req, res)
     })
 }
 
+function GetProducts_sale (req, res)
+{
+    db.sales_products.find({ admin: req.session.user.admin._id }).populate('product').exec(function(err,doc){
+        if (!err)
+        {
+            res.json(doc)
+        }
+    })
+}
+
 function GetUseRecetasJSON (req, res)
 {
     db.use_recetas.find({ admin: req.session.user.admin._id}).populate(
@@ -2038,7 +2050,7 @@ function addvtd (req, res ){
     if (r)
     {
         res.status(200).send('Venta realizada')
-        AddMovement(req.session.user,'venta realizada con exito. Folio: ' + ticket._id + ' $: ' + total)
+        AddMovement(req.session.user,'venta realizada con exito. Folio: ' + ticket._id + ' $: ' + total, ticket._id)
     }else{res.status(500).send('Error desconocido')}
 
 }

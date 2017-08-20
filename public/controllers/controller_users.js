@@ -234,11 +234,13 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
     $scope.pageSizetmp = {}
 
     $scope.users = {}
+    $scope.sales_products = {}
     $scope.user = {}
     $scope.account = {}
     $scope.movements = {}
     $scope.tmp = {}
     $scope.loadmovements = false
+    $scope.loadview = false
 
 
     $scope.user.img = '/images/no-imagen.jpg'
@@ -280,6 +282,20 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
     }
     };
 
+    $scope.showventa = function (item){
+        $scope.sale = item
+        $scope.sale.products = []
+        for (var i = 0 ; i < $scope.sales_products.length; i++)
+        {
+            if ($scope.sales_products[i].sale == item.sale)
+            {
+                $scope.sale.products.push($scope.sales_products[i])
+            }
+        }
+
+    }
+
+    
     $scope.updateAccount = function (){
         $scope.$emit('loadasc')
         $http.post('/api/account/update', $scope.account)
@@ -324,6 +340,16 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
         })
     }
 
+    Getproducts = function (){
+        $http.get('/api/account/product_sale')
+        .success(function(data){
+            $scope.sales_products = data
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+    }
+
     GetUsersAsc = function (){
         $http.get('/api/account/users')
         .success(function(data){
@@ -347,6 +373,7 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
 
     GetAcccount()
     GetUsers()
+    Getproducts()
     GetMovements()
 
     $scope.load = function (item)
@@ -2772,6 +2799,7 @@ app.controller("sales_admin", ['$scope', '$http', function ($scope, $http) {
     $scope.pageSizetmp = {}
 
     $scope.sales = {};
+    $scope.sale = {};
     $scope.sales_hold = {};
     $scope.users = {};
     $scope.total = 0;

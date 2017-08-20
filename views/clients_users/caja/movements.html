@@ -44,21 +44,19 @@
               <th>usuario</th>
               <th>FECHA</th>
               <th>Descripcion</th>
+              <th>VER VENTA</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat='a in movements | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
-              <td align="center"><img ng-src="{{ a.user.img }}" style="
-                width: 80px;
-                height: 80px;
-                border-radius: 150px;
-                -webkit-border-radius: 150px;
-                -moz-border-radius: 150px;
-                "></td>
+              <td align="center"><img class="img-round80" ng-src="{{ a.user.img }}"></td>
               <td>{{ a.user.nombre }}</td>
               <td>{{ a.fecha }}</td> 
               <td>{{ a.description }}</td>
-              
+              <td align="center">
+                <button class="button success" ng-show ="a.sale" ng-click="showventa(a)" onclick="toggleMetroDialog('#showventa')">Ver venta</button>
+                <button ng-show ="!a.sale"class="button" disabled>Ver venta</button>
+              </td>
             </tr>
           </tbody>
     </table>
@@ -79,5 +77,21 @@
     </div>
 </div>
 </div>
+<!--Ventana modal showventa-->
+    <div data-role="dialog" id="showventa" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h5><img class="img-round50" ng-src="{{ usuario.img }}"> {{ sale.user.nombre }}
+        <br>
+        <br>{{ sale.description}}</span></h5></p>
+       <hr>
+      <ul align="left">
+      <li ng-repeat ="a in sale.products">{{ a.product.name}} $ {{ a.product.price}}</li>
+      </ul> 
+
+      <button class="button success" onclick="hideMetroDialog('#showventa')"><span class="mif-checkmark"></span> OK</button>
+    </div>
+    <!--Ventana modal showventa-->
     </div>
 <!-- Finaliza Acordeon-->
