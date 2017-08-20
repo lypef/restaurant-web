@@ -5683,8 +5683,8 @@ div.square-button.big-button {
   clear: both;
 }
 .pagination > .item {
-  display: block;
-  float: left;
+  /*display: block;
+  float: left;*/
   margin-left: .0652rem;
   padding: 0.25rem .625rem;
   background-color: #ffffff;

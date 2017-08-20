@@ -18,13 +18,13 @@
         <form>
     		<div class="input-control text " data-role="input" style="width: 95%">
             
-    		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" ng-change="search()" autofocus id="input_search">
+    		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" ng-change="search()" id="input_search" autofocus>
 
     		<button class="button" ng-click="addonelist()"><span class="mif-plus"></span></button></div>
         </form>
                 <div class="">
     
-        <div class='pagination' align="center">
+        <div class='pagination' >
           <button type='button ' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = 0'>Principio</button>
 
           <button type='button' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
@@ -74,6 +74,10 @@
                 </div>
                 <div class="content">
                 <div style="overflow-x:auto;">
+                <div align="right" style="border-right: 8px solid transparent;">
+          <button class="button warning large-button mif-bin" ng-disabled="!comanda[0]" ng-click="cleanbtn()">Limpiar</button>
+          <button class="button primary large-button" ng-disabled="!comanda[0]" onclick="toggleMetroDialog('#vtd')">Total $ {{ comanda.total }}</button>
+        </div>
     <table class="table striped hovered bordered">
           <thead>
             <tr>
@@ -99,10 +103,6 @@
             </tr>
           </tbody>
         </table>
-        <div align="right" style="border-right: 8px solid transparent;">
-        	<button class="button warning large-button mif-bin" ng-disabled="!comanda[0]" ng-click="cleanbtn()">Limpiar</button>
-          <button class="button primary large-button" ng-disabled="!comanda[0]" onclick="toggleMetroDialog('#vtd')">Total $ {{ comanda.total }}</button>
-        </div>
         </div>
 <hr>
 </div></div>
