@@ -119,22 +119,22 @@
                 <a href="" class="dropdown-toggle"><span class="mif-money mif-2x"></span> Caja</a>
                 <ul class="d-menu" data-role="dropdown">
                     <li ng-show="usuario.preferencias.admin">
-                        <a href="tables"><span class="mif-flow-line mif-2x"></span> Finanzas</a>
+                        <a href="/dashboard#/admin_finance"><span class="mif-flow-line mif-2x"></span> Finanzas</a>
                         </li>
                         <li ng-show="usuario.preferencias.admin">
                         <a href="/dashboard#/admin_movements"><span class="mif-flow-line mif-2x"></span> Movimientos</a>
                         </li>
                         <li><a onclick="toggleMetroDialog('#addmoney')"><span class="mif-flow-line mif-2x"></span> Ingresar efectivo</a></li>
 
-                    <li><a onclick="toggleMetroDialog('#removemoney')"><span class="mif-flow-line mif-2x"></span> Retirar efectivo</a></li>
+                    <li ><a onclick="toggleMetroDialog('#removemoney')"><span class="mif-flow-line mif-2x"></span> Retirar efectivo</a></li>
 
-                    <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Corte X</a></li>
+                    <li><a href="/dashboard#/caja/cut_x"><span class="mif-flow-line mif-2x"></span> Corte X</a></li>
 
-                    <li><a href="tables"><span class="mif-flow-line mif-2x"></span> Corte Z</a></li>
+                    <li><a onclick="toggleMetroDialog('#cut_z_user')"><span class="mif-flow-line mif-2x"></span> Corte Z</a></li>
 
-                    <li ng-show="usuario.preferencias.admin"><a href="tables"><span class="mif-flow-line mif-2x"></span> Corte x global</a></li>
+                    <li ng-show="usuario.preferencias.admin"><a href="/dashboard#/caja/cut_x_global"><span class="mif-flow-line mif-2x"></span> Corte x global</a></li>
 
-                    <li ng-show="usuario.preferencias.admin"><a href="tables"><span class="mif-flow-line mif-2x"></span> Corte Z global</a></li>
+                    <li ng-show="usuario.preferencias.admin"><a onclick="toggleMetroDialog('#cut_z_admin')"><span class="mif-flow-line mif-2x"></span> Corte Z global</a></li>
                     </ul>
             </li>
             <li ng-show="usuario.preferencias.ingredientes || usuario.preferencias.recetas || usuario.preferencias.products">
@@ -384,6 +384,30 @@
     </form>
     </div>
     <!--Ventana modal removemoney-->
+
+    <!--Ventana modal cut_z_user-->
+    <div data-role="dialog" id="cut_z_user" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round50" ng-src="{{ usuario.img }}"> Realizar corte z?<br><h4>No hay vuelta atraz despues de esta accion.</h4></span></h3></p>
+       
+      <button class="button alert" ng-click="cut_z_user()" onclick="hideMetroDialog('#cut_z_user')"><span class="mif-checkmark"></span> SI</button>
+      <button class="button success" onclick="hideMetroDialog('#cut_z_user')"><span class="mif-cross"></span> NO</button>
+    </div>
+    <!--Ventana modal cut_z_user-->
+
+    <!--Ventana modal cut_z_admin-->
+    <div data-role="dialog" id="cut_z_admin" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round50" ng-src="{{ usuario.img }}"> Realizar corte z?<br><h4>No hay vuelta atraz despues de esta accion.</h4></span></h3></p>
+       
+      <button class="button alert" ng-click="cut_z_admin()" onclick="hideMetroDialog('#cut_z_admin')"><span class="mif-checkmark"></span> SI</button>
+      <button class="button success" onclick="hideMetroDialog('#cut_z_admin')"><span class="mif-cross"></span> NO</button>
+    </div>
+    <!--Ventana modal cut_z_admin-->
     
 </body>
 </html>

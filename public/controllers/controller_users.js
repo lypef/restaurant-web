@@ -51,10 +51,19 @@ app.config(function($routeProvider){
             templateUrl : '/clients_users/recetas/view.html'
         })
         .when('/admin', {
-            templateUrl : '/clients_users/admin/admin.html'
+            templateUrl : '/clients_users/admin.html'
         })
         .when('/admin_movements', {
-            templateUrl : '/clients_users/admin/movements.html'
+            templateUrl : '/clients_users/caja/movements.html'
+        })
+        .when('/caja/cut_x', {
+            templateUrl : 'clients_users/caja/cut_x_user.html'
+        })
+        .when('/caja/cut_x_global', {
+            templateUrl : 'clients_users/caja/cut_x_global.html'
+        })
+        .when('/admin_finance', {
+            templateUrl : '/clients_users/caja/finance.html'
         })
         .otherwise({
             redirectTo : '/'
@@ -106,6 +115,34 @@ app.controller("UserValues", function($scope, $http, $timeout){
         }
     }
     };
+
+    $scope.cut_z_user = function(){
+        $scope.$emit('loadasc')
+        $http.post('/api/public/cut_z')
+        .success (function (msg){
+            pushMessage('success','', msg, "checkmark")
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+
+    $scope.cut_z_admin = function(){
+        $scope.$emit('loadasc')
+        $http.post('/api/account/cut_z')
+        .success (function (msg){
+            pushMessage('success','', msg, "checkmark")
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
 
     loadasc = function (){
         $scope.loadinasc = true
@@ -2608,6 +2645,222 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
           if (ini >= Math.ceil($scope.products.length / $scope.pageSize) - 10) {
             ini = Math.ceil($scope.products.length / $scope.pageSize) - 10;
             fin = Math.ceil($scope.products.length / $scope.pageSize);
+          }
+        }
+        if (ini < 1) ini = 1;
+        for (var i = ini; i <= fin; i++) {
+          $scope.pages.push({
+            no: i
+          });
+        }
+
+        if ($scope.currentPage >= $scope.pages.length)
+        $scope.currentPage = $scope.pages.length - 1;
+    }
+    
+      
+    $scope.setPage = function(index) {
+        $scope.currentPage = index - 1;
+    };
+    
+}
+  ]).filter('startFromGrid', function() {
+    return function(input, start) 
+    {
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
+    }       
+})
+
+app.controller("sales_user", ['$scope', '$http', function ($scope, $http) {
+    
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
+    $scope.pageSizetmp = {}
+
+    $scope.sales = {};
+    $scope.total = 0;
+
+    get_sales = function (){
+        $scope.$emit('load')
+        $http.get('/api/public/cut_x')
+        .success(function(data) {
+            $scope.sales = data;
+            for (var a = 0; a < $scope.sales.length; a ++){
+                if ($scope.sales[a].monto){
+                    $scope.total += $scope.sales[a].monto
+                }
+            }
+            $scope.total = $scope.total.toFixed(2)
+            $scope.LoadPages()
+        })
+        .error(function(data) {
+            pushMessage('alert','ERROR',data, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    get_sales()
+
+
+    $scope.ChangePageItems = function() {
+        if ($scope.pageSizetmp.items == 'todos')
+        {
+            $scope.pageSize = $scope.sales.length
+        }else {
+            $scope.pageSize = $scope.pageSizetmp.items    
+        }
+        $scope.LoadPages();
+    };
+
+    $scope.LoadPages = function ()
+    {
+        $scope.pages.length = 0;
+        var ini = $scope.currentPage - 4;
+        var fin = $scope.currentPage + 5;
+        if (ini < 1) {
+          ini = 1;
+          if (Math.ceil($scope.sales.length / $scope.pageSize) > 10)
+            fin = 10;
+          else
+            fin = Math.ceil($scope.sales.length / $scope.pageSize);
+        } else {
+          if (ini >= Math.ceil($scope.sales.length / $scope.pageSize) - 10) {
+            ini = Math.ceil($scope.sales.length / $scope.pageSize) - 10;
+            fin = Math.ceil($scope.sales.length / $scope.pageSize);
+          }
+        }
+        if (ini < 1) ini = 1;
+        for (var i = ini; i <= fin; i++) {
+          $scope.pages.push({
+            no: i
+          });
+        }
+
+        if ($scope.currentPage >= $scope.pages.length)
+        $scope.currentPage = $scope.pages.length - 1;
+    }
+    
+      
+    $scope.setPage = function(index) {
+        $scope.currentPage = index - 1;
+    };
+    
+}
+  ]).filter('startFromGrid', function() {
+    return function(input, start) 
+    {
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
+    }       
+})
+
+app.controller("sales_admin", ['$scope', '$http', function ($scope, $http) {
+    
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
+    $scope.pageSizetmp = {}
+
+    $scope.sales = {};
+    $scope.sales_hold = {};
+    $scope.users = {};
+    $scope.total = 0;
+
+    get_sales = function (){
+        $scope.$emit('load')
+        $http.get('/api/account/cut_x')
+        .success(function(data) {
+            $scope.sales = data;
+            $scope.sales_hold = data;
+
+            for (var a = 0; a < $scope.sales.length; a ++){
+                if ($scope.sales[a].monto){
+                    $scope.total += $scope.sales[a].monto
+                }
+            }
+            $scope.total = $scope.total.toFixed(2)
+            $scope.LoadPages()
+        })
+        .error(function(data) {
+            pushMessage('alert','ERROR',data, "cross")
+        })
+    }
+
+    get_users = function (){
+        $http.get('/api/account/users')
+        .success(function(data) {
+            $scope.users = data
+        })
+        .error(function(data) {
+            pushMessage('alert','ERROR',data, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    get_sales()
+    get_users()
+
+
+    $scope.select_user = function() {
+        if (!$scope.pageSizetmp.user || $scope.pageSizetmp.user == 'todos')
+        {
+            $scope.sales = $scope.sales_hold
+        }else
+        {
+            $scope.sales = []
+            for (var a = 0; a < $scope.sales_hold.length; a ++){
+                if ($scope.sales_hold[a].user._id == $scope.pageSizetmp.user){
+                    $scope.sales.push($scope.sales_hold[a])
+                }
+            }
+        }
+        $scope.total = 0
+        for (var a = 0; a < $scope.sales.length; a ++){
+            if ($scope.sales[a].monto){
+                $scope.total += $scope.sales[a].monto
+            }
+        }
+        $scope.total = $scope.total.toFixed(2)
+        $scope.LoadPages()
+    };
+
+    $scope.ChangePageItems = function() {
+        if ($scope.pageSizetmp.items == 'todos' || !$scope.pageSizetmp.items)
+        {
+            $scope.pageSize = $scope.sales.length
+        }else {
+            $scope.pageSize = $scope.pageSizetmp.items    
+        }
+        $scope.LoadPages();
+    };
+
+    $scope.LoadPages = function ()
+    {
+        $scope.pages.length = 0;
+        var ini = $scope.currentPage - 4;
+        var fin = $scope.currentPage + 5;
+        if (ini < 1) {
+          ini = 1;
+          if (Math.ceil($scope.sales.length / $scope.pageSize) > 10)
+            fin = 10;
+          else
+            fin = Math.ceil($scope.sales.length / $scope.pageSize);
+        } else {
+          if (ini >= Math.ceil($scope.sales.length / $scope.pageSize) - 10) {
+            ini = Math.ceil($scope.sales.length / $scope.pageSize) - 10;
+            fin = Math.ceil($scope.sales.length / $scope.pageSize);
           }
         }
         if (ini < 1) ini = 1;

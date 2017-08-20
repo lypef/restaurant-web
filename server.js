@@ -134,10 +134,13 @@ app.get('/api/account/', getAccount)
 app.get('/api/account/movements', getAccountMovements)
 app.get('/api/account/movements/:id', getAccountMovementsID)
 app.get('/api/account/users', User_adminValuesjson)
+app.get('/api/account/cut_x', GetSalesAdmin)
+
 app.post('/api/account/users/delete', DeleteUser_admin )
 app.post('/api/account/users/add', AddUserAccount);
 app.post('/api/account/users/update', UpdateUser );
 app.post('/api/account/update', UpdateAccountthis );
+app.post('/api/account/cut_z', cut_z_admin)
 
 //Api globales
 app.get('/api/catproducts/:id', CatProductsEditsJson)
@@ -147,9 +150,10 @@ app.post('/api/catproducts/delete/admin', DeleteCatProducts )
 app.post('/api/catproducts/add', CreateCatProduct )
 app.post('/api/catproducts/add/admin', CreateCatProductAdmin )
 app.post('/api/catproducts/search', SearchCatProducts )
-
+app.get('/api/public/cut_x', GetSalesUser)
 app.get('/api/get_measurements/', GetMeasurementsJSON)
 app.get('/api/get_measurements/:id', GetMeasuremetsJSON_ID)
+
 app.post('/api/measurement/add', CreateMeasurement )
 app.post('/api/measurement/update', UpdateMeasurements )
 app.post('/api/measurement/delete', DeleteMeasuremeants )
@@ -157,6 +161,7 @@ app.post('/api/measurement/search', SearchMeasurements )
 app.post('/api/users/update', UpdateUser );
 app.post('/api/users/update_preferencias', UpdateUser_preferencias );
 app.post('/api/public/add_sale', addmoney );
+app.post('/api/public/cut_z', cut_z_users)
 
 //Enlaces globales de inicio de session
 app.post("/login", Login )
@@ -1009,7 +1014,19 @@ function DeleteAcconunt (req, res)
                                                         if (!err){
                                                             db.user_preferencias.remove ({ adminadmin: req.body._id }, function (err){
                                                             if (!err){
-                                                                r = true
+                                                                db.movements.remove ({ admin: req.body._id }, function (err){
+                                                                if (!err){
+                                                                    db.sales.remove ({ admin: req.body._id }, function (err){
+                                                                    if (!err){
+                                                                        db.sales_products.remove ({ admin: req.body._id }, function (err){
+                                                                        if (!err){
+                                                                            r = true
+                                                                        }else { r = false }
+                                                                        })
+                                                                    }else { r = false }
+                                                                    })
+                                                                }else { r = false }
+                                                                })
                                                             }else { r = false }
                                                             })
                                                         }else { r = false }
@@ -1332,6 +1349,28 @@ function catproductsJson (req,res){
     })
 };
 
+function GetSalesUser (req,res){
+    db.sales.find({ admin: req.session.user.admin._id, user: req.session.user._id, cut_user: false }).sort({fecha:-1}).populate('admin').populate('user').exec(function(err, data) {
+        if(err) {
+            res.sendStatus(500,err);
+        }else
+        {
+            res.json(data); 
+        }
+    })
+};
+
+function GetSalesAdmin (req,res){
+    db.sales.find({ admin: req.session.user.admin._id, cut_global: false }).sort({fecha:-1}).populate('admin').populate('user').exec(function(err, data) {
+        if(err) {
+            res.sendStatus(500,err);
+        }else
+        {
+            res.json(data); 
+        }
+    })
+};
+
 function GetMeasurementsJSON (req,res){
     db.measurements.find(function(err, data) {
         if(err) {
@@ -1579,7 +1618,9 @@ function addmoney (req, res)
         user: req.session.user._id,
         fecha: Date.now(),
         monto: req.body.monto,
-        description: req.body.description
+        description: req.body.description,
+        cut_user: false,
+        cut_global: false
 
     })
 
@@ -1728,6 +1769,57 @@ function UpdateMeasurements (req, res)
     })  
 }
 
+function cut_z_users (req, res) 
+{  
+    db.sales.find({ admin: req.session.user.admin._id, user: req.session.user._id, cut_user: false }).sort({fecha:-1}).populate('admin').populate('user').exec(function(err, data) {
+        if(!err) {
+             for(var i = 0; i < data.length; i ++)
+             {
+                db.sales.update({ _id: data[i]._id },
+                { 
+                    cut_user: true
+                },
+                function( err) 
+                {
+                    if (err){
+                        console.log(err)
+                    }
+                })
+             } 
+             AddMovement(req.session.user,'usuario realizo corte z')
+             res.status(200).send('Corte z exitoso')  
+        }else
+        {
+            res.status(500).send(err)  
+        }
+    })
+}
+
+function cut_z_admin (req, res) 
+{  
+    db.sales.find({ admin: req.session.user.admin._id, cut_global: false }).sort({fecha:-1}).populate('admin').populate('user').exec(function(err, data) {
+        if(!err) {
+             for(var i = 0; i < data.length; i ++)
+             {
+                db.sales.update({ _id: data[i]._id },
+                { 
+                    cut_global: true
+                },
+                function( err) 
+                {
+                    if (err){
+                        console.log(err)
+                    }
+                })
+             } 
+             AddMovement(req.session.user,'usuario realizo corte z global')
+             res.status(200).send('Corte z exitoso')  
+        }else
+        {
+            res.status(500).send(err)  
+        }
+    })
+}
 
 function DeleteReceta (req, res) 
 {  
@@ -1913,7 +2005,9 @@ function addvtd (req, res ){
         user: req.session.user._id,
         fecha: Date.now(),
         monto: total,
-        description: 'se realizo venta'
+        description: 'se realizo venta',
+        cut_user: false,
+        cut_global: false
     });
 
     ticket.save(function (err){
