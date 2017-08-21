@@ -2380,7 +2380,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
     $scope.inputbox = {}
     
     $scope.vtd = function (){
-        $scope.$emit('loadasc')
+        $scope.$emit('load')
         $http.post('/api/sales/vtd/', $scope.comanda)
         .success(function(msg){
             pushMessage('success','', msg, "checkmark")
@@ -2390,7 +2390,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
             pushMessage('alert','', msg, "cross")
         })
         .finally (function (){
-            $scope.$emit('unloadasc')
+            $scope.$emit('unload')
         })
     }
 
