@@ -1,17 +1,21 @@
-<div class="content" align="center" ng-controller="users_administrator">
+<div class="content" align="center" ng-controller="users_movements">
     <!--Busqueda y numero mostrado -->
     <div class="row flex-just-sa">
             <div class="colspan6" style="width: 100%" align="center">
-            <div class="input-control select" style="width: 95%">
-                <select ng-model="tmp.user" ng-change="ViewMovementsUser()" style="text-align: center; text-align-last: center;">
+            
+                <select id = "select" ng-model="tmp.user" ng-change="ViewMovementsUser()" style="text-align: center; text-align-last: center; width: 95%">
                     <option value="">---usuarios---</option>
+                    <option value="all">TODOS</option>
                     <option ng-repeat = "a in users" value="{{ a._id }}">{{ a.nombre }}</option>
                 </select>
-                </div>
+                <script>
+                $(function(){
+                    $("#select").select2();
+                });
+            </script>
             </div>
             <div class="colspan6" style="width: 100%" align="center">
-                <div class="input-control select" style="width: 95%">
-                <select ng-model="pageSizetmp.items" ng-change="ChangePageItems()" style="text-align: center; text-align-last: center;">
+                <select id = "select1" ng-model="pageSizetmp.items" ng-change="ChangePageItems()" style="text-align: center; text-align-last: center; width: 95%">
                     <option value="">---Items mostrados---</option>
                     <option value="5">5</option>
                     <option value="10">10</option>
@@ -22,20 +26,15 @@
                     <option value="100">100</option>
                     <option value="todos">Ver todos</option>
                 </select>
-                </div>
+                <script>
+                $(function(){
+                    $("#select1").select2();
+                });
+            </script>
+                
             </div>
         </div>
     <!--Finaliza Busqueda y numero mostrado -->
-
-    <div ng-show="loadmovements">
-
-    <div class="cell bg-white">
-    <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
-    </div>
-
-    </div>
-
-    <div ng-show="!loadmovements">
     <div style="overflow-x:auto;">
     <table class="table striped hovered bordered border">
       <thead>
@@ -75,7 +74,6 @@
         </div>
     </div>    
     </div>
-</div>
 </div>
 <!--Ventana modal showventa-->
     <div data-role="dialog" id="showventa" class="padding30" data-type="" 

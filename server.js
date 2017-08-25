@@ -46,7 +46,6 @@ app.get('/api/clients/direcciones/:id', GetClient);
 app.post('/api/clients/add', CreateClient );
 app.post('/api/clients/update', ClientUpdate );
 app.post('/api/clients/delete', DeleteClient );
-app.post('/api/clients/search', SearchClient );
 app.post('/api/clients/direcciones/add', AddDireccion );
 app.post('/api/clients/direcciones/update', UpdateDireccion );
 app.post('/api/clients/direcciones/delete', DeleteDireccion );
@@ -87,7 +86,6 @@ app.get('/api/recipes/', GetRecetasJSON)
 app.get('/api/recipes/:id', GetRecetasJSON_ID)
 app.get('/api/recipes/ingredientes/:id', GetUseRecetasJSON_ID)
 
-app.post('/api/recipes/search', SearchRecetas )
 app.post('/api/recipes/delete', DeleteReceta )
 app.post('/api/recipes/ingredients/search', SearchIngredients )
 app.post('/api/recipes/add', CreateReceta );
@@ -113,7 +111,6 @@ app.get('/api/products/stock', getproductsJson_stock)
 app.get('/api/products/product/:id', getProductID)
 
 app.post('/api/products/add', AddProduct)
-app.post('/api/products/search', search_products )
 app.post('/api/products/search_stock', search_products_stock )
 app.post('/api/products/update', UpdateProduct)
 app.post('/api/products/delete', DeleteProduct )
@@ -132,6 +129,7 @@ app.use('/api/account/', function(req,res,next){
 });
 app.get('/api/account/', getAccount)
 app.get('/api/account/movements', getAccountMovements)
+app.get('/api/account/sales', getAccountsales)
 app.get('/api/account/movements/:id', getAccountMovementsID)
 app.get('/api/account/users', User_adminValuesjson)
 app.get('/api/account/cut_x', GetSalesAdmin)
@@ -142,6 +140,21 @@ app.post('/api/account/users/add', AddUserAccount);
 app.post('/api/account/users/update', UpdateUser );
 app.post('/api/account/update', UpdateAccountthis );
 app.post('/api/account/cut_z', cut_z_admin)
+
+//Api accounts admin
+app.use('/api/finance/', function(req,res,next){
+    if (req.session.user.preferencias.finance)
+    {
+        next()
+    }else
+    {
+        res.status(500).send('No autorizado')
+    }
+});
+app.get('/api/finance/users', User_adminValuesjson)
+app.get('/api/finance/movements', getAccountMovements)
+app.get('/api/finance/sales', getAccountSales)
+app.get('/api/finance/products', GetProducts_sale)
 
 //Api globales
 app.get('/api/catproducts/:id', CatProductsEditsJson)
@@ -543,6 +556,28 @@ function getAccountMovements (req,res){
     });
 };
 
+function getAccountSales (req,res){
+    db.sales.find({ admin: req.session.user.admin }).sort({fecha:-1}).populate('admin').populate('user').exec(function(err,doc){
+        if (!err)
+        {
+            res.json(doc)
+        }else {
+            console.log("Usuario no encontrado")
+        }
+    });
+};
+
+function getAccountsales (req,res){
+    db.movements.find({ admin: req.session.user.admin }).sort({fecha:-1}).populate('admin').populate('user').exec(function(err,doc){
+        if (!err)
+        {
+            res.json(doc)
+        }else {
+            console.log(err)
+        }
+    });
+};
+
 function getAccountMovementsID (req,res){
     db.movements.find({ admin: req.session.user.admin, user: req.params.id }).sort({fecha:-1}).populate('admin').populate('user').exec(function(err,doc){
         if (!err)
@@ -838,7 +873,8 @@ function UpdateUser_preferencias (req, res)
             clientes: req.body.preferencias.clientes,
             cocina: req.body.preferencias.cocina,
             sales: req.body.preferencias.sales,
-            caja: req.body.preferencias.caja
+            caja: req.body.preferencias.caja,
+            finance: req.body.preferencias.finance
         },
         function( err) 
         {
@@ -1162,18 +1198,6 @@ function DeleteMeasuremeants (req, res)
     })
 }
 
-function SearchClient (req, res) 
-{  
-	db.clients.find({admin: req.session.user.admin._id, $or: [ {nombre: { $regex : req.body.text.toUpperCase() }}, {apellidos: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
-        if(err || data == "") {
-            res.status(500).send("Cliente no encontrado")
-        }else
-        {
-        	res.json(data)
-        }
-    }).sort({nombre:1});
-
-}
 
 function SearchClient_users (req, res) 
 {  
@@ -1308,29 +1332,6 @@ function SearchIngredients (req, res)
         db.ingredients.find({admin: req.session.user.admin._id, $or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).sort({name:1}).populate('measurements').exec(function(err, data) {
         if(err || data == "") {
             res.status(500).send("Ingrediente no encontrada")
-        }else
-        {
-            res.json(data)
-        }
-    })    
-    }
-
-}
-
-function SearchRecetas (req, res) 
-{  
-    if (req.body.txt == null || req.body.txt == undefined)
-    {
-        db.recetas.find({admin: req.session.user.admin._id }).sort({name:1}).populate('admin').exec(function(err,doc){
-            if (doc != null)
-            {
-                res.json(doc)
-            }
-        })
-    }else {
-        db.recetas.find({admin: req.session.user.admin._id, $or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).sort({name:1}).populate('admin').exec(function(err, data) {
-        if(err || data == "") {
-            res.status(500).send("Receta no encontrada")
         }else
         {
             res.json(data)

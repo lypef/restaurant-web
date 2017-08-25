@@ -2,8 +2,7 @@
     <!--Busqueda y numero mostrado -->
     <div class="row flex-just-sa">
             <div class="colspan4" style="width: 100%" align="center">
-            <div class="input-control select" style="width: 95%">
-                <select ng-model="pageSizetmp.items" ng-change="ChangePageItems()" style="text-align: center; text-align-last: center;">
+                <select id="select" ng-model="pageSizetmp.items" ng-change="ChangePageItems()" style="text-align: center; text-align-last: center; width: 95%">
                     <option value="">---Items mostrados---</option>
                     <option value="5">5</option>
                     <option value="10">10</option>
@@ -14,16 +13,23 @@
                     <option value="100">100</option>
                     <option value="todos">Ver todos</option>
                 </select>
-                </div>
+                <script>
+                $(function(){
+                    $("#select").select2();
+                });
+            </script>
             </div>
             <div class="colspan4" style="width: 100%" align="center">
-            <div class="input-control select" style="width: 95%">
-                <select ng-model="pageSizetmp.user" ng-change="select_user()" style="text-align: center; text-align-last: center;">
-                    <option value="">---Usuarios---</option>
+                <select id="select1" ng-model="pageSizetmp.user" ng-change="select_user()" style="text-align: center; text-align-last: center; width: 95%">
+                    <option value="">---USUARIOS---</option>
                     <option ng-repeat = "a in users" value="{{a._id}}">{{a.nombre}}</option>
-                    <option value="todos">Ver todos</option>
+                    <option value="todos">VER TODOS</option>
                 </select>
-                </div>
+                <script>
+                $(function(){
+                    $("#select1").select2();
+                });
+            </script>
             </div>
             <div class="colspan4" style="width: 100%" align="center">
                 <span class="tag warning"><h3>Total recaudado: $ {{ total }}</h3></span>

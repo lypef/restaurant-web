@@ -9,16 +9,21 @@
 		<div class="content" align="center">
 		<button class="button success large-button" style="width: 95%" ng-click="show_all()">Mostrar todos</button>
 		
-    <div class="input-control select warning" style="width: 95%">
-        <select ng-model="categories.select" style="text-align: center; text-align-last: center;" ng-change="show_categories()">
+    
+        <select id ="select" ng-model="categories.select" style="text-align: center; text-align-last: center; width: 95%" ng-change="show_categories()">
             <option value="">---Cetegorias---</option>
             <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
         </select>
-        </div>
+        <script>
+                $(function(){
+                    $("#select").select2();
+                });
+            </script>
+        
         <form>
     		<div class="input-control text " data-role="input" style="width: 95%">
             
-    		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" ng-change="search()" id="input_search" autofocus>
+    		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" ng-change="search()" id="input_search" autofocus autocomplete="off">
 
     		<button class="button" ng-click="addonelist()"><span class="mif-plus"></span></button></div>
         </form>

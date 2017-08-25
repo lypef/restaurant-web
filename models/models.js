@@ -27,7 +27,8 @@ var preferencias_user_scheme = new mongoose.Schema({
 	clientes: { type: Boolean, default: false },
 	cocina: { type: Boolean, default: false },
 	sales: { type: Boolean, default: false },
-	caja: { type: Boolean, default: false }
+	caja: { type: Boolean, default: false },
+	finance: { type: Boolean, default: false }
 })
 
 var clients_scheme = new mongoose.Schema({

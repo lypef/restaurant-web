@@ -61,7 +61,7 @@
                 <form >
                 	<div class="input-control text " data-role="input" style="width: 100%">
         
-        		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar">
+        		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" autocomplete="off" ng-change="search()">
         
         		<button class="button" ng-click="search()"><span class="mif-search"></span></button></div>
                 </form>
@@ -117,12 +117,15 @@
                 <div class="content">
                 <form align="center" >  
 
-                        <div class="input-control select">
-                        <select ng-model="select.select"  ng-change="LoadValuesEdit()" style="text-align: center; text-align-last: center;">
-                            <option value="">---Ingredientes---</option>
+                        <select id = "select" ng-model="select.select"  ng-change="LoadValuesEdit()" style="text-align: center; text-align-last: center; width: 90%">
+                            <option value="">--- INGREDIENTES ---</option>
                             <option ng-repeat=" a in IngredientUpdate" value="{{ a._id }}">{{a.name}}</option>
                         </select>
-                        </div>
+                        <script>
+                            $(function(){
+                                $("#select").select2();
+                            });
+                        </script>
                         
                         <div class="input-control modern text iconic" id="widthfull">
                         <input type="text" placeholder="Nombre" ng-model="select.name" class="input-full">

@@ -14,6 +14,7 @@
     <script src="/metro/docs/js/jquery-2.1.3.min.js"></script>
     <script src="/metro/docs/js/jquery.dataTables.min.js"></script>
     <script src="/metro/docs/js/metro.js"></script>
+    <script src="/metro/docs/js/select2.min.js"></script>
     <script src="/angular/angular.min.js"></script>
     <script src="/angular/angular-route.min.js"></script>
     <script src="/controllers/controller_users.js"></script>
@@ -115,13 +116,13 @@
             <li ng-show="usuario.preferencias.cocina"><a href="dashboard#/sales/vtd"><span class="mif-fire mif-2x"></span> Cocina</a></li>
             <li>
             <li ng-show="usuario.preferencias.sales"><a href="dashboard#/sales/vtd"><span class="mif-shopping-basket2 mif-2x"></span> Venta directa</a></li>
-            <li ng-show="usuario.preferencias.caja">
+            <li ng-show="usuario.preferencias.caja || usuario.preferencias.admin || usuario.preferencias.finance">
                 <a href="" class="dropdown-toggle"><span class="mif-money mif-2x"></span> Caja</a>
                 <ul class="d-menu" data-role="dropdown">
-                    <li ng-show="usuario.preferencias.admin">
+                    <li ng-show="usuario.preferencias.finance">
                         <a href="/dashboard#/admin_finance"><span class="mif-flow-line mif-2x"></span> Finanzas</a>
                         </li>
-                        <li ng-show="usuario.preferencias.admin">
+                        <li ng-show="usuario.preferencias.finance">
                         <a href="/dashboard#/admin_movements"><span class="mif-flow-line mif-2x"></span> Movimientos</a>
                         </li>
                         

@@ -525,6 +525,7 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
     $scope.pages = [];
     
     $scope.all = {};
+    $scope.all_hold = {};
     $scope.Client = {};
     $scope.tmp = {};
  
@@ -576,6 +577,7 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
         $http.get('/api/clients/')
         .success(function(data) {
             $scope.all = data;
+            $scope.all_hold = data;
             $scope.LoadPages()
             $scope.$emit('unload')
         })
@@ -594,6 +596,7 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
         $http.get('/api/clients/')
         .success(function(data) {
             $scope.all = data;
+            $scope.all_hold = data;
             $scope.LoadPages()
         })
         .error(function(data) {
@@ -623,20 +626,21 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
     };  
 
     $scope.SearchClient = function(){
-        $scope.$emit('loadasc')
-        $scope.inputbox
-        $http.post('/api/clients/search', $scope.inputbox)
-        .success(function(data) {
-            pushMessage('success','FOUNT',"Cliente's encontrados", "checkmark")
-            $scope.all = data;
-            $scope.LoadPages()
-        })
-        .error(function(msg) {
-            pushMessage('info','NOT FOUND',msg, "question")
-        })
-        .finally(function (){
-            $scope.$emit('unloadasc')
-        })
+        if ($scope.inputbox.text == null || $scope.inputbox.text == '')
+        {
+            $scope.all = $scope.all_hold
+        }else
+        {
+            $scope.all = []
+            for (var i = 0; i < $scope.all_hold.length; i++)
+            {
+                if ($scope.all_hold[i].nombre.includes($scope.inputbox.text.toUpperCase()) )
+                {
+                    $scope.all.push($scope.all_hold[i])
+                }
+            }
+        }
+        $scope.LoadPages()
     };  
 
 
@@ -970,6 +974,7 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
 
     $scope.product = {};
     $scope.products = {};
+    $scope.products_hold = {};
     $scope.recetas = {};
     $scope.ingredientes = {};
     $scope.categories = {};
@@ -1074,6 +1079,7 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
         $http.get('/api/products/')
         .success(function(data) {
             $scope.products = data;
+            $scope.products_hold = data;
             $scope.LoadPages()
         })
         .error(function(data) {
@@ -1107,20 +1113,22 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
     }; 
 
     $scope.search = function(){
-        $scope.$emit('loadasc')
-        $http.post('/api/products/search', $scope.inputbox)
-        .success(function(data) {
-            pushMessage('success','FOUNT',"Productos encontrados", "checkmark")
-            $scope.products = data;
-            $scope.LoadPages();
-            $scope.ChangePageItems()
-        })
-        .error(function(msg) {
-            pushMessage('alert','NOT FOUND',msg, "question")
-        })
-        .finally (function (){
-            $scope.$emit('unloadasc')
-        })
+       
+    if ($scope.inputbox.text == null || $scope.inputbox.text == '')
+        {
+            $scope.products = $scope.products_hold
+        }else
+        {
+            $scope.products = []
+            for (var i = 0; i < $scope.products_hold.length; i++)
+            {
+                if ($scope.products_hold[i].name.includes($scope.inputbox.text.toUpperCase()) || $scope.products_hold[i].description.includes($scope.inputbox.text.toUpperCase()) || $scope.products_hold[i].codebar.includes($scope.inputbox.text.toUpperCase()) )
+                {
+                    $scope.products.push($scope.products_hold[i])
+                }
+            }
+        }
+        $scope.LoadPages()
     };
 
     $scope.ChangePageItems = function() {
@@ -1181,6 +1189,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
 
         $scope.ingredient = {};
         $scope.ingredients = {};
+        $scope.ingredients_hold = {};
         $scope.select = {}
         $scope.show = {}
         $scope.IngredientUpdate = {}
@@ -1205,6 +1214,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
             $http.get('/api/ingredients/')
                 .success(function(data) {
                     $scope.ingredients = data
+                    $scope.ingredients_hold = data
                     $scope.IngredientUpdate = data
                     $scope.LoadPages();
                     
@@ -1223,6 +1233,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
             $http.get('/api/ingredients/')
                 .success(function(data) {
                     $scope.ingredients = data
+                    $scope.ingredients_hold = data
                     $scope.IngredientUpdate = data
                     $scope.LoadPages();
                     
@@ -1329,21 +1340,21 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
         };
 
         $scope.search = function(){
-        $scope.$emit('loadasc')
-        $scope.inputbox
-        $http.post('/api/ingredients/search', $scope.inputbox)
-            .success(function(data) {
-                $scope.inputbox = {}
-                $scope.ingredients = data;
-                $scope.LoadPages();
-                pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
-            })
-            .error(function(msg) {
-                pushMessage('danger','NOT FOUND',msg, "question")
-            })
-            .finally (function (){
-                $scope.$emit('unloadasc')
-            })
+            if ($scope.inputbox.txt == null || $scope.inputbox.txt == '')
+            {
+                $scope.ingredients = $scope.ingredients_hold
+            }else
+            {
+                $scope.ingredients = []
+                for (var i = 0; i < $scope.ingredients_hold.length; i++)
+                {
+                    if ($scope.ingredients_hold[i].name.includes($scope.inputbox.txt.toUpperCase())  )
+                    {
+                        $scope.ingredients.push($scope.ingredients_hold[i])
+                    }
+                }
+            }
+            $scope.LoadPages()
         };
           
         $scope.setPage = function(index) {
@@ -1647,6 +1658,7 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.pageSizetmp = {}
 
         $scope.recetas = {};
+        $scope.recetas_hold = {};
         $scope.receta = {};
         
         
@@ -1656,6 +1668,7 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
             $http.get('/api/recipes/')
             .success(function(data) {
                 $scope.recetas = data
+                $scope.recetas_hold = data
                 $scope.LoadPages()
             })
             .error(function(data) {
@@ -1705,22 +1718,21 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
             })
         }
         $scope.search = function(){
-            $scope.$emit('loadasc')
-            $scope.inputbox
-            $http.post('/api/recipes/search', $scope.inputbox)
-            .success(function(data) {
-                pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
-                $scope.inputbox = {}
-                $scope.recetas = data
-                $scope.LoadPages()
-                $scope.ChangePageItems()
-            })
-            .error(function(msg) {
-                pushMessage('danger','NOT FOUND',msg, "question")
-            })
-            .finally (function (){
-                $scope.$emit('unloadasc')
-            })
+            if ($scope.inputbox == null || $scope.inputbox == '')
+            {
+                $scope.recetas = $scope.recetas_hold
+            }else
+            {
+                $scope.recetas = []
+                for (var i = 0; i < $scope.recetas_hold.length; i++)
+                {
+                    if ($scope.recetas_hold[i].name.includes($scope.inputbox.txt.toUpperCase()) || $scope.recetas_hold[i].description.includes($scope.inputbox.txt.toUpperCase()))
+                    {
+                        $scope.recetas.push($scope.recetas_hold[i])
+                    }
+                }
+            }
+            $scope.LoadPages()
         };
 
         $scope.print = function (item)
@@ -2906,6 +2918,271 @@ app.controller("sales_admin", ['$scope', '$http', function ($scope, $http) {
     $scope.setPage = function(index) {
         $scope.currentPage = index - 1;
     };
+    
+}
+  ]).filter('startFromGrid', function() {
+    return function(input, start) 
+    {
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
+    }       
+})
+
+app.controller("finance_administrator", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
+    
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
+    $scope.pageSizetmp = {}
+
+    $scope.sales = {}
+    $scope.sales_hold = {}
+    $scope.users = {}
+    
+    $scope.ViewMovementsUser = function () {
+        if ($scope.tmp.user == 'all')
+        {
+            $scope.sales = $scope.sales_hold
+        }else
+        {
+            $scope.sales = []
+            for (var i = 0 ; i < $scope.sales_hold.length; i++)
+            {
+                if ($scope.sales_hold[i].user._id == $scope.tmp.user)
+                {
+                    $scope.sales.push($scope.sales_hold[i])
+                }
+            }
+
+        }
+        $scope.LoadPages()
+    }
+
+    GetSales = function (){
+        $scope.$emit('load')
+        $http.get('/api/finance/sales')
+        .success(function(data){
+            $scope.sales = data
+            $scope.sales_hold = data
+            $scope.LoadPages()
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+    }
+    
+    GetUsers = function (){
+        $http.get('/api/finance/users')
+        .success(function(data){
+            $scope.users = data
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+    GetSales()
+    GetUsers()
+    
+    $scope.ChangePageItems = function() {
+        if ($scope.pageSizetmp.items == 'todos')
+        {
+            $scope.pageSize = $scope.sales.length
+        }else {
+            $scope.pageSize = $scope.pageSizetmp.items    
+        }
+        $scope.LoadPages()
+    };
+
+    $scope.LoadPages = function ()
+    {
+        $scope.pages.length = 0;
+            var ini = $scope.currentPage - 4;
+            var fin = $scope.currentPage + 5;
+            if (ini < 1) {
+              ini = 1;
+              if (Math.ceil($scope.sales.length / $scope.pageSize) > 10)
+                fin = 10;
+              else
+                fin = Math.ceil($scope.sales.length / $scope.pageSize);
+            } else {
+              if (ini >= Math.ceil($scope.sales.length / $scope.pageSize) - 10) {
+                ini = Math.ceil($scope.sales.length / $scope.pageSize) - 10;
+                fin = Math.ceil($scope.sales.length / $scope.pageSize);
+              }
+            }
+            if (ini < 1) ini = 1;
+            for (var i = ini; i <= fin; i++) {
+              $scope.pages.push({
+                no: i
+              });
+            }
+
+            if ($scope.currentPage >= $scope.pages.length)
+            $scope.currentPage = $scope.pages.length - 1;
+    }
+    
+      
+    $scope.setPage = function(index) {
+        $scope.currentPage = index - 1;
+    };
+
+}
+  ]).filter('startFromGrid', function() {
+    return function(input, start) 
+    {
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
+    }       
+})
+
+app.controller("users_movements", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
+    
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
+    $scope.pageSizetmp = {}
+
+    $scope.users = {}
+    $scope.movements = {}
+    $scope.movements_hold = {}
+    $scope.sales_products = {}
+
+    $scope.ViewMovementsUser = function () {
+        if ($scope.tmp.user == 'all')
+        {
+            $scope.movements = $scope.movements_hold
+        }else
+        {
+            $scope.movements = []
+            for (var i = 0 ; i < $scope.movements_hold.length; i++)
+            {
+                if ($scope.movements_hold[i].user._id == $scope.tmp.user)
+                {
+                    $scope.movements.push($scope.movements_hold[i])
+                }
+            }
+
+        }
+        $scope.LoadPages()
+    }
+
+    $scope.showventa = function (item){
+        $scope.sale = item
+        $scope.sale.products = []
+        for (var i = 0 ; i < $scope.sales_products.length; i++)
+        {
+            if ($scope.sales_products[i].sale == item.sale)
+            {
+                $scope.sale.products.push($scope.sales_products[i])
+            }
+        }
+
+    }
+
+    GetUsers = function (){
+        $scope.$emit('load')
+        $http.get('/api/finance/users')
+        .success(function(data){
+            $scope.users = data
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+    }
+
+    GetMovements = function (){
+        $http.get('/api/finance/movements')
+        .success(function(data){
+            $scope.movements = data
+            $scope.movements_hold = data
+            $scope.LoadPages()
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    Getproducts = function (){
+        $http.get('/api/account/product_sale')
+        .success(function(data){
+            $scope.sales_products = data
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+    }
+
+    Getproducts = function (){
+        $http.get('/api/finance/products')
+        .success(function(data){
+            $scope.sales_products = data
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+    GetUsers()
+    GetMovements()
+    Getproducts()
+    
+    $scope.ChangePageItems = function() {
+        if ($scope.pageSizetmp.items == 'todos')
+        {
+            $scope.pageSize = $scope.movements.length
+        }else {
+            $scope.pageSize = $scope.pageSizetmp.items    
+        }
+        $scope.LoadPages()
+    };
+
+    $scope.LoadPages = function ()
+    {
+        $scope.pages.length = 0;
+            var ini = $scope.currentPage - 4;
+            var fin = $scope.currentPage + 5;
+            if (ini < 1) {
+              ini = 1;
+              if (Math.ceil($scope.movements.length / $scope.pageSize) > 10)
+                fin = 10;
+              else
+                fin = Math.ceil($scope.movements.length / $scope.pageSize);
+            } else {
+              if (ini >= Math.ceil($scope.movements.length / $scope.pageSize) - 10) {
+                ini = Math.ceil($scope.movements.length / $scope.pageSize) - 10;
+                fin = Math.ceil($scope.movements.length / $scope.pageSize);
+              }
+            }
+            if (ini < 1) ini = 1;
+            for (var i = ini; i <= fin; i++) {
+              $scope.pages.push({
+                no: i
+              });
+            }
+
+            if ($scope.currentPage >= $scope.pages.length)
+            $scope.currentPage = $scope.pages.length - 1;
+    }
+    
+      
+    $scope.setPage = function(index) {
+        $scope.currentPage = index - 1;
+    };
+
     
 }
   ]).filter('startFromGrid', function() {
