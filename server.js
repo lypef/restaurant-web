@@ -46,6 +46,7 @@ app.get('/api/clients/direcciones/:id', GetClient);
 app.post('/api/clients/add', CreateClient );
 app.post('/api/clients/update', ClientUpdate );
 app.post('/api/clients/delete', DeleteClient );
+app.post('/api/clients/search', SearchClient );
 app.post('/api/clients/direcciones/add', AddDireccion );
 app.post('/api/clients/direcciones/update', UpdateDireccion );
 app.post('/api/clients/direcciones/delete', DeleteDireccion );
@@ -1198,6 +1199,18 @@ function DeleteMeasuremeants (req, res)
     })
 }
 
+function SearchClient (req, res) 
+{  
+	db.clients.find({admin: req.session.user.admin._id, $or: [ {nombre: { $regex : req.body.text.toUpperCase() }}, {apellidos: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
+        if(err || data == "") {
+            res.status(500).send("Cliente no encontrado")
+        }else
+        {
+        	res.json(data)
+        }
+    }).sort({nombre:1});
+
+}
 
 function SearchClient_users (req, res) 
 {  

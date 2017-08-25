@@ -1377,6 +1377,7 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
         $http.defaults.headers.common['x-access-token']=token;
 
         $scope.ingredients = {};
+        $scope.ingredients_hold = {};
         $scope.IngredientUpdate = {}
         $scope.measuremeants = {}
 
@@ -1390,6 +1391,7 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
             $http.get('/api/ingredients/')
             .success(function(data) {
                 $scope.ingredients = data
+                $scope.ingredients_hold = data
                 $scope.IngredientUpdate = data
                 $scope.LoadPages();
             })
@@ -1454,21 +1456,22 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
         };
 
         $scope.search = function(){
-        $scope.$emit('loadasc')
-        $scope.inputbox
-        $http.post('/api/ingredients/search', $scope.inputbox)
-            .success(function(data) {
-                $scope.inputbox = {}
-                $scope.ingredients = data;
-                $scope.ChangePageItems();
-                pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
-            })
-            .error(function(msg) {
-                pushMessage('danger','NOT FOUND',msg, "question")
-            })
-            .finally (function (){
-                $scope.$emit('unloadasc')
-            })
+        if ($scope.inputbox.txt == null || $scope.inputbox.txt == '')
+        {
+            $scope.ingredients = $scope.ingredients_hold
+        }else
+        {
+            $scope.ingredients = []
+            for (var i = 0; i < $scope.ingredients_hold.length; i++)
+            {
+                if ($scope.ingredients_hold[i].name.includes($scope.inputbox.txt.toUpperCase()) )
+                {
+                    $scope.ingredients.push($scope.ingredients_hold[i])
+                }
+            }
+        }
+        $scope.LoadPages()
+
         };
           
         $scope.setPage = function(index) {
@@ -1505,6 +1508,7 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.pageSizetmp = {}
 
         $scope.ingredients = {};
+        $scope.ingredients_hold = {};
         $scope.receta = {};
         $scope.arr = [];
         $scope.arrtmp = [];
@@ -1516,6 +1520,7 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
             $http.post('/api/recipes/ingredients/search')
             .success(function(data) {
                 $scope.ingredients = data
+                $scope.ingredients_hold = data
                 $scope.LoadPages()
             })
             .error(function(data) {
@@ -1530,22 +1535,21 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
 
 
         $scope.search = function(){
-        $scope.$emit('loadasc')
-        $scope.inputbox
-        $http.post('/api/recipes/ingredients/search', $scope.inputbox)
-            .success(function(data) {
-                pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
-                $scope.inputbox = {}
-                $scope.ingredients = data;
-                $scope.LoadPages()
-                $scope.ChangePageItems()
-            })
-            .error(function(msg) {
-                pushMessage('danger','NOT FOUND',msg, "question")
-            })
-            .finally (function (){
-                $scope.$emit('unloadasc')
-            })
+            if ($scope.inputbox.txt == null || $scope.inputbox.txt == '')
+            {
+                $scope.ingredients = $scope.ingredients_hold
+            }else
+            {
+                $scope.ingredients = []
+                for (var i = 0; i < $scope.ingredients_hold.length; i++)
+                {
+                    if ($scope.ingredients_hold[i].name.includes($scope.inputbox.txt.toUpperCase()))
+                    {
+                        $scope.ingredients.push($scope.ingredients_hold[i])
+                    }
+                }
+            }
+            $scope.LoadPages()
         };
 
         $scope.insert = function(item){
@@ -1810,6 +1814,7 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
 
         $scope.receta = {};
         $scope.ingredientes = {};
+        $scope.ingredientes_hold = {};
         $scope.measurements = [];
         $scope.arr = [];
         
@@ -1847,6 +1852,7 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
             $http.post('/api/recipes/ingredients/search', $scope.inputbox)
             .success(function(data) {
                 $scope.ingredientes = data
+                $scope.ingredientes_hold = data
                 $scope.LoadPages()
             })
             .error(function(data) {
@@ -1894,21 +1900,21 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
         };
 
         $scope.search = function(){
-        $scope.$emit('loadasc')
-        $scope.inputbox
-        $http.post('/api/recipes/ingredients/search', $scope.inputbox)
-            .success(function(data) {
-                pushMessage('success','FOUNT',"ingredientes encontrados", "checkmark")
-                $scope.inputbox = {}
-                $scope.ingredientes = data;
-                $scope.LoadPages()
-            })
-            .error(function(msg) {
-                pushMessage('danger','NOT FOUND',msg, "question")
-            })
-            .finally (function (){
-                $scope.$emit('unloadasc')
-            })
+            if ($scope.inputbox.txt == null || $scope.inputbox.txt == '')
+            {
+                $scope.ingredientes = $scope.ingredientes_hold
+            }else
+            {
+                $scope.ingredientes = []
+                for (var i = 0; i < $scope.ingredientes_hold.length; i++)
+                {
+                    if ($scope.ingredientes_hold[i].name.includes($scope.inputbox.txt.toUpperCase()))
+                    {
+                        $scope.ingredientes.push($scope.ingredientes_hold[i])
+                    }
+                }
+            }
+            $scope.LoadPages()
         };
 
         $scope.LoadPages = function ()
@@ -2270,6 +2276,7 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
     $scope.pageSizetmp = {}
 
     $scope.products = {};
+    $scope.products_hold = {};
     $scope.use_receta = {}
     $scope.use_receta_load = false
     $scope.use_receta_create = false
@@ -2295,6 +2302,7 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
         $http.get('/api/products/stock')
         .success(function(data) {
             $scope.products = data;
+            $scope.products_hold = data;
             $scope.LoadPages()
         })
         .error(function(data) {
@@ -2309,20 +2317,21 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
     $scope.Getproducts()
     
     $scope.search = function(){
-        $scope.$emit('loadasc')
-        $http.post('/api/products/search_stock', $scope.inputbox)
-        .success(function(data) {
-            pushMessage('success','FOUNT',"Productos encontrados", "checkmark")
-            $scope.products = data;
-            $scope.LoadPages();
-            $scope.ChangePageItems()
-        })
-        .error(function(msg) {
-            pushMessage('alert','NOT FOUND',msg, "question")
-        })
-        .finally (function (){
-            $scope.$emit('unloadasc')
-        })
+        if ($scope.inputbox.txt == null || $scope.inputbox.txt == '')
+        {
+            $scope.products = $scope.products_hold
+        }else
+        {
+            $scope.products = []
+            for (var i = 0; i < $scope.products_hold.length; i++)
+            {
+                if ($scope.products_hold[i].name.includes($scope.inputbox.txt.toUpperCase()) || $scope.products_hold[i].codebar.includes($scope.inputbox.txt.toUpperCase()) )
+                {
+                    $scope.products.push($scope.products_hold[i])
+                }
+            }
+        }
+        $scope.LoadPages()
     };
 
     $scope.ChangePageItems = function() {
