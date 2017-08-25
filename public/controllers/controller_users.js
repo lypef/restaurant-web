@@ -837,6 +837,7 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
     $scope.pageSizetmp = {}
         
     $scope.productstmp = {};
+    $scope.productstmp_hold = {}
 
     $scope.GetCategoryes = function ()
     {
@@ -844,6 +845,7 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
         $http.get('/api/catproducts/')
         .success(function(data) {
             $scope.productstmp = data;
+            $scope.productstmp_hold = data;
             $scope.LoadPages();
         })
         .error(function(data) {
@@ -860,6 +862,7 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
         $http.get('/api/catproducts/')
         .success(function(data) {
             $scope.productstmp = data;
+            $scope.productstmp_hold = data;
             $scope.LoadPages();
             $scope.ChangePageItems()
         })
@@ -892,21 +895,21 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
     }; 
 
     $scope.SearchCatProduct = function(){
-        $scope.$emit('load')
-        $scope.inputbox
-        $http.post('/api/catproducts/search', $scope.inputbox)
-        .success(function(data) {
-            pushMessage('success','FOUNT',"Categoria encontrada", "checkmark")
-            $scope.productstmp = data;
-            $scope.LoadPages();
-            $scope.ChangePageItems()
-        })
-        .error(function(msg) {
-            pushMessage('alert','NOT FOUND',msg, "question")
-        })
-        .finally (function (){
-            $scope.$emit('unload')
-        })
+        if ($scope.inputbox.text == null || $scope.inputbox.text == '')
+        {
+            $scope.productstmp = $scope.productstmp_hold
+        }else
+        {
+            $scope.productstmp = []
+            for (var i = 0; i < $scope.productstmp_hold.length; i++)
+            {
+                if ($scope.productstmp_hold[i].categoria.includes($scope.inputbox.text.toUpperCase()) || $scope.productstmp_hold[i].descripcion.includes($scope.inputbox.text.toUpperCase()) )
+                {
+                    $scope.productstmp.push($scope.productstmp_hold[i])
+                }
+            }
+        }
+        $scope.LoadPages()
     };  
 
         $scope.ChangePageItems = function() {

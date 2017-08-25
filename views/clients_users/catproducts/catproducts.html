@@ -43,7 +43,7 @@
                         <form >
                             <div class="input-control text " data-role="input" style="width: 95%">
                 
-                        <input type="text" name="filter" ng-model="inputbox.text" placeholder="Buscar">
+                        <input type="text" name="filter" ng-model="inputbox.text" placeholder="Buscar" autocomplete="off" ng-change="SearchCatProduct()">
         
                         <button class="button" ng-click="SearchCatProduct()"><span class="mif-search"></span></button>
         </div>
