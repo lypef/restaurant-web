@@ -3014,9 +3014,10 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
             $scope.sales = []
             for (var i = 0 ; i < $scope.sales_hold.length; i++)
             {
-                var tmp = new Date($scope.sales_hold[i].fecha);
-                var fecha = new Date(tmp.getFullYear(),tmp.getMonth(), tmp.getDate())
-                
+                var tmp = $scope.sales_hold[i].fecha.split('T')
+                var tmp0 = tmp[0].split('-')
+                var fecha = new Date(tmp0[0],tmp0[1]-1, tmp0[2])
+    
                 if (fecha.getTime() == hoy.getTime())
                 {
                     $scope.sales.push($scope.sales_hold[i])
