@@ -67,7 +67,6 @@ app.get('/api/ingredients/', getIngredientsJson)
 app.get('/api/ingredients/:id', getIngredientID)
 
 app.post('/api/ingredients/add', AddIngredient)
-app.post('/api/ingredients/search', SearchIngredients )
 app.post('/api/ingredients/update', UpdateIngredient)
 app.post('/api/ingredient/delete', DeleteIngredient )
 
@@ -88,7 +87,6 @@ app.get('/api/recipes/:id', GetRecetasJSON_ID)
 app.get('/api/recipes/ingredientes/:id', GetUseRecetasJSON_ID)
 
 app.post('/api/recipes/delete', DeleteReceta )
-app.post('/api/recipes/ingredients/search', SearchIngredients )
 app.post('/api/recipes/add', CreateReceta );
 app.post('/api/recipes/update', UpdateReceta )
 app.post('/api/recipes/ingredients/update', UpdateIngredient)
@@ -143,7 +141,7 @@ app.post('/api/account/update', UpdateAccountthis );
 app.post('/api/account/cut_z', cut_z_admin)
 
 //Api accounts admin
-app.use('/api/finance/', function(req,res,next){
+app.use('/api/finance', function(req,res,next){
     if (req.session.user.preferencias.finance)
     {
         next()
@@ -1329,30 +1327,6 @@ function SearchMeasurements (req, res)
 
 }
 
-function SearchIngredients (req, res) 
-{  
-    if (req.body.txt == null || req.body.txt == undefined)
-    {
-        db.ingredients.find({admin: req.session.user.admin._id}).sort({name:1}).populate('measurements').exec(function(err, data) {
-        if(err || data == "") {
-            res.status(500).send("Ingrediente no encontrada")
-        }else
-        {
-            res.json(data)
-        }
-    })
-    }else {
-        db.ingredients.find({admin: req.session.user.admin._id, $or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).sort({name:1}).populate('measurements').exec(function(err, data) {
-        if(err || data == "") {
-            res.status(500).send("Ingrediente no encontrada")
-        }else
-        {
-            res.json(data)
-        }
-    })    
-    }
-
-}
 
 function catproductsJson (req,res){
 	db.catproducts.find().sort({categoria:1}).populate('creator').populate('last_edit').exec(function(err, data) {

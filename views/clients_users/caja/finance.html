@@ -100,13 +100,12 @@
     <div data-role="dialog" id="showventa" class="padding30" data-type="" 
       data-close-button="true"
       data-width="auto"
-      data-overlay="true">
-      <p><h5><img class="img-round50" ng-src="{{ usuario.img }}"> {{ sale.user.nombre }}
-        <br>
-        <br>{{ sale.description}}</span></h5></p>
+      data-overlay="true"
+      data-place="top-center">
+      <p><h5>Lista de productos vendidos</h5></p>
        <hr>
       <ul align="left">
-      <li ng-repeat ="a in sale.products">{{ a.product.name}} $ {{ a.product.price}}</li>
+      <li ng-repeat ="a in tmp.products">{{ a.product.name}} $ {{ a.product.price}}</li>
       </ul> 
 
       <button class="button success" onclick="hideMetroDialog('#showventa')"><span class="mif-checkmark"></span> OK</button>

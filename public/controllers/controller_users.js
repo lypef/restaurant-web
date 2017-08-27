@@ -2950,15 +2950,28 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
     $scope.pageSizetmp = {}
 
     $scope.sales = {}
+    $scope.sales_products = {}
     $scope.sales_hold = {}
     $scope.users = {}
     $scope.date = {}
     $scope.tmp = {}
     $scope.tmp.user = 'all'
+
     var f = new Date();
 
     $scope.date.desde = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear()
     $scope.date.hasta = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear()
+
+    $scope.showventa = function (item){
+        $scope.tmp.products = []
+        for (var i = 0; i < $scope.sales_products.length; i++)
+        {
+            if ($scope.sales_products[i].sale == item._id)
+            {
+                $scope.tmp.products.push($scope.sales_products[i])
+            }
+        }
+    }
 
     $scope.changeDate = function (){
     $scope.sales = []
@@ -3025,12 +3038,25 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
         .error (function (msg){
             pushMessage('alert','ERROR', msg, "cross")
         })
+    }
+
+    Getproducts = function (){
+        $http.get('/api/finance/products')
+        .success(function(data){
+            $scope.sales_products = data
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
         .finally (function (){
             $scope.$emit('unload')
         })
     }
+
+    
     GetSales()
     GetUsers()
+    Getproducts()
     
     $scope.ChangePageItems = function() {
         if ($scope.pageSizetmp.items == 'todos')
@@ -3152,20 +3178,8 @@ app.controller("users_movements", ['$scope', '$http','$timeout', function ($scop
         .error (function (msg){
             pushMessage('alert','ERROR', msg, "cross")
         })
-        .finally (function (){
-            $scope.$emit('unload')
-        })
     }
 
-    Getproducts = function (){
-        $http.get('/api/account/product_sale')
-        .success(function(data){
-            $scope.sales_products = data
-        })
-        .error (function (msg){
-            pushMessage('alert','ERROR', msg, "cross")
-        })
-    }
 
     Getproducts = function (){
         $http.get('/api/finance/products')
