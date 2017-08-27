@@ -2964,8 +2964,9 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
     $scope.sales = []
         for (var i = 0 ; i < $scope.sales_hold.length; i++)
         {
-            var tmp = new Date($scope.sales_hold[i].fecha)
-            var fecha = new Date(tmp.getFullYear(),tmp.getMonth(), tmp.getDate())
+            var tmp = $scope.sales_hold[i].fecha.split('T')
+            var tmp0 = tmp[0].split('-')
+            var fecha = new Date(tmp0[0],tmp0[1]-1, tmp0[2])
             
             var tmpdesde = $scope.date.desde.split('/')
             var desde = new Date(tmpdesde[2], tmpdesde[1]-1, tmpdesde[0]);
@@ -2973,9 +2974,9 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
             var tmphasta = $scope.date.hasta.split('/')
             var hasta = new Date(tmphasta[2], tmphasta[1]-1, tmphasta[0]);
 
-            if (fecha >= desde && fecha <= hasta)
+            if (fecha.getTime() >= desde.getTime() && fecha.getTime() <= hasta.getTime())
             {
-                if ($scope.tmp.user == null || $scope.tmp.user == 'all')
+                if ($scope.tmp.user == null || $scope.tmp.user == 'all' || $scope.tmp.user == '')
                 {
                     $scope.sales.push($scope.sales_hold[i])
                 }
