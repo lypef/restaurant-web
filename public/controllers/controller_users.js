@@ -1,4 +1,4 @@
-var app = angular.module('restweb', ['ngRoute'])
+var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
 var token = "eyJhbGciOiJIUzI1NiJ9.cGF5bG9hZA.f_0OBq6Yxx-jymUjCMcifD5ji1adKKYWUmwZF94VvTA";
 
@@ -2942,6 +2942,7 @@ app.controller("sales_admin", ['$scope', '$http', function ($scope, $http) {
 })
 
 app.controller("finance_administrator", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
+    
     $http.defaults.headers.common['x-access-token']=token;
     
     $scope.currentPage = 0;
@@ -2956,6 +2957,7 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
     $scope.date = {}
     $scope.tmp = {}
     $scope.tmp.user = 'all'
+    $scope.tmp.title = 'GRAFICA DE MOVIMIENTOS'
 
     var f = new Date();
 
@@ -3003,6 +3005,7 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
             }
         }
         $scope.LoadPages()
+        LoadChart()
     }   
 
     GetSales = function (){
@@ -3017,13 +3020,12 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
                 var tmp = $scope.sales_hold[i].fecha.split('T')
                 var tmp0 = tmp[0].split('-')
                 var fecha = new Date(tmp0[0],tmp0[1]-1, tmp0[2])
-    
+
                 if (fecha.getTime() == hoy.getTime())
                 {
                     $scope.sales.push($scope.sales_hold[i])
                 }
             }
-
             $scope.LoadPages()
         })
         .error (function (msg){
@@ -3051,14 +3053,142 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
         })
         .finally (function (){
             $scope.$emit('unload')
+            LoadChart()
         })
     }
 
+    LoadChart = function (){
+        $scope.myChartObject = {};
+        
+        $scope.myChartObject.type = 'ColumnChart';
+        
+        $scope.onions = [
+            {v: "Onions"},
+            {v: 3},
+        ];
+
+        $scope.myChartObject.data = {"cols": [
+            {id: "t", label: "Topping", type: "string"},
+            {id: "s", label: "Monto cobrado", type: "number"}
+        ], "rows": []};
+
+        var data_calculate = []
+        if ($scope.tmp.user == null || $scope.tmp.user == 'all' || $scope.tmp.user == '')
+        {
+            for (var i = 0 ; i < $scope.users.length; i++)
+            {
+                var total = 0
+                for (var b = 0 ; b < $scope.sales.length; b++)
+                {
+                    if ($scope.users[i]._id == $scope.sales[b].user._id)
+                    {
+                        total += $scope.sales[b].monto
+                    }
+                }
+                var tmp = $scope.users[i].nombre.split(" ")
+                var tmp0
+                if (tmp.length > 1)
+                {
+                    tmp0 = tmp[0] + ' ' + tmp[1]
+                }else
+                {
+                    tmp0 = tmp[0]
+                }
+                data_calculate.push({
+                    name: tmp0,
+                    total: total
+                })
+                total = 0
+            }
+            $scope.tmp.title = 'GRAFICA DE MOVIMIENTOS'
+        }else
+        {
+            var datatmp = []
+            for (var b = 0 ; b < $scope.sales.length; b++)
+            {
+                if ($scope.sales[b].user._id == $scope.tmp.user)
+                {
+                    datatmp.push($scope.sales[b])
+                }
+            }
+            
+            var exist = []
+            for (var i = 0 ; i < datatmp.length; i++)
+            {
+                var agregar = true
+
+                for (var a = 0; a < exist.length; a++)
+                {
+                    var tmp = exist[a].split('T')
+                    var tmp0 = tmp[0].split('-')
+                    var fecha = new Date(tmp0[0],tmp0[1]-1, tmp0[2])
+
+                    var tmp1 = datatmp[i].fecha.split('T')
+                    var tmp2 = tmp1[0].split('-')
+                    var fechadb = new Date(tmp2[0],tmp2[1]-1, tmp2[2])
+
+                    
+                    
+                    if (fecha.getTime() == fechadb.getTime())
+                    {
+                        agregar = false
+                    }
+                }
+                
+                if (agregar)
+                {
+                    var total = 0
+                    for (var b = 0 ; b < datatmp.length; b++)
+                    {
+                        var tmp = datatmp[b].fecha.split('T')
+                        var tmp0 = tmp[0].split('-')
+                        var fecha = new Date(tmp0[0],tmp0[1]-1, tmp0[2])
+
+                        var tmp1 = datatmp[i].fecha.split('T')
+                        var tmp2 = tmp1[0].split('-')
+                        var fechadb = new Date(tmp2[0],tmp2[1]-1, tmp2[2])
+
+                        
+                        if (fecha.getTime() == fechadb.getTime())
+                        {
+                            total += datatmp[b].monto
+                        }
+                    }
+                    var tmp = datatmp[i].fecha.split('T')
+                    var tmp0 = tmp[0].split('-')
+                    data_calculate.push({
+                        name: tmp0[2] +'-'+ tmp0[1] +'-'+ tmp0[0],
+                        total: total
+                    })
+                    $scope.tmp.title = 'GRAFICA DE MOVIMIENTOS: ' + datatmp[i].user.nombre
+                    exist.push(datatmp[i].fecha)
+                    total = 0
+                }
+
+            }
+            data_calculate.reverse()
+        }
+        
+        
+        for (var i = 0 ; i < data_calculate.length; i++)
+        {
+            $scope.myChartObject.data.rows.push({c: [
+                {v: data_calculate[i].name},
+                {v: data_calculate[i].total}
+            ]})
+        }
+
+        $scope.myChartObject.options = {
+            'title': $scope.tmp.title
+        };
+    }
     
     GetSales()
     GetUsers()
     Getproducts()
     
+    
+
     $scope.ChangePageItems = function() {
         if ($scope.pageSizetmp.items == 'todos')
         {
