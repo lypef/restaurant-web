@@ -3100,7 +3100,14 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
                 })
                 total = 0
             }
-            $scope.tmp.title = 'GRAFICA DE MOVIMIENTOS'
+
+            var totalglobal = 0
+            for (var b = 0 ; b < $scope.sales.length; b++)
+            {
+                totalglobal += $scope.sales[b].monto
+            }
+
+            $scope.tmp.title = 'GRAFICA DE MOVIMIENTOS TOTAL RECAUDADO $ '+ totalglobal.toFixed(2)
         }else
         {
             var datatmp = []
@@ -3160,13 +3167,19 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
                         name: tmp0[2] +'-'+ tmp0[1] +'-'+ tmp0[0],
                         total: total
                     })
-                    $scope.tmp.title = 'GRAFICA DE MOVIMIENTOS: ' + datatmp[i].user.nombre
                     exist.push(datatmp[i].fecha)
                     total = 0
                 }
 
             }
             data_calculate.reverse()
+            var totalglobal = 0
+            for (var b = 0 ; b < data_calculate.length; b++)
+            {
+                totalglobal += data_calculate[b].total
+            }
+
+            $scope.tmp.title = 'GRAFICA DE MOVIMIENTOS, ' + datatmp[0].user.nombre + '. TOTAL RECAUDADO $ ' + totalglobal.toFixed(2)        
         }
         
         

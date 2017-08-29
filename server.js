@@ -236,7 +236,7 @@ function AddMovement (session, description, sale)
     {
         admin: session.admin._id,
         user: session._id,
-        fecha: Date.now(),
+        fecha: GetDate(),
         description: description,
         sale: sale
     });
@@ -1616,7 +1616,7 @@ function addmoney (req, res)
     var p = new db.sales({
         admin: req.session.user.admin._id,
         user: req.session.user._id,
-        fecha: Date.now(),
+        fecha: GetDate(),
         monto: req.body.monto,
         description: req.body.description,
         cut_user: false,
@@ -1990,20 +1990,27 @@ function InsertClientUser (req,res)
     }  
 }
 
+function GetDate () {
+    var date = new Date();
+    date.setHours(date.getHours()-5)
+    return date
+}
+
 function addvtd (req, res ){
     var total = 0
-
+    
     for (var i = 0; i < req.body.length; i ++)
     {
         total += req.body[i].total   
     }    
 
     var r = true
+
     var ticket = new db.sales(
     {
         admin: req.session.user.admin._id,
         user: req.session.user._id,
-        fecha: Date.now(),
+        fecha: GetDate(),
         monto: total,
         description: 'se realizo venta',
         cut_user: false,
