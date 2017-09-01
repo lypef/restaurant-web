@@ -16038,6 +16038,12 @@ video::-webkit-media-controls-enclosure {
   -moz-border-radius: 150px;
 }
 
+.img-round100:hover {
+  width: 110px;
+  height: 110px;
+  border: 5px #1ba1e2 solid;
+}
+
 .img-round150 {
   width: 150px;
   height: 150px;

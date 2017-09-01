@@ -139,6 +139,19 @@ var sales_products_scheme = new mongoose.Schema({
 	product: { type: Schema.Types.ObjectId, ref: 'products'},
 })
 
+var kitchen_scheme = new mongoose.Schema({
+	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'},
+	user: { type: Schema.Types.ObjectId, ref: 'user'},
+	cocinero: { type: Schema.Types.ObjectId, ref: 'user'},
+	product: { type: Schema.Types.ObjectId, ref: 'products'},
+	comentario: { type: String, uppercase: true},
+	unidades: { type: Number, required: true},
+	preparando: { type: Boolean, default: false },
+	end: { type: Boolean, default: false },
+	delivery: { type: Boolean, default: false },
+	status: { type: String}
+})
+
 module.exports.user = mongoose.model("user",user_scheme);
 module.exports.admin = mongoose.model("admin",Admin_scheme);
 module.exports.clients = mongoose.model("clients",clients_scheme);
@@ -154,5 +167,6 @@ module.exports.user_preferencias = mongoose.model("user_preferencias",preferenci
 module.exports.movements = mongoose.model("movements",movements_scheme);
 module.exports.sales = mongoose.model("sales",sales_scheme);
 module.exports.sales_products = mongoose.model("sales_products",sales_products_scheme);
+module.exports.kitchen = mongoose.model("kitchen",kitchen_scheme);
 
 

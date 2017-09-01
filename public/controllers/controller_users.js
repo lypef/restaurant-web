@@ -65,6 +65,9 @@ app.config(function($routeProvider){
         .when('/admin_finance', {
             templateUrl : '/clients_users/caja/finance.html'
         })
+        .when('/kitchen', {
+            templateUrl : '/clients_users/kitchen/index.html'
+        })
         .otherwise({
             redirectTo : '/'
         })
@@ -2485,6 +2488,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
         {
             $scope.products[0].unidades = 1;
             $scope.products[0].total = $scope.products[0].price;
+            $scope.products[0].delivery = true
             if ($scope.products[0].receta)
             {
                 $scope.products[0].stockc --
@@ -2524,6 +2528,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
         {
             item.unidades = 1;
             item.total = item.price;
+            item.delivery = true
             if (item.receta)
             {
                 item.stockc --
@@ -3339,6 +3344,86 @@ app.controller("users_movements", ['$scope', '$http','$timeout', function ($scop
     }
     GetUsers()
     GetMovements()
+    Getproducts()
+    
+    $scope.ChangePageItems = function() {
+        if ($scope.pageSizetmp.items == 'todos')
+        {
+            $scope.pageSize = $scope.movements.length
+        }else {
+            $scope.pageSize = $scope.pageSizetmp.items    
+        }
+        $scope.LoadPages()
+    };
+
+    $scope.LoadPages = function ()
+    {
+        $scope.pages.length = 0;
+            var ini = $scope.currentPage - 4;
+            var fin = $scope.currentPage + 5;
+            if (ini < 1) {
+              ini = 1;
+              if (Math.ceil($scope.movements.length / $scope.pageSize) > 10)
+                fin = 10;
+              else
+                fin = Math.ceil($scope.movements.length / $scope.pageSize);
+            } else {
+              if (ini >= Math.ceil($scope.movements.length / $scope.pageSize) - 10) {
+                ini = Math.ceil($scope.movements.length / $scope.pageSize) - 10;
+                fin = Math.ceil($scope.movements.length / $scope.pageSize);
+              }
+            }
+            if (ini < 1) ini = 1;
+            for (var i = ini; i <= fin; i++) {
+              $scope.pages.push({
+                no: i
+              });
+            }
+
+            if ($scope.currentPage >= $scope.pages.length)
+            $scope.currentPage = $scope.pages.length - 1;
+    }
+    
+      
+    $scope.setPage = function(index) {
+        $scope.currentPage = index - 1;
+    };
+
+    
+}
+  ]).filter('startFromGrid', function() {
+    return function(input, start) 
+    {
+        if (!input || !input.length) { return; }
+        start = +start; 
+        return input.slice(start);   
+    }       
+})
+
+app.controller("procuts_kitchen", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
+    
+    $http.defaults.headers.common['x-access-token']=token;
+    
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
+    $scope.pageSizetmp = {}
+
+    $scope.cook_products = {}
+
+    Getproducts = function (){
+        $scope.$emit('load')
+        $http.get('/api/kitchen/cook_products')
+        .success(function(data){
+            $scope.cook_products = data
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
     Getproducts()
     
     $scope.ChangePageItems = function() {

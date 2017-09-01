@@ -140,6 +140,19 @@ app.post('/api/account/users/update', UpdateUser );
 app.post('/api/account/update', UpdateAccountthis );
 app.post('/api/account/cut_z', cut_z_admin)
 
+//Api kitchen
+app.use('/api/kitchen', function(req,res,next){
+    if (req.session.user.preferencias.cocina)
+    {
+        next()
+    }else
+    {
+        res.status(500).send('No autorizado')
+    }
+});
+app.get('/api/kitchen/cook_products', GetCookProducts)
+
+
 //Api accounts admin
 app.use('/api/finance', function(req,res,next){
     if (req.session.user.preferencias.finance)
@@ -595,6 +608,17 @@ function User_adminValuesjson (req,res){
             res.json(doc)
         }else {
             console.log("Usuari no encontrado")
+        }
+    });
+};
+
+function GetCookProducts (req,res){
+    db.kitchen.find({ admin: req.session.user.admin._id }).populate('admin').populate('user').populate('product').exec(function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
+        }else {
+            console.log(err)
         }
     });
 };
@@ -2032,7 +2056,8 @@ function addvtd (req, res ){
                     }
                 }
                 if (req.body[i].cocina){
-                    add_comanda_cocina(req.body[i])
+                    req.body[i].comentario = 'Aqui van los comentarios'
+                    add_comanda_cocina(req.body[i], req.session.user)
                 }
 
                 if (!req.body[i].receta){
@@ -2066,8 +2091,23 @@ function add_sale_product (product, admin, ticket)
     })
 }
 
-function add_comanda_cocina(item){
-    console.log('Enviar a la cocina. ' + item.name)
+function add_comanda_cocina(item, session){
+    var p = new db.kitchen(
+    {
+        admin: session.admin._id,
+        user: session._id,
+        product: item._id,
+        unidades: item.unidades,
+        comentario: item.comentario,
+        delivery: item.delivery,
+        status: 'En cola'
+    });
+
+    p.save(function (err){
+        if (err){
+            console.log(err)
+        }
+    })
 }
 
 function RemoveStockproduct(item){
