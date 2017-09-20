@@ -1,0 +1,131 @@
+<div ng-controller="c_direcciones">
+<div class="accordion large-heading" data-role="accordion">
+    <div class="frame">
+        <div class="heading"><span class="mif-plus icon"></span> Nueva Direccion</span></div>
+        <div class="content" align="center">
+        <form align="center">  
+            
+            
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="Calle" ng-model="direccion.calle" class="input-full">
+            <span class="icon mif-database"></span>
+            </div>
+            
+            
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="Numero" ng-model="direccion.numero">
+            <span class="icon mif-database"></span>
+            </div>
+
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="Colonia" ng-model="direccion.colonia">
+            <span class="icon mif-database"></span>
+            </div>
+
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="Ciudad" ng-model="direccion.ciudad">
+            <span class="icon mif-database"></span>
+            </div>
+
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="Referencia" ng-model="direccion.referencia">
+            <span class="icon mif-database"></span>
+            </div>
+
+
+            <br><br>
+            <button class="button success loading-pulse" ng-click="create()">
+            Agregar
+            </button>
+        </form>
+        </div>
+    </div>
+</div>
+<br>
+<div class="panel alert">
+    <div class="heading">
+    
+    <span class="title">Direcciones</span>
+
+    </div>
+    <div class="content">
+    <table class="table striped hovered bordered border">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Direccion</th>
+              <th>Referencia</th>
+              <th>Actualizar</th>
+              <th>Eliminar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='a in direcciones | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
+              <td>{{ a.cliente.nombre }}</td>
+              <td>{{ a.calle }}-{{ a.numero }}, COL. {{ a.colonia }}, {{ a.ciudad }}</td>
+              <td>{{ a.referencia }}</td>
+              <td align="center">
+                <button class="button success mif-pencil" ng-click="LoadValuesEdit(a)" onclick="toggleMetroDialog('#dialog')"> Actualizar</button>
+              </td>
+              <td align="center">
+                <button class="button alert mif-bin" ng-click="LoadValuesEdit(a)" onclick="toggleMetroDialog('#delete')"> Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+<hr>
+</div></div>
+<!--Ventana modal-->
+<div data-role="dialog" id="dialog" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+
+      <form>
+        <p>
+      <h3>{{ tmp.cliente.nombre }}</h3>
+      <input type="hidden" ng-model="tmp._id" class="input-full">
+      <div class="input-control modern text iconic" id="widthfull">
+      <input type="text" placeholder="Calle" ng-model="tmp.calle" class="input-full">
+      <span class="icon mif-database"></span>
+      </div>
+      
+      <div class="input-control modern text iconic" id="widthfull">
+      <input type="text" placeholder="Numero" ng-model="tmp.numero">
+      <span class="icon mif-database"></span>
+      </div>
+      <br>
+      <div class="input-control modern text iconic" id="widthfull">
+      <input type="text" placeholder="Colonia" ng-model="tmp.colonia">
+      <span class="icon mif-database"></span>
+      </div>
+      
+      <div class="input-control modern text iconic" id="widthfull">
+      <input type="text" placeholder="Ciudad" ng-model="tmp.ciudad">
+      <span class="icon mif-database"></span>
+      </div>
+      <br>
+      <div class="input-control modern text iconic" id="widthfull">
+      <input type="text" placeholder="Referencia" ng-model="tmp.referencia">
+      <span class="icon mif-database"></span>
+      </div>
+      <br>
+      <button class="button warning mif-pencil" ng-click="update()" onclick="hideMetroDialog('#dialog')"> Actualizar</button>
+      <button class="button success mif-checkmark" onclick="hideMetroDialog('#dialog')"> Cancelar</button>
+      </div>
+      </form>
+<!--Ventana modal-->
+<!--Ventana modal-->
+<div data-role="dialog" id="delete" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+
+      <p>
+      <h3>Eliminar Direccion</h3>
+      <button class="button alert mif-bin" ng-click="delete()" onclick="hideMetroDialog('#delete')"> Si</button>
+      <button class="button success mif-checkmark" onclick="hideMetroDialog('#delete')"> No</button>
+      </div>
+<!--Ventana modal-->
+</div>

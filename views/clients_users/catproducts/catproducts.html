@@ -1,0 +1,116 @@
+<div class="panel info" ng-controller="catproducts">
+                <div class="heading">
+                
+                <span class="title">Agregar Categoria</span>
+                </div>
+                <div class="content">
+                <form align="center">  
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Categoria" ng-model="Newproduct.categoria" class="input-full">
+                        <span class="label">Nombre categoria</span>
+                        <span class="informer"></span>
+                        <span class="icon mif-user"></span>
+                        </div>
+                        
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Descripcion" ng-model="Newproduct.descripcion" class="input-full" >
+                        <span class="label">Descripcion categoria</span>
+                        <span class="informer"></span>
+                        <span class="icon mif-paragraph-left"></span>
+                        </div>
+                        
+                        <br><br>
+                        
+                        <button class="button success loading-pulse" ng-click="CreateCatProduct()">
+                        Agregar
+                        </button>
+                    </form>
+                    <br><br>
+                    
+<div class="panel alert">
+	<div class="heading">
+    
+    <span class="title">Listado de categorias</span>
+    </div>
+    <div class="content">
+    
+    <form>
+        <div class="content">
+    <!--Busqueda y numero mostrado -->
+                <div class="grid">
+                    <div class="row flex-just-sa">
+                        <div class="colspan6" style="width: 100%" align="center">
+                        <form >
+                            <div class="input-control text " data-role="input" style="width: 95%">
+                
+                        <input type="text" name="filter" ng-model="inputbox.text" placeholder="Buscar" autocomplete="off" ng-change="SearchCatProduct()">
+        
+                        <button class="button" ng-click="SearchCatProduct()"><span class="mif-search"></span></button>
+        </div>
+                        </form>
+                        </div>
+                        <div class="colspan6" style="width: 100%" align="center">
+                            <div class="input-control select" style="width: 95%">
+                            <select ng-model="pageSizetmp.items" ng-change="ChangePageItems()" style="text-align: center; text-align-last: center;">
+                                <option value="">---Items mostrados---</option>
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="40">40</option>
+                                <option value="60">60</option>
+                                <option value="80">80</option>
+                                <option value="100">100</option>
+                                <option value="todos">Ver todos</option>
+                            </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Finaliza Busqueda y numero mostrado -->
+
+    </form>
+
+	<table class="table striped hovered bordered border">
+	<thead>
+        <tr>
+          <th>Categoria</th>
+          <th>Descripcion</th>
+          
+        </tr>
+      </thead>
+	<tr align="center" ng-repeat="category in productstmp | startFromGrid: currentPage * pageSize | limitTo: pageSize">
+		<td>
+			{{ category.categoria }}
+		</td>
+		<td>
+			{{ category.descripcion }}
+		</td>
+	</tr>
+
+</table>
+<!--Paginacion-->
+<div class="grid">
+    <div class="row flex-just-sa">
+        <div class="cell-auto-size">
+        <div class='pagination'>
+
+          <button type='button ' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = 0'>Principio</button>
+
+          <button type='button' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
+          
+          <button type='button' class='item current' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{ page.no }}</button>
+          
+          <button type='button' class='item' ng-disabled='currentPage >= productstmp.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
+
+          <button type='button' class='item' ng-disabled='currentPage == productstmp.length/pageSize - 1' ng-click='currentPage = productstmp.length/pageSize - 1'>Final</button>
+        </div>
+    </div>    
+    </div>
+</div>
+<!--Finaliza Paginacion-->
+    </div>
+	
+</div>
+</div>
+</div>
+</div>

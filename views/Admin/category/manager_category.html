@@ -1,0 +1,28 @@
+<div ng-controller="category">
+	<form>
+	<div class="input-control text big-input " data-role="input" style="width: 100%">
+	    
+	    <input type="text" name="filter" ng-model="inputbox.text" placeholder="Ingrese un nombre">
+	    
+	    <button class="button" ng-click="SearchClient()"><span class="mif-search"></span></button>
+	    
+	</div>
+	</form>
+	
+	<table class="table striped hovered">
+		<tr>
+			<th>CATEGORIA</th>
+			<th>CREADOR</th>
+			<th>ULTIMO EDITOR/ADMIN</th>
+			<th>OPCIONES</th>
+		</tr>
+		<tr ng-repeat="todo in all" align="center">
+			<td>{{ todo.categoria }}</td>
+			<td><a href="admin_dashboard#/update_users/{{ todo.creator._id }}">{{ todo.creator.nombre }}</a></td>
+			<td>{{ todo.last_edit.nombre }}</td>
+			<td><a href="/admin_dashboard#/manager_category/{{ todo._id }}">
+			<button class="button primary"><span class="mif-pencil"></span> Actualizar</button></a></td>
+		</tr>
+	</table>
+
+</div>

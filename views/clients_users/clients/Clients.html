@@ -1,0 +1,163 @@
+<div ng-controller="clients">
+<div class="accordion large-heading" data-role="accordion">
+    <div class="frame">
+        <div class="heading"><span class="mif-plus icon"></span> Nuevo cliente</span></div>
+        <div class="content" align="center">
+        <form align="center">  
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="Nombre" ng-model="Client.nombre" class="input-full">
+            <span class="icon mif-user"></span>
+            </div>
+            
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="number" placeholder="Telefono" ng-model="Client.telefono">
+            <span class="icon mif-phone"></span>
+            </div>
+            
+            <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="E-mail" ng-model="Client.mail">
+            <span class="icon mif-mail"></span>
+            </div>
+            <br><br>
+            <button class="button success loading-pulse" ng-click="CreateClient()">
+            Agregar
+            </button>
+        </form>
+        </div>
+    </div>
+</div>
+<br>
+<div class="panel alert">
+    <div class="heading">
+    
+    <span class="title">Clientes</span>
+
+    </div>
+    <div class="content">
+	<!--Busqueda y numero mostrado -->
+	<div class="grid">
+	    <div class="row flex-just-sa">
+	        <div class="colspan6" style="width: 100%" align="center">
+	        <form >
+            	<div class="input-control text " data-role="input" style="width: 95%">
+    
+    		<input type="text" name="filter" ng-model="inputbox.text" placeholder="Buscar" autocomplete="off" ng-change="SearchClient()">
+    
+    		<button class="button" ng-click="SearchClient()"><span class="mif-search"></span></button></div>
+            </form>
+	        </div>
+	        <div class="colspan6" style="width: 100%" align="center">
+		        <div class="input-control select" style="width: 95%">
+                <select ng-model="pageSizetmp.items" ng-change="ChangePageItems()" style="text-align: center; text-align-last: center;">
+                    <option value="">---Items mostrados---</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="60">60</option>
+                    <option value="80">80</option>
+                    <option value="100">100</option>
+                    <option value="todos">Ver todos</option>
+                </select>
+                </div>
+	        </div>
+	    </div>
+	</div>
+	<!--Finaliza Busqueda y numero mostrado -->
+    <div style="overflow-x:auto;">
+      <table class="table striped hovered bordered border">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Telefono</th>
+              <th>MAIL</th>
+              <th>Opciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='a in all | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
+              <td>{{ a.nombre }}</td>
+              <td>{{ a.telefono }}</td>
+              <td ng-if="a.mail != null">{{ a.mail }}</td>
+              <td ng-if="a.mail == null">NINGUNO</td>
+              <td align="center">
+              <div class="dropdown-button">
+                  <button class="button success dropdown-toggle">Opciones</button>
+                  <ul class="split-content d-menu place-right" data-role="dropdown">
+                      <li><a class="mif-pencil" ng-Click="loadvalues(a)" onclick="toggleMetroDialog('#editmodal')"> Actualizar</a></li>
+                      
+                      <li><a class="mif-bin" ng-Click="loadvalues(a)" onclick="toggleMetroDialog('#delete')"> Eliminar</a></li>
+                      
+                      <li><a class="mif-earth2" href="dashboard#/direcciones/{{ a._id }}"> Direcciones</a></li>
+                  </ul>
+              </div>
+                
+            </tr>
+          </tbody>
+        </table>
+    
+    
+<div class="grid">
+    <div class="row flex-just-sa">
+        <div class="cell-auto-size">
+        <div class='pagination'>
+          <button type='button ' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = 0'>Principio</button>
+
+          <button type='button' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
+          
+          <button type='button' class='item current' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{ page.no }}</button>
+          
+          <button type='button' class='item' ng-disabled='currentPage >= all.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
+
+          <button type='button' class='item' ng-disabled='currentPage == all.length/pageSize - 1' ng-click='currentPage = all.length/pageSize - 1'>Final</button>
+        </div>
+    </div>    
+    </div>
+</div>
+<hr></div>            
+</div></div>
+<!--Ventana modal-->
+<div data-role="dialog" id="editmodal" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+
+      <form align="center">  
+        <div class="input-control modern text iconic" id="widthfull">
+        <input type="text" placeholder="Nombre" class="input-full" ng-model="tmp.nombre">
+        <span class="label">Nombre</span>
+        <span class="icon mif-user"></span>
+        </div>
+        
+        <div class="input-control modern text iconic" id="widthfull">
+        <input type="text" placeholder="Telefono fijo" ng-model="tmp.telefono">
+        <span class="label">Telefono</span>
+        <span class="icon mif-phone"></span>
+        </div>
+        
+        <div class="input-control modern text iconic" id="widthfull">
+        <input type="text" placeholder="E-mail" ng-model="tmp.mail">
+        <span class="label">Email</span>
+        <span class="icon mif-mail"></span>
+        </div>
+        <br>
+        <input type="hidden" name="id" ng-model="tmp._id"">
+        
+        <button class="button warning" ng-click="update()" onclick="hideMetroDialog('#editmodal')"><span class="mif-floppy-disk"/> Guardar</button>
+
+        <button class="button success" onclick="hideMetroDialog('#editmodal')">Cancelar</button>
+        
+    </form>
+<!--Ventana modal-->
+<!--Ventana modal-->
+<div data-role="dialog" id="delete" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3>Eliminar? : {{ tmp.nombre }}</h3></p>
+      <button class="button alert" ng-click="delete()" onclick="hideMetroDialog('#delete')"><span class="mif-bin"></span> Si</button>
+
+      <button class="button success" onclick="hideMetroDialog('#delete')"><span class="mif-checkmark"></span> No</button>
+        
+<!--Ventana modal-->        
+</div>

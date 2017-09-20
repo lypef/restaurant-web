@@ -1,0 +1,124 @@
+<div class="content" align="center" ng-controller="finance_administrator">
+
+<div google-chart chart="myChartObject" style="height:100%; width:100%;"></div>
+<hr>
+<div class="input-control select" style="text-align: center; text-align-last: center; width: 100%">
+    <select ng-model="myChartObject.type">
+        <option value="PieChart">Grafica pastel</option>
+        <option value="ColumnChart">Grafica de barras</option>
+        <option value="BarChart">Grafica de barras horizontal</option>
+        <option value="LineChart">Grafica lineal</option>
+    </select>
+</div>
+    <!--Busqueda y numero mostrado -->
+    <div class="row flex-just-sa">
+            <div class="colspan6" style="width: 100%; border: 2px solid #fff;">
+            <span class="tag warning" style="width: 100%"><h4>Desde: 
+            <div class="input-control text" data-role="datepicker" data-locale='es' style="width: 80%">
+              <input type="text" ng-model="date.desde" style="text-align:center;" ng-change="changeDate()">
+              <button class="button"><span class="mif-calendar"></span></button>
+            </div>
+            </h4></span>
+            </div>
+            <div class="colspan6" style="width: 100%; border: 2px solid #fff;">
+            <span class="tag success" style="width: 100%"><h4>Hasta: 
+            <div class="input-control text" data-role="datepicker" data-locale='es' style="width: 80%">
+              <input type="text" ng-model="date.hasta" style="text-align:center;" ng-change="changeDate()">
+              <button class="button"><span class="mif-calendar"></span></button>
+            </div>
+            </h4></span>
+            </div>
+        </div>
+    <!--Finaliza Busqueda y numero mostrado -->
+    <!--Busqueda y numero mostrado -->
+    <div class="row flex-just-sa">
+            <div class="colspan6" style="width: 100%" align="center">
+            <select id="select" ng-model="tmp.user" ng-change="changeDate()" style="text-align: center; text-align-last: center; width: 95%" >
+                <option value="">--- USUARIOS ---</option>
+                <option value="all">--- TODOS ---</option>
+                <option ng-repeat = "a in users" value="{{ a._id }}">{{ a.nombre }}</option>
+              </select>
+            <script>
+                $(function(){
+                    $("#select").select2();
+                });
+            </script>
+            </div>
+            <div class="colspan6" style="width: 100%" align="center">
+                
+                <select id = "select1" ng-model="pageSizetmp.items" ng-change="ChangePageItems()" style="text-align: center; text-align-last: center; width: 95%">
+                    <option value="">---Items mostrados---</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="60">60</option>
+                    <option value="80">80</option>
+                    <option value="100">100</option>
+                    <option value="todos">Ver todos</option>
+                </select>
+                <script>
+                $(function(){
+                    $("#select1").select2();
+                });
+                </script>
+                
+            </div>
+        </div>
+    <!--Finaliza Busqueda y numero mostrado -->
+    <div style="overflow-x:auto;">
+    <table class="table striped hovered bordered border">
+      <thead>
+            <tr>
+              <th>FOTO</th>
+              <th>usuario</th>
+              <th>FECHA</th>
+              <th>Monto</th>
+              <th>VER PRODUCTOS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='a in sales | startFromGrid: currentPage * pageSize | limitTo: pageSize'>
+              <td align="center"><img class="img-round80" ng-src="{{ a.user.img }}"></td>
+              <td>{{ a.user.nombre }}</td>
+              <td>{{ a.fecha }}</td> 
+              <td>$ {{ a.monto }}</td>
+              <td align="center">
+                <button class="button success" ng-click="showventa(a)" onclick="toggleMetroDialog('#showventa')">Productos vendidos</button>
+              </td>
+            </tr>
+          </tbody>
+    </table>
+    <div class="row flex-just-sa">
+        <div class="cell-auto-size">
+        <div class='pagination'>
+          <button type='button ' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = 0'>Principio</button>
+
+          <button type='button' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
+          
+          <button type='button' class='item current' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{ page.no }}</button>
+          
+          <button type='button' class='item' ng-disabled='currentPage >= sales.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
+
+          <button type='button' class='item' ng-disabled='currentPage == sales.length/pageSize - 1' ng-click='currentPage = sales.length/pageSize - 1'>Final</button>
+        </div>
+    </div>    
+    </div>
+</div>
+<!--Ventana modal showventa-->
+    <div data-role="dialog" id="showventa" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true"
+      data-place="top-center">
+      <p><h5>Lista de productos vendidos</h5></p>
+       <hr>
+      <ul align="left">
+      <li ng-repeat ="a in tmp.products">{{ a.product.name}} $ {{ a.product.price}}</li>
+      </ul> 
+
+      <button class="button success" onclick="hideMetroDialog('#showventa')"><span class="mif-checkmark"></span> OK</button>
+    </div>
+    <!--Ventana modal showventa-->
+    </div>
+<!-- Finaliza Acordeon-->

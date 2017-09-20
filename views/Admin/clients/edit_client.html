@@ -1,0 +1,130 @@
+<div class="panel info" ng-controller="clientUpdate">
+    <div class="heading">
+    
+    <span class="title">Usuarios asociados</span>
+    </div>
+    <div class="content">
+    
+    <table class="table striped hovered">
+        <tr>
+            <th>NOMBRE DE USUARIO</th>
+            <th>NOMBRE</th>
+            <th>DIRECCION</th>
+            <th>TELEFONO</th>
+            <th>OPCIONES</th>
+        </tr>
+        <tr ng-repeat="todo in all" align="center">
+            <td>{{ todo.username }}</td>
+            <td>{{ todo.nombre }}</td>
+            <td>{{ todo.direccion }}</td>
+            <td>{{ todo.telefono }}</td>
+            
+            <td><a href="/admin_dashboard#/update_users/{{todo._id}}"><button class="button primary"><span class="mif-pencil"></span> Actualizar</button></a></td>
+        </tr>
+    </table>
+
+
+    </div>
+    <div class="panel warning">
+                <div class="heading">
+                
+                <span class="title">Actualizar cliente</span>
+                </div>
+                <div class="content">
+                <form align="center">  
+                        <div class="input-control  modern text iconic" id="widthfull" >
+                        <input type="text" placeholder="Nombre" ng-model="Client.nombre" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-user"></span>
+                        </div>
+    
+                        <div class="input-control  modern text iconic" id="widthfull" >
+                        <input type="text" placeholder="Nombre rapido" ng-model="Client.namefast" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-user"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Direccion" ng-model="Client.direccion" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-paragraph-left"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Telefono" ng-model="Client.telefono" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-phone"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Mail" ng-model="Client.mail" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-mail"></span>
+                        </div>
+                        
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Tipo de identificacion" ng-model="Client.type_identificacion" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-file-archive"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Numero identificacion" ng-model="Client.number_identificacion" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-target"></span>
+                        </div>
+                            
+                        <br>
+
+                        <label class="switch">
+                            <span>Status: </span>
+                            <input type="checkbox" ng-model="Client.status">
+                            <span class="check"></span>
+                        </label>
+
+                        <br><br>
+                        <div class="input-control text" data-role="datepicker">
+                            <input type="text" ng-model="Client.vence_pago">
+                            <button class="button"><span class="mif-calendar"></span></button>
+                        </div>
+
+                        <script>
+                            $(function(){
+                                $("#datepicker").datepicker();
+                            });
+                        </script>
+                        <br><br>
+                        
+                        <button class="button success loading-pulse" ng-click="Update()">ACTUALIZAR</button>
+        
+        
+                        <button class="button alert loading-cube" onclick="toggleMetroDialog('#dialog-ajax')">ELIMINAR</button>
+                    </form>
+                    <br><br>
+                    
+</div>
+
+<div data-role="dialog" id="dialog-ajax" class="padding30" data-type="" 
+    data-close-button="true"
+    data-width="auto"
+    data-overlay="true">
+
+        <p>
+        <font face="Segoe UI Bold">
+            <h4>SE ELIMINARA EL CLIENTE: {{Client.nombre}}</h4>
+        </font>
+        <font face="Segoe UI">
+            DIRECCION: {{Client.direccion}}
+            <br>
+            TELEFONO: {{Client.telefono}}
+            <br>
+            MAIL: {{Client.mail}}
+        </font>    
+            
+        </p>
+
+        <button class="button alert" ng-click="Delete()" onclick="hideMetroDialog('#dialog-ajax')">SI</button>
+        <button class="button success" onclick="hideMetroDialog('#dialog-ajax')">NO</button>
+</div>
+
+

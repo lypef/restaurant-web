@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html ng-app="restweb">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link href="/metro/docs/css/metro.css" rel="stylesheet">
+    <link href="/metro/docs/css/metro-icons.css" rel="stylesheet">
+    <link href="/metro/docs/css/metro-responsive.css" rel="stylesheet">
+    <link href="/metro/docs/css/metro-schemes.css" rel="stylesheet">
+    <link rel='shortcut icon' type='image/x-icon' href='http://previews.123rf.com/images/alexkava/alexkava1112/alexkava111200229/11650119-restaurante-icono-Foto-de-archivo.jpg' />
+
+    <script src="/metro/docs/js/jquery-2.1.3.min.js"></script>
+    <script src="/metro/docs/js/jquery.dataTables.min.js"></script>
+    <script src="/metro/docs/js/metro.js"></script>
+    <script src="/angular/angular.min.js"></script>
+    <script src="/angular/angular-route.min.js"></script>
+    <script src="/controllers/controller_admin.js"></script>
+    <title>REST WEB AIO</title>
+    <style>
+    html, body {
+            background-color: #3c3f41;
+            height: 100%;
+        }
+        body {
+        }
+        .page-content {
+            padding-top: 3.125rem;
+            min-height: 100%;
+            height: 100%;
+        }
+        .table .input-control.checkbox {
+            line-height: 1;
+            min-height: 0;
+            height: auto;
+        }
+        #cell-sidebar 
+        {
+            flex-basis: auto;
+        }
+        #cell-content 
+        {
+            width: 100%; 
+            height: 100%;      
+        }
+        @media screen and (max-width: 800px){
+            html, body {
+            background-color: white;
+            }
+            
+            #cell-sidebar {
+                flex-basis: 52px;
+            }
+            #cell-content {
+                -webkit-flex-basis: 90%;
+                flex-basis: 90%;
+            }
+            #divone
+            {
+                height: 100%;
+            }
+            #widthfull
+            {
+                width: 90%;
+            }
+        }
+    </style>
+
+    <script>
+        function pushMessage(t, header, body, icon){
+            var mes = header + '|' + body;
+            $.Notify({
+                caption: mes.split("|")[0],
+                content: mes.split("|")[1],
+                type: t,
+                icon: "<span class='mif-"+icon+"'></span>"
+            });
+        }
+
+        $(function(){
+            $('.sidebar').on('click', 'li', function(){
+                if (!$(this).hasClass('active')) {
+                    $('.sidebar li').removeClass('active');
+                    $(this).addClass('active');
+                }
+            })
+        })
+    </script>
+</head>
+
+<body ng-controller="UserValues">
+    <div class="app-bar fixed-top red" data-role="appbar">
+        <a href="admin_dashboard#/" class="app-bar-element branding"><span class="mif-security mif-2x"></span></a>
+        <span class="app-bar-divider"></span>
+        <ul class="app-bar-menu">
+            
+            <li>
+            <a onclick="toggleMetroDialog('#clients')"><span class="mif-contacts-mail mif-2x"></span> Cuentas</a>
+            </li>
+            
+            <li>
+            <a onclick="toggleMetroDialog('#users')"><span class="mif-users mif-2x"></span> Usuarios</a>
+            </li>
+            
+            <li>
+            <a href="" class="dropdown-toggle"><span class="mif-earth mif-2x"></span> Globales</a>
+            <ul class="d-menu" data-role="dropdown">
+                <li class="divider"></li>
+                <li><a href="" class="dropdown-toggle"><span class="mif-stack2 mif-2x"></span> Categorias</a>
+                    <ul class="d-menu" data-role="dropdown">
+                        <li><a href="admin_dashboard#/manager_category">Gestionar</a></li>
+                        <li><a href="admin_dashboard#/manager_category/add">Agregar</a></li>
+                    </ul>
+                </li>
+                <li class="divider"></li>
+                <li><a href="admin_dashboard#/manager_measurement"><span class="mif-stack2 mif-2x"></span> U. Medidas</a></li>
+                
+            </ul>
+        </li>
+
+        <li><a href=""><span class="mif-clipboard mif-2x"></span> Registros</a></li>
+            
+            <li><a href=""><span class="mif-money mif-2x"></span> Pagos</a></li>
+        </ul>
+
+        <div class="app-bar-element place-right" ng-show="loadinasc">
+
+        <a href="" class="app-bar-element branding" ng-show="loadinasc">
+            <span class="mif-spinner2 mif-ani-spin mif-2x"></span>
+        </a> 
+        </div >
+
+        <div class="app-bar-element place-right" ng-show="!loadinasc">
+            <span class="dropdown-toggle"><span class="mif-user-check mif-2x"></span> {{ usuario.nombre }}</span>
+            <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
+                <ul class="unstyled-list fg-dark">
+                    <li>
+                    <a href="#"><span class="mif-user icon fg-white"> Perfil</span></a>
+                    </li>
+                    <li>
+                    <a href="#"><span class="mif-cog icon fg-white"> Configuracion</span></a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                    <a href="/logout"><span class="mif-switch icon fg-white"> Salir</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content">
+        <div class="flex-grid no-responsive-future" id="divone">
+            <div class="row" style="height: 100%">
+                <div class="padding10 bg-white" id="cell-content">
+                    
+                    <div ng-show="loading">
+
+                    <div class="cell">
+                    <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
+                    </div>
+
+                    </div>
+
+                    <div ng-show="!loading">
+                        <div ng-view></div>
+                    </div>
+                    <br>
+                <footer>
+                    <div class="bottom-menu-wrapper">
+                    <ul class="horizontal-menu compact">
+                    <li><a>&copy; 2017 Sistema Restaurant Web</a></li>
+                    <li class="place-right"><a href="#">Ayuda</a></li>
+                    <li class="place-right"><a href="#">Legal</a></li>
+                    <li class="place-right"><a href="#">Desarrollo</a></li>
+                    <li class="place-right"><a href="#">Contacto</a></li>
+                    
+                    </ul>
+                    </div>
+                </footer>
+                </div>
+                
+                
+            </div>
+        </div>
+    </div>
+    
+    
+    <div 
+    data-place = "top-left"
+    data-role="dialog" 
+    class="padding30"
+    data-type="" 
+    data-close-button="true"
+    data-width="auto"
+    data-overlay="true"
+     id="clients">
+    <div class="tile-container">
+
+        <div class="tile bg-emerald fg-white" data-role="tile"  onclick="document.location.href='admin_dashboard#/management_clients', hideMetroDialog('#clients')">
+                <div class="tile-content iconic">
+                    <span class="icon mif-chart-line"></span>
+                </div>
+                <span class="tile-label">Gestionar clientes</span>
+        </div>
+        
+        <div class="tile bg-crimson fg-white" data-role="tile" onclick="document.location.href='admin_dashboard#/add_client', hideMetroDialog('#clients')">
+                <div class="tile-content iconic">
+                    <span class="icon mif-plus"></span>
+                </div>
+                <span class="tile-label">Agregar clientes</span>
+        </div>
+
+</div>
+</div>
+
+<div 
+    data-place = "top-left"
+    data-role="dialog" 
+    class="padding30"
+    data-type="" 
+    data-close-button="true"
+    data-width="auto"
+    data-overlay="true"
+     id="users">
+    <div class="tile-container">
+
+        <div class="tile bg-emerald fg-white" data-role="tile"  onclick="document.location.href='admin_dashboard#/manager_users', hideMetroDialog('#users')">
+                <div class="tile-content iconic">
+                    <span class="icon mif-chart-line"></span>
+                </div>
+                <span class="tile-label">Gestionar usuarios</span>
+        </div>
+       
+
+        <div class="tile bg-darkBlue fg-white" data-role="tile" onclick="document.location.href='admin_dashboard#/add_client_user', hideMetroDialog('#users')">
+                <div class="tile-content iconic">
+                    <span class="icon mif-plus"></span>
+                </div>
+                <span class="tile-label">Agregar usuario</span>
+        </div>
+</div>
+
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<div ng-controller="procuts_kitchen">
+
+<div style="overflow-x:auto;">
+    <table class="table striped hovered bordered border">
+         <thead>
+            <tr>
+            <th>PRODUCTO</th>
+            <th>UNIDADES</th>
+            <th>ESTADO</th>
+            <th>DELIVERY</th>
+            <th>COMENTARIOS</th>
+            <th>GESTION</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr ng-repeat="a in cook_products" ng-model="cook_products" >
+                
+                <td>
+                <img class= "img-round100" ng-src="{{ a.product.img }}"> {{ a.product.name }}
+                </td>
+                <td align="center">{{ a.unidades }}</td>
+                <td>{{ a.status }}</td>
+                <td>{{ a.delivery }}</td>
+                <td>{{ a.comentario }}</td>
+                <td>
+                	<button class="button success loading-pulse large-button" ng-click="create()">
+                    Preparar
+                    </button>
+                    <button class="button success loading-pulse large-button" ng-click="create()">
+                    Agregar
+                    </button>
+                    <button class="button success loading-pulse large-button" ng-click="create()">
+                    Agregar
+                    </button>
+                    <button class="button success loading-pulse large-button" ng-click="create()">
+                    Agregar
+                    </button>
+                </td>
+              </tr>
+          </tbody>
+    </table>
+    </div>
+
+</div>

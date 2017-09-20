@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html ng-app="restweb">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link href="/metro/docs/css/metro.css" rel="stylesheet">
+    <link href="/metro/docs/css/metro-icons.css" rel="stylesheet">
+    <link href="/metro/docs/css/metro-responsive.css" rel="stylesheet">
+    <link href="/metro/docs/css/metro-schemes.css" rel="stylesheet">
+    <link rel='shortcut icon' type='image/x-icon' href='/icon.png' />
+
+    <script src="/metro/docs/js/jquery-2.1.3.min.js"></script>
+    <script src="/metro/docs/js/jquery.dataTables.min.js"></script>
+    <script src="/metro/docs/js/metro.js"></script>
+    <script src="/metro/docs/js/select2.min.js"></script>
+    <script src="/angular/angular.min.js"></script>
+    <script src="/angular/angular-route.min.js"></script>
+    <script src="/controllers/controller_users.js"></script>
+    <script src="/angular/ng-google-chart.js"></script>
+
+    <title>REST WEB AIO</title>
+    <style>
+    html, body {
+            background-color: #3c3f41;
+            height: 100%;
+        }
+        body {
+        }
+        .page-content {
+            padding-top: 3.125rem;
+            min-height: 100%;
+            height: 100%;
+        }
+        .table .input-control.checkbox {
+            line-height: 1;
+            min-height: 0;
+            height: auto;
+        }
+        #cell-sidebar 
+        {
+            flex-basis: auto;
+        }
+        #cell-content 
+        {
+            width: 100%; 
+            height: 100%;      
+        }
+        @media screen and (max-width: 800px){
+            html, body {
+            background-color: white;
+            }
+            
+            #cell-sidebar {
+                flex-basis: 52px;
+            }
+            #cell-content {
+                -webkit-flex-basis: 90%;
+                flex-basis: 90%;
+            }
+            #divone
+            {
+                height: 100%;
+            }
+            #widthfull
+            {
+                width: 90%;
+            }
+        }
+    </style>
+
+    <script>
+        function pushMessage(t, header, body, icon){
+            var mes = header + '|' + body;
+            $.Notify({
+                caption: mes.split("|")[0],
+                content: mes.split("|")[1],
+                type: t,
+                icon: "<span class='mif-"+icon+"'></span>"
+            });
+        }
+        $(function(){
+            $('.sidebar').on('click', 'li', function(){
+                if (!$(this).hasClass('active')) {
+                    $('.sidebar li').removeClass('active');
+                    $(this).addClass('active');
+                }
+            })
+        })
+    </script>
+</head>
+
+<body ng-controller="UserValues">
+        
+        <div class="app-bar fixed-top {{ usuario.preferencias.color_menubar }}" data-role="appbar">
+
+        <a href="dashboard#/" class="app-bar-element branding"><span class="mif-shop mif-2x"></span></a>
+
+        <span class="app-bar-divider"></span>
+        <ul class="app-bar-menu">
+            
+            <li ng-show="usuario.preferencias.sales">
+                <a href="" class="dropdown-toggle"><span class="mif-spoon-fork mif-2x"></span> Restaurante</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li>
+                        <a href="tables"><span class="mif-apps mif-2x"></span> Mesas</a>
+                        </li>
+                        <li>
+                        <a href="#"><span class="mif-motorcycle mif-2x"></span> Domicilios</a>
+                        </li>
+                        <li>
+                        <a href="#"><span class="mif-keyboard mif-2x"></span> Comandas</a>
+                        </li>
+
+                    </ul>
+            </li>
+            <li ng-show="usuario.preferencias.cocina"><a href="dashboard#/kitchen"><span class="mif-fire mif-2x"></span> Cocina</a></li>
+            <li>
+            <li ng-show="usuario.preferencias.sales"><a href="dashboard#/sales/vtd"><span class="mif-shopping-basket2 mif-2x"></span> Venta directa</a></li>
+            <li ng-show="usuario.preferencias.caja || usuario.preferencias.admin || usuario.preferencias.finance">
+                <a href="" class="dropdown-toggle"><span class="mif-money mif-2x"></span> Caja</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li ng-show="usuario.preferencias.finance">
+                        <a href="/dashboard#/admin_finance"><span class="mif-flow-line mif-2x"></span> Finanzas</a>
+                        </li>
+                        <li ng-show="usuario.preferencias.finance">
+                        <a href="/dashboard#/admin_movements"><span class="mif-flow-line mif-2x"></span> Movimientos</a>
+                        </li>
+                        
+                    <li><a href="" class="dropdown-toggle "><span class="mif-flow-line mif-2x"></span>  Efectivo</a>
+                        <ul class="d-menu" data-role="dropdown">
+                            <li><a onclick="toggleMetroDialog('#addmoney')"><span class="mif-flow-line mif-2x"></span> Ingresar</a></li>
+
+                    <li ><a onclick="toggleMetroDialog('#removemoney')"><span class="mif-flow-line mif-2x"></span> Retirar</a></li>
+                                </ul>
+                            </li>
+                    <li><a href="" class="dropdown-toggle "><span class="mif-flow-line mif-2x"></span>  Corte</a>
+                        <ul class="d-menu" data-role="dropdown">
+                            <li><a href="/dashboard#/caja/cut_x"><span class="mif-flow-line mif-2x"></span> Corte X</a></li>
+
+                            <li><a onclick="toggleMetroDialog('#cut_z_user')"><span class="mif-flow-line mif-2x"></span> Corte Z</a></li>
+
+                            <li ng-show="usuario.preferencias.admin"><a href="/dashboard#/caja/cut_x_global"><span class="mif-flow-line mif-2x"></span> Corte x global</a></li>
+
+                            <li ng-show="usuario.preferencias.admin"><a onclick="toggleMetroDialog('#cut_z_admin')"><span class="mif-flow-line mif-2x"></span> Corte Z global</a></li>
+                                </ul>
+                            </li>        
+                    </ul>
+            </li>
+            <li ng-show="usuario.preferencias.ingredientes || usuario.preferencias.recetas || usuario.preferencias.products">
+                <a href="" class="dropdown-toggle"><span class="mif-stack3 mif-2x"></span> Productos</a>
+                <ul class="d-menu" data-role="dropdown">
+                    <li><a href="dashboard#/catproducts"><span class="mif-flow-line mif-2x"></span> Categorias</a></li>
+                    
+                    <li ng-show='usuario.preferencias.ingredientes'><a href="" class="dropdown-toggle"><span class="mif-flow-line mif-2x"></span> Ingredientes</a>
+                    <ul class="d-menu" data-role="dropdown">
+                        <li><a href="dashboard#/ingredientes"><span class="mif-chart-bars mif-2x"></span> Gestionar</a></li>
+                        <li><a href="dashboard#/ingredientes_shopping"><span class="mif-plus "></span>  Compras</a></li>
+                    </ul>
+                </li>
+                
+                <li ng-show='usuario.preferencias.recetas'>
+                <a href="" class="dropdown-toggle"><span class="mif-flow-line mif-2x"></span> Recetas</a>
+                    <ul class="d-menu" data-role="dropdown">
+                        <li><a href="dashboard#/recetas"><span class="mif-chart-bars mif-2x"></span> Gestionar</a></li>
+                        <li><a href="dashboard#/add_recetas"><span class="mif-plus "></span>  Agregar</a></li>
+                    </ul>
+                </li>
+
+                <li ng-show='usuario.preferencias.products'>
+                <a href="" class="dropdown-toggle"><span class="mif-flow-line mif-2x"></span> Productos</a>
+                    <ul class="d-menu" data-role="dropdown">
+                        <li><a href="dashboard#/products"><span class="mif-chart-bars mif-2x"></span> Gestionar</a></li>
+                        <li><a href="dashboard#/products_shopping"><span class="mif-plus "></span> Compras</a></li>
+                    </ul>
+                </li>
+
+                    </ul>
+            </li>
+            <li ng-show='usuario.preferencias.clientes'><a href="dashboard#/clients"><span class="mif-users mif-2x"></span> Clientes</a></li>
+
+        </ul>
+
+        <div class="app-bar-element place-right" ng-show="loadinasc">
+
+        <a href="" class="app-bar-element branding" ng-show="loadinasc">
+            <span class="mif-spinner2 mif-ani-spin mif-2x"></span>
+        </a> 
+        </div >
+
+        <div class="app-bar-element place-right" ng-show="!loadinasc">
+
+            <a class="dropdown-toggle fg-white"><img class="img-round50" ng-src="{{ usuario.img }}"> {{ usuario.admin.namefast }}</a>
+            <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
+                <ul class="unstyled-list">
+                    <li ng-show='usuario.preferencias.admin'>
+                    <a href="dashboard#/admin"><i class="fa fa-fw fa-user"></i><span class="mif-cogs icon fg-white"> {{ usuario.admin.nombre }}</span></a>
+
+                    </li>
+
+                    <li ng-show='!usuario.preferencias.admin'>
+                    <a href="dashboard#/"><i class="fa fa-fw fa-user"></i><span class="mif-earth2 icon fg-white"> {{ usuario.admin.nombre }}</span></a>
+
+                    </li>
+
+
+                    <br>
+                    <li>
+                    <a onclick="toggleMetroDialog('#modelperfil')"><span class="mif-user icon fg-white"> Perfil</span></a>
+                    </li>
+                    <li>
+                    <a onclick="toggleMetroDialog('#modelAjustes')"><span class="mif-cogs icon fg-white"> Ajustes</span></a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                    <a href="/logout"><span class="mif-switch icon fg-white"> Salir</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content">
+        <div class="flex-grid no-responsive-future" id="divone">
+            <div class="row" style="height: 100%">
+                <div class="padding10 bg-white" id="cell-content">
+                
+                <div ng-show="loading">
+
+                <div class="cell bg-white">
+                <div data-role="preloader" data-type="cycle" data-style="color" style="margin: auto" align=""></div>
+                </div>
+
+                </div>
+
+                <div ng-show="!loading">
+                    <div ng-view></div>
+                </div>
+                    <br>
+                <footer>
+                    <div class="bottom-menu-wrapper">
+                    <ul class="horizontal-menu compact">
+                    <li><a>&copy; 2017 Sistema Restaurant Web</a></li>
+                    <li class="place-right"><a href="#">Ayuda</a></li>
+                    <li class="place-right"><a href="#">Legal</a></li>
+                    <li class="place-right"><a href="#">Desarrollo</a></li>
+                    <li class="place-right"><a href="#">Contacto</a></li>
+                    
+                    </ul>
+                    </div>
+                </footer>
+                </div>
+                
+                
+            </div>
+        </div>
+    </div>
+    
+    <!--Ventana modal perfil-->
+    <div data-role="dialog" id="modelperfil" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round50" ng-src="{{ usuario.img }}"> {{ usuario.admin.nombre }}</h3></p>
+      
+      <form>
+          <div class="input-control modern text iconic" id="widthfull">
+            <input type="text" placeholder="Nombre" ng-model="usuario.nombre">
+            <span class="label">Nombre</span>
+            <span class="icon mif-user"></span>
+          </div>
+         
+      <div class="input-control modern text iconic" id="widthfull">
+        <input type="text" placeholder="Username" ng-model="usuario.username" disabled>
+        <span class="label">Username</span> 
+        <span class="icon mif-user"></span>
+      </div>
+        <br>
+      <div class="input-control modern text iconic" id="widthfull">
+        <input type="password" placeholder="*****" ng-model="usuario.password">
+        <span class="label">Password</span>
+        <span class="icon mif-key"></span>
+      </div>
+
+      <div class="input-control modern text iconic" id="widthfull">
+        <input type="password" placeholder="*****" ng-model="usuario.passwordtmp">
+        <span class="label">Confirm password</span>
+        <span class="icon mif-key"></span>
+      </div>
+        <br>
+      <div class="input-control modern text iconic" id="widthfull">
+        <input type="text" placeholder="Direccion" ng-model="usuario.direccion">
+        <span class="label">Direccion</span>
+        <span class="icon mif-location-city"></span>
+      </div>
+        
+      <div class="input-control modern text iconic" id="widthfull">
+        <input type="text" placeholder="Telefono" ng-model="usuario.telefono">
+        <span class="label">Telefono</span>
+        <span class="icon mif-phone"></span>
+      </div>
+      <br>
+      <div class="input-control file" data-role="input" ng-model="tmp.img">
+            <input type="file" placeholder="Imagen" onchange="angular.element(this).scope().photoChanged(this.files)">
+            <button class="button" ><span class="mif-folder"></span></button>
+
+        </div>
+        <br>
+
+      
+      
+      <button class="button success" ng-click="updateuser()" onclick="hideMetroDialog('#modelperfil')"><span class="mif-floppy-disk"></span> Guardar</button>
+
+      <button class="button info" onclick="hideMetroDialog('#modelperfil')"><span class="mif-checkmark"></span> Cancelar</button>
+      </form>    
+
+    </div>
+    <!--Ventana modal perfil-->
+
+    <!--Ventana modal Ajustes-->
+    <div data-role="dialog" id="modelAjustes" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><span class="mif-cogs icon"> Ajustes</span></h3></p>
+      
+        
+            <div class="input-control select">
+                <select ng-model="usuario.preferencias.color_menubar" ng-change="setcolor()" style="text-align: center; text-align-last: center;">
+                    <option value="">---Color menu bar---</option>
+                    <option value="darcula">Darcula</option>
+                    <option value="indigo">Indigo</option>
+                    <option value="blue">Blue</option>
+                    <option value="pink">Pink</option>
+                    <option value="green">Green</option>
+                    <option value="red">Red</option>
+                    <option value="orange">Orange</option>
+                </select>
+                </div>
+            
+
+      <br>
+      <button class="button success" ng-click="updateuser_preferencias()" onclick="hideMetroDialog('#modelAjustes')"><span class="mif-floppy-disk"></span> Guardar</button>
+
+      
+
+    </div>
+    <!--Ventana modal Ajustes-->
+    <!--Ventana modal addmoney-->
+    <div data-role="dialog" id="addmoney" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round50" ng-src="{{ usuario.img }}"> Agregar efectivo</span></h3></p>
+      
+    <form>
+        <div class="input-control  modern text iconic" id="widthfull" >
+    <input type="text" placeholder="Descripcion" ng-model="addmoneyvar.description" class="input-full" autofocus>
+    <span class="informer"></span>
+    <span class="icon mif-clipboard"></span>
+    </div>  
+
+    <div class="input-control  modern text iconic" id="widthfull" >
+    <input type="text" placeholder="Monto" ng-model="addmoneyvar.monto" class="input-full">
+    <span class="informer"></span>
+    <span class="icon mif-dollar2"></span>
+    </div>  
+          <br>  
+      <button class="button success" ng-click="addmoney()" onclick="hideMetroDialog('#addmoney')"><span class="mif-dollar2"></span> Agregar</button>
+    </form>
+    </div>
+    <!--Ventana modal addmoney-->
+    <!--Ventana modal removemoney-->
+    <div data-role="dialog" id="removemoney" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round50" ng-src="{{ usuario.img }}"> Retirar efectivo</span></h3></p>
+      
+    <form>
+        <div class="input-control  modern text iconic" id="widthfull" >
+    <input type="text" placeholder="Descripcion" ng-model="removemoneyvar.description" class="input-full" autofocus>
+    <span class="informer"></span>
+    <span class="icon mif-clipboard"></span>
+    </div>  
+
+    <div class="input-control  modern text iconic" id="widthfull" >
+    <input type="text" placeholder="Monto" ng-model="removemoneyvar.monto" class="input-full">
+    <span class="informer"></span>
+    <span class="icon mif-dollar2"></span>
+    </div>  
+          <br>  
+      <button class="button alert" ng-click="removemoney()" onclick="hideMetroDialog('#removemoney')"><span class="mif-dollar2"></span> Retirar</button>
+    </form>
+    </div>
+    <!--Ventana modal removemoney-->
+
+    <!--Ventana modal cut_z_user-->
+    <div data-role="dialog" id="cut_z_user" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round50" ng-src="{{ usuario.img }}"> Realizar corte z?<br><h4>No hay vuelta atraz despues de esta accion.</h4></span></h3></p>
+       
+      <button class="button alert" ng-click="cut_z_user()" onclick="hideMetroDialog('#cut_z_user')"><span class="mif-checkmark"></span> SI</button>
+      <button class="button success" onclick="hideMetroDialog('#cut_z_user')"><span class="mif-cross"></span> NO</button>
+    </div>
+    <!--Ventana modal cut_z_user-->
+
+    <!--Ventana modal cut_z_admin-->
+    <div data-role="dialog" id="cut_z_admin" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round50" ng-src="{{ usuario.img }}"> Realizar corte z?<br><h4>No hay vuelta atraz despues de esta accion.</h4></span></h3></p>
+       
+      <button class="button alert" ng-click="cut_z_admin()" onclick="hideMetroDialog('#cut_z_admin')"><span class="mif-checkmark"></span> SI</button>
+      <button class="button success" onclick="hideMetroDialog('#cut_z_admin')"><span class="mif-cross"></span> NO</button>
+    </div>
+    <!--Ventana modal cut_z_admin-->
+    
+</body>
+</html>

@@ -1,0 +1,57 @@
+<div class="panel info" ng-controller="add_client">
+                <div class="heading">
+                
+                <span class="title">Alta nuevo cliente</span>
+                </div>
+                <div class="content">
+                <form align="center">  
+                        <div class="input-control  modern text iconic" id="widthfull" >
+                        <input type="text" placeholder="Nombre" ng-model="add.nombre" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-user"></span>
+                        </div>
+
+                        <div class="input-control  modern text iconic" id="widthfull" >
+                        <input type="text" placeholder="Nombre rapido" ng-model="add.namefast" class="input-full">
+                        <span class="informer"></span>
+                        <span class="icon mif-user"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Direccion" ng-model="add.direccion" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-paragraph-left"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Telefono" ng-model="add.telefono" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-phone"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Mail" ng-model="add.mail" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-mail"></span>
+                        </div>
+                        
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Tipo de identificacion" ng-model="add.type_identificacion" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-file-archive"></span>
+                        </div>
+
+                        <div class="input-control modern text iconic" id="widthfull">
+                        <input type="text" placeholder="Numero identificacion" ng-model="add.number_identificacion" class="input-full" >
+                        <span class="informer"></span>
+                        <span class="icon mif-target"></span>
+                        </div>
+                        <br><br>
+                        
+                        <button class="button success loading-pulse" ng-click="addClient_user()">
+                        Agregar
+                        </button>
+                    </form>
+                    <br><br>
+                    
+</div>
