@@ -3442,7 +3442,7 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', funct
     $scope.msgnew = {}
 
     socket.on('GetComandas', function(data) {
-        pushMessage('info','', 'Comandas', "cross")
+        pushMessage('info',':D', 'Comandas', "cross")
         $scope.cook_products = data
     });
 
