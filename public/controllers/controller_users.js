@@ -109,7 +109,7 @@ app.controller("UserValues", function($scope, $http, $timeout){
 
     $scope.$on('loadasc', function(){$scope.loadinasc = true})
     $scope.$on('unloadasc', function(){$scope.loadinasc = false})
-    
+
     $scope.$on('loadvalues', function(){
         $scope.loadinasc = true
         $http.get('/api/users/values')
@@ -253,9 +253,9 @@ app.controller("UserValues", function($scope, $http, $timeout){
 });
 
 app.controller("users_administrator", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
-    
+
     $http.defaults.headers.common['x-access-token']=token;
-    
+
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -323,7 +323,7 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
 
     }
 
-    
+
     $scope.updateAccount = function (){
         $scope.$emit('loadasc')
         $http.post('/api/account/update', $scope.account)
@@ -450,7 +450,7 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
         {
             pushMessage('alert','ERROR', 'Contraseñas no son iguales', "cross")
         }
-        
+
     }
 
     $scope.create = function (){
@@ -475,13 +475,13 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
             pushMessage('alert','ERROR', 'Contraseñas no son iguales', "cross")
         }
     }
-    
+
     $scope.ChangePageItems = function() {
         if ($scope.pageSizetmp.items == 'todos')
         {
             $scope.pageSize = $scope.movements.length
         }else {
-            $scope.pageSize = $scope.pageSizetmp.items    
+            $scope.pageSize = $scope.pageSizetmp.items
         }
         $scope.LoadPages()
     };
@@ -513,8 +513,8 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
             if ($scope.currentPage >= $scope.pages.length)
             $scope.currentPage = $scope.pages.length - 1;
     }
-    
-      
+
+
     $scope.setPage = function(index) {
         $scope.currentPage = index - 1;
     };
@@ -533,40 +533,40 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
             $scope.loadmovements = false
         })
     }
-    
+
 }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
+        start = +start;
+        return input.slice(start);
+    }
 })
 
 
 app.controller("clients", ['$scope','$http','$window', function ($scope, $http, $window) {
     $http.defaults.headers.common['x-access-token']=token;
-    
+
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
-    
+
     $scope.all = {};
     $scope.all_hold = {};
     $scope.Client = {};
     $scope.tmp = {};
- 
+
     $scope.update = function()
     {
         $scope.$emit('loadasc')
         $http.post('/api/clients/update', $scope.tmp)
-        .success(function(err) 
+        .success(function(err)
         {
             pushMessage('success', 'HECHO', 'Cliente actualizado con exito', "checkmark")
             $scope.tmp = {};
         })
-        .error(function(msg) 
+        .error(function(msg)
         {
             pushMessage('alert','ERROR', msg, "cross")
         })
@@ -574,18 +574,18 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
             $scope.GetClientsasc()
             $scope.$emit('unloadasc')
         })
-    }  
-    
+    }
+
     $scope.delete = function()
     {
         $scope.$emit('loadasc')
         $http.post('/api/clients/delete', $scope.tmp)
-        .success(function(msg) 
+        .success(function(msg)
         {
             pushMessage('success', 'HECHO', msg, "checkmark")
             $scope.tmp = {};
         })
-        .error(function(msg) 
+        .error(function(msg)
         {
             pushMessage('alert','ERROR', msg, "cross")
         })
@@ -593,7 +593,7 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
             $scope.GetClientsasc()
             $scope.$emit('loadasc')
         })
-    };  
+    };
 
     $scope.loadvalues = function (item){
         $scope.tmp = item
@@ -651,7 +651,7 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
         $scope.$emit('unloadasc')
         $scope.GetClientsasc()
     })
-    };  
+    };
 
     $scope.SearchClient = function(){
         if ($scope.inputbox.text == null || $scope.inputbox.text == '')
@@ -669,7 +669,7 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
             }
         }
         $scope.LoadPages()
-    };  
+    };
 
 
     $scope.LoadPages = function ()
@@ -699,18 +699,18 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
             if ($scope.currentPage >= $scope.pages.length)
             $scope.currentPage = $scope.pages.length - 1;
     }
-    
+
     $scope.setPage = function(index) {
         $scope.currentPage = index - 1;
     };
-    
+
     $scope.ChangePageItems = function() {
         if ($scope.pageSizetmp.items == 'todos')
         {
             $scope.pageSize = $scope.all.length
         }
         else {
-            $scope.pageSize = $scope.pageSizetmp.items    
+            $scope.pageSize = $scope.pageSizetmp.items
         }
 
         $scope.LoadPages();
@@ -719,13 +719,13 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
 
     }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
-})    
+        start = +start;
+        return input.slice(start);
+    }
+})
 
 app.controller ("c_direcciones", function ($scope, $http, $routeParams){
     $http.defaults.headers.common['x-access-token']=token;
@@ -767,7 +767,7 @@ app.controller ("c_direcciones", function ($scope, $http, $routeParams){
 
     }
     $scope.GetDirecciones()
-    
+
     $scope.LoadValuesEdit = function(item){
         $scope.tmp = item
     };
@@ -826,7 +826,7 @@ app.controller("login", function($scope, $http, $window, $routeParams)
     {
         $window.location = "dashboard#"
         console.log($routeParams.password)
-    };  
+    };
 
 })
 
@@ -854,7 +854,7 @@ app.controller("users", function($scope, $http)
             .error(function(data) {
                 console.log('Error:' + data);
             });
-    };  
+    };
 })
 
 app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
@@ -863,7 +863,7 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
     $scope.pageSize = 5;
     $scope.pages = [];
     $scope.pageSizetmp = {}
-        
+
     $scope.productstmp = {};
     $scope.productstmp_hold = {}
 
@@ -920,7 +920,7 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
             $scope.$emit('unloadasc')
             $scope.GetCategoryesasc()
         })
-    }; 
+    };
 
     $scope.SearchCatProduct = function(){
         if ($scope.inputbox.text == null || $scope.inputbox.text == '')
@@ -938,14 +938,14 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
             }
         }
         $scope.LoadPages()
-    };  
+    };
 
         $scope.ChangePageItems = function() {
             if ($scope.pageSizetmp.items == 'todos')
             {
                 $scope.pageSize = $scope.productstmp.length
             }else {
-                $scope.pageSize = $scope.pageSizetmp.items    
+                $scope.pageSize = $scope.pageSizetmp.items
             }
             $scope.LoadPages();
         };
@@ -977,27 +977,27 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
                 if ($scope.currentPage >= $scope.pages.length)
                 $scope.currentPage = $scope.pages.length - 1;
         }
-        
-          
+
+
         $scope.setPage = function(index) {
             $scope.currentPage = index - 1;
         };
-        
-        
+
+
     }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
-})  
+        start = +start;
+        return input.slice(start);
+    }
+})
 
 app.controller('products', ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
-    
+
     $http.defaults.headers.common['x-access-token']=token;
-    
+
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -1017,7 +1017,7 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
 
     $scope.product.img = '/images/no-imagen.jpg'
 
-    
+
     function GenerarCodeBar()
     {
       var caracteres = "abcdefghijkmnlopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -1025,7 +1025,7 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
       for (i=0; i <6; i++) contraseña += caracteres.charAt(Math.floor(Math.random()*caracteres.length));
       return contraseña;
     }
-    
+
 
     $scope.product.codebar = GenerarCodeBar()
 
@@ -1052,16 +1052,16 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
 
     $scope.calulate = function (receta){
         var r = [];
-        
+
         for (var i = 0; i < $scope.ingredientes.length; i++)
         {
-            
+
             if ($scope.ingredientes[i].receta == receta)
             {
                 r.push(Math.round($scope.ingredientes[i].ingrediente.stock / $scope.ingredientes[i].porcion));
             }
         }
-        
+
         return Math.min.apply(null, r);
     }
 
@@ -1105,7 +1105,7 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
         })
 
     }
-    
+
     $scope.Getproducts = function (){
         $http.get('/api/products/')
         .success(function(data) {
@@ -1124,7 +1124,7 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
     $scope.GetIngredientes()
     $scope.Getcatproducts()
     $scope.Getproducts()
-    
+
     $scope.create = function(){
         $scope.$emit('load')
         $http.post('/api/products/add', $scope.product)
@@ -1141,10 +1141,10 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
         .finally (function (){
             $scope.$emit('unload')
         })
-    }; 
+    };
 
     $scope.search = function(){
-       
+
     if ($scope.inputbox.text == null || $scope.inputbox.text == '')
         {
             $scope.products = $scope.products_hold
@@ -1167,7 +1167,7 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
         {
             $scope.pageSize = $scope.products.length
         }else {
-            $scope.pageSize = $scope.pageSizetmp.items    
+            $scope.pageSize = $scope.pageSizetmp.items
         }
         $scope.LoadPages();
     };
@@ -1199,20 +1199,20 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
         if ($scope.currentPage >= $scope.pages.length)
         $scope.currentPage = $scope.pages.length - 1;
     }
-    
-      
+
+
     $scope.setPage = function(index) {
         $scope.currentPage = index - 1;
     };
-    
+
 }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
+        start = +start;
+        return input.slice(start);
+    }
 })
 
 app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
@@ -1229,16 +1229,16 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
         $scope.currentPage = 0;
         $scope.pageSize = 8;
         $scope.pages = [];
-      
+
         $http.get('/api/get_measurements/')
         .success(function(data) {
             $scope.measuremeants = data
         })
         .error(function(data) {
             pushMessage('alert','ERROR',data, "cross")
-        }); 
+        });
 
-      
+
         $scope.GetIngredients = function ()
         {
             $scope.$emit('load')
@@ -1248,7 +1248,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
                     $scope.ingredients_hold = data
                     $scope.IngredientUpdate = data
                     $scope.LoadPages();
-                    
+
                 })
                 .error(function(data) {
                     pushMessage('alert','ERROR',data, "cross")
@@ -1267,7 +1267,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
                     $scope.ingredients_hold = data
                     $scope.IngredientUpdate = data
                     $scope.LoadPages();
-                    
+
                 })
                 .error(function(data) {
                     pushMessage('alert','ERROR',data, "cross")
@@ -1276,7 +1276,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
                 $scope.$emit('unloadasc')
             })
         }
-        
+
         $scope.GetIngredients()
 
         $scope.LoadPages = function ()
@@ -1336,7 +1336,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
                 $scope.$emit('unloadasc')
                 $scope.GetIngredientsasc()
             })
-        }; 
+        };
 
         $scope.update = function(){
             $scope.$emit('loadasc')
@@ -1387,18 +1387,18 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
             }
             $scope.LoadPages()
         };
-          
+
         $scope.setPage = function(index) {
             $scope.currentPage = index - 1;
         };
     }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
+        start = +start;
+        return input.slice(start);
+    }
 })
 
 app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $http) {
@@ -1467,7 +1467,7 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
                 if ($scope.currentPage >= $scope.pages.length)
                 $scope.currentPage = $scope.pages.length - 1;
         }
-        
+
         $scope.update = function(item){
             $scope.$emit('loadasc')
             $http.post('/api/ingredients/update', item)
@@ -1480,7 +1480,7 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
             .finally (function (){
                 $scope.$emit('unloadasc')
             })
-            
+
         };
 
         $scope.search = function(){
@@ -1501,18 +1501,18 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
         $scope.LoadPages()
 
         };
-          
+
         $scope.setPage = function(index) {
             $scope.currentPage = index - 1;
         };
-        
-        
+
+
         $scope.ChangePageItems = function() {
             if ($scope.pageSizetmp.items == 'todos')
             {
                 $scope.pageSize = $scope.ingredients.length
             }else {
-                $scope.pageSize = $scope.pageSizetmp.items    
+                $scope.pageSize = $scope.pageSizetmp.items
             }
             $scope.LoadPages();
         };
@@ -1520,12 +1520,12 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
 
     }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
+        start = +start;
+        return input.slice(start);
+    }
 })
 
 app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
@@ -1540,8 +1540,8 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.receta = {};
         $scope.arr = [];
         $scope.arrtmp = [];
-        
-        
+
+
         $scope.GetIngredients = function ()
         {
             $scope.$emit('load')
@@ -1585,9 +1585,9 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
             {
                 $scope.arr.push(
                 {
-                    id: item._id, 
-                    porcion: item.stocktmp, 
-                    name: item.name, 
+                    id: item._id,
+                    porcion: item.stocktmp,
+                    name: item.name,
                     namefast: item.measurements.namefast,
                     namefasts: item.measurements.namefasts,
                     update_ingredients: true
@@ -1626,7 +1626,7 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
             .finally (function (){
                 $scope.$emit('unloadasc')
             })
-        }; 
+        };
 
         $scope.LoadPages = function ()
         {
@@ -1655,19 +1655,19 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
                 if ($scope.currentPage >= $scope.pages.length)
                 $scope.currentPage = $scope.pages.length - 1;
         }
-        
+
         $scope.setPage = function(index) {
             $scope.currentPage = index - 1;
         };
-        
-        
+
+
         $scope.ChangePageItems = function() {
             if ($scope.pageSizetmp.items == 'todos')
             {
                 $scope.pageSize = $scope.ingredients.length
             }
             else {
-                $scope.pageSize = $scope.pageSizetmp.items    
+                $scope.pageSize = $scope.pageSizetmp.items
             }
 
             $scope.LoadPages();
@@ -1676,17 +1676,17 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
 
     }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
+        start = +start;
+        return input.slice(start);
+    }
 })
 
 app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
         $http.defaults.headers.common['x-access-token']=token;
-        
+
         $scope.currentPage = 0;
         $scope.pageSize = 5;
         $scope.pages = [];
@@ -1695,8 +1695,8 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
         $scope.recetas = {};
         $scope.recetas_hold = {};
         $scope.receta = {};
-        
-        
+
+
         $scope.GetReceta = function ()
         {
             $scope.$emit('load')
@@ -1802,19 +1802,19 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
                 if ($scope.currentPage >= $scope.pages.length)
                 $scope.currentPage = $scope.pages.length - 1;
         }
-        
+
         $scope.setPage = function(index) {
             $scope.currentPage = index - 1;
         };
-        
-        
+
+
         $scope.ChangePageItems = function() {
             if ($scope.pageSizetmp.items == 'todos')
             {
                 $scope.pageSize = $scope.recetas.length
             }
             else {
-                $scope.pageSize = $scope.pageSizetmp.items    
+                $scope.pageSize = $scope.pageSizetmp.items
             }
 
             $scope.LoadPages();
@@ -1823,18 +1823,18 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
 
     }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
+        start = +start;
+        return input.slice(start);
+    }
 })
 
 app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', function ($scope, $routeParams, $http, $window) {
         $http.defaults.headers.common['x-access-token']=token;
-        
-        
+
+
         $scope.currentPage = 0;
         $scope.pageSize = 5;
         $scope.pages = [];
@@ -1845,8 +1845,8 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
         $scope.ingredientes_hold = {};
         $scope.measurements = [];
         $scope.arr = [];
-        
-        
+
+
         $http.get('/api/get_measurements/')
         .success(function(data) {
             $scope.measurements = data
@@ -1870,8 +1870,8 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
             .error(function(data) {
                 pushMessage('alert','ERROR',data, "cross")
         });
-        
-        
+
+
 
         $scope.GetIngredients = function ()
         {
@@ -1892,7 +1892,7 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
         }
 
         $scope.GetIngredients()
-        
+
 
 
         $scope.update = function(){
@@ -1972,14 +1972,14 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
                 if ($scope.currentPage >= $scope.pages.length)
                 $scope.currentPage = $scope.pages.length - 1;
         }
-        
+
         $scope.setPage = function(index) {
             $scope.currentPage = index - 1;
         };
-        
-        
+
+
         $scope.insertfirst = function(item){
-            
+
             for ($scope.i = 0; $scope.i < $scope.measurements.length; $scope.i = $scope.i + 1)
             {
                 if ($scope.measurements[$scope.i]._id == item.ingrediente.measurements)
@@ -1989,14 +1989,14 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
                     break
                 }
             }
-            
+
             $scope.arr.push(
             {
-                id: item.ingrediente._id, 
-                porcion: item.porcion, 
+                id: item.ingrediente._id,
+                porcion: item.porcion,
                 name: item.ingrediente.name,
                 namefast: $scope.namefast,
-                namefasts: $scope.namefasts,    
+                namefasts: $scope.namefasts,
                 update_ingredients: item.update_ingredients
             })
         };
@@ -2005,9 +2005,9 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
             {
                 $scope.arr.push(
                 {
-                    id: item._id, 
-                    porcion: item.stocktmp, 
-                    name: item.name, 
+                    id: item._id,
+                    porcion: item.stocktmp,
+                    name: item.name,
                     namefast: item.measurements.namefast,
                     namefasts: item.measurements.namefasts,
                     update_ingredients: true
@@ -2030,7 +2030,7 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
                 $scope.pageSize = $scope.ingredientes.length
             }
             else {
-                $scope.pageSize = $scope.pageSizetmp.items    
+                $scope.pageSize = $scope.pageSizetmp.items
             }
 
             $scope.LoadPages();
@@ -2039,30 +2039,30 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
 
     }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
+        start = +start;
+        return input.slice(start);
+    }
 })
 
 
 app.controller("view_receta", function($scope, $http, $routeParams, $window)
 {
     $http.defaults.headers.common['x-access-token']=token;
-    
+
     $scope.receta = {};
-    $scope.ingredientes = {};  
-    
+    $scope.ingredientes = {};
+
     $scope.GetReceta = function (){
         $scope.$emit('load')
         $http.get('/api/recipes/' + $routeParams.id)
-        .success(function(data) 
+        .success(function(data)
         {
             $scope.receta = data;
         })
-        .error(function(data) 
+        .error(function(data)
         {
             pushMessage('alert','ERROR', 'Receta no encontrada.','cross')
         })
@@ -2074,7 +2074,7 @@ app.controller("view_receta", function($scope, $http, $routeParams, $window)
     $scope.GetIngredientes = function (){
         $scope.$emit('load')
         $http.get('/api/recipes/ingredientes/' + $routeParams.id)
-        .success(function(data) 
+        .success(function(data)
         {
             $scope.ingredientes = data;
         })
@@ -2095,25 +2095,25 @@ app.controller("view_receta", function($scope, $http, $routeParams, $window)
 
 
 app.controller("update_products", function ($scope, $http, $timeout, $routeParams, $window) {
-    
+
     $http.defaults.headers.common['x-access-token']=token;
-    
+
     $scope.product = {};
     $scope.recetas = {};
     $scope.categories = {}
     $scope.use_receta_create = false
-    
+
     $scope.update = function()
     {
         $scope.$emit('loadasc')
         $http.post('/api/products/update', $scope.product)
-        .success(function(err) 
+        .success(function(err)
         {
             pushMessage('success', 'HECHO', 'Producto actualizado con exito', "checkmark")
             $scope.DateClient = {};
             $window.location = "dashboard#/products";
         })
-        .error(function(msg) 
+        .error(function(msg)
         {
             pushMessage('alert','ERROR', msg, "cross")
         })
@@ -2126,19 +2126,19 @@ app.controller("update_products", function ($scope, $http, $timeout, $routeParam
     {
         $scope.$emit('loadasc')
         $http.post('/api/products/delete', $scope.product)
-        .success(function(err) 
+        .success(function(err)
         {
             pushMessage('success', 'HECHO', err, "checkmark")
             $window.location = "dashboard#/products";
         })
-        .error(function(msg) 
+        .error(function(msg)
         {
             pushMessage('alert','ERROR', msg, "cross")
         })
         .finally (function (){
             $scope.$emit('unloadasc')
         })
-    }    
+    }
     $scope.changerecet = function ()
     {
         if (!$scope.use_receta_create)
@@ -2168,11 +2168,11 @@ app.controller("update_products", function ($scope, $http, $timeout, $routeParam
     $scope.GetReceta = function (){
         $scope.$emit('load')
         $http.get('/api/products/recipes/')
-        .success(function(data) 
+        .success(function(data)
         {
             $scope.recetas = data;
         })
-        .error(function(data) 
+        .error(function(data)
         {
             pushMessage('alert','ERROR', 'Receta no encontrada.','cross')
         })
@@ -2199,7 +2199,7 @@ app.controller("update_products", function ($scope, $http, $timeout, $routeParam
     $scope.loadvalues()
     $scope.GetReceta()
     $scope.GetCategoryes()
-    
+
     $scope.fileReaderSupported = window.FileReader != null;
     $scope.photoChanged = function(files){
         $scope.product.img_load = true
@@ -2219,11 +2219,11 @@ app.controller("update_products", function ($scope, $http, $timeout, $routeParam
             );
         }
     }
-    };    
+    };
 })
 
 app.controller('surtir_recetea', function ($scope, $http, $routeParams){
-    
+
     $http.defaults.headers.common['x-access-token']=token;
 
     $scope.receta = {}
@@ -2290,14 +2290,14 @@ app.controller('surtir_recetea', function ($scope, $http, $routeParams){
         .finally (function (){
             $scope.$emit('unloadasc')
         })
-        
+
     };
 })
 
 app.controller("products_shopping", ['$scope', '$http', function ($scope, $http) {
-    
+
     $http.defaults.headers.common['x-access-token']=token;
-    
+
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -2322,7 +2322,7 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
         .finally (function (){
             $scope.$emit('unloadasc')
         })
-        
+
     };
 
     $scope.Getproducts = function (){
@@ -2341,9 +2341,9 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
         })
     }
 
-    
+
     $scope.Getproducts()
-    
+
     $scope.search = function(){
         if ($scope.inputbox.txt == null || $scope.inputbox.txt == '')
         {
@@ -2367,7 +2367,7 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
         {
             $scope.pageSize = $scope.products.length
         }else {
-            $scope.pageSize = $scope.pageSizetmp.items    
+            $scope.pageSize = $scope.pageSizetmp.items
         }
         $scope.LoadPages();
     };
@@ -2399,26 +2399,26 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
         if ($scope.currentPage >= $scope.pages.length)
         $scope.currentPage = $scope.pages.length - 1;
     }
-    
-      
+
+
     $scope.setPage = function(index) {
         $scope.currentPage = index - 1;
     };
-    
+
 }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
+        start = +start;
+        return input.slice(start);
+    }
 })
 
 app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $http, socket) {
-    
+
     $http.defaults.headers.common['x-access-token']=token;
-    
+
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -2430,7 +2430,7 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $htt
     $scope.comanda = [];
     $scope.ingredientes = {}
     $scope.inputbox = {}
-    
+
     $scope.vtd = function (){
         $scope.$emit('load')
         $http.post('/api/sales/vtd/', $scope.comanda)
@@ -2455,7 +2455,7 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $htt
             $scope.products = $scope.products_hold
         }else
         {
-            $scope.products =[]    
+            $scope.products =[]
             for (var i = 0; i < $scope.products_hold.length; i++)
             {
                 if ($scope.products_hold[i].category._id == $scope.categories.select)
@@ -2640,7 +2640,7 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $htt
             $scope.products = $scope.products_hold
         }else
         {
-            $scope.products =[]    
+            $scope.products =[]
             for (var i = 0; i < $scope.products_hold.length; i++)
             {
                 if ($scope.products_hold[i].name.includes($scope.inputbox.txt.toUpperCase()) || $scope.products_hold[i].codebar.includes($scope.inputbox.txt.toUpperCase()))
@@ -2682,10 +2682,10 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $htt
 
     $scope.calulate = function (product){
         var r = [];
-        
+
         for (var i = 0; i < $scope.ingredientes.length; i++)
         {
-            
+
             if ($scope.ingredientes[i].receta == product.receta._id)
             {
                 r.push(Math.round($scope.ingredientes[i].ingrediente.stock / $scope.ingredientes[i].porcion));
@@ -2694,7 +2694,7 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $htt
 
         for (var i = 0; i < $scope.products.length; i++)
         {
-            
+
             if ($scope.products[i]._id == product._id)
             {
                 $scope.products[i].stockc = Math.min.apply(null, r);
@@ -2707,7 +2707,7 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $htt
         {
             $scope.pageSize = $scope.products.length
         }else {
-            $scope.pageSize = $scope.pageSizetmp.items    
+            $scope.pageSize = $scope.pageSizetmp.items
         }
         $scope.LoadPages();
     };
@@ -2739,26 +2739,26 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $htt
         if ($scope.currentPage >= $scope.pages.length)
         $scope.currentPage = $scope.pages.length - 1;
     }
-    
-      
+
+
     $scope.setPage = function(index) {
         $scope.currentPage = index - 1;
     };
-    
+
 }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
+        start = +start;
+        return input.slice(start);
+    }
 })
 
 app.controller("sales_user", ['$scope', '$http', function ($scope, $http) {
-    
+
     $http.defaults.headers.common['x-access-token']=token;
-    
+
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -2796,7 +2796,7 @@ app.controller("sales_user", ['$scope', '$http', function ($scope, $http) {
         {
             $scope.pageSize = $scope.sales.length
         }else {
-            $scope.pageSize = $scope.pageSizetmp.items    
+            $scope.pageSize = $scope.pageSizetmp.items
         }
         $scope.LoadPages();
     };
@@ -2828,26 +2828,26 @@ app.controller("sales_user", ['$scope', '$http', function ($scope, $http) {
         if ($scope.currentPage >= $scope.pages.length)
         $scope.currentPage = $scope.pages.length - 1;
     }
-    
-      
+
+
     $scope.setPage = function(index) {
         $scope.currentPage = index - 1;
     };
-    
+
 }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
+        start = +start;
+        return input.slice(start);
+    }
 })
 
 app.controller("sales_admin", ['$scope', '$http', function ($scope, $http) {
-    
+
     $http.defaults.headers.common['x-access-token']=token;
-    
+
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -2924,7 +2924,7 @@ app.controller("sales_admin", ['$scope', '$http', function ($scope, $http) {
         {
             $scope.pageSize = $scope.sales.length
         }else {
-            $scope.pageSize = $scope.pageSizetmp.items    
+            $scope.pageSize = $scope.pageSizetmp.items
         }
         $scope.LoadPages();
     };
@@ -2956,26 +2956,26 @@ app.controller("sales_admin", ['$scope', '$http', function ($scope, $http) {
         if ($scope.currentPage >= $scope.pages.length)
         $scope.currentPage = $scope.pages.length - 1;
     }
-    
-      
+
+
     $scope.setPage = function(index) {
         $scope.currentPage = index - 1;
     };
-    
+
 }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
+        start = +start;
+        return input.slice(start);
+    }
 })
 
 app.controller("finance_administrator", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
-    
+
     $http.defaults.headers.common['x-access-token']=token;
-    
+
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -3013,7 +3013,7 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
             var tmp = $scope.sales_hold[i].fecha.split('T')
             var tmp0 = tmp[0].split('-')
             var fecha = new Date(tmp0[0],tmp0[1]-1, tmp0[2])
-            
+
             var tmpdesde = $scope.date.desde.split('/')
             var desde = new Date(tmpdesde[2], tmpdesde[1]-1, tmpdesde[0]);
 
@@ -3037,7 +3037,7 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
         }
         $scope.LoadPages()
         LoadChart()
-    }   
+    }
 
     GetSales = function (){
         $scope.$emit('load')
@@ -3063,7 +3063,7 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
             pushMessage('alert','ERROR', msg, "cross")
         })
     }
-    
+
     GetUsers = function (){
         $http.get('/api/finance/users')
         .success(function(data){
@@ -3090,9 +3090,9 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
 
     LoadChart = function (){
         $scope.myChartObject = {};
-        
+
         $scope.myChartObject.type = 'ColumnChart';
-        
+
         $scope.onions = [
             {v: "Onions"},
             {v: 3},
@@ -3149,7 +3149,7 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
                     datatmp.push($scope.sales[b])
                 }
             }
-            
+
             var exist = []
             for (var i = 0 ; i < datatmp.length; i++)
             {
@@ -3165,14 +3165,14 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
                     var tmp2 = tmp1[0].split('-')
                     var fechadb = new Date(tmp2[0],tmp2[1]-1, tmp2[2])
 
-                    
-                    
+
+
                     if (fecha.getTime() == fechadb.getTime())
                     {
                         agregar = false
                     }
                 }
-                
+
                 if (agregar)
                 {
                     var total = 0
@@ -3186,7 +3186,7 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
                         var tmp2 = tmp1[0].split('-')
                         var fechadb = new Date(tmp2[0],tmp2[1]-1, tmp2[2])
 
-                        
+
                         if (fecha.getTime() == fechadb.getTime())
                         {
                             total += datatmp[b].monto
@@ -3210,10 +3210,10 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
                 totalglobal += data_calculate[b].total
             }
 
-            $scope.tmp.title = 'GRAFICA DE MOVIMIENTOS, ' + datatmp[0].user.nombre + '. TOTAL RECAUDADO $ ' + totalglobal.toFixed(2)        
+            $scope.tmp.title = 'GRAFICA DE MOVIMIENTOS, ' + datatmp[0].user.nombre + '. TOTAL RECAUDADO $ ' + totalglobal.toFixed(2)
         }
-        
-        
+
+
         for (var i = 0 ; i < data_calculate.length; i++)
         {
             $scope.myChartObject.data.rows.push({c: [
@@ -3226,19 +3226,19 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
             'title': $scope.tmp.title
         };
     }
-    
+
     GetSales()
     GetUsers()
     Getproducts()
-    
-    
+
+
 
     $scope.ChangePageItems = function() {
         if ($scope.pageSizetmp.items == 'todos')
         {
             $scope.pageSize = $scope.sales.length
         }else {
-            $scope.pageSize = $scope.pageSizetmp.items    
+            $scope.pageSize = $scope.pageSizetmp.items
         }
         $scope.LoadPages()
     };
@@ -3270,26 +3270,26 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
             if ($scope.currentPage >= $scope.pages.length)
             $scope.currentPage = $scope.pages.length - 1;
     }
-    
-      
+
+
     $scope.setPage = function(index) {
         $scope.currentPage = index - 1;
     };
 
 }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
+        start = +start;
+        return input.slice(start);
+    }
 })
 
 app.controller("users_movements", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
-    
+
     $http.defaults.headers.common['x-access-token']=token;
-    
+
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -3371,13 +3371,13 @@ app.controller("users_movements", ['$scope', '$http','$timeout', function ($scop
     GetUsers()
     GetMovements()
     Getproducts()
-    
+
     $scope.ChangePageItems = function() {
         if ($scope.pageSizetmp.items == 'todos')
         {
             $scope.pageSize = $scope.movements.length
         }else {
-            $scope.pageSize = $scope.pageSizetmp.items    
+            $scope.pageSize = $scope.pageSizetmp.items
         }
         $scope.LoadPages()
     };
@@ -3409,28 +3409,28 @@ app.controller("users_movements", ['$scope', '$http','$timeout', function ($scop
             if ($scope.currentPage >= $scope.pages.length)
             $scope.currentPage = $scope.pages.length - 1;
     }
-    
-      
+
+
     $scope.setPage = function(index) {
         $scope.currentPage = index - 1;
     };
 
-    
+
 }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
+        start = +start;
+        return input.slice(start);
+    }
 })
 
 
 app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', function ($scope, $http, $timeout, socket) {
-    
+
     $http.defaults.headers.common['x-access-token']=token;
-    
+
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -3450,16 +3450,16 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', funct
     {
         $scope.msgnew.text = 'lypef';
         socket.emit('set_comanda', $scope.msgnew);
-        
+
     }
 
-    
+
     $scope.ChangePageItems = function() {
         if ($scope.pageSizetmp.items == 'todos')
         {
             $scope.pageSize = $scope.movements.length
         }else {
-            $scope.pageSize = $scope.pageSizetmp.items    
+            $scope.pageSize = $scope.pageSizetmp.items
         }
         $scope.LoadPages()
     };
@@ -3491,19 +3491,19 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', funct
             if ($scope.currentPage >= $scope.pages.length)
             $scope.currentPage = $scope.pages.length - 1;
     }
-    
-      
+
+
     $scope.setPage = function(index) {
         $scope.currentPage = index - 1;
     };
 
-    
+
 }
   ]).filter('startFromGrid', function() {
-    return function(input, start) 
+    return function(input, start)
     {
         if (!input || !input.length) { return; }
-        start = +start; 
-        return input.slice(start);   
-    }       
+        start = +start;
+        return input.slice(start);
+    }
 })

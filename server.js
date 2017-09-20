@@ -1,8 +1,8 @@
 var express  = require('express');
 var session = require("express-session");
 var mongoose = require('mongoose','mongoose-double');
-var morgan = require('morgan');             
-var bodyParser = require('body-parser');    
+var morgan = require('morgan');
+var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var sessiontrue = require('./middlewares/session');
 var tokenApi = require('./middlewares/TokenApi');
@@ -10,18 +10,18 @@ var AccesClients = require('./middlewares/TokenApi');
 var StatusTrue = require('./middlewares/StatusTrue');
 var ValidateEmail = require("email-validator");
 var db = require("./models/models");
-var app = express(); 
+var app = express();
 
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-app.use(session({ secret: 'ajsj229nshslwkjrfdrfg', resave: false,saveUninitialized: true}))     
+app.use(session({ secret: 'ajsj229nshslwkjrfdrfg', resave: false,saveUninitialized: true}))
 app.use(express.static('public'));
 app.use(express.static('views'));
-app.use(morgan('dev'));                                         
-app.use(bodyParser.urlencoded({'extended':'true'}));            
-app.use(bodyParser.json({limit: '3mb'}));                                     
-app.use(bodyParser.json({ type: 'application/vnd.api+json' })); 
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({'extended':'true'}));
+app.use(bodyParser.json({limit: '3mb'}));
+app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(methodOverride());
 app.use(function(req, res, next) {
 res.setHeader('Access-Control-Allow-Origin', '*');
@@ -259,9 +259,9 @@ var Comandastmp = [{
 
 //socket
 io.on('connection', function(socket) {
-    
+
     socket.emit('GetComandas', Comandastmp);
-    
+
     socket.on('set_comanda', function (data) {
         Comandastmp.push(data)
         socket.broadcast.emit('GetComandas', Comandastmp);
@@ -303,20 +303,20 @@ function AddMovement (session, description, sale)
     })
 }
 
-function Inicio (req, res) 
+function Inicio (req, res)
 {
 	if (req.session.user)
 	{
 		if (req.session.clients)
         {
             res.redirect("/dashboard");
-        }else 
+        }else
         {
-            res.redirect("/admin_dashboard");    
+            res.redirect("/admin_dashboard");
         }
 	}else
 	{
-		res.sendFile('./views/login.html', { root : __dirname});	
+		res.sendFile('./views/login.html', { root : __dirname});
 	}
 }
 
@@ -327,7 +327,7 @@ function Dashboard (req,res){
     }
     else {
         res.redirect("/")
-    }    
+    }
 }
 
 function Dashboard_Admin (req,res){
@@ -389,7 +389,7 @@ function Login (req,res){
             res.redirect("/user_incorrect");
 		}
 	});
-	
+
 };
 
 function login_admin (req,res){
@@ -405,7 +405,7 @@ function login_admin (req,res){
             res.redirect("/admin_login_incorrect");
         }
     });
-    
+
 };
 
 function Logout (req, res, next) {
@@ -454,7 +454,7 @@ function AddUser (req,res){
                     p1.save(function(err, doc ){
                         if (err)
                         {
-                            res.sendStatus(500); 
+                            res.sendStatus(500);
                         }else {
                             console.log(doc)
                             res.sendStatus(200);
@@ -463,7 +463,7 @@ function AddUser (req,res){
                 }
             })
         }else {
-            res.sendStatus(500); 
+            res.sendStatus(500);
         }
     });
 };
@@ -495,7 +495,7 @@ function AddUserAccount (req,res){
                     p1.save(function(err, doc ){
                         if (err)
                         {
-                            res.status(500).send('Error'); 
+                            res.status(500).send('Error');
                         }else {
                             res.status(200).send('usuario agregado');
                         }
@@ -503,7 +503,7 @@ function AddUserAccount (req,res){
                 }
             })
         }else {
-            res.status(500).send('Error'); 
+            res.status(500).send('Error');
         }
     });
 };
@@ -542,7 +542,7 @@ function AddProduct (req,res){
 
             }
         });
-    
+
 };
 
 function AddIngredient (req,res){
@@ -574,8 +574,8 @@ function usersjson (req,res){
         if(err) {
             res.status(500).send(err);
         }else
-        {   
-            res.json(doc);    
+        {
+            res.json(doc);
         }
     });
 };
@@ -683,7 +683,7 @@ function ClientsUsersJson (req,res){
             res.sendStatus(err);
         }else
         {
-            res.json(data); 
+            res.json(data);
         }
     }).sort({nombre:1});
 };
@@ -694,7 +694,7 @@ function GetProducts (req,res){
             res.sendStatus(err);
         }else
         {
-            res.json(data); 
+            res.json(data);
         }
     }).sort({nombre:1});
 };
@@ -711,8 +711,8 @@ function GetClient (req,res){
 	});
 };
 
-function CreateClient (req, res) 
-{  
+function CreateClient (req, res)
+{
     if ( ValidateEmail.validate(req.body.mail) == true || req.body.mail == null || req.body.mail == '')
     {
     	var p = new db.clients({
@@ -732,25 +732,25 @@ function CreateClient (req, res)
     	 	res.status(200).send('Cliente creado con exito')
             AddMovement(req.session.user, 'Se creo cliente: ' + p.nombre)
     	 }
-    	})	
+    	})
     }else
     {
     	res.sendStatus(500, "Email no valido");
     }
 }
 
-function UpdateDireccion (req, res) 
-{  
+function UpdateDireccion (req, res)
+{
 	db.direcciones.update(
     { _id : req.body._id, admin: req.session.user.admin._id },
-    { 
+    {
         calle: req.body.calle.toUpperCase(),
         numero: req.body.numero.toUpperCase(),
         colonia: req.body.colonia.toUpperCase(),
         ciudad: req.body.ciudad.toUpperCase(),
         referencia: req.body.referencia.toUpperCase()
     },
-    function( err) 
+    function( err)
     {
         if (err)
         {
@@ -763,8 +763,8 @@ function UpdateDireccion (req, res)
     })
 }
 
-function ClientUpdate (req, res) 
-{  
+function ClientUpdate (req, res)
+{
     db.admin.findOne({_id: req.session.user.admin._id},function(err,doc){
         if (doc == null)
         {
@@ -772,12 +772,12 @@ function ClientUpdate (req, res)
             {
                 db.clients.update(
                 { _id : req.body._id },
-                { 
+                {
                     nombre: req.body.nombre.toUpperCase(),
                     telefono: req.body.telefono.toUpperCase(),
                     mail: req.body.mail
                 },
-                function( err) 
+                function( err)
                 {
                     if (err)
                     {
@@ -787,7 +787,7 @@ function ClientUpdate (req, res)
                         res.status(200).send('cliente actualizado')
                         AddMovement(req.session.user, 'Se actualizo cliente: ' + req.body.nombre )
                     }
-                })  
+                })
             }else
             {
                 res.status(500).send("Email no valido.")
@@ -800,13 +800,13 @@ function ClientUpdate (req, res)
 
 }
 
-function UpdateAccount (req, res) 
-{  
+function UpdateAccount (req, res)
+{
     if ( ValidateEmail.validate(req.body.mail) == true)
     {
         db.clients_users.update(
         { _id : req.body._id },
-        { 
+        {
             nombre: req.body.nombre.toUpperCase(),
             direccion: req.body.direccion.toUpperCase(),
             namefast: req.body.namefast.toUpperCase(),
@@ -817,7 +817,7 @@ function UpdateAccount (req, res)
             status: req.body.status,
             vence_pago: req.body.vence_pago.replace(/-/, '.').substring(0, 10)
         },
-        function( err) 
+        function( err)
         {
             if (err)
             {
@@ -826,27 +826,27 @@ function UpdateAccount (req, res)
             {
                 res.status(200).send("Cuenta actualizado con exito")
             }
-        })  
+        })
     }else
     {
         res.sendStatus(500, "Email no valido.")
     }
 }
 
-function UpdateAccountthis (req, res) 
-{  
+function UpdateAccountthis (req, res)
+{
     if ( ValidateEmail.validate(req.body.mail) == true)
     {
         db.clients_users.update(
         { _id : req.session.user.admin._id },
-        { 
+        {
             nombre: req.body.nombre.toUpperCase(),
             direccion: req.body.direccion.toUpperCase(),
             namefast: req.body.namefast.toUpperCase(),
             telefono: req.body.telefono,
             mail: req.body.mail
         },
-        function( err) 
+        function( err)
         {
             if (err)
             {
@@ -855,26 +855,26 @@ function UpdateAccountthis (req, res)
             {
                 res.status(200).send("Cuenta actualizado con exito")
             }
-        })  
+        })
     }else
     {
         res.sendStatus(500, "Email no valido.")
     }
 }
 
-function UpdateUser (req, res) 
-{  
+function UpdateUser (req, res)
+{
     db.user.update(
         { _id : req.body._id },
-        { 
-            password: req.body.password, 
+        {
+            password: req.body.password,
             nombre: req.body.nombre.toUpperCase(),
             img: req.body.img,
             direccion: req.body.direccion.toUpperCase(),
             telefono: req.body.telefono,
             admin: req.body.admin
         },
-        function( err) 
+        function( err)
         {
             if (err)
             {
@@ -891,22 +891,22 @@ function UpdateUser (req, res)
                 }
                 res.status(200).send('Valores actualizados')
             }
-        })  
+        })
 }
 
-function UpdateUser_admin (req, res) 
-{  
+function UpdateUser_admin (req, res)
+{
     db.user.update(
         { _id : req.body._id },
-        { 
-            password: req.body.password, 
+        {
+            password: req.body.password,
             nombre: req.body.nombre.toUpperCase(),
             img: req.body.img,
             direccion: req.body.direccion.toUpperCase(),
             telefono: req.body.telefono,
             admin: req.body.admin
         },
-        function( err) 
+        function( err)
         {
             if (err)
             {
@@ -923,14 +923,14 @@ function UpdateUser_admin (req, res)
                 }
                 res.status(200).send('Valores actualizados')
             }
-        })  
+        })
 }
 
-function UpdateUser_preferencias (req, res) 
-{  
+function UpdateUser_preferencias (req, res)
+{
     db.user_preferencias.update(
         { _id : req.body.preferencias._id },
-        { 
+        {
             color_menubar: req.body.preferencias.color_menubar,
             admin: req.body.preferencias.admin,
             ingredientes: req.body.preferencias.ingredientes,
@@ -942,7 +942,7 @@ function UpdateUser_preferencias (req, res)
             caja: req.body.preferencias.caja,
             finance: req.body.preferencias.finance
         },
-        function( err) 
+        function( err)
         {
             if (err)
             {
@@ -955,21 +955,21 @@ function UpdateUser_preferencias (req, res)
                 }
                 res.status(200).send('Valores actualizados')
             }
-        })  
+        })
 }
 
-function Admin_user_preferencias_update (req, res) 
-{  
+function Admin_user_preferencias_update (req, res)
+{
     db.user_preferencias.update(
         { _id : req.body.preferencias._id },
-        { 
+        {
             admin: req.body.preferencias.admin,
             ingredientes: req.body.preferencias.ingredientes,
             recetas: req.body.preferencias.recetas,
             products: req.body.preferencias.products,
             clientes: req.body.preferencias.clientes
         },
-        function( err) 
+        function( err)
         {
             if (err)
             {
@@ -978,16 +978,16 @@ function Admin_user_preferencias_update (req, res)
             {
                 res.status(200).send('Valores actualizados')
             }
-        })  
+        })
 }
 
-function UpdateProduct (req, res) 
-{  
+function UpdateProduct (req, res)
+{
     if (!req.body.stock || req.body.stock == null){ req.body.stock = 0 }
     if (!req.body.price || req.body.price == null){ req.body.price = 0 }
     db.products.update(
         { _id : req.body._id, admin: req.session.user.admin._id },
-        { 
+        {
             name: req.body.name.toUpperCase(),
             codebar: req.body.codebar.toUpperCase(),
             description: req.body.description.toUpperCase(),
@@ -998,7 +998,7 @@ function UpdateProduct (req, res)
             price: req.body.price,
             cocina: req.body.cocina
         },
-        function( err) 
+        function( err)
         {
             if (err)
             {
@@ -1011,24 +1011,24 @@ function UpdateProduct (req, res)
                         res.status(500).send(err)
                     }else
                     {
-                        res.json(data); 
+                        res.json(data);
                         AddMovement(req.session.user, 'Se actualizo producto: ' + req.body.name)
                     }
                 })
             }
-        })  
+        })
 }
 
-function UpdateIngredient (req, res) 
-{  
+function UpdateIngredient (req, res)
+{
     db.ingredients.update(
         { _id : req.body._id, admin: req.session.user.admin._id },
-        { 
+        {
             name: req.body.name.toUpperCase(),
             stock: req.body.stock,
             measurements: req.body.measurements._id
         },
-        function( err) 
+        function( err)
         {
             if (err)
             {
@@ -1038,17 +1038,17 @@ function UpdateIngredient (req, res)
                 res.status(200).send('Ingrediente actualizado')
                 AddMovement(req.session.user, 'Se actualizo ingrediente: ' + req.body.name)
             }
-        })  
+        })
 }
 
-function DeleteClient (req, res) 
-{  
+function DeleteClient (req, res)
+{
     if (req.body.admin == req.session.user.admin._id)
     {
         db.clients.remove(
         { admin: req.session.user.admin._id, _id : req.body._id },
-        
-        function( err) 
+
+        function( err)
         {
             if (err)
             {
@@ -1057,8 +1057,8 @@ function DeleteClient (req, res)
             {
                 db.direcciones.remove(
                 { admin: req.session.user.admin._id, cliente: req.body._id },
-                
-                function( err) 
+
+                function( err)
                 {
                     if (err)
                     {
@@ -1074,15 +1074,15 @@ function DeleteClient (req, res)
     }else {
         res.status(500).send("Este cliente no esta asociado a la cuenta actual.");
     }
-    
+
 }
 
-function DeleteDireccion (req, res) 
-{  
+function DeleteDireccion (req, res)
+{
 	db.direcciones.remove(
     { admin: req.session.user.admin._id, _id : req.body._id },
-    
-    function( err) 
+
+    function( err)
     {
         if (err)
         {
@@ -1092,11 +1092,11 @@ function DeleteDireccion (req, res)
             res.status(200).send('Direccion eliminada')
             AddMovement(req.session.user, 'Direccion eliminada: ' + req.body.calle )
         }
-    })    
+    })
 }
 
-function DeleteAcconunt (req, res) 
-{  
+function DeleteAcconunt (req, res)
+{
     var r = true
 
     db.clients_users.remove({ _id : req.body._id },function( err) {
@@ -1135,10 +1135,10 @@ function DeleteAcconunt (req, res)
                                                             })
                                                         }else { r = false }
                                                         })
-                                                    }else { r = false }               
+                                                    }else { r = false }
                                                     })
                                                 }else { r = false }
-                                            })        
+                                            })
                                         }else { r = false }
                                     })
                                 }else { r = false }
@@ -1147,7 +1147,7 @@ function DeleteAcconunt (req, res)
                     })
                 }else { r = false }
             })
-        }    
+        }
         else{ r = false }
     })
 
@@ -1159,8 +1159,8 @@ function DeleteAcconunt (req, res)
     }
 }
 
-function DeleteUser (req, res) 
-{  
+function DeleteUser (req, res)
+{
     db.user_preferencias.remove ({ preferencias: req.body.preferencias }, function (err){
         if (err)
         {
@@ -1180,8 +1180,8 @@ function DeleteUser (req, res)
     })
 }
 
-function DeleteUser_admin (req, res) 
-{  
+function DeleteUser_admin (req, res)
+{
     if (req.body.admin._id == req.session.user.admin._id){
         db.user_preferencias.remove ({ preferencias: req.body.preferencias }, function (err){
             if (err)
@@ -1211,12 +1211,12 @@ function DeleteUser_admin (req, res)
     }
 }
 
-function DeleteProduct (req, res) 
-{  
+function DeleteProduct (req, res)
+{
     db.products.remove(
         { _id : req.body._id, admin: req.session.user.admin._id },
-        
-        function( err) 
+
+        function( err)
         {
             if (err)
             {
@@ -1229,12 +1229,12 @@ function DeleteProduct (req, res)
         })
 }
 
-function DeleteIngredient (req, res) 
-{  
+function DeleteIngredient (req, res)
+{
     db.ingredients.remove(
         { _id : req.body._id, admin: req.session.user.admin._id },
-        
-        function( err) 
+
+        function( err)
         {
             if (err)
             {
@@ -1247,12 +1247,12 @@ function DeleteIngredient (req, res)
         })
 }
 
-function DeleteMeasuremeants (req, res) 
-{  
+function DeleteMeasuremeants (req, res)
+{
     db.measurements.remove(
     { _id : req.body._id },
-    
-    function( err) 
+
+    function( err)
     {
         if (err)
         {
@@ -1264,8 +1264,8 @@ function DeleteMeasuremeants (req, res)
     })
 }
 
-function SearchClient (req, res) 
-{  
+function SearchClient (req, res)
+{
 	db.clients.find({admin: req.session.user.admin._id, $or: [ {nombre: { $regex : req.body.text.toUpperCase() }}, {apellidos: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
         if(err || data == "") {
             res.status(500).send("Cliente no encontrado")
@@ -1277,8 +1277,8 @@ function SearchClient (req, res)
 
 }
 
-function SearchClient_users (req, res) 
-{  
+function SearchClient_users (req, res)
+{
     db.clients_users.find({$or: [ {nombre: { $regex : req.body.text.toUpperCase() }} ] }, function(err, data) {
         if(err || data == "") {
             res.sendStatus(500,"Cliente no encontrado")
@@ -1290,30 +1290,30 @@ function SearchClient_users (req, res)
 
 }
 
-function Search_users (req, res) 
-{  
+function Search_users (req, res)
+{
     db.user.find({$or: [ {username: { $regex : req.body.text.toUpperCase() }}, {username: { $regex : req.body.text }} ,{nombre: { $regex : req.body.text.toUpperCase() }} ] }).populate('admin').exec(function(err, doc) {
         if(err) {
             res.sendStatus(err);
         }else
-        {   
+        {
             console.log(doc);
-            res.json(doc);    
+            res.json(doc);
         }
     });
 
 }
 
-function search_products_stock (req, res) 
-{  
+function search_products_stock (req, res)
+{
     if (req.body.text == null || req.body.text == '')
     {
         db.products.find({ admin : req.session.user.admin._id, receta: null }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
         if(err) {
             res.status(500).send(err);
         }else
-        {   
-            res.json(doc);    
+        {
+            res.json(doc);
         }
         });
     }else
@@ -1322,24 +1322,24 @@ function search_products_stock (req, res)
         if(err) {
             res.status(500).send(err);
         }else
-        {   
-            res.json(doc);    
+        {
+            res.json(doc);
         }
         });
     }
-    
+
 }
 
-function search_products (req, res) 
-{  
+function search_products (req, res)
+{
     if (req.body.text == null || req.body.text == '')
     {
         db.products.find({ admin : req.session.user.admin._id }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, doc) {
         if(err) {
             res.status(500).send(err);
         }else
-        {   
-            res.json(doc);    
+        {
+            res.json(doc);
         }
         });
     }else
@@ -1348,29 +1348,29 @@ function search_products (req, res)
         if(err) {
             res.status(500).send(err);
         }else
-        {   
-            res.json(doc);    
+        {
+            res.json(doc);
         }
         });
     }
-    
+
 }
 
-function Search_users_id (req, res) 
-{  
+function Search_users_id (req, res)
+{
     db.user.find({admin:req.params.id}).populate('admin').exec(function(err, doc) {
         if(err) {
             res.sendStatus(err);
         }else
-        {   
-            res.json(doc);    
+        {
+            res.json(doc);
         }
     });
 
 }
 
-function SearchCatProducts (req, res) 
-{  
+function SearchCatProducts (req, res)
+{
     db.catproducts.find({$or: [ {categoria: { $regex : req.body.text.toUpperCase() }}, {descripcion: { $regex : req.body.text.toUpperCase() }} ] }).populate('creator').populate('last_edit').exec(function(err, data) {
         if(err || data == "") {
             res.status(500).send("Categoria no encontrada")
@@ -1381,8 +1381,8 @@ function SearchCatProducts (req, res)
     })
 }
 
-function SearchMeasurements (req, res) 
-{  
+function SearchMeasurements (req, res)
+{
     db.measurements.find({$or: [ {name: { $regex : req.body.txt.toUpperCase() }}, {namefast: { $regex : req.body.txt.toUpperCase() }}, {namefasts: { $regex : req.body.txt.toUpperCase() }} ] },function(err, data) {
         if(err || data == "") {
             res.status(500).send("Medida no encontrada")
@@ -1401,7 +1401,7 @@ function catproductsJson (req,res){
             res.sendStatus(500,err);
         }else
         {
-        	res.json(data);	
+        	res.json(data);
         }
     })
 };
@@ -1412,7 +1412,7 @@ function GetSalesUser (req,res){
             res.sendStatus(500,err);
         }else
         {
-            res.json(data); 
+            res.json(data);
         }
     })
 };
@@ -1423,7 +1423,7 @@ function GetSalesAdmin (req,res){
             res.sendStatus(500,err);
         }else
         {
-            res.json(data); 
+            res.json(data);
         }
     })
 };
@@ -1434,7 +1434,7 @@ function GetMeasurementsJSON (req,res){
             res.status(500).send('Error desconocido');
         }else
         {
-            res.json(data); 
+            res.json(data);
         }
     }).sort({name:1})
 }
@@ -1445,7 +1445,7 @@ function getproductsJson (req,res){
             res.status(500).send(err)
         }else
         {
-            res.json(data); 
+            res.json(data);
         }
     })
 };
@@ -1456,7 +1456,7 @@ function getproductsJson_stock (req,res){
             res.status(500).send(err)
         }else
         {
-            res.json(data); 
+            res.json(data);
         }
     })
 };
@@ -1467,7 +1467,7 @@ function getIngredientsJson (req,res){
             res.status(500).send(err)
         }else
         {
-            res.json(data); 
+            res.json(data);
         }
     })
 };
@@ -1511,7 +1511,7 @@ function GetRecetasJSON_ID (req, res)
 function GetUseRecetasJSON_ID (req, res)
 {
     db.use_recetas.find({ receta: req.params.id , admin: req.session.user.admin._id}).populate(
-            {path:     'ingrediente',         
+            {path:     'ingrediente',
                 populate: { path:  'measurements',
                             model: 'measurements' }
             }).exec(function(err,doc){
@@ -1535,7 +1535,7 @@ function GetProducts_sale (req, res)
 function GetUseRecetasJSON (req, res)
 {
     db.use_recetas.find({ admin: req.session.user.admin._id}).populate(
-            {path:     'ingrediente',         
+            {path:     'ingrediente',
                 populate: { path:  'measurements',
                             model: 'measurements' }
             }).exec(function(err,doc){
@@ -1569,8 +1569,8 @@ function getIngredientID (req, res)
     })
 }
 
-function CreateCatProduct (req, res) 
-{  
+function CreateCatProduct (req, res)
+{
     if (req.body.categoria != null && req.body.descripcion != null)
     {
         db.catproducts.findOne({categoria: req.body.categoria.toUpperCase()},function(err,doc){
@@ -1592,7 +1592,7 @@ function CreateCatProduct (req, res)
              {
                 res.status(200).send("Categoria agregada")
              }
-        })  
+        })
         }else
         {
             res.status(500).send("La categoria ya existe");
@@ -1603,8 +1603,8 @@ function CreateCatProduct (req, res)
     }
 }
 
-function CreateCatProductAdmin (req, res) 
-{  
+function CreateCatProductAdmin (req, res)
+{
     if (req.body.categoria != null && req.body.descripcion != null)
     {
             db.admin.findOne({ _id: req.session.user._id },function(err,doc){
@@ -1626,7 +1626,7 @@ function CreateCatProductAdmin (req, res)
                  {
                     res.status(200).send("Categoria agregada correctamente")
                  }
-                })  
+                })
 
         }
         else{
@@ -1637,11 +1637,11 @@ function CreateCatProductAdmin (req, res)
     }else {
         res.status(500).send("Verifique su informacion")
     }
-    
+
 }
 
-function CreateMeasurement (req, res) 
-{  
+function CreateMeasurement (req, res)
+{
     if (req.body.name != null && req.body.namefast != null)
     {
             db.admin.findOne({ _id: req.session.user._id },function(err,doc){
@@ -1664,7 +1664,7 @@ function CreateMeasurement (req, res)
                     AddMovement(req.session.user, req.body.description + ' $ ' +req.body.monto)
                     res.status(200).send("Unidad de medida agregada")
                  }
-                })  
+                })
 
         }
         else{
@@ -1675,11 +1675,11 @@ function CreateMeasurement (req, res)
     }else {
         res.status(500).send("Verifique su informacion")
     }
-    
+
 }
 
-function addmoney (req, res) 
-{  
+function addmoney (req, res)
+{
     var p = new db.sales({
         admin: req.session.user.admin._id,
         user: req.session.user._id,
@@ -1700,11 +1700,11 @@ function addmoney (req, res)
             AddMovement(req.session.user, req.body.description + ' $ ' + req.body.monto)
             res.status(200).send("Operacion realizada con exito")
          }
-    }) 
+    })
 }
 
-function CreateReceta (req, res) 
-{  
+function CreateReceta (req, res)
+{
     var p = new db.recetas({
         name: req.body.name,
         description: req.body.description,
@@ -1746,7 +1746,7 @@ function CreateReceta (req, res)
             res.status(500).send("Algo desconocido sucedio")
         }
      }
-    })  
+    })
 }
 
 function CatProductsEditsJson (req,res){
@@ -1785,19 +1785,19 @@ function UserIDLoad (req,res){
     });
 };
 
-function CatproductsUpdateAdmin (req, res) 
-{  
+function CatproductsUpdateAdmin (req, res)
+{
     db.admin.findOne({ _id: req.session.user._id },function(err,doc){
         if (doc)
         {
             db.catproducts.update(
             { _id : req.body._id },
-            { 
+            {
                 categoria: req.body.categoria.toUpperCase(),
                 descripcion: req.body.descripcion.toUpperCase(),
                 last_edit: req.session.user._id
             },
-            function( err1) 
+            function( err1)
             {
                 if (err1)
                 {
@@ -1806,7 +1806,7 @@ function CatproductsUpdateAdmin (req, res)
                 {
                     res.status(200).send("Categoria actualizada correctamente")
                 }
-            })  
+            })
         }
         else{
             res.status(500).send("Usuario no valido")
@@ -1815,16 +1815,16 @@ function CatproductsUpdateAdmin (req, res)
 
 }
 
-function UpdateMeasurements (req, res) 
-{  
+function UpdateMeasurements (req, res)
+{
     db.measurements.update(
     { _id : req.body._id },
-    { 
+    {
         name: req.body.name.toUpperCase(),
         namefast: req.body.namefast.toUpperCase(),
         namefasts: req.body.namefasts.toUpperCase()
     },
-    function( err) 
+    function( err)
     {
         if (err)
         {
@@ -1833,74 +1833,74 @@ function UpdateMeasurements (req, res)
         {
             res.status(200).send("actualizado")
         }
-    })  
+    })
 }
 
-function cut_z_users (req, res) 
-{  
+function cut_z_users (req, res)
+{
     db.sales.find({ admin: req.session.user.admin._id, user: req.session.user._id, cut_user: false }).sort({fecha:-1}).populate('admin').populate('user').exec(function(err, data) {
         if(!err) {
              for(var i = 0; i < data.length; i ++)
              {
                 db.sales.update({ _id: data[i]._id },
-                { 
+                {
                     cut_user: true
                 },
-                function( err) 
+                function( err)
                 {
                     if (err){
                         console.log(err)
                     }
                 })
-             } 
+             }
              AddMovement(req.session.user,'usuario realizo corte z')
-             res.status(200).send('Corte z exitoso')  
+             res.status(200).send('Corte z exitoso')
         }else
         {
-            res.status(500).send(err)  
+            res.status(500).send(err)
         }
     })
 }
 
-function cut_z_admin (req, res) 
-{  
+function cut_z_admin (req, res)
+{
     db.sales.find({ admin: req.session.user.admin._id, cut_global: false }).sort({fecha:-1}).populate('admin').populate('user').exec(function(err, data) {
         if(!err) {
              for(var i = 0; i < data.length; i ++)
              {
                 db.sales.update({ _id: data[i]._id },
-                { 
+                {
                     cut_global: true
                 },
-                function( err) 
+                function( err)
                 {
                     if (err){
                         console.log(err)
                     }
                 })
-             } 
+             }
              AddMovement(req.session.user,'usuario realizo corte z global')
-             res.status(200).send('Corte z exitoso')  
+             res.status(200).send('Corte z exitoso')
         }else
         {
-            res.status(500).send(err)  
+            res.status(500).send(err)
         }
     })
 }
 
-function DeleteReceta (req, res) 
-{  
+function DeleteReceta (req, res)
+{
     var r = true
-    
-    db.recetas.remove({ _id: req.body._id, admin: req.session.user.admin._id },function( err) 
+
+    db.recetas.remove({ _id: req.body._id, admin: req.session.user.admin._id },function( err)
     {
         if (!err)
         {
-            db.use_recetas.remove({ receta: req.body._id, admin: req.session.user.admin._id },function( err) 
+            db.use_recetas.remove({ receta: req.body._id, admin: req.session.user.admin._id },function( err)
             {
                 if (!err)
                 {
-                    r = false                
+                    r = false
                 }
             })
         }
@@ -1915,8 +1915,8 @@ function DeleteReceta (req, res)
     }
 }
 
-function UpdateReceta (req, res) 
-{  
+function UpdateReceta (req, res)
+{
     db.use_recetas.remove({ receta: req.body._id, admin: req.session.user.admin._id },function( err) {})
 
     var insert_receta = true
@@ -1924,18 +1924,18 @@ function UpdateReceta (req, res)
 
     db.recetas.update(
     { _id : req.body._id },
-    { 
+    {
         name: req.body.name.toUpperCase(),
         description: req.body.description.toUpperCase(),
         receta: req.body.receta.toUpperCase()
     },
-    function( err) 
+    function( err)
     {
         if (err)
         {
             insert_receta = false
         }
-    })  
+    })
 
     for (var i = 0;  i < req.body.arr.length; i++)
     {
@@ -1962,12 +1962,12 @@ function UpdateReceta (req, res)
     }
 }
 
-function DeleteCatProducts (req, res) 
-{  
+function DeleteCatProducts (req, res)
+{
     db.admin.findOne({ _id: req.session.user._id },function(err,doc){
             if (doc)
             {
-                db.catproducts.remove({ _id : req.body._id },function( err) 
+                db.catproducts.remove({ _id : req.body._id },function( err)
             {
                 if (err)
                 {
@@ -1985,12 +1985,12 @@ function DeleteCatProducts (req, res)
 }
 
 
-function DeleteClientUser (req, res) 
-{  
+function DeleteClientUser (req, res)
+{
     db.clients_users.remove(
         { _id : req.body._id },
-        
-        function( err) 
+
+        function( err)
         {
             if (err)
             {
@@ -2006,7 +2006,7 @@ function AddDireccion (req,res)
 {
     var p = new db.direcciones({
         admin: req.session.user.admin._id,
-        cliente: req.body.cliente, 
+        cliente: req.body.cliente,
         calle: req.body.calle,
         numero: req.body.numero,
         colonia: req.body.colonia,
@@ -2054,7 +2054,7 @@ function InsertClientUser (req,res)
         })
     }else {
         res.sendStatus(500, "Email no valido.")
-    }  
+    }
 }
 
 function GetDate () {
@@ -2065,11 +2065,11 @@ function GetDate () {
 
 function addvtd (req, res ){
     var total = 0
-    
+
     for (var i = 0; i < req.body.length; i ++)
     {
-        total += req.body[i].total   
-    }    
+        total += req.body[i].total
+    }
 
     var r = true
 
@@ -2109,7 +2109,7 @@ function addvtd (req, res ){
             }
         }else {r = false}
     })
-    
+
     if (r)
     {
         res.status(200).send('Venta realizada')
@@ -2159,16 +2159,16 @@ function RemoveStockproduct(item){
         {
             db.products.update(
                 { _id : item._id},
-                { 
+                {
                     stock: doc.stock - item.unidades
                 },
-                function( err) 
+                function( err)
                 {
                     if (err)
                     {
                         console.log(err)
                     }
-                })  
+                })
         }else
         {
             console.log(err)
@@ -2182,6 +2182,6 @@ const port = "8080"
 server.listen(port, function (err){
 	if (!err)
 	{
-		console.log("Arranque del servidor en el puerto " + port);	
+		console.log("Arranque del servidor en el puerto " + port);
 	}
 });
