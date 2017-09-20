@@ -257,6 +257,7 @@ var Comandastmp = [{
     text: "Genial!"
 }];
 
+
 io.on('connection', function(socket) {
     
     socket.emit('GetComandas', Comandastmp);
