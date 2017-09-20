@@ -73,6 +73,31 @@ app.config(function($routeProvider){
         })
 })
 
+app.factory('socket', ['$rootScope', function($rootScope) {
+  var socket = io.connect('http://localhost:8080', { 'forceNew': true })
+
+  return {
+    on: function (eventName, callback) {
+            socket.on(eventName, function () {
+                var args = arguments;
+                $rootScope.$apply(function () {
+                    callback.apply(socket, args);
+                });
+            });
+        },
+    emit: function (eventName, data, callback) {
+            socket.emit(eventName, data, function () {
+                var args = arguments;
+                $rootScope.$apply(function () {
+                    if (callback) {
+                        callback.apply(socket, args);
+                    }
+                });
+            })
+        }
+  };
+}]);
+
 app.controller("UserValues", function($scope, $http, $timeout){
     $http.defaults.headers.common['x-access-token']=token;
     $scope.usuario = {};
@@ -2390,7 +2415,7 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
     }       
 })
 
-app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
+app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $http, socket) {
     
     $http.defaults.headers.common['x-access-token']=token;
     
@@ -2410,6 +2435,7 @@ app.controller("sales_vtd", ['$scope', '$http', function ($scope, $http) {
         $scope.$emit('load')
         $http.post('/api/sales/vtd/', $scope.comanda)
         .success(function(msg){
+            socket.emit('set_comanda');
             pushMessage('success','', msg, "checkmark")
             $scope.clean()
         })
@@ -3400,31 +3426,33 @@ app.controller("users_movements", ['$scope', '$http','$timeout', function ($scop
     }       
 })
 
-app.controller("procuts_kitchen", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
+
+app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', function ($scope, $http, $timeout, socket) {
     
     $http.defaults.headers.common['x-access-token']=token;
     
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
-    $scope.pageSizetmp = {}
+    $scope.pageSizetmp = []
 
     $scope.cook_products = {}
 
-    Getproducts = function (){
-        $scope.$emit('load')
-        $http.get('/api/kitchen/cook_products')
-        .success(function(data){
-            $scope.cook_products = data
-        })
-        .error (function (msg){
-            pushMessage('alert','ERROR', msg, "cross")
-        })
-        .finally (function (){
-            $scope.$emit('unload')
-        })
+    $scope.msg = {}
+    $scope.msgnew = {}
+
+    socket.on('GetComandas', function(data) {
+        pushMessage('info','', 'Comandas', "cross")
+        $scope.cook_products = data
+    });
+
+    $scope.add = function ()
+    {
+        $scope.msgnew.text = 'lypef';
+        socket.emit('set_comanda', $scope.msgnew);
+        
     }
-    Getproducts()
+
     
     $scope.ChangePageItems = function() {
         if ($scope.pageSizetmp.items == 'todos')

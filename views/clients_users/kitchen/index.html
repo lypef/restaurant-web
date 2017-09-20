@@ -1,5 +1,13 @@
 <div ng-controller="procuts_kitchen">
 
+<ul>
+    <li ng-repeat="a in cook_products">{{ a.author }}</li>
+</ul>
+
+<form>
+    <input type="text" name="" ng-model="msgnew.author">
+    <button ng-click="add()">Agregar</button>
+</form>
 <div style="overflow-x:auto;">
     <table class="table striped hovered bordered border">
          <thead>

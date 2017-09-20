@@ -12,6 +12,9 @@ var ValidateEmail = require("email-validator");
 var db = require("./models/models");
 var app = express(); 
 
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
 app.use(session({ secret: 'ajsj229nshslwkjrfdrfg', resave: false,saveUninitialized: true}))     
 app.use(express.static('public'));
 app.use(express.static('views'));
@@ -243,6 +246,44 @@ app.get('/api/sales/ingredientes/', GetUseRecetasJSON)
 app.post('/api/sales/vtd/', addvtd)
 
 //Funciones
+var Comandastmp = [{
+    author: "Carlos",
+    text: "Hola! que tal?"
+},{
+    author: "Pepe",
+    text: "Muy bien! y tu??"
+},{
+    author: "Paco",
+    text: "Genial!"
+}];
+
+io.on('connection', function(socket) {
+    
+    socket.emit('GetComandas', Comandastmp);
+    
+    socket.on('set_comanda', function (data) {
+        Comandastmp.push(data)
+        socket.broadcast.emit('GetComandas', Comandastmp);
+    });
+
+});
+
+function getComandas ()
+{
+    /*db.kitchen.remove({}, function(err, row) {
+      if (err) {
+          console.log("Collection couldn't be removed" + err);
+          return;
+      }
+
+      console.log("collection removed");
+    }) */
+    //{ admin: req.session.user.admin._id }
+    db.kitchen.find().sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
+        Comandastmp = doc
+    });
+}
+
 function AddMovement (session, description, sale)
 {
     var p = new db.movements(
@@ -622,6 +663,7 @@ function GetCookProducts (req,res){
         }
     });
 };
+
 
 function GetClients (req,res){
 	db.clients.find({ admin: req.session.user.admin._id}, function(err, data) {
@@ -2136,7 +2178,7 @@ function RemoveStockproduct(item){
 //Config
 const port = "8080"
 
-app.listen(port, function (err){
+server.listen(port, function (err){
 	if (!err)
 	{
 		console.log("Arranque del servidor en el puerto " + port);	
