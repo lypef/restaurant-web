@@ -260,13 +260,19 @@ var Comandastmp = [{
 //socket
 io.on('connection', function(socket) {
 
-    socket.emit('GetComandas', Comandastmp);
+  db.kitchen.find().sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
+      socket.emit('GetComandas', doc);
+  });
 
-    socket.on('set_comanda', function (data) {
-        Comandastmp.push(data)
-        socket.broadcast.emit('GetComandas', Comandastmp);
+  socket.on('set_comanda', function () {
+    db.kitchen.find().sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
+        socket.broadcast.emit('GetComandas', doc);
     });
+  });
 
+  socket.on('disconnect', function (){
+    console.log('Desconectado');
+  })
 });
 
 function getComandas ()

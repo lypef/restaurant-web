@@ -1,13 +1,9 @@
 <div ng-controller="procuts_kitchen">
 
 <ul>
-    <li ng-repeat="a in cook_products">{{ a.author }}</li>
+    <li ng-repeat="a in cook_products">{{ a.product.name }}</li>
 </ul>
 
-<form>
-    <input type="text" name="" ng-model="msgnew.author">
-    <button ng-click="add()">Agregar</button>
-</form>
 <div style="overflow-x:auto;">
     <table class="table striped hovered bordered border">
          <thead>
@@ -22,7 +18,7 @@
           </thead>
           <tbody>
               <tr ng-repeat="a in cook_products" ng-model="cook_products" >
-                
+
                 <td>
                 <img class= "img-round100" ng-src="{{ a.product.img }}"> {{ a.product.name }}
                 </td>

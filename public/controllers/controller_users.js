@@ -2435,9 +2435,9 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $htt
         $scope.$emit('load')
         $http.post('/api/sales/vtd/', $scope.comanda)
         .success(function(msg){
-            socket.emit('set_comanda');
             pushMessage('success','', msg, "checkmark")
             $scope.clean()
+            socket.emit('set_comanda');
         })
         .error (function (msg){
             pushMessage('alert','', msg, "cross")
@@ -3441,9 +3441,11 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', funct
     $scope.msg = {}
     $scope.msgnew = {}
 
+    $scope.$emit('load')
     socket.on('GetComandas', function(data) {
         pushMessage('info',':D', 'Comandas', "cross")
         $scope.cook_products = data
+        $scope.$emit('unload')
     });
 
     $scope.add = function ()
