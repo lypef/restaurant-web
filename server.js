@@ -242,20 +242,12 @@ app.use('/api/sales/', function(req,res,next){
 });
 app.get('/api/sales/products', getproductsJson)
 app.get('/api/sales/ingredientes/', GetUseRecetasJSON)
+app.get('/api/sales/get_cook_products', GetCookProducts)
 
 app.post('/api/sales/vtd/', addvtd)
 
 //Funciones
-var Comandastmp = [{
-    author: "Carlos",
-    text: "Hola! que tal?"
-},{
-    author: "Pepe",
-    text: "Muy bien! y tu??"
-},{
-    author: "Paco",
-    text: "Genial!"
-}];
+
 
 //socket
 io.on('connection', function(socket) {
@@ -264,10 +256,8 @@ io.on('connection', function(socket) {
       socket.emit('GetComandas', doc);
   });
 
-  socket.on('set_comanda', function () {
-    db.kitchen.find().sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
-        socket.broadcast.emit('GetComandas', doc);
-    });
+  socket.on('UpdateComanda', function (data) {
+    socket.broadcast.emit('GetComandas', data);
   });
 
   socket.on('disconnect', function (){

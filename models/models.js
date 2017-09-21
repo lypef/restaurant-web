@@ -1,8 +1,5 @@
 var mongoose = require("mongoose"), Schema = mongoose.Schema;
 
-require('mongoose-double')(mongoose);
-
-
 mongoose.connect("mongodb://lypef:admin@mongodb-lypef.alwaysdata.net/lypef_db");
 
 

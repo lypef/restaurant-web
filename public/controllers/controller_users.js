@@ -2437,7 +2437,12 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $htt
         .success(function(msg){
             pushMessage('success','', msg, "checkmark")
             $scope.clean()
-            socket.emit('set_comanda');
+
+            $http.get('/api/sales/get_cook_products')
+            .success(function (data){
+                socket.emit('UpdateComanda', data);
+            })
+
         })
         .error (function (msg){
             pushMessage('alert','', msg, "cross")
