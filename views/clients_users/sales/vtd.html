@@ -1,4 +1,4 @@
-<div ng-controller="sales_vtd">            
+<div ng-controller="sales_vtd">
 <!-- Crud -->
 <div class="grid">
 <div class="row flex-just-sa">
@@ -8,8 +8,8 @@
 		<span class="title">Productos</span></div>
 		<div class="content" align="center">
 		<button class="button success large-button" style="width: 95%" ng-click="show_all()">Mostrar todos</button>
-		
-    
+
+
         <select id ="select" ng-model="categories.select" style="text-align: center; text-align-last: center; width: 95%" ng-change="show_categories()">
             <option value="">---Cetegorias---</option>
             <option ng-repeat=" a in categories" value="{{ a._id }}">{{a.categoria}}</option>
@@ -19,29 +19,29 @@
                     $("#select").select2();
                 });
             </script>
-        
+
         <form>
     		<div class="input-control text " data-role="input" style="width: 95%">
-            
+
     		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" ng-change="search()" id="input_search" autofocus autocomplete="off">
 
     		<button class="button" ng-click="addonelist()"><span class="mif-plus"></span></button></div>
         </form>
                 <div class="">
-    
+
         <div class='pagination' >
           <button type='button ' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = 0'>Principio</button>
 
           <button type='button' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
-          
+
           <button type='button' class='item current' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{ page.no }}</button>
-          
+
           <button type='button' class='item' ng-disabled='currentPage >= products.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
 
           <button type='button' class='item' ng-disabled='currentPage == products.length/pageSize - 1' ng-click='currentPage = products.length/pageSize - 1'>Final</button>
         </div>
-    </div>    
-    
+    </div>
+
                 <table class="table striped hovered bordered">
          <thead>
             <tr>
@@ -61,7 +61,7 @@
                 	<button class="button cycle-button large-button primary" ng-click="add(a)">+</button>
                 	<button class="button cycle-button large-button" ng-click="remove(a)">-</button>
                 </td>
-                
+
               </tr>
           </tbody>
     </table>
@@ -70,18 +70,18 @@
 	</div>
 </div>
 <div class="cell-auto-size"  style="width: 100%">
-	
+
 <div class="panel success" style="border: 2px solid #fff">
                 <div class="heading">
-                
+
                 <span class="title">Comanda</span>
-            
+
                 </div>
                 <div class="content">
                 <div style="overflow-x:auto;">
 
           <div align="left" style="border-left: 8px solid transparent;">
-          
+
           <button class="button primary large-button" ng-disabled="!comanda[0]" onclick="toggleMetroDialog('#vtd')">Total $ {{ comanda.total }}</button>
 
           <button class="button warning large-button mif-bin" ng-disabled="!comanda[0]" ng-click="cleanbtn()">Limpiar</button>
@@ -95,6 +95,7 @@
               <th>UNITARIO</th>
               <th>TOTAL</th>
               <th>OPCIONES</th>
+							<th>COMENTARIOS</th>
             </tr>
           </thead>
           <tbody>
@@ -108,7 +109,10 @@
               <td align="center">
                 	<button class="button cycle-button large-button primary" ng-click="add(a)">+</button>
                 	<button class="button cycle-button large-button" ng-click="remove(a)">-</button>
-                </td>
+              </td>
+							<td>
+								<textarea name="name" rows="6" ng-model="a.comentario"></textarea>
+							</td>
             </tr>
           </tbody>
         </table>
@@ -116,7 +120,7 @@
 <hr>
 </div></div>
 </div>
-<div data-role="dialog" id="vtd" class="padding30" data-type="" 
+<div data-role="dialog" id="vtd" class="padding30" data-type=""
       data-close-button="true"
       data-width="auto"
       data-overlay="true">
@@ -130,5 +134,5 @@
       <button class="button success" ng-click="vtd()" onclick="hideMetroDialog('#vtd')">SI</button>
       <button class="button alert" onclick="hideMetroDialog('#vtd')">NO</button>
       </div>
-</div>  
+</div>
 </div>

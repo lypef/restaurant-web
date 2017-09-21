@@ -2095,7 +2095,12 @@ function addvtd (req, res ){
                     }
                 }
                 if (req.body[i].cocina){
-                    req.body[i].comentario = 'Aqui van los comentarios'
+                    if (req.body[i].comentario)
+                    {
+                        req.body[i].comentario = req.body[i].comentario.toUpperCase()
+                    }else {
+                        req.body[i].comentario = "SIN COMENTARIOS"
+                    }
                     add_comanda_cocina(req.body[i], req.session.user)
                 }
 

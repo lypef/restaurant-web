@@ -3445,11 +3445,16 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', funct
     $scope.msg = {}
     $scope.msgnew = {}
 
-    $scope.$emit('load')
+
+$scope.$emit('load')
     socket.on('GetComandas', function(data) {
         pushMessage('info',':D', 'Comandas', "cross")
         $scope.cook_products = data
         $scope.$emit('unload')
+        socket.on('disconnect', function ()
+        {
+            pushMessage('warning','', 'Sistema Desconectado', "cross")
+        });
     });
 
     $scope.add = function ()
