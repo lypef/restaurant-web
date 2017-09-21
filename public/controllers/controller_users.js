@@ -2435,19 +2435,18 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $htt
         $scope.$emit('load')
         $http.post('/api/sales/vtd/', $scope.comanda)
         .success(function(msg){
-            pushMessage('success','', msg, "checkmark")
-            $scope.clean()
-
-            $http.get('/api/sales/get_cook_products')
-            .success(function (data){
-                socket.emit('UpdateComanda', data);
-            })
-
+          $scope.clean()
+          $http.get('/api/sales/get_cook_products')
+          .success(function (data){
+              socket.emit('UpdateComanda', data);
+              pushMessage('success','', msg, "checkmark")
+          })
+          .finally (function (){
+              $scope.$emit('unload')
+          })
         })
         .error (function (msg){
             pushMessage('alert','', msg, "cross")
-        })
-        .finally (function (){
             $scope.$emit('unload')
         })
     }
