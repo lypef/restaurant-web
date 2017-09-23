@@ -155,7 +155,8 @@ app.use('/api/kitchen', function(req,res,next){
 });
 app.get('/api/kitchen/cook_products', GetCookProducts)
 
-app.post('/api/kitchen/product_update', GetCookProducts)
+app.post('/api/kitchen/product_update_preparacion', UpdateProduct_kitchen_preparacion)
+app.post('/api/kitchen/product_update_finalizacion', UpdateProduct_kitchen_finalizacion)
 
 
 //Api accounts admin
@@ -1026,6 +1027,59 @@ function UpdateProduct (req, res)
                 })
             }
         })
+}
+
+function UpdateProduct_kitchen_preparacion (req, res)
+{
+    if (req.session.user.admin._id == req.body.admin._id)
+    {
+        db.kitchen.update(
+        { _id : req.body._id},
+        {
+            status: 'En preparacion',
+            preparando: true
+        },
+        function( err)
+        {
+            if (err)
+            {
+                res.status(404).send("Algo desconocido sucedio, intente nuevamente")
+            }else
+            {
+                res.status(200).send('Inicia la preparacion')
+            }
+        })
+    }else
+    {
+        res.status(500).send('Producto no valido')
+    }
+}
+
+function UpdateProduct_kitchen_finalizacion (req, res)
+{
+    if (req.session.user.admin._id == req.body.admin._id)
+    {
+        db.kitchen.update(
+        { _id : req.body._id},
+        {
+            status: 'Preparado y listo',
+            preparando: false,
+            end: true
+        },
+        function( err)
+        {
+            if (err)
+            {
+                res.status(404).send("Algo desconocido sucedio, intente nuevamente")
+            }else
+            {
+                res.status(200).send('Finaliza la preparacion')
+            }
+        })
+    }else
+    {
+        res.status(500).send('Producto no valido')
+    }
 }
 
 function UpdateIngredient (req, res)

@@ -3477,14 +3477,39 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', '$roo
 
     $scope.preparar = function (item)
     {
-        item.status = 'En preparacion'
-        pushMessage('success','', 'Inicia la preparacion', "checkmark")
+        $scope.$emit('loadasc')
+        $http.post('/api/kitchen/product_update_preparacion', item)
+        .success (function (msg){
+            $http.get('/api/sales/get_cook_products')
+            .success(function (data){
+                socket.emit('UpdateComanda', data);
+                item.status = 'En preparacion'
+                pushMessage('success','', msg, "checkmark")
+            }) 
+            .finally (function (){
+              $scope.$emit('unload')
+            })
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     }
 
     $scope.finalizar = function (item)
     {
-        $scope.cook_products.splice($scope.cook_products.indexOf(item),1);
-        pushMessage('info','', 'Preparado y listo', "checkmark")
+        $scope.$emit('loadasc')
+        $http.post('/api/kitchen/product_update_finalizacion', item)
+        .success (function (msg){
+            $http.get('/api/sales/get_cook_products')
+            .success(function (data){
+                socket.emit('UpdateComanda', data);
+                $scope.cook_products.splice($scope.cook_products.indexOf(item),1);
+                pushMessage('success','', msg, "checkmark")
+            }) 
+            .finally (function (){
+              $scope.$emit('unloadasc')
+            })
+        })
     }
 
     $scope.edit = function (item)
