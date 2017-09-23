@@ -25,8 +25,8 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(methodOverride());
 app.use(function(req, res, next) {
 res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST');
+    res.setHeader('Access-Control-Allow-Headers', '*,X-Requested-With,content-type, Authorization');
     next();
 });
 app.use("/dashboard",sessiontrue);
@@ -654,12 +654,12 @@ function User_adminValuesjson (req,res){
 };
 
 function GetCookProducts (req,res){
-    db.kitchen.find({ admin: req.session.user.admin._id }).populate('admin').populate('user').populate('product').exec(function(err,doc){
-        if (doc != null)
+    db.kitchen.find({end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
+      if (!err)
         {
             res.json(doc)
         }else {
-            console.log(err)
+            res.status(500).send(err)
         }
     });
 };
