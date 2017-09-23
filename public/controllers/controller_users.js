@@ -98,7 +98,7 @@ app.factory('socket', ['$rootScope', function($rootScope) {
   };
 }]);
 
-app.controller("UserValues", function($scope, $http, $timeout){
+app.controller("UserValues", function($scope, $http, $timeout, $rootScope){
     $http.defaults.headers.common['x-access-token']=token;
     $scope.usuario = {};
     $scope.addmoneyvar = {}
@@ -115,6 +115,7 @@ app.controller("UserValues", function($scope, $http, $timeout){
         $http.get('/api/users/values')
         .success(function(data) {
             $scope.usuario = data;
+            $rootScope.admin = data.admin._id
             $scope.usuario.passwordtmp = $scope.usuario.password
         })
         .error(function(data) {
@@ -3431,7 +3432,7 @@ app.controller("users_movements", ['$scope', '$http','$timeout', function ($scop
 })
 
 
-app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', function ($scope, $http, $timeout, socket) {
+app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', '$rootScope', function ($scope, $http, $timeout, socket, $rootScope) {
 
     $http.defaults.headers.common['x-access-token']=token;
 
@@ -3440,28 +3441,60 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', funct
     $scope.pages = [];
     $scope.pageSizetmp = []
 
-    $scope.cook_products = {}
+    $scope.cook_products = []
 
     $scope.msg = {}
     $scope.msgnew = {}
+    $scope.tmp = {}
 
-
-$scope.$emit('load')
-    socket.on('GetComandas', function(data) {
-        pushMessage('info',':D', 'Comandas', "cross")
-        $scope.cook_products = data
-        $scope.$emit('unload')
-        socket.on('disconnect', function ()
-        {
-            pushMessage('warning','', 'Sistema Desconectado', "cross")
-        });
+    $scope.$emit('load')
+    socket.on('disconnect', function ()
+    {
+        pushMessage('warning','', 'Sistema Desconectado', "cross")
     });
 
-    $scope.add = function ()
-    {
-        $scope.msgnew.text = 'lypef';
-        socket.emit('set_comanda', $scope.msgnew);
+    socket.on('GetComandas', function(data) {
+        var existente = $scope.cook_products.length
+        $scope.cook_products = []
+        for (var i = 0; i < data.length; i++)
+        {
+            if (data[i].admin._id == $rootScope.admin)
+            {
+                $scope.cook_products.push(data[i])
+            }
+        }
+        if ($scope.cook_products.length > existente)
+        {
+            pushMessage('info','', 'Nuevas ordenes', "checkmark")
+        }
+        $scope.$emit('unload')
+    });
 
+    $scope.select = function (item)
+    {
+        $scope.tmp = item
+    }
+
+    $scope.preparar = function (item)
+    {
+        item.status = 'En preparacion'
+        pushMessage('success','', 'Inicia la preparacion', "checkmark")
+    }
+
+    $scope.finalizar = function (item)
+    {
+        $scope.cook_products.splice($scope.cook_products.indexOf(item),1);
+        pushMessage('info','', 'Preparado y listo', "checkmark")
+    }
+
+    $scope.edit = function (item)
+    {
+        pushMessage('warning','Edit', item.product.name, "cross")
+    }
+
+    $scope.call = function (item)
+    {
+        pushMessage('warning','', 'Alerta enviada', "checkmark")
     }
 
 

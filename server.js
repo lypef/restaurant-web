@@ -155,6 +155,8 @@ app.use('/api/kitchen', function(req,res,next){
 });
 app.get('/api/kitchen/cook_products', GetCookProducts)
 
+app.post('/api/kitchen/product_update', GetCookProducts)
+
 
 //Api accounts admin
 app.use('/api/finance', function(req,res,next){
@@ -242,7 +244,7 @@ app.use('/api/sales/', function(req,res,next){
 });
 app.get('/api/sales/products', getproductsJson)
 app.get('/api/sales/ingredientes/', GetUseRecetasJSON)
-app.get('/api/sales/get_cook_products', GetCookProducts)
+app.get('/api/sales/get_cook_products', GetCookProductsAllusers)
 
 app.post('/api/sales/vtd/', addvtd)
 
@@ -252,7 +254,7 @@ app.post('/api/sales/vtd/', addvtd)
 //socket
 io.on('connection', function(socket) {
 
-  db.kitchen.find().sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
+  db.kitchen.find({end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
       socket.emit('GetComandas', doc);
   });
 
@@ -652,6 +654,17 @@ function User_adminValuesjson (req,res){
 
 function GetCookProducts (req,res){
     db.kitchen.find({ admin: req.session.user.admin._id }).populate('admin').populate('user').populate('product').exec(function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
+        }else {
+            console.log(err)
+        }
+    });
+};
+
+function GetCookProductsAllusers (req,res){
+    db.kitchen.find({ end: false }).populate('admin').populate('user').populate('product').exec(function(err,doc){
         if (doc != null)
         {
             res.json(doc)

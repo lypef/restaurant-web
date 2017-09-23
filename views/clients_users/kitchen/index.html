@@ -18,27 +18,60 @@
                 <td>
                 <img class= "img-round100" ng-src="{{ a.product.img }}"> {{ a.product.name }}
                 </td>
-                <td align="center">{{ a.unidades }}</td>
+
+                <td align="center"><span class="tag success"><h2>{{ a.unidades }}</h2></span></td>
                 <td>{{ a.status }}</td>
-                <td>{{ a.delivery }}</td>
+                <td ng-if="a.delivery"><span class="tag warning"><h3>Domicilio</h3></span></td>
+                <td ng-if="!a.delivery"><span class="tag info"><h3>Mesa</h3></span></td>
                 <td>{{ a.comentario }}</td>
-                <td>
-                	<button class="button success loading-pulse large-button" ng-click="create()">
-                    Preparar
-                    </button>
-                    <button class="button success loading-pulse large-button" ng-click="create()">
-                    Agregar
-                    </button>
-                    <button class="button success loading-pulse large-button" ng-click="create()">
-                    Agregar
-                    </button>
-                    <button class="button success loading-pulse large-button" ng-click="create()">
-                    Agregar
-                    </button>
+                <td align="center">
+                	
+                    <div class="split-button" ng-show="a.status == 'En cola' ">
+                        <button class="button success" ng-click="select(a)" onclick="toggleMetroDialog('#preparar')">Preparar</button>
+                        <button class="split dropdown-toggle"></button>
+                        <ul class="split-content d-menu place-right" data-role="dropdown">
+                            <li><a ng-click="edit(a)">Editar</a></li>
+                            <li><a ng-click="call(a)">Llamar mesero</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="split-button" ng-show="a.status == 'En preparacion' ">
+                        <button class="button alert" ng-click="select(a)" onclick="toggleMetroDialog('#finalizar')">Finalizar</button>
+                        <button class="split dropdown-toggle "></button>
+                        <ul class="split-content d-menu place-right" data-role="dropdown">
+                            <li><a ng-click="edit(a)">Editar</a></li>
+                            <li><a ng-click="call(a)">Llamar mesero</a></li>
+                        </ul>
+                    </div>
+
                 </td>
               </tr>
           </tbody>
     </table>
     </div>
+
+    <!--Ventana Iniciar preparacion-->
+    <div data-role="dialog" id="preparar" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round50" ng-src="{{ tmp.product.img }}"> # {{ tmp.unidades }} {{ tmp.product.name }}<br><h4>Iniciar preparacion de ?. {{ tmp.unidades }} UDS</h4></span></h3></p>
+       
+      <button class="button warning" ng-click="preparar(tmp)" onclick="hideMetroDialog('#preparar')"><span class="mif-checkmark"></span> SI</button>
+      <button class="button success" onclick="hideMetroDialog('#preparar')"><span class="mif-cross"></span> NO</button>
+    </div>
+    <!--Ventana Iniciar preparacion-->
+
+    <!--Ventana finalizar preparacion-->
+    <div data-role="dialog" id="finalizar" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round80" ng-src="{{ tmp.product.img }}"> # Finalizar {{ tmp.unidades }} {{ tmp.product.name }}</h3></p>
+       
+      <button class="button warning" ng-click="finalizar(tmp)" onclick="hideMetroDialog('#finalizar')"><span class="mif-checkmark"></span> SI</button>
+      <button class="button success" onclick="hideMetroDialog('#finalizar')"><span class="mif-cross"></span> NO</button>
+    </div>
+    <!--Ventana finalizar preparacion-->
 
 </div>
