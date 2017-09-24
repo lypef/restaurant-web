@@ -93,6 +93,7 @@ app.post('/api/recipes/delete', DeleteReceta )
 app.post('/api/recipes/add', CreateReceta );
 app.post('/api/recipes/update', UpdateReceta )
 app.post('/api/recipes/ingredients/update', UpdateIngredient)
+app.post('/api/recipes/ingredients/search', SearchIngredients)
 
 
 
@@ -1073,6 +1074,7 @@ function UpdateProduct_kitchen_finalizacion (req, res)
                 res.status(404).send("Algo desconocido sucedio, intente nuevamente")
             }else
             {
+                RemoveIngredientsProduct(req.body.product,req.session.user)
                 res.status(200).send('Finaliza la preparacion')
             }
         })
@@ -1578,7 +1580,7 @@ function GetUseRecetasJSON_ID (req, res)
                 populate: { path:  'measurements',
                             model: 'measurements' }
             }).exec(function(err,doc){
-        if (doc != null)
+        if (!err)
         {
             res.json(doc)
         }
@@ -2195,6 +2197,67 @@ function add_sale_product (product, admin, ticket)
     })
 
     sale_produc_add.save (function(err){
+        if (err)
+        {
+            console.log(err)
+        }
+    })
+}
+
+function SearchIngredients (req, res) 
+{  
+    if (req.body.txt == null || req.body.txt == undefined)
+    {
+        db.ingredients.find({admin: req.session.user.admin._id}).sort({name:1}).populate('measurements').exec(function(err, data) {
+        if(err || data == "") {
+            res.status(500).send("Ingrediente no encontrada")
+        }else
+        {
+            res.json(data)
+        }
+    })
+    }else {
+        db.ingredients.find({admin: req.session.user.admin._id, $or: [ {name: { $regex : req.body.txt.toUpperCase() }} ] }).sort({name:1}).populate('measurements').exec(function(err, data) {
+        if(err || data == "") {
+            res.status(500).send("Ingrediente no encontrada")
+        }else
+        {
+            res.json(data)
+        }
+    })    
+    }
+
+}
+
+function RemoveIngredientsProduct (product, session)
+{
+    if (session.admin._id == product.admin && product.receta)
+    {
+        db.use_recetas.find({ receta: product.receta }).populate('ingrediente').exec(function(err,doc){
+            if (!err)
+            {
+                for (var i = 0; i < doc.length; i++)
+                {
+                    if (doc[i].update_ingredients)
+                    {
+                        RemoveIngredientsProductPorcion(doc[i].ingrediente, doc[i].porcion)
+                    }
+                }
+            }
+        });
+        
+    }
+}
+
+function RemoveIngredientsProductPorcion (ingredient, porcion)
+{
+    db.ingredients.update(
+    { _id : ingredient._id},
+    {
+        stock: ingredient.stock - porcion
+    },
+    function(err)
+    {
         if (err)
         {
             console.log(err)

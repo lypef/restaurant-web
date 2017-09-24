@@ -3446,6 +3446,9 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', '$roo
     $scope.msg = {}
     $scope.msgnew = {}
     $scope.tmp = {}
+    $scope.users_activos = []
+    $scope.platillos = []
+
 
     $scope.$emit('load')
     socket.on('disconnect', function ()
@@ -3456,6 +3459,7 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', '$roo
     socket.on('GetComandas', function(data) {
         var existente = $scope.cook_products.length
         $scope.cook_products = []
+        
         for (var i = 0; i < data.length; i++)
         {
             if (data[i].admin._id == $rootScope.admin)
@@ -3472,11 +3476,16 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', '$roo
             pushMessage('success','BIEN', 'Parece que todo esta preparado, servido o entregado.', "checkmark")
         }
         $scope.$emit('unload')
+        loadvaluestatus()
     });
 
     $scope.select = function (item)
     {
+        var TotalComandaTmp = $scope.tmp.totalComanda
+        var PreparacionTmp = $scope.tmp.preparacion
         $scope.tmp = item
+        $scope.tmp.totalComanda = TotalComandaTmp
+        $scope.tmp.preparacion = PreparacionTmp
     }
 
     $scope.preparar = function (item)
@@ -3491,6 +3500,7 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', '$roo
                 item.status = 'En preparacion'
                 item.preparando = true
                 pushMessage('success','', msg, "checkmark")
+                loadvaluestatus()
             }) 
             .error(function (msg){
                pushMessage('alert','ERROR', msg, "checkmark") 
@@ -3513,6 +3523,7 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', '$roo
                 socket.emit('UpdateComanda', data);
                 $scope.cook_products.splice($scope.cook_products.indexOf(item),1);
                 pushMessage('success','', msg, "checkmark")
+                loadvaluestatus()
             }) 
             .error(function (msg){
                pushMessage('alert','ERROR', msg, "checkmark") 
@@ -3528,6 +3539,7 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', '$roo
         })
     }
 
+
     $scope.edit = function (item)
     {
         pushMessage('warning','Edit', item.product.name, "cross")
@@ -3538,7 +3550,66 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', '$roo
         pushMessage('warning','', 'Alerta enviada', "checkmark")
     }
 
+    loadvaluestatus = function (){
+        $scope.tmp.totalComanda = 0
+        $scope.tmp.preparacion = 0
+        $scope.users_activos = []
+        $scope.platillos = []
 
+        for (var i = 0; i < $scope.cook_products.length; i++)
+        {
+            $scope.tmp.totalComanda ++
+            if ($scope.cook_products[i].preparando)
+            {
+                $scope.tmp.preparacion ++
+            }
+
+            var agregar = true
+
+            for (var ii = 0; ii < $scope.users_activos.length; ii++)
+            {
+                if ($scope.users_activos[ii].user._id == $scope.cook_products[i].user._id)
+                {
+                    agregar = false
+                }
+            }
+
+            if (agregar)
+            {
+                $scope.users_activos.push($scope.cook_products[i])
+            }
+
+            var agregar_platillos = true
+
+            for (var ii = 0; ii < $scope.platillos.length; ii++)
+            {
+                if ($scope.platillos[ii].product._id == $scope.cook_products[i].product._id)
+                {
+                    agregar_platillos = false
+                    $scope.platillos[ii].product.total += $scope.cook_products[i].unidades
+                }
+            }
+
+            if (agregar_platillos)
+            {
+                $scope.cook_products[i].product.total = $scope.cook_products[i].unidades
+                $scope.platillos.push($scope.cook_products[i])
+            }
+        }
+
+        for (var i = 0; i < $scope.users_activos.length; i++)
+        {
+            $scope.users_activos[i].user.comandas = 0
+
+            for (var b = 0; b < $scope.cook_products.length; b++)
+            {
+                if ($scope.cook_products[b].user._id == $scope.users_activos[i].user._id)
+                {
+                    $scope.users_activos[i].user.comandas ++
+                }
+            }   
+        }
+    }
     $scope.ChangePageItems = function() {
         if ($scope.pageSizetmp.items == 'todos')
         {

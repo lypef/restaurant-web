@@ -1,5 +1,32 @@
 <div ng-controller="procuts_kitchen">
 
+<!--Busqueda y numero mostrado -->
+    <div class="row flex-just-sa">
+            <div class="colspan6" style="width: 100%; border: 2px solid #fff;">
+            <span class="tag warning" style="width: 100%"><h4>
+                <center>PLATILLOS A PREPARAR</center>
+                <ul>
+                    <li ng-repeat="a in platillos">
+                    <img class="img-round50" ng-src="{{ a.product.img }}">
+                    ({{ a.product.total }}) {{ a.product.name }}</li>
+                </ul>
+            </h4></span>
+            </div>
+            <div class="colspan6" style="width: 100%; border: 2px solid #fff;">
+            <span class="tag success" style="width: 100%"><h4>
+                <center>TOTAL DE COMANDAS: {{ tmp.totalComanda }}<br>EN PREPARACION: {{ tmp.preparacion }}<br><br>
+                LISTA DE MESEROS ACTIVOS
+                </center>
+                <ul>
+                    <li ng-repeat = "a in users_activos">
+                    <img class="img-round50" ng-src="{{a.user.img}}"> {{a.user.nombre}} ( {{ a.user.comandas }} )
+                    </li><br>
+                </ul>
+            </h4></span>
+            </div>
+        </div>
+    <!--Finaliza Busqueda y numero mostrado -->
+<hr>
 <div style="overflow-x:auto;">
     <table class="table striped hovered bordered border">
          <thead>
@@ -57,7 +84,7 @@
       data-overlay="true">
       <p><h3><img class="img-round50" ng-src="{{ tmp.product.img }}"> # {{ tmp.unidades }} {{ tmp.product.name }}<br><h4>Iniciar preparacion de ?. {{ tmp.unidades }} UDS</h4></span></h3></p>
        
-      <button class="button warning" ng-click="preparar(tmp)" onclick="hideMetroDialog('#preparar')"><span class="mif-checkmark"></span> SI</button>
+      <button class="button warning" ng-click="preparar(tmp)" onclick="hideMetroDialog('#preparar')"><span class="mif-checkmark" autofocus></span> SI</button>
       <button class="button success" onclick="hideMetroDialog('#preparar')"><span class="mif-cross"></span> NO</button>
     </div>
     <!--Ventana Iniciar preparacion-->
