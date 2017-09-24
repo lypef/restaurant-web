@@ -74,7 +74,7 @@ app.config(function($routeProvider){
 })
 
 app.factory('socket', ['$rootScope', function($rootScope) {
-  var socket = io.connect('http://192.168.1.69:8080', { 'forceNew': true })
+  var socket = io.connect('http://localhost:8080', { 'forceNew': true })
 
   return {
     on: function (eventName, callback) {
