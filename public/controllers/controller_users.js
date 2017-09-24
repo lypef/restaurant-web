@@ -74,7 +74,7 @@ app.config(function($routeProvider){
 })
 
 app.factory('socket', ['$rootScope', function($rootScope) {
-  var socket = io.connect('https:restweb-lypef.c9users.io:8080', { 'forceNew': true })
+  var socket = io.connect('https:restweb-lypef.c9users.io:4040', { 'forceNew': true })
 
   return {
     on: function (eventName, callback) {
