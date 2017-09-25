@@ -74,7 +74,7 @@ app.config(function($routeProvider){
 })
 
 app.factory('socket', ['$rootScope', function($rootScope) {
-  var socket = io.connect('http://localhost:8080', { 'forceNew': true })
+  var socket = io.connect('http://192.168.1.68:8080', { 'forceNew': true })
 
   return {
     on: function (eventName, callback) {
@@ -3471,13 +3471,63 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', '$roo
         {
             pushMessage('info','', 'Nuevas ordenes', "checkmark")
         }
-        if ($scope.cook_products.length == 0)
-        {
-            pushMessage('success','BIEN', 'Parece que todo esta preparado, servido o entregado.', "checkmark")
-        }
+
         $scope.$emit('unload')
         loadvaluestatus()
     });
+
+    $scope.ActionAll = function ()
+    {
+        for(var i = 0; i < $scope.cook_products.length; i++)
+        {
+            if ($scope.cook_products[i].check)
+            {
+                if ($scope.cook_products[i].preparando)
+                {
+                    $scope.finalizar($scope.cook_products[i])
+                }
+
+                if (!$scope.cook_products[i].preparando)
+                {
+                    $scope.preparar($scope.cook_products[i])
+                }
+
+            }
+        }
+    }
+
+    $scope.SelectAll = function ()
+    {
+        for(var i = 0; i < $scope.cook_products.length; i++)
+        {
+            $scope.cook_products[i].check = true
+        }
+    }
+
+    $scope.SelectAny = function ()
+    {
+        for(var i = 0; i < $scope.cook_products.length; i++)
+        {
+            $scope.cook_products[i].check = false
+        }
+    }
+
+    $scope.PrepararAll = function ()
+    {
+        for(var i = 0; i < $scope.cook_products.length; i++)
+        {
+            $scope.preparar($scope.cook_products[i])
+        }
+
+    }
+
+    $scope.FinalizarAll = function ()
+    {
+        for(var i = 0; i < $scope.cook_products.length; i++)
+        {
+            $scope.finalizar($scope.cook_products[i])
+        }
+    }
 
     $scope.select = function (item)
     {
@@ -3499,7 +3549,8 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', '$roo
                 socket.emit('UpdateComanda', data);
                 item.status = 'En preparacion'
                 item.preparando = true
-                pushMessage('success','', msg, "checkmark")
+                item.check = false
+                pushMessage('success','', msg + ' ' + item.product.name, "checkmark")
                 loadvaluestatus()
             }) 
             .error(function (msg){
@@ -3522,7 +3573,7 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', '$roo
             .success(function (data){
                 socket.emit('UpdateComanda', data);
                 $scope.cook_products.splice($scope.cook_products.indexOf(item),1);
-                pushMessage('success','', msg, "checkmark")
+                pushMessage('success','', msg + ' ' + item.product.name, "checkmark")
                 loadvaluestatus()
             }) 
             .error(function (msg){
