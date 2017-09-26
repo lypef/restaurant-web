@@ -74,27 +74,26 @@ app.config(function($routeProvider){
 })
 
 app.factory('socket', ['$rootScope', function($rootScope) {
-  var socket = io.connect('http://192.168.1.68:8080', { 'forceNew': true })
-
+  var socket = io.connect('http://192.168.1.78:8080', { 'forceNew': true })
   return {
     on: function (eventName, callback) {
-            socket.on(eventName, function () {
-                var args = arguments;
-                $rootScope.$apply(function () {
-                    callback.apply(socket, args);
-                });
+        socket.on(eventName, function () {
+            var args = arguments;
+            $rootScope.$apply(function () {
+                callback.apply(socket, args);
             });
-        },
+        });
+    },
     emit: function (eventName, data, callback) {
-            socket.emit(eventName, data, function () {
-                var args = arguments;
-                $rootScope.$apply(function () {
-                    if (callback) {
-                        callback.apply(socket, args);
-                    }
-                });
-            })
-        }
+        socket.emit(eventName, data, function () {
+            var args = arguments;
+            $rootScope.$apply(function () {
+                if (callback) {
+                    callback.apply(socket, args);
+                }
+            });
+        })
+    }
   };
 }]);
 
@@ -3431,8 +3430,7 @@ app.controller("users_movements", ['$scope', '$http','$timeout', function ($scop
     }
 })
 
-
-app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', '$rootScope', function ($scope, $http, $timeout, socket, $rootScope) {
+app.controller("procuts_kitchen", ['$scope', '$http','$timeout', '$rootScope', 'socket', function ($scope, $http, $timeout, $rootScope, socket) {
 
     $http.defaults.headers.common['x-access-token']=token;
 
@@ -3448,13 +3446,13 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', 'socket', '$roo
     $scope.tmp = {}
     $scope.users_activos = []
     $scope.platillos = []
-
-
+    
     $scope.$emit('load')
     socket.on('disconnect', function ()
     {
         pushMessage('warning','', 'Sistema Desconectado', "cross")
     });
+
 
     socket.on('GetComandas', function(data) {
         var existente = $scope.cook_products.length
