@@ -75,7 +75,7 @@ app.config(function($routeProvider){
 
 app.factory('socket', ['$rootScope', function($rootScope) {
 
-  var socket = io.connect(urlsocket, { 'forceNew': true })
+  socket = io.connect(urlsocket, { 'forceNew': true })
 
   return {
     on: function (eventName, callback) {
@@ -3448,15 +3448,16 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', '$rootScope', '
     $scope.tmp = {}
     $scope.users_activos = []
     $scope.platillos = []
+    
+    socket = io.connect()
+    socket = io.connect(urlsocket, { 'forceNew': true })
 
     $scope.$emit('load')
+
     socket.on('disconnect', function ()
     {
         pushMessage('warning','', 'Sistema Desconectado', "cross")
     });
-
-    var socket = io.connect(urlsocket, { 'forceNew': true })
-
 
     socket.on('GetComandas', function(data) {
       $rootScope.$apply(function () {
@@ -3522,7 +3523,6 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', '$rootScope', '
         {
             $scope.preparar($scope.cook_products[i])
         }
-
     }
 
     $scope.FinalizarAll = function ()

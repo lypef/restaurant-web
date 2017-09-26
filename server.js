@@ -2204,8 +2204,8 @@ function add_sale_product (product, admin, ticket)
     })
 }
 
-function SearchIngredients (req, res) 
-{  
+function SearchIngredients (req, res)
+{
     if (req.body.txt == null || req.body.txt == undefined)
     {
         db.ingredients.find({admin: req.session.user.admin._id}).sort({name:1}).populate('measurements').exec(function(err, data) {
@@ -2224,7 +2224,7 @@ function SearchIngredients (req, res)
         {
             res.json(data)
         }
-    })    
+    })
     }
 
 }
@@ -2245,7 +2245,7 @@ function RemoveIngredientsProduct (product, session)
                 }
             }
         });
-        
+
     }
 }
 
