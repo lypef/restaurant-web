@@ -1,7 +1,7 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
 var token = "eyJhbGciOiJIUzI1NiJ9.cGF5bG9hZA.f_0OBq6Yxx-jymUjCMcifD5ji1adKKYWUmwZF94VvTA";
-
+var urlsocket = "http://localhost:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -74,7 +74,9 @@ app.config(function($routeProvider){
 })
 
 app.factory('socket', ['$rootScope', function($rootScope) {
-  var socket = io.connect('http://192.168.1.78:8080', { 'forceNew': true })
+
+  var socket = io.connect(urlsocket, { 'forceNew': true })
+
   return {
     on: function (eventName, callback) {
         socket.on(eventName, function () {
@@ -3446,32 +3448,36 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', '$rootScope', '
     $scope.tmp = {}
     $scope.users_activos = []
     $scope.platillos = []
-    
+
     $scope.$emit('load')
     socket.on('disconnect', function ()
     {
         pushMessage('warning','', 'Sistema Desconectado', "cross")
     });
 
+    var socket = io.connect(urlsocket, { 'forceNew': true })
+
 
     socket.on('GetComandas', function(data) {
-        var existente = $scope.cook_products.length
-        $scope.cook_products = []
-        
-        for (var i = 0; i < data.length; i++)
-        {
-            if (data[i].admin._id == $rootScope.admin)
-            {
-                $scope.cook_products.push(data[i])
-            }
-        }
-        if ($scope.cook_products.length > existente)
-        {
-            pushMessage('info','', 'Nuevas ordenes', "checkmark")
-        }
+      $rootScope.$apply(function () {
+          var existente = $scope.cook_products.length
+          $scope.cook_products = []
 
-        $scope.$emit('unload')
-        loadvaluestatus()
+          for (var i = 0; i < data.length; i++)
+          {
+              if (data[i].admin._id == $rootScope.admin)
+              {
+                  $scope.cook_products.push(data[i])
+              }
+          }
+          if ($scope.cook_products.length > existente)
+          {
+              pushMessage('info','', 'Nuevas ordenes', "checkmark")
+          }
+
+          $scope.$emit('unload')
+          loadvaluestatus()
+      });
     });
 
     $scope.ActionAll = function ()
@@ -3550,9 +3556,9 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', '$rootScope', '
                 item.check = false
                 pushMessage('success','', msg + ' ' + item.product.name, "checkmark")
                 loadvaluestatus()
-            }) 
+            })
             .error(function (msg){
-               pushMessage('alert','ERROR', msg, "checkmark") 
+               pushMessage('alert','ERROR', msg, "checkmark")
             })
             .finally (function (){
               $scope.$emit('unloadasc')
@@ -3573,9 +3579,9 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', '$rootScope', '
                 $scope.cook_products.splice($scope.cook_products.indexOf(item),1);
                 pushMessage('success','', msg + ' ' + item.product.name, "checkmark")
                 loadvaluestatus()
-            }) 
+            })
             .error(function (msg){
-               pushMessage('alert','ERROR', msg, "checkmark") 
+               pushMessage('alert','ERROR', msg, "checkmark")
             })
             .finally (function (){
               $scope.tmp.occupied = false
@@ -3656,7 +3662,7 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', '$rootScope', '
                 {
                     $scope.users_activos[i].user.comandas ++
                 }
-            }   
+            }
         }
     }
     $scope.ChangePageItems = function() {
