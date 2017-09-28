@@ -3,8 +3,9 @@ var jwt = require("jsonwebtoken");
 //token = eyJhbGciOiJIUzI1NiJ9.cGF5bG9hZA.f_0OBq6Yxx-jymUjCMcifD5ji1adKKYWUmwZF94VvTA
 module.exports = function(req,res,next)
 {
-  var token = req.body.token || req.query.token || req.headers['x-access-token'];
-
+  //var token = req.body.token || req.query.token || req.headers['x-access-token'];
+  var token = "eyJhbGciOiJIUzI1NiJ9.cGF5bG9hZA.f_0OBq6Yxx-jymUjCMcifD5ji1adKKYWUmwZF94VvTA"
+  
   if (token)
   {
     

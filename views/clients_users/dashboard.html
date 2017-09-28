@@ -111,12 +111,14 @@
                         <a href="#"><span class="mif-motorcycle mif-2x"></span> Domicilios</a>
                         </li>
                         <li>
-                        <a href="#"><span class="mif-keyboard mif-2x"></span> Comandas</a>
+                        <a href="dashboard#/my_comands"><span class="mif-keyboard mif-2x"></span> Comandas</a>
                         </li>
 
                     </ul>
             </li>
-            <li ng-show="usuario.preferencias.cocina"><a href="dashboard#/kitchen"><span class="mif-fire mif-2x"></span> Cocina</a></li>
+            <li ng-show="usuario.preferencias.barra"><a href="dashboard#/kitchen_barr"><span class="mif-lab mif-2x"></span> Barra</a></li>
+            <li>
+            <li ng-show="usuario.preferencias.cocina"><a href="dashboard#/kitchen_cocina"><span class="mif-fire mif-2x"></span> Cocina</a></li>
             <li>
             <li ng-show="usuario.preferencias.sales"><a href="dashboard#/sales/vtd"><span class="mif-shopping-basket2 mif-2x"></span> Venta directa</a></li>
             <li ng-show="usuario.preferencias.caja || usuario.preferencias.admin || usuario.preferencias.finance">

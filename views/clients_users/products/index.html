@@ -87,7 +87,12 @@
 
                     <br>
                     <label class="switch-original">
-                        <input type="checkbox" ng-model="product.cocina">
+                        <input type="checkbox" ng-model="product.barra" ng-change="setbarra()">
+                        Barra
+                        <span class="check"></span>
+                    </label>
+                    <label class="switch-original">
+                        <input type="checkbox" ng-model="product.cocina" ng-change="setcocina()">
                         Cocinar
                         <span class="check"></span>
                     </label>
@@ -203,7 +208,7 @@
                 <td ng-if="a.receta.name != null">{{ a.receta.name }} </td>
                 <td ng-if="a.receta.name == null">NINGUNA</td>
                 <td ng-if="a.receta.name == null">Stock: {{ a.stock }}</td>
-                <td ng-if="a.receta.name != null">Platillos: {{ calulate(a.receta._id) }}</td>
+                <td ng-if="a.receta.name != null">Preparar: {{ calulate(a.receta._id) }}</td>
                 <td>
                     <div class="dropdown-button" ng-if="a.receta.name != null">
                     <button class="button success dropdown-toggle">{{ a.receta.name }}</button>

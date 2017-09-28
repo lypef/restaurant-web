@@ -1,0 +1,172 @@
+<div ng-controller="procuts_kitchen_cocina">
+
+<!--Busqueda y numero mostrado -->
+    <div class="row flex-just-sa">
+            <div class="colspan6" style="width: 100%; border: 2px solid #fff;">
+            <span class="tag warning" style="width: 100%"><h4>
+                <center>PLATILLOS A PREPARAR</center>
+                <ul>
+                    <li ng-repeat="a in platillos">
+                    <img class="img-round50" ng-src="{{ a.product.img }}">
+                    ({{ a.product.total }}) {{ a.product.name }}</li>
+                </ul>
+            </h4></span>
+            </div>
+            <div class="colspan6" style="width: 100%; border: 2px solid #fff;">
+            <span class="tag success" style="width: 100%"><h4>
+                <center>TOTAL DE COMANDAS: {{ tmp.totalComanda }}<br>EN PREPARACION: {{ tmp.preparacion }}<br><br>
+                LISTA DE MESEROS ACTIVOS
+                </center>
+                <ul>
+                    <li ng-repeat = "a in users_activos">
+                    <img class="img-round50" ng-src="{{a.user.img}}"> {{a.user.nombre}} ( {{ a.user.comandas }} )
+                    </li><br>
+                </ul>
+            </h4></span>
+            </div>
+        </div>
+    <!--Finaliza Busqueda y numero mostrado -->
+<hr>
+<div align="center">
+    <button class="button rounded large-button primary" ng-click="SelectAny()" ng-disabled="tmp.occupied">Seleccionar ninguno</button>
+
+    <button class="button rounded large-button primary" ng-click="SelectAll()" ng-disabled="tmp.occupied">Seleccionar todos</button>
+
+    <button class="button rounded large-button primary" onclick="toggleMetroDialog('#PrepararAll')" ng-disabled="tmp.occupied">Preparar todos</button>
+
+    <button class="button rounded large-button primary" onclick="toggleMetroDialog('#FinalizarAll')" ng-disabled="tmp.occupied">Finalizar todos</button>
+
+    <button class="button warning rounded large-button primary" onclick="toggleMetroDialog('#ActionAll')" ng-disabled="tmp.occupied">Accion todos</button>
+</div>
+
+<div style="overflow-x:auto;">
+    <table class="table striped hovered bordered border">
+         <thead>
+            <tr>
+            <th>PRODUCTO</th>
+            <th>UNIDADES</th>
+            <th>ESTADO</th>
+            <th>DELIVERY</th>
+            <th>COMENTARIOS</th>
+            <th>SELECCIONAR</th>
+            <th>GESTION</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr ng-repeat="a in cook_products" ng-model="cook_products" >
+
+                <td>
+                <img class= "img-round100" ng-src="{{ a.product.img }}"> {{ a.product.name }}
+                </td>
+
+                <td align="center"><span class="tag success"><h2>{{ a.unidades }}</h2></span></td>
+                <td>{{ a.status }}</td>
+                <td ng-if="a.delivery"><span class="tag warning"><h3>P. llevar</h3></span></td>
+                <td ng-if="!a.delivery"><span class="tag info"><h3>Mesa</h3></span></td>
+                <td>{{ a.comentario }}</td>
+                <td align="center">
+                    <label class="input-control checkbox">
+                        <input type="checkbox" ng-model="a.check">
+                        <span class="check"></span>
+                        <span class="caption">Seleccionar</span>
+                    </label>
+                </td>
+                <td align="center">
+                	
+                    <div class="split-button" ng-show="!a.preparando">
+                        <button class="button success" ng-click="select(a)" onclick="toggleMetroDialog('#preparar')" ng-disabled="tmp.occupied">Preparar</button>
+                        <button class="split dropdown-toggle" ng-disabled="tmp.occupied"></button>
+                        <ul class="split-content d-menu place-right" data-role="dropdown">
+                            <li><a ng-click="edit(a)">Editar</a></li>
+                            <li><a ng-click="call(a)">Llamar mesero</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="split-button" ng-show="a.preparando">
+                        <button class="button alert" ng-click="select(a)" onclick="toggleMetroDialog('#finalizar')" ng-disabled="tmp.occupied">Finalizar</button>
+                        <button class="split dropdown-toggle " ng-disabled="tmp.occupied"></button>
+                        <ul class="split-content d-menu place-right" data-role="dropdown">
+                            <li><a ng-click="edit(a)">Editar</a></li>
+                            <li><a ng-click="call(a)">Llamar mesero</a></li>
+                        </ul>
+                    </div>
+
+                </td>
+              </tr>
+          </tbody>
+    </table>
+    </div>
+    <!--Ventana Iniciar preparacion-->
+    <div data-role="dialog" id="preparar" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round50" ng-src="{{ tmp.product.img }}"> # {{ tmp.unidades }} {{ tmp.product.name }}<br><h4>Iniciar preparacion de ?. {{ tmp.unidades }} UDS</h4></span></h3></p>
+       
+      <button class="button warning" ng-click="preparar(tmp)" onclick="hideMetroDialog('#preparar')"><span class="mif-checkmark" autofocus></span> SI</button>
+      <button class="button success" onclick="hideMetroDialog('#preparar')"><span class="mif-cross"></span> NO</button>
+    </div>
+    <!--Ventana Iniciar preparacion-->
+
+    <!--Ventana finalizar preparacion-->
+    <div data-role="dialog" id="finalizar" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round80" ng-src="{{ tmp.product.img }}"> # Finalizar {{ tmp.unidades }} {{ tmp.product.name }}</h3></p>
+       
+      <button class="button warning" ng-click="finalizar(tmp)" onclick="hideMetroDialog('#finalizar')"><span class="mif-checkmark"></span> SI</button>
+      <button class="button success" onclick="hideMetroDialog('#finalizar')"><span class="mif-cross"></span> NO</button>
+    </div>
+    <!--Ventana finalizar preparacion-->
+
+    <!--Ventana preparar todos-->
+    <div data-role="dialog" id="PrepararAll" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round80" ng-src="{{ usuario.img }}"> #Esto es lo que pasara:</h3></p>
+      <br>
+      <h4>
+          Todos las ordenes que estan sin preparar, pasaran a ser preparadas.
+      </h4>
+      <button class="button warning" ng-click="PrepararAll()" onclick="hideMetroDialog('#PrepararAll')"><span class="mif-checkmark"></span> SI</button>
+      <button class="button success" onclick="hideMetroDialog('#PrepararAll')"><span class="mif-cross"></span> NO</button>
+    </div>
+    <!--Ventana preparar todos-->
+
+    <!--Ventana finalizar todos-->
+    <div data-role="dialog" id="FinalizarAll" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round80" ng-src="{{ usuario.img }}"> #Esto es lo que pasara:</h3></p>
+      <br>
+      <h4>
+          Todos las ordenes que estan sin finalizar, pasaran a ser finalizadas.
+      </h4>
+       
+      <button class="button warning" ng-click="FinalizarAll()" onclick="hideMetroDialog('#FinalizarAll')"><span class="mif-checkmark"></span> SI</button>
+      <button class="button success" onclick="hideMetroDialog('#FinalizarAll')"><span class="mif-cross"></span> NO</button>
+    </div>
+    <!--Ventana finalizar todos-->
+
+    <!--Ventana action todos-->
+    <div data-role="dialog" id="ActionAll" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round80" ng-src="{{ usuario.img }}"> #Esto es lo que pasara a las ordenes seleccionadas:</h3></p>
+      <br>
+      <h4>
+          Todos las ordenes que estan sin preparar, pasaran a ser preparadas y las ordenes
+          <br>
+          que estan sin finalizar, pasaran a ser finalizadas.
+      </h4>
+       
+      <button class="button warning" ng-click="ActionAll()" onclick="hideMetroDialog('#ActionAll')"><span class="mif-checkmark"></span> SI</button>
+      <button class="button success" onclick="hideMetroDialog('#ActionAll')"><span class="mif-cross"></span> NO</button>
+    </div>
+    <!--Ventana action todos-->
+
+</div>

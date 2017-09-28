@@ -1,7 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var token = "eyJhbGciOiJIUzI1NiJ9.cGF5bG9hZA.f_0OBq6Yxx-jymUjCMcifD5ji1adKKYWUmwZF94VvTA";
-var urlsocket = "http://localhost:8080"
+var urlsocket = "http://192.168.1.69:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -65,8 +64,14 @@ app.config(function($routeProvider){
         .when('/admin_finance', {
             templateUrl : '/clients_users/caja/finance.html'
         })
-        .when('/kitchen', {
-            templateUrl : '/clients_users/kitchen/index.html'
+        .when('/kitchen_cocina', {
+            templateUrl : '/clients_users/preparar_products/kitchen_cocina.html'
+        })
+        .when('/kitchen_barr', {
+            templateUrl : '/clients_users/preparar_products/kitchen_barr.html'
+        })
+        .when('/my_comands', {
+            templateUrl : '/clients_users/preparar_products/my_comands.html'
         })
         .otherwise({
             redirectTo : '/'
@@ -100,7 +105,6 @@ app.factory('socket', ['$rootScope', function($rootScope) {
 }]);
 
 app.controller("UserValues", function($scope, $http, $timeout, $rootScope){
-    $http.defaults.headers.common['x-access-token']=token;
     $scope.usuario = {};
     $scope.addmoneyvar = {}
     $scope.removemoneyvar = {}
@@ -116,7 +120,7 @@ app.controller("UserValues", function($scope, $http, $timeout, $rootScope){
         $http.get('/api/users/values')
         .success(function(data) {
             $scope.usuario = data;
-            $rootScope.admin = data.admin._id
+            $rootScope.user = data
             $scope.usuario.passwordtmp = $scope.usuario.password
         })
         .error(function(data) {
@@ -256,7 +260,7 @@ app.controller("UserValues", function($scope, $http, $timeout, $rootScope){
 
 app.controller("users_administrator", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
 
-    $http.defaults.headers.common['x-access-token']=token;
+    
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -548,7 +552,7 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
 
 
 app.controller("clients", ['$scope','$http','$window', function ($scope, $http, $window) {
-    $http.defaults.headers.common['x-access-token']=token;
+    
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -730,7 +734,7 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
 })
 
 app.controller ("c_direcciones", function ($scope, $http, $routeParams){
-    $http.defaults.headers.common['x-access-token']=token;
+    
 
 
     $scope.direcciones = {};
@@ -860,7 +864,7 @@ app.controller("users", function($scope, $http)
 })
 
 app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
-    $http.defaults.headers.common['x-access-token']=token;
+    
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -998,7 +1002,7 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
 
 app.controller('products', ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
 
-    $http.defaults.headers.common['x-access-token']=token;
+    
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -1019,6 +1023,19 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
 
     $scope.product.img = '/images/no-imagen.jpg'
 
+    $scope.setbarra = function (){
+        if ($scope.product.barra)
+        {
+            $scope.product.cocina = false   
+        }
+    }
+
+    $scope.setcocina = function (){
+        if ($scope.product.cocina)
+        {
+            $scope.product.barra = false   
+        }
+    }
 
     function GenerarCodeBar()
     {
@@ -1218,7 +1235,7 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
 })
 
 app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
-        $http.defaults.headers.common['x-access-token']=token;
+        
 
         $scope.ingredient = {};
         $scope.ingredients = {};
@@ -1404,7 +1421,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
 })
 
 app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $http) {
-        $http.defaults.headers.common['x-access-token']=token;
+        
 
         $scope.ingredients = {};
         $scope.ingredients_hold = {};
@@ -1531,7 +1548,7 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
 })
 
 app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
-        $http.defaults.headers.common['x-access-token']=token;
+        
         $scope.currentPage = 0;
         $scope.pageSize = 5;
         $scope.pages = [];
@@ -1687,7 +1704,7 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
 })
 
 app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
-        $http.defaults.headers.common['x-access-token']=token;
+        
 
         $scope.currentPage = 0;
         $scope.pageSize = 5;
@@ -1834,7 +1851,7 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
 })
 
 app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', function ($scope, $routeParams, $http, $window) {
-        $http.defaults.headers.common['x-access-token']=token;
+        
 
 
         $scope.currentPage = 0;
@@ -2052,7 +2069,7 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
 
 app.controller("view_receta", function($scope, $http, $routeParams, $window)
 {
-    $http.defaults.headers.common['x-access-token']=token;
+    
 
     $scope.receta = {};
     $scope.ingredientes = {};
@@ -2096,14 +2113,28 @@ app.controller("view_receta", function($scope, $http, $routeParams, $window)
 })
 
 
-app.controller("update_products", function ($scope, $http, $timeout, $routeParams, $window) {
+app.controller('update_products', function ($scope, $http, $timeout, $routeParams, $window) {
 
-    $http.defaults.headers.common['x-access-token']=token;
+    
 
     $scope.product = {};
     $scope.recetas = {};
     $scope.categories = {}
     $scope.use_receta_create = false
+
+    $scope.setbarra = function (){
+        if ($scope.product.barra)
+        {
+            $scope.product.cocina = false   
+        }
+    }
+
+    $scope.setcocina = function (){
+        if ($scope.product.cocina)
+        {
+            $scope.product.barra = false   
+        }
+    }
 
     $scope.update = function()
     {
@@ -2226,7 +2257,7 @@ app.controller("update_products", function ($scope, $http, $timeout, $routeParam
 
 app.controller('surtir_recetea', function ($scope, $http, $routeParams){
 
-    $http.defaults.headers.common['x-access-token']=token;
+    
 
     $scope.receta = {}
     $scope.ingredients = {}
@@ -2298,7 +2329,7 @@ app.controller('surtir_recetea', function ($scope, $http, $routeParams){
 
 app.controller("products_shopping", ['$scope', '$http', function ($scope, $http) {
 
-    $http.defaults.headers.common['x-access-token']=token;
+    
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -2419,7 +2450,7 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
 
 app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $http, socket) {
 
-    $http.defaults.headers.common['x-access-token']=token;
+    
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -2763,7 +2794,7 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $htt
 
 app.controller("sales_user", ['$scope', '$http', function ($scope, $http) {
 
-    $http.defaults.headers.common['x-access-token']=token;
+    
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -2852,7 +2883,7 @@ app.controller("sales_user", ['$scope', '$http', function ($scope, $http) {
 
 app.controller("sales_admin", ['$scope', '$http', function ($scope, $http) {
 
-    $http.defaults.headers.common['x-access-token']=token;
+    
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -2980,7 +3011,7 @@ app.controller("sales_admin", ['$scope', '$http', function ($scope, $http) {
 
 app.controller("finance_administrator", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
 
-    $http.defaults.headers.common['x-access-token']=token;
+    
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -3293,8 +3324,7 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
 })
 
 app.controller("users_movements", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
-
-    $http.defaults.headers.common['x-access-token']=token;
+    
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -3420,8 +3450,6 @@ app.controller("users_movements", ['$scope', '$http','$timeout', function ($scop
     $scope.setPage = function(index) {
         $scope.currentPage = index - 1;
     };
-
-
 }
   ]).filter('startFromGrid', function() {
     return function(input, start)
@@ -3432,9 +3460,11 @@ app.controller("users_movements", ['$scope', '$http','$timeout', function ($scop
     }
 })
 
-app.controller("procuts_kitchen", ['$scope', '$http','$timeout', '$rootScope', 'socket', function ($scope, $http, $timeout, $rootScope, socket) {
-
-    $http.defaults.headers.common['x-access-token']=token;
+app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $rootScope, socket, $window) {
+    $scope.$emit('load')
+    $http.get('/api/socket/cocina')
+    .success (function (){
+    
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -3454,6 +3484,7 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', '$rootScope', '
 
     $scope.$emit('load')
 
+    
     socket.on('disconnect', function ()
     {
         pushMessage('warning','', 'Sistema Desconectado', "cross")
@@ -3466,14 +3497,14 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', '$rootScope', '
 
           for (var i = 0; i < data.length; i++)
           {
-              if (data[i].admin._id == $rootScope.admin)
+              if (data[i].admin._id == $rootScope.user.admin._id && data[i].cocina)
               {
                   $scope.cook_products.push(data[i])
               }
           }
           if ($scope.cook_products.length > existente)
           {
-              pushMessage('info','', 'Nuevas ordenes', "checkmark")
+              pushMessage('info','COCINA', 'Nuevas ordenes', "checkmark")
           }
 
           $scope.$emit('unload')
@@ -3665,56 +3696,305 @@ app.controller("procuts_kitchen", ['$scope', '$http','$timeout', '$rootScope', '
             }
         }
     }
-    $scope.ChangePageItems = function() {
-        if ($scope.pageSizetmp.items == 'todos')
-        {
-            $scope.pageSize = $scope.movements.length
-        }else {
-            $scope.pageSize = $scope.pageSizetmp.items
-        }
-        $scope.LoadPages()
-    };
 
-    $scope.LoadPages = function ()
+    })
+    .error (function(){
+        pushMessage('alert','ERROR', 'No autorizado', "cross")
+        $window.location = "dashboard#"
+    })
+})
+
+app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootScope, socket, $window) {
+    $scope.$emit('load')
+    $http.get('/api/socket/barra')
+    .success(function(){
+    
+
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
+    $scope.pageSizetmp = []
+
+    $scope.cook_products = []
+
+    $scope.msg = {}
+    $scope.msgnew = {}
+    $scope.tmp = {}
+    $scope.users_activos = []
+    $scope.platillos = []
+    
+    socket = io.connect()
+    socket = io.connect(urlsocket, { 'forceNew': true })
+
+    $scope.$emit('load')
+
+    socket.on('disconnect', function ()
     {
-        $scope.pages.length = 0;
-            var ini = $scope.currentPage - 4;
-            var fin = $scope.currentPage + 5;
-            if (ini < 1) {
-              ini = 1;
-              if (Math.ceil($scope.movements.length / $scope.pageSize) > 10)
-                fin = 10;
-              else
-                fin = Math.ceil($scope.movements.length / $scope.pageSize);
-            } else {
-              if (ini >= Math.ceil($scope.movements.length / $scope.pageSize) - 10) {
-                ini = Math.ceil($scope.movements.length / $scope.pageSize) - 10;
-                fin = Math.ceil($scope.movements.length / $scope.pageSize);
+        pushMessage('warning','', 'Sistema Desconectado', "cross")
+    });
+
+    socket.on('GetComandas', function(data) {
+      $rootScope.$apply(function () {
+          var existente = $scope.cook_products.length
+          $scope.cook_products = []
+
+          for (var i = 0; i < data.length; i++)
+          {
+              if (data[i].admin._id == $rootScope.user.admin._id && data[i].barra)
+              {
+                  $scope.cook_products.push(data[i])
               }
-            }
-            if (ini < 1) ini = 1;
-            for (var i = ini; i <= fin; i++) {
-              $scope.pages.push({
-                no: i
-              });
-            }
+          }
+          if ($scope.cook_products.length > existente)
+          {
+              pushMessage('info','BARRA', 'Nuevas ordenes', "checkmark")
+          }
 
-            if ($scope.currentPage >= $scope.pages.length)
-            $scope.currentPage = $scope.pages.length - 1;
-    }
+          $scope.$emit('unload')
+          loadvaluestatus()
+      });
+    });
 
-
-    $scope.setPage = function(index) {
-        $scope.currentPage = index - 1;
-    };
-
-
-}
-  ]).filter('startFromGrid', function() {
-    return function(input, start)
+    $scope.ActionAll = function ()
     {
-        if (!input || !input.length) { return; }
-        start = +start;
-        return input.slice(start);
+        for(var i = 0; i < $scope.cook_products.length; i++)
+        {
+            if ($scope.cook_products[i].check)
+            {
+                if ($scope.cook_products[i].preparando)
+                {
+                    $scope.finalizar($scope.cook_products[i])
+                }
+
+                if (!$scope.cook_products[i].preparando)
+                {
+                    $scope.preparar($scope.cook_products[i])
+                }
+
+            }
+        }
     }
+
+    $scope.SelectAll = function ()
+    {
+        for(var i = 0; i < $scope.cook_products.length; i++)
+        {
+            $scope.cook_products[i].check = true
+        }
+    }
+
+    $scope.SelectAny = function ()
+    {
+        for(var i = 0; i < $scope.cook_products.length; i++)
+        {
+            $scope.cook_products[i].check = false
+        }
+    }
+
+    $scope.PrepararAll = function ()
+    {
+        for(var i = 0; i < $scope.cook_products.length; i++)
+        {
+            $scope.preparar($scope.cook_products[i])
+        }
+    }
+
+    $scope.FinalizarAll = function ()
+    {
+        for(var i = 0; i < $scope.cook_products.length; i++)
+        {
+            $scope.finalizar($scope.cook_products[i])
+        }
+    }
+
+    $scope.select = function (item)
+    {
+        var TotalComandaTmp = $scope.tmp.totalComanda
+        var PreparacionTmp = $scope.tmp.preparacion
+        $scope.tmp = item
+        $scope.tmp.totalComanda = TotalComandaTmp
+        $scope.tmp.preparacion = PreparacionTmp
+    }
+
+    $scope.preparar = function (item)
+    {
+        $scope.tmp.occupied = true
+        $scope.$emit('loadasc')
+        $http.post('/api/kitchen/product_update_preparacion', item)
+        .success (function (msg){
+            $http.get('/api/kitchen/cook_products')
+            .success(function (data){
+                socket.emit('UpdateComanda', data);
+                item.status = 'En preparacion'
+                item.preparando = true
+                item.check = false
+                pushMessage('success','', msg + ' ' + item.product.name, "checkmark")
+                loadvaluestatus()
+            })
+            .error(function (msg){
+               pushMessage('alert','ERROR', msg, "checkmark")
+            })
+            .finally (function (){
+              $scope.$emit('unloadasc')
+              $scope.tmp.occupied = false
+            })
+        })
+    }
+
+    $scope.finalizar = function (item)
+    {
+        $scope.tmp.occupied = true
+        $scope.$emit('loadasc')
+        $http.post('/api/kitchen/product_update_finalizacion', item)
+        .success (function (msg){
+            $http.get('/api/kitchen/cook_products')
+            .success(function (data){
+                socket.emit('UpdateComanda', data);
+                $scope.cook_products.splice($scope.cook_products.indexOf(item),1);
+                pushMessage('success','', msg + ' ' + item.product.name, "checkmark")
+                loadvaluestatus()
+            })
+            .error(function (msg){
+               pushMessage('alert','ERROR', msg, "checkmark")
+            })
+            .finally (function (){
+              $scope.tmp.occupied = false
+              $scope.$emit('unloadasc')
+              if ($scope.cook_products.length == 0)
+              {
+                pushMessage('success','BIEN', 'Parece que todo esta preparado, servido o entregado.', "checkmark")
+              }
+            })
+        })
+    }
+
+
+    $scope.edit = function (item)
+    {
+        pushMessage('warning','Edit', item.product.name, "cross")
+    }
+
+    $scope.call = function (item)
+    {
+        pushMessage('warning','', 'Alerta enviada', "checkmark")
+    }
+
+    loadvaluestatus = function (){
+        $scope.tmp.totalComanda = 0
+        $scope.tmp.preparacion = 0
+        $scope.users_activos = []
+        $scope.platillos = []
+
+        for (var i = 0; i < $scope.cook_products.length; i++)
+        {
+            $scope.tmp.totalComanda ++
+            if ($scope.cook_products[i].preparando)
+            {
+                $scope.tmp.preparacion ++
+            }
+
+            var agregar = true
+
+            for (var ii = 0; ii < $scope.users_activos.length; ii++)
+            {
+                if ($scope.users_activos[ii].user._id == $scope.cook_products[i].user._id)
+                {
+                    agregar = false
+                }
+            }
+
+            if (agregar)
+            {
+                $scope.users_activos.push($scope.cook_products[i])
+            }
+
+            var agregar_platillos = true
+
+            for (var ii = 0; ii < $scope.platillos.length; ii++)
+            {
+                if ($scope.platillos[ii].product._id == $scope.cook_products[i].product._id)
+                {
+                    agregar_platillos = false
+                    $scope.platillos[ii].product.total += $scope.cook_products[i].unidades
+                }
+            }
+
+            if (agregar_platillos)
+            {
+                $scope.cook_products[i].product.total = $scope.cook_products[i].unidades
+                $scope.platillos.push($scope.cook_products[i])
+            }
+        }
+
+        for (var i = 0; i < $scope.users_activos.length; i++)
+        {
+            $scope.users_activos[i].user.comandas = 0
+
+            for (var b = 0; b < $scope.cook_products.length; b++)
+            {
+                if ($scope.cook_products[b].user._id == $scope.users_activos[i].user._id)
+                {
+                    $scope.users_activos[i].user.comandas ++
+                }
+            }
+        }
+    }
+    
+    }).error (function(){
+        pushMessage('alert','ERROR', 'No autorizado', "cross")
+        $window.location = "dashboard#"
+    })
+})
+
+app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, socket, $window){
+    
+    $scope.$emit('load')
+    $http.get('/api/socket/my_comands')
+    .success (function(){
+        $scope.cook_products = []
+        socket = io.connect()
+        socket = io.connect(urlsocket, { 'forceNew': true })
+
+        socket.on('disconnect', function ()
+        {
+            pushMessage('warning','', 'Sistema Desconectado', "cross")
+        });
+
+        socket.on('GetComandas', function(data) {
+          $rootScope.$apply(function () {
+              var existente = $scope.cook_products.length
+              $scope.cook_products = []
+
+              for (var i = 0; i < data.length; i++)
+              {
+                  if (data[i].user._id == $rootScope.user._id)
+                  {
+                      $scope.cook_products.push(data[i])
+                  }
+              }
+              if ($scope.cook_products.length > existente)
+              {
+                  pushMessage('info','Mys comandas', 'Comandas', "checkmark")
+              }
+              $scope.$emit('unload')
+          })
+        })
+    })  
+
+    $scope.SelectAll = function ()
+    {
+        for(var i = 0; i < $scope.cook_products.length; i++)
+        {
+            $scope.cook_products[i].check = true
+        }
+    }
+
+    $scope.SelectAny = function ()
+    {
+        for(var i = 0; i < $scope.cook_products.length; i++)
+        {
+            $scope.cook_products[i].check = false
+        }
+    }
+    
 })

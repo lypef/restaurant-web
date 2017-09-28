@@ -9,8 +9,6 @@
         <span class="title">Editar producto</span>
         </div>
         <div class="content">
-
-
         
             <div class="row flex-just-sa">
                 <div class="cell-auto-size">
@@ -85,7 +83,12 @@
 
                     <br>
                     <label class="switch-original">
-                        <input type="checkbox" ng-model="product.cocina">
+                        <input type="checkbox" ng-model="product.barra" ng-click="setbarra()">
+                        Barra
+                        <span class="check"></span>
+                    </label>
+                    <label class="switch-original">
+                        <input type="checkbox" ng-model="product.cocina" ng-click="setcocina()">
                         Cocinar
                         <span class="check"></span>
                     </label>

@@ -252,22 +252,72 @@ app.post('/api/sales/vtd/', addvtd)
 
 //Funciones
 
+app.get('/api/socket/cocina', function(req, res){
+    if (req.session.user.preferencias.cocina)
+    {
+        io.on('connection', function(socket) {
+      
+          db.kitchen.find({end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
+              socket.emit('GetComandas', doc);
+          });
 
+          socket.on('UpdateComanda', function (data) {
+            socket.broadcast.emit('GetComandas', data);
+          });
+
+          socket.on('disconnect', function (){
+            console.log('Desconectado');
+          })
+        });
+        res.sendStatus(200)
+    }else
+    {
+        res.sendStatus(500)
+    }
+})
+
+app.get('/api/socket/barra', function(req, res){
+    if (req.session.user.preferencias.barra)
+    {
+        io.on('connection', function(socket) {
+      
+          db.kitchen.find({end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
+              socket.emit('GetComandas', doc);
+          });
+
+          socket.on('UpdateComanda', function (data) {
+            socket.broadcast.emit('GetComandas', data);
+          });
+
+          socket.on('disconnect', function (){
+            console.log('Desconectado');
+          })
+        });
+        res.sendStatus(200)
+    }else
+    {
+        res.sendStatus(500)
+    }
+})
+
+app.get('/api/socket/my_comands', function(req, res){
+    io.on('connection', function(socket) {
+      
+    db.kitchen.find({end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
+          socket.emit('GetComandas', doc);
+      });
+
+      socket.on('UpdateComanda', function (data) {
+        socket.broadcast.emit('GetComandas', data);
+      });
+
+      socket.on('disconnect', function (){
+        console.log('Desconectado');
+      })
+    });
+    res.sendStatus(200)
+})
 //socket
-io.on('connection', function(socket) {
-
-  db.kitchen.find({end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
-      socket.emit('GetComandas', doc);
-  });
-
-  socket.on('UpdateComanda', function (data) {
-    socket.broadcast.emit('GetComandas', data);
-  });
-
-  socket.on('disconnect', function (){
-    console.log('Desconectado');
-  })
-});
 
 function getComandas ()
 {
@@ -520,6 +570,7 @@ function AddProduct (req,res){
             stock: req.body.stock,
             price: req.body.price,
             cocina: req.body.cocina,
+            barra: req.body.barra,
             img: req.body.img,
             category: req.body.category,
             receta: req.body.receta,
@@ -949,6 +1000,7 @@ function UpdateUser_preferencias (req, res)
             products: req.body.preferencias.products,
             clientes: req.body.preferencias.clientes,
             cocina: req.body.preferencias.cocina,
+            barra: req.body.preferencias.barra,
             sales: req.body.preferencias.sales,
             caja: req.body.preferencias.caja,
             finance: req.body.preferencias.finance
@@ -1007,7 +1059,8 @@ function UpdateProduct (req, res)
             category: req.body.category,
             receta: req.body.receta,
             price: req.body.price,
-            cocina: req.body.cocina
+            cocina: req.body.cocina,
+            barra: req.body.barra
         },
         function( err)
         {
@@ -1543,6 +1596,7 @@ function getProductID (req, res)
         if (doc != null)
         {
             res.json(doc)
+            console.log(doc)
         }else
         {
             res.status(404).send('Producto no encontrado');
@@ -2163,7 +2217,7 @@ function addvtd (req, res ){
                         add_sale_product(req.body[i]._id, req.session.user.admin._id, ticket._id)
                     }
                 }
-                if (req.body[i].cocina){
+                if (req.body[i].cocina || req.body[i].barra){
                     if (req.body[i].comentario)
                     {
                         req.body[i].comentario = req.body[i].comentario.toUpperCase()
@@ -2272,6 +2326,8 @@ function add_comanda_cocina(item, session){
         user: session._id,
         product: item._id,
         unidades: item.unidades,
+        cocina: item.cocina,
+        barra: item.barra,
         comentario: item.comentario,
         delivery: item.delivery,
         status: 'En cola'
