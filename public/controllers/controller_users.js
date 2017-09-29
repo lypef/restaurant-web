@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "http://192.168.1.65:8080"
+var urlsocket = "http://localhost:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -260,7 +260,7 @@ app.controller("UserValues", function($scope, $http, $timeout, $rootScope){
 
 app.controller("users_administrator", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
 
-    
+
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -552,7 +552,7 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
 
 
 app.controller("clients", ['$scope','$http','$window', function ($scope, $http, $window) {
-    
+
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -734,7 +734,7 @@ app.controller("clients", ['$scope','$http','$window', function ($scope, $http, 
 })
 
 app.controller ("c_direcciones", function ($scope, $http, $routeParams){
-    
+
 
 
     $scope.direcciones = {};
@@ -864,7 +864,7 @@ app.controller("users", function($scope, $http)
 })
 
 app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
-    
+
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -1002,7 +1002,7 @@ app.controller("catproducts", ['$scope', '$http', function ($scope, $http) {
 
 app.controller('products', ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
 
-    
+
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -1026,14 +1026,14 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
     $scope.setbarra = function (){
         if ($scope.product.barra)
         {
-            $scope.product.cocina = false   
+            $scope.product.cocina = false
         }
     }
 
     $scope.setcocina = function (){
         if ($scope.product.cocina)
         {
-            $scope.product.barra = false   
+            $scope.product.barra = false
         }
     }
 
@@ -1235,7 +1235,7 @@ app.controller('products', ['$scope', '$http','$timeout', function ($scope, $htt
 })
 
 app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
-        
+
 
         $scope.ingredient = {};
         $scope.ingredients = {};
@@ -1421,7 +1421,7 @@ app.controller("ingredients", ['$scope', '$http', function ($scope, $http) {
 })
 
 app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $http) {
-        
+
 
         $scope.ingredients = {};
         $scope.ingredients_hold = {};
@@ -1548,7 +1548,7 @@ app.controller("ingredientes_shopping", ['$scope', '$http', function ($scope, $h
 })
 
 app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
-        
+
         $scope.currentPage = 0;
         $scope.pageSize = 5;
         $scope.pages = [];
@@ -1704,7 +1704,7 @@ app.controller("add_recetas", ['$scope', '$http', function ($scope, $http) {
 })
 
 app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
-        
+
 
         $scope.currentPage = 0;
         $scope.pageSize = 5;
@@ -1851,7 +1851,7 @@ app.controller("recetas", ['$scope', '$http', function ($scope, $http) {
 })
 
 app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', function ($scope, $routeParams, $http, $window) {
-        
+
 
 
         $scope.currentPage = 0;
@@ -2069,7 +2069,7 @@ app.controller("update_recetas", ['$scope', '$routeParams','$http','$window', fu
 
 app.controller("view_receta", function($scope, $http, $routeParams, $window)
 {
-    
+
 
     $scope.receta = {};
     $scope.ingredientes = {};
@@ -2115,7 +2115,7 @@ app.controller("view_receta", function($scope, $http, $routeParams, $window)
 
 app.controller('update_products', function ($scope, $http, $timeout, $routeParams, $window) {
 
-    
+
 
     $scope.product = {};
     $scope.recetas = {};
@@ -2125,14 +2125,14 @@ app.controller('update_products', function ($scope, $http, $timeout, $routeParam
     $scope.setbarra = function (){
         if ($scope.product.barra)
         {
-            $scope.product.cocina = false   
+            $scope.product.cocina = false
         }
     }
 
     $scope.setcocina = function (){
         if ($scope.product.cocina)
         {
-            $scope.product.barra = false   
+            $scope.product.barra = false
         }
     }
 
@@ -2257,7 +2257,7 @@ app.controller('update_products', function ($scope, $http, $timeout, $routeParam
 
 app.controller('surtir_recetea', function ($scope, $http, $routeParams){
 
-    
+
 
     $scope.receta = {}
     $scope.ingredients = {}
@@ -2329,7 +2329,7 @@ app.controller('surtir_recetea', function ($scope, $http, $routeParams){
 
 app.controller("products_shopping", ['$scope', '$http', function ($scope, $http) {
 
-    
+
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -2450,7 +2450,7 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
 
 app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $http, socket) {
 
-    
+
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -2794,7 +2794,7 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $htt
 
 app.controller("sales_user", ['$scope', '$http', function ($scope, $http) {
 
-    
+
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -2883,7 +2883,7 @@ app.controller("sales_user", ['$scope', '$http', function ($scope, $http) {
 
 app.controller("sales_admin", ['$scope', '$http', function ($scope, $http) {
 
-    
+
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -3011,7 +3011,7 @@ app.controller("sales_admin", ['$scope', '$http', function ($scope, $http) {
 
 app.controller("finance_administrator", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
 
-    
+
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -3324,7 +3324,7 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
 })
 
 app.controller("users_movements", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
-    
+
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -3464,20 +3464,20 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
     $scope.$emit('load')
     $http.get('/api/socket/cocina')
     .success (function (){
-    
+
     $scope.cook_products = []
     $scope.msg = {}
     $scope.msgnew = {}
     $scope.tmp = {}
     $scope.users_activos = []
     $scope.platillos = []
-    
+
     socket = io.connect()
     socket = io.connect(urlsocket, { 'forceNew': true })
 
     $scope.$emit('load')
 
-    
+
     socket.on('disconnect', function ()
     {
         pushMessage('warning','', 'Sistema Desconectado', "cross")
@@ -3485,7 +3485,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
 
     socket.on('GetComandas', function(data) {
       $rootScope.$apply(function () {
-          
+
           var existente = $scope.cook_products.length
           $scope.cook_products = []
 
@@ -3799,7 +3799,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
     $scope.$emit('load')
     $http.get('/api/socket/barra')
     .success(function(){
-    
+
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -3813,7 +3813,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
     $scope.tmp = {}
     $scope.users_activos = []
     $scope.platillos = []
-    
+
     socket = io.connect()
     socket = io.connect(urlsocket, { 'forceNew': true })
 
@@ -4127,7 +4127,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
             }
         }
     }
-    
+
     }).error (function(){
         pushMessage('alert','ERROR', 'No autorizado', "cross")
         $window.location = "dashboard#"
@@ -4135,7 +4135,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
 })
 
 app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, socket, $window){
-    
+
     $scope.$emit('load')
     $http.get('/api/socket/my_comands')
     .success (function(){
@@ -4167,7 +4167,7 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
               $scope.$emit('unload')
           })
         })
-    })  
+    })
 
     $scope.SelectAll = function ()
     {
