@@ -4169,6 +4169,10 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
         })
     })
 
+    $scope.select = function (item){
+      $scope.tmp = item
+    }
+
     $scope.SelectAll = function ()
     {
         for(var i = 0; i < $scope.cook_products.length; i++)

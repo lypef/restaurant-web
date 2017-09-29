@@ -252,12 +252,13 @@ app.post('/api/sales/vtd/', addvtd)
 
 //Funciones
 
+//Sockets
 app.get('/api/socket/cocina', function(req, res){
     if (req.session.user.preferencias.cocina)
     {
         io.on('connection', function(socket) {
 
-          db.kitchen.find({cocina: true, end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
+          db.kitchen.find({admin: req.session.user.admin._id ,cocina: true, end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
               socket.emit('GetComandas', doc);
           });
 
@@ -379,7 +380,7 @@ app.get('/api/socket/barra', function(req, res){
     {
         io.on('connection', function(socket) {
 
-          db.kitchen.find({barra: true, end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
+          db.kitchen.find({admin: req.session.user.admin._id, barra: true, end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
               socket.emit('GetComandas', doc);
           });
 

@@ -17,6 +17,7 @@
             <th>DELIVERY</th>
             <th>COMENTARIOS</th>
             <th>SELECCIONAR</th>
+            <th>OPCIONES</th>
             </tr>
           </thead>
           <tbody>
@@ -26,17 +27,7 @@
                 <img class= "img-round100" ng-src="{{ a.product.img }}"> ({{ a.unidades }}) {{ a.product.name }}
                 </td>
 
-                <td align="center">
-                
-                <span class="tag alert" ng-show="!a.preparando">
-                <h2>{{ a.status }}</h2>
-                </span>
-
-                <span class="tag success" ng-show="a.preparando">
-                <h2>{{ a.status }}</h2>
-                </span>
-                
-                </td>
+                <td align="center">{{ a.status }}</td>
 
                 <td ng-if="a.delivery"><span class="tag warning"><h3>P. llevar</h3></span></td>
                 <td ng-if="!a.delivery"><span class="tag info"><h3>Mesa</h3></span></td>
@@ -48,81 +39,31 @@
                         <span class="caption">Seleccionar</span>
                     </label>
                 </td>
+                <td>
+                  <div class="split-button" ng-show="!a.preparando">
+                      <button class="button warning" ng-click="select(a)" onclick="toggleMetroDialog('#cancelar')" ng-disabled="tmp.occupied">Cancelar</button>
+                      <button class="split dropdown-toggle" ng-disabled="tmp.occupied"></button>
+                      <ul class="split-content d-menu place-right" data-role="dropdown">
+                          <li><a ng-click="call(a)">Comentarios</a></li>
+                      </ul>
+                  </div>
+                </td>
               </tr>
           </tbody>
     </table>
     </div>
     <!--Ventana Iniciar preparacion-->
-    <div data-role="dialog" id="preparar" class="padding30" data-type="" 
+    <div data-role="dialog" id="cancelar" class="padding30" data-type=""
       data-close-button="true"
       data-width="auto"
       data-overlay="true">
-      <p><h3><img class="img-round50" ng-src="{{ tmp.product.img }}"> # {{ tmp.unidades }} {{ tmp.product.name }}<br><h4>Iniciar preparacion de ?. {{ tmp.unidades }} UDS</h4></span></h3></p>
-       
+      <p><h3><img class="img-round50" ng-src="{{ tmp.product.img }}"> # Cancelar 1 de {{ tmp.unidades }} {{ tmp.product.name }}<br>
+        <h4>Ensta seguro de cancelar 1 unidade de {{ tmp.unidades }} de {{ tmp.product.name }}<br>
+        una vez confirmada la accion, no hay vuelta atraz.</h4></span></h3></p>
+
       <button class="button warning" ng-click="preparar(tmp)" onclick="hideMetroDialog('#preparar')"><span class="mif-checkmark" autofocus></span> SI</button>
-      <button class="button success" onclick="hideMetroDialog('#preparar')"><span class="mif-cross"></span> NO</button>
+      <button class="button success" onclick="hideMetroDialog('#cancelar')"><span class="mif-cross"></span> NO</button>
     </div>
     <!--Ventana Iniciar preparacion-->
-
-    <!--Ventana finalizar preparacion-->
-    <div data-role="dialog" id="finalizar" class="padding30" data-type="" 
-      data-close-button="true"
-      data-width="auto"
-      data-overlay="true">
-      <p><h3><img class="img-round80" ng-src="{{ tmp.product.img }}"> # Finalizar {{ tmp.unidades }} {{ tmp.product.name }}</h3></p>
-       
-      <button class="button warning" ng-click="finalizar(tmp)" onclick="hideMetroDialog('#finalizar')"><span class="mif-checkmark"></span> SI</button>
-      <button class="button success" onclick="hideMetroDialog('#finalizar')"><span class="mif-cross"></span> NO</button>
-    </div>
-    <!--Ventana finalizar preparacion-->
-
-    <!--Ventana preparar todos-->
-    <div data-role="dialog" id="PrepararAll" class="padding30" data-type="" 
-      data-close-button="true"
-      data-width="auto"
-      data-overlay="true">
-      <p><h3><img class="img-round80" ng-src="{{ usuario.img }}"> #Esto es lo que pasara:</h3></p>
-      <br>
-      <h4>
-          Todos las ordenes que estan sin preparar, pasaran a ser preparadas.
-      </h4>
-      <button class="button warning" ng-click="PrepararAll()" onclick="hideMetroDialog('#PrepararAll')"><span class="mif-checkmark"></span> SI</button>
-      <button class="button success" onclick="hideMetroDialog('#PrepararAll')"><span class="mif-cross"></span> NO</button>
-    </div>
-    <!--Ventana preparar todos-->
-
-    <!--Ventana finalizar todos-->
-    <div data-role="dialog" id="FinalizarAll" class="padding30" data-type="" 
-      data-close-button="true"
-      data-width="auto"
-      data-overlay="true">
-      <p><h3><img class="img-round80" ng-src="{{ usuario.img }}"> #Esto es lo que pasara:</h3></p>
-      <br>
-      <h4>
-          Todos las ordenes que estan sin finalizar, pasaran a ser finalizadas.
-      </h4>
-       
-      <button class="button warning" ng-click="FinalizarAll()" onclick="hideMetroDialog('#FinalizarAll')"><span class="mif-checkmark"></span> SI</button>
-      <button class="button success" onclick="hideMetroDialog('#FinalizarAll')"><span class="mif-cross"></span> NO</button>
-    </div>
-    <!--Ventana finalizar todos-->
-
-    <!--Ventana action todos-->
-    <div data-role="dialog" id="ActionAll" class="padding30" data-type="" 
-      data-close-button="true"
-      data-width="auto"
-      data-overlay="true">
-      <p><h3><img class="img-round80" ng-src="{{ usuario.img }}"> #Esto es lo que pasara a las ordenes seleccionadas:</h3></p>
-      <br>
-      <h4>
-          Todos las ordenes que estan sin preparar, pasaran a ser preparadas y las ordenes
-          <br>
-          que estan sin finalizar, pasaran a ser finalizadas.
-      </h4>
-       
-      <button class="button warning" ng-click="ActionAll()" onclick="hideMetroDialog('#ActionAll')"><span class="mif-checkmark"></span> SI</button>
-      <button class="button success" onclick="hideMetroDialog('#ActionAll')"><span class="mif-cross"></span> NO</button>
-    </div>
-    <!--Ventana action todos-->
 
 </div>
