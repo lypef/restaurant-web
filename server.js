@@ -276,6 +276,104 @@ app.get('/api/socket/cocina', function(req, res){
     }
 })
 
+app.post('/api/socket/preparar_all', function(req, res){
+    for (var i = 0; i < req.body.length; i++)
+        {
+            if (req.session.user.admin._id == req.body[i].admin._id)
+            {
+                db.kitchen.update(
+                { _id : req.body[i]._id},
+                {
+                    status: 'En preparacion',
+                    preparando: true
+                },
+                function( err)
+                {
+                    if (err)
+                    {
+                        console.log(err)
+                    }
+                })
+            }else
+            {
+                console.log('Producto no valido')
+            }
+        }
+        res.status(200).send('Productos en preparacion')
+})
+
+app.post('/api/socket/finalizar_all', function(req, res){
+    for (var i = 0; i < req.body.length; i++)
+        {
+            if (req.session.user.admin._id == req.body[i].admin._id)
+            {
+                db.kitchen.update(
+                { _id : req.body[i]._id},
+                {
+                    status: 'Terminado y listo',
+                    preparando: false,
+                    end: true
+                },
+                function( err)
+                {
+                    if (err)
+                    {
+                        console.log(err)
+                    }
+                })
+            }else
+            {
+                console.log('Producto no valido')
+            }
+        }
+        res.status(200).send('Productos finalizados correctamente')
+})
+
+app.post('/api/socket/action_all', function(req, res){
+    for (var i = 0; i < req.body.length; i++)
+        {
+            if (req.session.user.admin._id == req.body[i].admin._id)
+            {
+                if (req.body[i].preparando)
+                {
+                    db.kitchen.update(
+                    { _id : req.body[i]._id},
+                    {
+                        status: 'Terminado y listo',
+                        preparando: false,
+                        end: true
+                    },function( err)
+                    {
+                        if (err)
+                        {
+                            console.log(err)
+                        }
+                    })
+                }
+                else
+                {
+                    db.kitchen.update(
+                    { _id : req.body[i]._id},
+                    {
+                        status: 'En preparacion',
+                        preparando: true
+                    },function( err)
+                    {
+                        if (err)
+                        {
+                            console.log(err)
+                        }
+                    })
+                }
+                
+            }else
+            {
+                console.log('Producto no valido')
+            }
+        }
+        res.status(200).send('Productos finalizados correctamente')
+})
+
 app.get('/api/socket/barra', function(req, res){
     if (req.session.user.preferencias.barra)
     {
@@ -2236,8 +2334,8 @@ function addvtd (req, res ){
 
     if (r)
     {
-        res.status(200).send('Venta realizada')
         AddMovement(req.session.user,'venta realizada con exito. Folio: ' + ticket._id + ' $: ' + total, ticket._id)
+        res.status(200).send('Venta realizada')
     }else{res.status(500).send('Error desconocido')}
 
 }
