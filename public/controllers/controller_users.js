@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "http://192.168.1.65:8080"
+var urlsocket = "http://192.168.1.66:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -2469,17 +2469,14 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', '$rootScope', function
         $http.post('/api/sales/vtd/', $scope.comanda)
         .success(function(msg){
           $scope.clean()
-          $http.get('/api/sales/get_cook_products')
-          .success(function (data){
-              socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
-              pushMessage('success','', msg, "checkmark")
-          })
-          .finally (function (){
-              $scope.$emit('unload')
-          })
+          socket.emit('UpdateComanda'+$rootScope.user.admin._id, null);
+          pushMessage('success','', msg, "checkmark")
         })
         .error (function (msg){
             pushMessage('alert','', msg, "cross")
+            $scope.$emit('unload')
+        })
+        .finally (function (){
             $scope.$emit('unload')
         })
     }
@@ -3481,27 +3478,29 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         pushMessage('warning','', 'Sistema Desconectado', "cross")
     });
 
-    socket.on('GetComandas'+$rootScope.user.admin._id, function(data) {
-      $rootScope.$apply(function () {
+    socket.on('GetComandas'+$rootScope.user.admin._id, function(data0) {
+        $rootScope.$apply(function () {
+        $http.get('/api/kitchen/cook_products')
+        .success (function (data){
+            var existente = $scope.cook_products.length
+            $scope.cook_products = []
 
-          var existente = $scope.cook_products.length
-          $scope.cook_products = []
+            for (var i = 0; i < data.length; i++)
+            {
+                if (data[i].admin._id == $rootScope.user.admin._id && data[i].cocina)
+                {
+                    $scope.cook_products.push(data[i])
+                }
+            }
+            if ($scope.cook_products.length > existente)
+            {
+                pushMessage('info','COCINA', 'Nuevas ordenes', "checkmark")
+            }
 
-          for (var i = 0; i < data.length; i++)
-          {
-              if (data[i].admin._id == $rootScope.user.admin._id && data[i].cocina)
-              {
-                  $scope.cook_products.push(data[i])
-              }
-          }
-          if ($scope.cook_products.length > existente)
-          {
-              pushMessage('info','COCINA', 'Nuevas ordenes', "checkmark")
-          }
-
-          $scope.$emit('unload')
-          loadvaluestatus()
-      });
+            $scope.$emit('unload')
+            loadvaluestatus()
+        });  
+        })
     });
 
     $scope.ActionAll = function ()
