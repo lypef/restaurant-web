@@ -259,11 +259,11 @@ app.get('/api/socket/cocina', function(req, res){
         io.on('connection', function(socket) {
 
           db.kitchen.find({admin: req.session.user.admin._id ,cocina: true, end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
-              socket.emit('GetComandas', doc);
+              socket.emit('GetComandas'+req.session.user.admin._id, doc);
           });
 
           socket.on('UpdateComanda', function (data) {
-            socket.broadcast.emit('GetComandas', data);
+            socket.broadcast.emit('GetComandas'+req.session.user.admin._id, data);
           });
 
           socket.on('disconnect', function (){

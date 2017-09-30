@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "http://localhost:8080"
+var urlsocket = "http://192.168.1.65:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -3483,7 +3483,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         pushMessage('warning','', 'Sistema Desconectado', "cross")
     });
 
-    socket.on('GetComandas', function(data) {
+    socket.on('GetComandas'+$rootScope.user.admin._id, function(data) {
       $rootScope.$apply(function () {
 
           var existente = $scope.cook_products.length
@@ -3824,7 +3824,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
         pushMessage('warning','', 'Sistema Desconectado', "cross")
     });
 
-    socket.on('GetComandas', function(data) {
+    socket.on('GetComandas'+$rootScope.user.admin._id, function(data) {
       $rootScope.$apply(function () {
           var existente = $scope.cook_products.length
           $scope.cook_products = []
@@ -4148,7 +4148,7 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
             pushMessage('warning','', 'Sistema Desconectado', "cross")
         });
 
-        socket.on('GetComandas', function(data) {
+        socket.on('GetComandas'+$rootScope.user.admin._id, function(data) {
           $rootScope.$apply(function () {
               var existente = $scope.cook_products.length
               $scope.cook_products = []
