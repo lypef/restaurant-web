@@ -805,7 +805,7 @@ function User_adminValuesjson (req,res){
 };
 
 function GetCookProducts (req,res){
-    db.kitchen.find({end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
+    db.kitchen.find({admin: req.session.user.admin._id, end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
       if (!err)
         {
             res.json(doc)
