@@ -146,7 +146,8 @@ app.post('/api/account/cut_z', cut_z_admin)
 
 //Api kitchen
 app.use('/api/kitchen', function(req,res,next){
-    if (req.session.user.preferencias.cocina)
+    if (req.session.user.preferencias.cocina || req.session.user.preferencias.barra || req.session.user.preferencias.sales)
+    if (true)
     {
         next()
     }else
@@ -256,14 +257,13 @@ app.post('/api/sales/vtd/', addvtd)
 app.get('/api/socket/cocina', function(req, res){
     if (req.session.user.preferencias.cocina)
     {
+        
         io.on('connection', function(socket) {
 
-          db.kitchen.find({admin: req.session.user.admin._id ,cocina: true, end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
-              socket.emit('GetComandas'+req.session.user.admin._id, doc);
-          });
+          socket.emit('GetComandas'+req.session.user.admin._id);
 
           socket.on('UpdateComanda'+req.session.user.admin._id, function (data) {
-            socket.broadcast.emit('GetComandas'+req.session.user.admin._id, data);
+            socket.broadcast.emit('GetComandas'+req.session.user.admin._id);
           });
 
           socket.on('disconnect', function (){
@@ -402,17 +402,16 @@ app.get('/api/socket/barra', function(req, res){
 app.get('/api/socket/my_comands', function(req, res){
     io.on('connection', function(socket) {
 
-    db.kitchen.find({end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
-          socket.emit('GetComandas', doc);
-      });
+        socket.emit('GetComandas'+req.session.user.admin._id);
+        
+        socket.on('UpdateComanda'+req.session.user.admin._id, function () {
+        socket.broadcast.emit('GetComandas'+req.session.user.admin._id);
+        });
 
-      socket.on('UpdateComanda', function (data) {
-        socket.broadcast.emit('GetComandas', data);
-      });
-
-      socket.on('disconnect', function (){
+        socket.on('disconnect', function (){
         console.log('Desconectado');
-      })
+        })
+
     });
     res.sendStatus(200)
 })
