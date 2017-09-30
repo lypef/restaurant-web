@@ -262,7 +262,7 @@ app.get('/api/socket/cocina', function(req, res){
               socket.emit('GetComandas'+req.session.user.admin._id, doc);
           });
 
-          socket.on('UpdateComanda', function (data) {
+          socket.on('UpdateComanda'+req.session.user.admin._id, function (data) {
             socket.broadcast.emit('GetComandas'+req.session.user.admin._id, data);
           });
 
@@ -381,11 +381,11 @@ app.get('/api/socket/barra', function(req, res){
         io.on('connection', function(socket) {
 
           db.kitchen.find({admin: req.session.user.admin._id, barra: true, end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
-              socket.emit('GetComandas', doc);
+              socket.emit('GetComandas'+req.session.user.admin._id, doc);
           });
 
-          socket.on('UpdateComanda', function (data) {
-            socket.broadcast.emit('GetComandas', data);
+          socket.on('UpdateComanda'+req.session.user.admin._id, function (data) {
+            socket.broadcast.emit('GetComandas'+req.session.user.admin._id, data);
           });
 
           socket.on('disconnect', function (){

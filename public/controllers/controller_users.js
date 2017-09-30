@@ -2448,7 +2448,7 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
     }
 })
 
-app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $http, socket) {
+app.controller("sales_vtd", ['$scope', '$http', 'socket', '$rootScope', function ($scope, $http, socket, $rootScope) {
 
 
 
@@ -2471,7 +2471,7 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', function ($scope, $htt
           $scope.clean()
           $http.get('/api/sales/get_cook_products')
           .success(function (data){
-              socket.emit('UpdateComanda', data);
+              socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
               pushMessage('success','', msg, "checkmark")
           })
           .finally (function (){
@@ -3324,8 +3324,6 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
 })
 
 app.controller("users_movements", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
-
-
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -3524,7 +3522,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         .success(function(msg){
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
-                socket.emit('UpdateComanda', data);
+                socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 for (var i = 0; i < tmp.length; i++)
                 {
                     for (var b = 0; b < $scope.cook_products.length; b++)
@@ -3591,7 +3589,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         .success(function(msg){
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
-                socket.emit('UpdateComanda', data);
+                socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 for (var i = 0; i < tmp.length; i++)
                 {
                     for (var b = 0; b < $scope.cook_products.length; b++)
@@ -3634,7 +3632,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         .success(function(msg){
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
-                socket.emit('UpdateComanda', data);
+                socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 for (var i = 0; i < tmp.length; i++)
                 {
                     $scope.cook_products.splice($scope.cook_products.indexOf(tmp[i]),1);
@@ -3672,7 +3670,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         .success (function (msg){
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
-                socket.emit('UpdateComanda', data);
+                socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 item.status = 'En preparacion'
                 item.preparando = true
                 item.check = false
@@ -3697,7 +3695,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         .success (function (msg){
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
-                socket.emit('UpdateComanda', data);
+                socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 $scope.cook_products.splice($scope.cook_products.indexOf(item),1);
                 pushMessage('success','', msg + ' ' + item.product.name, "checkmark")
                 loadvaluestatus()
@@ -3864,7 +3862,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
         .success(function(msg){
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
-                socket.emit('UpdateComanda', data);
+                socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 for (var i = 0; i < tmp.length; i++)
                 {
                     for (var b = 0; b < $scope.cook_products.length; b++)
@@ -3931,7 +3929,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
         .success(function(msg){
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
-                socket.emit('UpdateComanda', data);
+                socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 for (var i = 0; i < tmp.length; i++)
                 {
                     for (var b = 0; b < $scope.cook_products.length; b++)
@@ -3974,7 +3972,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
         .success(function(msg){
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
-                socket.emit('UpdateComanda', data);
+                socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 for (var i = 0; i < tmp.length; i++)
                 {
                     $scope.cook_products.splice($scope.cook_products.indexOf(tmp[i]),1);
@@ -4012,7 +4010,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
         .success (function (msg){
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
-                socket.emit('UpdateComanda', data);
+                socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 item.status = 'En preparacion'
                 item.preparando = true
                 item.check = false
@@ -4037,7 +4035,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
         .success (function (msg){
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
-                socket.emit('UpdateComanda', data);
+                socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 $scope.cook_products.splice($scope.cook_products.indexOf(item),1);
                 pushMessage('success','', msg + ' ' + item.product.name, "checkmark")
                 loadvaluestatus()
