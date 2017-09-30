@@ -2469,7 +2469,7 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', '$rootScope', function
         $http.post('/api/sales/vtd/', $scope.comanda)
         .success(function(msg){
           $scope.clean()
-          $http.get('/api/sales/get_cook_products_mycomands')
+          $http.get('/api/sales/get_cook_products')
           .success(function (data){
               socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
               pushMessage('success','', msg, "checkmark")
@@ -3463,7 +3463,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
     $http.get('/api/socket/cocina')
     .success (function (){
 
-    $scope.cook_products_mycomands_cocina = []
+    $scope.cook_products_cocina = []
     $scope.msg = {}
     $scope.msgnew = {}
     $scope.tmp = {}
@@ -3484,17 +3484,17 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
     socket.on('GetComandas'+$rootScope.user.admin._id, function(data) {
       $rootScope.$apply(function () {
 
-          var existente = $scope.cook_products_mycomands_cocina.length
-          $scope.cook_products_mycomands_cocina = []
+          var existente = $scope.cook_products_cocina.length
+          $scope.cook_products_cocina = []
 
           for (var i = 0; i < data.length; i++)
           {
               if (data[i].admin._id == $rootScope.user.admin._id && data[i].cocina)
               {
-                  $scope.cook_products_mycomands_cocina.push(data[i])
+                  $scope.cook_products_cocina.push(data[i])
               }
           }
-          if ($scope.cook_products_mycomands_cocina.length > existente)
+          if ($scope.cook_products_cocina.length > existente)
           {
               pushMessage('info','COCINA', 'Nuevas ordenes', "checkmark")
           }
@@ -3510,33 +3510,33 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         $scope.$emit('loadasc')
         var tmp = []
 
-        for (var i = 0; i < $scope.cook_products_mycomands_cocina.length; i++)
+        for (var i = 0; i < $scope.cook_products_cocina.length; i++)
         {
-            if ($scope.cook_products_mycomands_cocina[i].check)
+            if ($scope.cook_products_cocina[i].check)
             {
-                tmp.push($scope.cook_products_mycomands_cocina[i])
+                tmp.push($scope.cook_products_cocina[i])
             }
         }
 
         $http.post('/api/socket/action_all', tmp)
         .success(function(msg){
-            $http.get('/api/kitchen/cook_products_mycomands')
+            $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 for (var i = 0; i < tmp.length; i++)
                 {
-                    for (var b = 0; b < $scope.cook_products_mycomands_cocina.length; b++)
+                    for (var b = 0; b < $scope.cook_products_cocina.length; b++)
                     {
-                        if ($scope.cook_products_mycomands_cocina[b]._id == tmp[i]._id)
+                        if ($scope.cook_products_cocina[b]._id == tmp[i]._id)
                         {
-                            if ($scope.cook_products_mycomands_cocina[b].preparando)
+                            if ($scope.cook_products_cocina[b].preparando)
                             {
-                                $scope.cook_products_mycomands_cocina.splice($scope.cook_products_mycomands_cocina.indexOf(tmp[i]),1);
+                                $scope.cook_products_cocina.splice($scope.cook_products_cocina.indexOf(tmp[i]),1);
                             }else
                             {
-                                $scope.cook_products_mycomands_cocina[b].preparando = true
-                                $scope.cook_products_mycomands_cocina[b].status = 'En preparacion'
-                                $scope.cook_products_mycomands_cocina[b].check = false
+                                $scope.cook_products_cocina[b].preparando = true
+                                $scope.cook_products_cocina[b].status = 'En preparacion'
+                                $scope.cook_products_cocina[b].check = false
                             }
 
                         }
@@ -3560,17 +3560,17 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
 
     $scope.SelectAll = function ()
     {
-        for(var i = 0; i < $scope.cook_products_mycomands_cocina.length; i++)
+        for(var i = 0; i < $scope.cook_products_cocina.length; i++)
         {
-            $scope.cook_products_mycomands_cocina[i].check = true
+            $scope.cook_products_cocina[i].check = true
         }
     }
 
     $scope.SelectAny = function ()
     {
-        for(var i = 0; i < $scope.cook_products_mycomands_cocina.length; i++)
+        for(var i = 0; i < $scope.cook_products_cocina.length; i++)
         {
-            $scope.cook_products_mycomands_cocina[i].check = false
+            $scope.cook_products_cocina[i].check = false
         }
     }
 
@@ -3580,24 +3580,24 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         $scope.$emit('loadasc')
         var tmp = []
 
-        for (var i = 0; i < $scope.cook_products_mycomands_cocina.length; i++)
+        for (var i = 0; i < $scope.cook_products_cocina.length; i++)
         {
-            tmp.push($scope.cook_products_mycomands_cocina[i])
+            tmp.push($scope.cook_products_cocina[i])
         }
 
         $http.post('/api/socket/preparar_all', tmp)
         .success(function(msg){
-            $http.get('/api/kitchen/cook_products_mycomands')
+            $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 for (var i = 0; i < tmp.length; i++)
                 {
-                    for (var b = 0; b < $scope.cook_products_mycomands_cocina.length; b++)
+                    for (var b = 0; b < $scope.cook_products_cocina.length; b++)
                     {
-                        if ($scope.cook_products_mycomands_cocina[b]._id == tmp[i]._id)
+                        if ($scope.cook_products_cocina[b]._id == tmp[i]._id)
                         {
-                            $scope.cook_products_mycomands_cocina[b].preparando = true
-                            $scope.cook_products_mycomands_cocina[b].status = 'En preparacion'
+                            $scope.cook_products_cocina[b].preparando = true
+                            $scope.cook_products_cocina[b].status = 'En preparacion'
                         }
                     }
                 }
@@ -3623,20 +3623,20 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         $scope.$emit('loadasc')
         var tmp = []
 
-        for (var i = 0; i < $scope.cook_products_mycomands_cocina.length; i++)
+        for (var i = 0; i < $scope.cook_products_cocina.length; i++)
         {
-            tmp.push($scope.cook_products_mycomands_cocina[i])
+            tmp.push($scope.cook_products_cocina[i])
         }
 
         $http.post('/api/socket/finalizar_all', tmp)
         .success(function(msg){
-            $http.get('/api/kitchen/cook_products_mycomands')
+            $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 for (var i = 0; i < tmp.length; i++)
                 {
-                    $scope.cook_products_mycomands_cocina.splice($scope.cook_products_mycomands_cocina.indexOf(tmp[i]),1);
-                }cook_products_mycomands_cocina
+                    $scope.cook_products_cocina.splice($scope.cook_products_cocina.indexOf(tmp[i]),1);
+                }cook_products_cocina
                 loadvaluestatus()
                 pushMessage('success','', msg, "checkmark")
             })
@@ -3668,7 +3668,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         $scope.$emit('loadasc')
         $http.post('/api/kitchen/product_update_preparacion', item)
         .success (function (msg){
-            $http.get('/api/kitchen/cook_products_mycomands')
+            $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 item.status = 'En preparacion'
@@ -3693,10 +3693,10 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         $scope.$emit('loadasc')
         $http.post('/api/kitchen/product_update_finalizacion', item)
         .success (function (msg){
-            $http.get('/api/kitchen/cook_products_mycomands')
+            $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
-                $scope.cook_products_mycomands_cocina.splice($scope.cook_products_mycomands_cocina.indexOf(item),1);
+                $scope.cook_products_cocina.splice($scope.cook_products_cocina.indexOf(item),1);
                 pushMessage('success','', msg + ' ' + item.product.name, "checkmark")
                 loadvaluestatus()
             })
@@ -3706,7 +3706,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
             .finally (function (){
               $scope.tmp.occupied = false
               $scope.$emit('unloadasc')
-              if ($scope.cook_products_mycomands_cocina.length == 0)
+              if ($scope.cook_products_cocina.length == 0)
               {
                 pushMessage('success','BIEN', 'Parece que todo esta preparado, servido o entregado.', "checkmark")
               }
@@ -3731,10 +3731,10 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         $scope.users_activos = []
         $scope.platillos = []
 
-        for (var i = 0; i < $scope.cook_products_mycomands_cocina.length; i++)
+        for (var i = 0; i < $scope.cook_products_cocina.length; i++)
         {
             $scope.tmp.totalComanda ++
-            if ($scope.cook_products_mycomands_cocina[i].preparando)
+            if ($scope.cook_products_cocina[i].preparando)
             {
                 $scope.tmp.preparacion ++
             }
@@ -3743,7 +3743,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
 
             for (var ii = 0; ii < $scope.users_activos.length; ii++)
             {
-                if ($scope.users_activos[ii].user._id == $scope.cook_products_mycomands_cocina[i].user._id)
+                if ($scope.users_activos[ii].user._id == $scope.cook_products_cocina[i].user._id)
                 {
                     agregar = false
                 }
@@ -3751,24 +3751,24 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
 
             if (agregar)
             {
-                $scope.users_activos.push($scope.cook_products_mycomands_cocina[i])
+                $scope.users_activos.push($scope.cook_products_cocina[i])
             }
 
             var agregar_platillos = true
 
             for (var ii = 0; ii < $scope.platillos.length; ii++)
             {
-                if ($scope.platillos[ii].product._id == $scope.cook_products_mycomands_cocina[i].product._id)
+                if ($scope.platillos[ii].product._id == $scope.cook_products_cocina[i].product._id)
                 {
                     agregar_platillos = false
-                    $scope.platillos[ii].product.total += $scope.cook_products_mycomands_cocina[i].unidades
+                    $scope.platillos[ii].product.total += $scope.cook_products_cocina[i].unidades
                 }
             }
 
             if (agregar_platillos)
             {
-                $scope.cook_products_mycomands_cocina[i].product.total = $scope.cook_products_mycomands_cocina[i].unidades
-                $scope.platillos.push($scope.cook_products_mycomands_cocina[i])
+                $scope.cook_products_cocina[i].product.total = $scope.cook_products_cocina[i].unidades
+                $scope.platillos.push($scope.cook_products_cocina[i])
             }
         }
 
@@ -3776,9 +3776,9 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         {
             $scope.users_activos[i].user.comandas = 0
 
-            for (var b = 0; b < $scope.cook_products_mycomands_cocina.length; b++)
+            for (var b = 0; b < $scope.cook_products_cocina.length; b++)
             {
-                if ($scope.cook_products_mycomands_cocina[b].user._id == $scope.users_activos[i].user._id)
+                if ($scope.cook_products_cocina[b].user._id == $scope.users_activos[i].user._id)
                 {
                     $scope.users_activos[i].user.comandas ++
                 }
@@ -3803,7 +3803,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
     $scope.pages = [];
     $scope.pageSizetmp = []
 
-    $scope.cook_products_mycomands_barr = []
+    $scope.cook_products_barr = []
 
     $scope.msg = {}
     $scope.msgnew = {}
@@ -3823,17 +3823,17 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
 
     socket.on('GetComandas'+$rootScope.user.admin._id, function(data) {
       $rootScope.$apply(function () {
-          var existente = $scope.cook_products_mycomands_barr.length
-          $scope.cook_products_mycomands_barr = []
+          var existente = $scope.cook_products_barr.length
+          $scope.cook_products_barr = []
 
           for (var i = 0; i < data.length; i++)
           {
               if (data[i].admin._id == $rootScope.user.admin._id && data[i].barra)
               {
-                  $scope.cook_products_mycomands_barr.push(data[i])
+                  $scope.cook_products_barr.push(data[i])
               }
           }
-          if ($scope.cook_products_mycomands_barr.length > existente)
+          if ($scope.cook_products_barr.length > existente)
           {
               pushMessage('info','BARRA', 'Nuevas ordenes', "checkmark")
           }
@@ -3849,33 +3849,33 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
         $scope.$emit('loadasc')
         var tmp = []
 
-        for (var i = 0; i < $scope.cook_products_mycomands_barr.length; i++)
+        for (var i = 0; i < $scope.cook_products_barr.length; i++)
         {
-            if ($scope.cook_products_mycomands_barr[i].check)
+            if ($scope.cook_products_barr[i].check)
             {
-                tmp.push($scope.cook_products_mycomands_barr[i])
+                tmp.push($scope.cook_products_barr[i])
             }
         }
 
         $http.post('/api/socket/action_all', tmp)
         .success(function(msg){
-            $http.get('/api/kitchen/cook_products_mycomands')
+            $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 for (var i = 0; i < tmp.length; i++)
                 {
-                    for (var b = 0; b < $scope.cook_products_mycomands_barr.length; b++)
+                    for (var b = 0; b < $scope.cook_products_barr.length; b++)
                     {
-                        if ($scope.cook_products_mycomands_barr[b]._id == tmp[i]._id)
+                        if ($scope.cook_products_barr[b]._id == tmp[i]._id)
                         {
-                            if ($scope.cook_products_mycomands_barr[b].preparando)
+                            if ($scope.cook_products_barr[b].preparando)
                             {
-                                $scope.cook_products_mycomands_barr.splice($scope.cook_products_mycomands_barr.indexOf(tmp[i]),1);
+                                $scope.cook_products_barr.splice($scope.cook_products_barr.indexOf(tmp[i]),1);
                             }else
                             {
-                                $scope.cook_products_mycomands_barr[b].preparando = true
-                                $scope.cook_products_mycomands_barr[b].status = 'En preparacion'
-                                $scope.cook_products_mycomands_barr[b].check = false
+                                $scope.cook_products_barr[b].preparando = true
+                                $scope.cook_products_barr[b].status = 'En preparacion'
+                                $scope.cook_products_barr[b].check = false
                             }
 
                         }
@@ -3899,17 +3899,17 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
 
     $scope.SelectAll = function ()
     {
-        for(var i = 0; i < $scope.cook_products_mycomands_barr.length; i++)
+        for(var i = 0; i < $scope.cook_products_barr.length; i++)
         {
-            $scope.cook_products_mycomands_barr[i].check = true
+            $scope.cook_products_barr[i].check = true
         }
     }
 
     $scope.SelectAny = function ()
     {
-        for(var i = 0; i < $scope.cook_products_mycomands_barr.length; i++)
+        for(var i = 0; i < $scope.cook_products_barr.length; i++)
         {
-            $scope.cook_products_mycomands_barr[i].check = false
+            $scope.cook_products_barr[i].check = false
         }
     }
 
@@ -3919,24 +3919,24 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
         $scope.$emit('loadasc')
         var tmp = []
 
-        for (var i = 0; i < $scope.cook_products_mycomands_barr.length; i++)
+        for (var i = 0; i < $scope.cook_products_barr.length; i++)
         {
-            tmp.push($scope.cook_products_mycomands_barr[i])
+            tmp.push($scope.cook_products_barr[i])
         }
 
         $http.post('/api/socket/preparar_all', tmp)
         .success(function(msg){
-            $http.get('/api/kitchen/cook_products_mycomands')
+            $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 for (var i = 0; i < tmp.length; i++)
                 {
-                    for (var b = 0; b < $scope.cook_products_mycomands_barr.length; b++)
+                    for (var b = 0; b < $scope.cook_products_barr.length; b++)
                     {
-                        if ($scope.cook_products_mycomands_barr[b]._id == tmp[i]._id)
+                        if ($scope.cook_products_barr[b]._id == tmp[i]._id)
                         {
-                            $scope.cook_products_mycomands_barr[b].preparando = true
-                            $scope.cook_products_mycomands_barr[b].status = 'En preparacion'
+                            $scope.cook_products_barr[b].preparando = true
+                            $scope.cook_products_barr[b].status = 'En preparacion'
                         }
                     }
                 }
@@ -3962,19 +3962,19 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
         $scope.$emit('loadasc')
         var tmp = []
 
-        for (var i = 0; i < $scope.cook_products_mycomands_barr.length; i++)
+        for (var i = 0; i < $scope.cook_products_barr.length; i++)
         {
-            tmp.push($scope.cook_products_mycomands_barr[i])
+            tmp.push($scope.cook_products_barr[i])
         }
 
         $http.post('/api/socket/finalizar_all', tmp)
         .success(function(msg){
-            $http.get('/api/kitchen/cook_products_mycomands')
+            $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 for (var i = 0; i < tmp.length; i++)
                 {
-                    $scope.cook_products_mycomands_barr.splice($scope.cook_products_mycomands_barr.indexOf(tmp[i]),1);
+                    $scope.cook_products_barr.splice($scope.cook_products_barr.indexOf(tmp[i]),1);
                 }
                 loadvaluestatus()
                 pushMessage('success','', msg, "checkmark")
@@ -4007,7 +4007,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
         $scope.$emit('loadasc')
         $http.post('/api/kitchen/product_update_preparacion', item)
         .success (function (msg){
-            $http.get('/api/kitchen/cook_products_mycomands')
+            $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
                 item.status = 'En preparacion'
@@ -4032,10 +4032,10 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
         $scope.$emit('loadasc')
         $http.post('/api/kitchen/product_update_finalizacion', item)
         .success (function (msg){
-            $http.get('/api/kitchen/cook_products_mycomands')
+            $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id, data);
-                $scope.cook_products_mycomands_barr.splice($scope.cook_products_mycomands_barr.indexOf(item),1);
+                $scope.cook_products_barr.splice($scope.cook_products_barr.indexOf(item),1);
                 pushMessage('success','', msg + ' ' + item.product.name, "checkmark")
                 loadvaluestatus()
             })
@@ -4045,7 +4045,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
             .finally (function (){
               $scope.tmp.occupied = false
               $scope.$emit('unloadasc')
-              if ($scope.cook_products_mycomands_barr.length == 0)
+              if ($scope.cook_products_barr.length == 0)
               {
                 pushMessage('success','BIEN', 'Parece que todo esta preparado, servido o entregado.', "checkmark")
               }
@@ -4070,10 +4070,10 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
         $scope.users_activos = []
         $scope.platillos = []
 
-        for (var i = 0; i < $scope.cook_products_mycomands_barr.length; i++)
+        for (var i = 0; i < $scope.cook_products_barr.length; i++)
         {
             $scope.tmp.totalComanda ++
-            if ($scope.cook_products_mycomands_barr[i].preparando)
+            if ($scope.cook_products_barr[i].preparando)
             {
                 $scope.tmp.preparacion ++
             }
@@ -4082,7 +4082,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
 
             for (var ii = 0; ii < $scope.users_activos.length; ii++)
             {
-                if ($scope.users_activos[ii].user._id == $scope.cook_products_mycomands_barr[i].user._id)
+                if ($scope.users_activos[ii].user._id == $scope.cook_products_barr[i].user._id)
                 {
                     agregar = false
                 }
@@ -4090,24 +4090,24 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
 
             if (agregar)
             {
-                $scope.users_activos.push($scope.cook_products_mycomands_barr[i])
+                $scope.users_activos.push($scope.cook_products_barr[i])
             }
 
             var agregar_platillos = true
 
             for (var ii = 0; ii < $scope.platillos.length; ii++)
             {
-                if ($scope.platillos[ii].product._id == $scope.cook_products_mycomands_barr[i].product._id)
+                if ($scope.platillos[ii].product._id == $scope.cook_products_barr[i].product._id)
                 {
                     agregar_platillos = false
-                    $scope.platillos[ii].product.total += $scope.cook_products_mycomands_barr[i].unidades
+                    $scope.platillos[ii].product.total += $scope.cook_products_barr[i].unidades
                 }
             }
 
             if (agregar_platillos)
             {
-                $scope.cook_products_mycomands_barr[i].product.total = $scope.cook_products_mycomands_barr[i].unidades
-                $scope.platillos.push($scope.cook_products_mycomands_barr[i])
+                $scope.cook_products_barr[i].product.total = $scope.cook_products_barr[i].unidades
+                $scope.platillos.push($scope.cook_products_barr[i])
             }
         }
 
@@ -4115,9 +4115,9 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
         {
             $scope.users_activos[i].user.comandas = 0
 
-            for (var b = 0; b < $scope.cook_products_mycomands_barr.length; b++)
+            for (var b = 0; b < $scope.cook_products_barr.length; b++)
             {
-                if ($scope.cook_products_mycomands_barr[b].user._id == $scope.users_activos[i].user._id)
+                if ($scope.cook_products_barr[b].user._id == $scope.users_activos[i].user._id)
                 {
                     $scope.users_activos[i].user.comandas ++
                 }
@@ -4136,7 +4136,7 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
     $scope.$emit('load')
     $http.get('/api/socket/my_comands')
     .success (function(){
-        $scope.cook_products_mycomands = []
+        $scope.cook_products_my = []
         socket = io.connect()
         socket = io.connect(urlsocket, { 'forceNew': true })
 
@@ -4147,17 +4147,17 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
 
         socket.on('GetComandas'+$rootScope.user.admin._id, function(data) {
           $rootScope.$apply(function () {
-              var existente = $scope.cook_products_mycomands.length
-              $scope.cook_products_mycomands = []
+              var existente = $scope.cook_products_my.length
+              $scope.cook_products_my = []
 
               for (var i = 0; i < data.length; i++)
               {
                   if (data[i].user._id == $rootScope.user._id)
                   {
-                      $scope.cook_products_mycomands.push(data[i])
+                      $scope.cook_products_my.push(data[i])
                   }
               }
-              if ($scope.cook_products_mycomands.length > existente)
+              if ($scope.cook_products_my.length > existente)
               {
                   pushMessage('info','Mys comandas', 'Comandas', "checkmark")
               }
@@ -4172,17 +4172,17 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
 
     $scope.SelectAll = function ()
     {
-        for(var i = 0; i < $scope.cook_products_mycomands.length; i++)
+        for(var i = 0; i < $scope.cook_products_my.length; i++)
         {
-            $scope.cook_products_mycomands[i].check = true
+            $scope.cook_products_my[i].check = true
         }
     }
 
     $scope.SelectAny = function ()
     {
-        for(var i = 0; i < $scope.cook_products_mycomands.length; i++)
+        for(var i = 0; i < $scope.cook_products_my.length; i++)
         {
-            $scope.cook_products_mycomands[i].check = false
+            $scope.cook_products_my[i].check = false
         }
     }
 
