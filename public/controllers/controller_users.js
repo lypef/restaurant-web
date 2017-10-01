@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "http://192.168.1.66:8080"
+var urlsocket = "http://192.168.1.67:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -2468,8 +2468,8 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', '$rootScope', function
         $scope.$emit('load')
         $http.post('/api/sales/vtd/', $scope.comanda)
         .success(function(msg){
-          $scope.clean()
           socket.emit('UpdateComanda'+$rootScope.user.admin._id);
+          $scope.clean()
           pushMessage('success','', msg, "checkmark")
         })
         .error (function (msg){
@@ -4139,6 +4139,7 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
     $http.get('/api/socket/my_comands')
     .success (function(){
         $scope.cook_products = []
+        $scope.cook_products_hold = []
         socket = io.connect()
         socket = io.connect(urlsocket, { 'forceNew': true })
 
@@ -4157,16 +4158,16 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
       
                 for (var i = 0; i < data.length; i++)
                 {
-                    if (data[i].admin._id == $rootScope.user.admin._id)
+                    if (data[i].user._id == $rootScope.user._id)
                     {
                         $scope.cook_products.push(data[i])
+                        $scope.cook_products_hold.push(data[i])
                     }
                 }
                 if ($scope.cook_products.length > existente)
                 {
-                    pushMessage('info','BARRA', 'Nuevas ordenes', "checkmark")
+                    pushMessage('info','BARRA', 'Mis ordenes', "checkmark")
                 }
-      
                 loadvaluestatus()
             })
             .finally (function (){
@@ -4177,24 +4178,61 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
         
     })
 
+    $scope.change_coment = function (item){
+        $scope.$emit('loadasc')
+        $http.post('/api/kitchen/change_coment', item)
+        .success(function (msg){
+            item.comentario = item.comentario.toUpperCase()
+            pushMessage('success','Mys comands', msg, "checkmark")
+        })
+        .finally (function(){
+            socket.emit('UpdateComanda'+$rootScope.user.admin._id);
+            $scope.$emit('unloadasc')
+        })
+    }
+
+    $scope.cancelar = function (item){
+        $scope.$emit('loadasc')
+        $http.post('/api/kitchen/cancel_comand', item)
+        .success(function (msg){
+            socket.emit('UpdateComanda'+$rootScope.user.admin._id);
+            if (item.unidades <= 1)
+            {
+                $scope.cook_products.splice($scope.cook_products.indexOf(item),1);
+                pushMessage('success','Mys comands', 'Producto cancelado', "checkmark")
+            }else
+            {
+                item.unidades --
+                pushMessage('success','Mys comands', 'Producto actualizado', "checkmark")
+            }
+        })
+        .error (function(msg){
+            pushMessage('alert','Mys comands', msg, "cross")  
+        })
+        .finally (function(){
+            $scope.$emit('unloadasc')
+        })
+    }
+
     $scope.select = function (item){
       $scope.tmp = item
     }
 
-    $scope.SelectAll = function ()
-    {
-        for(var i = 0; i < $scope.cook_products.length; i++)
+    $scope.search = function(){
+        if ($scope.inputbox.txt == null || $scope.inputbox.txt == '')
         {
-            $scope.cook_products[i].check = true
-        }
-    }
-
-    $scope.SelectAny = function ()
-    {
-        for(var i = 0; i < $scope.cook_products.length; i++)
+            $scope.cook_products = $scope.cook_products_hold
+        }else
         {
-            $scope.cook_products[i].check = false
+            $scope.cook_products = []
+            for (var i = 0; i < $scope.cook_products_hold.length; i++)
+            {
+                if ($scope.cook_products_hold[i].product.name.includes($scope.inputbox.txt.toUpperCase()) || $scope.cook_products_hold[i].product.codebar.includes($scope.inputbox.txt.toUpperCase()) )
+                {
+                    $scope.cook_products.push($scope.cook_products_hold[i])
+                }
+            }
         }
-    }
-
+        $scope.LoadPages()
+    };
 })

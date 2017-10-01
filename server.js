@@ -159,6 +159,8 @@ app.get('/api/kitchen/cook_products', GetCookProducts)
 
 app.post('/api/kitchen/product_update_preparacion', UpdateProduct_kitchen_preparacion)
 app.post('/api/kitchen/product_update_finalizacion', UpdateProduct_kitchen_finalizacion)
+app.post('/api/kitchen/cancel_comand', cancel_comand)
+app.post('/api/kitchen/change_coment', change_coment)
 
 
 //Api accounts admin
@@ -251,7 +253,6 @@ app.get('/api/sales/get_cook_products', GetCookProductsAllusers)
 
 app.post('/api/sales/vtd/', addvtd)
 
-//Funciones
 
 //Sockets
 app.get('/api/socket/cocina', function(req, res){
@@ -415,7 +416,8 @@ app.get('/api/socket/my_comands', function(req, res){
     });
     res.sendStatus(200)
 })
-//socket
+
+//Funciones
 
 function getComandas ()
 {
@@ -1232,6 +1234,75 @@ function UpdateProduct_kitchen_finalizacion (req, res)
     }else
     {
         res.status(500).send('Producto no valido')
+    }
+}
+
+function cancel_comand (req, res)
+{
+    if (req.session.user.admin._id == req.body.admin._id && req.session.user._id == req.body.user._id)
+    {
+        db.kitchen.findOne({_id: req.body._id},function(err,doc){
+            if (!err)
+            {
+                if (!doc.preparando)
+                {
+                    if (doc.unidades <= 1)
+                    {
+                        db.kitchen.update({_id: req.body._id},
+                        {
+                            unidades: 0,
+                            preparando: false,
+                            end: true
+                        },function(err){
+                            console.log(err)
+                        })
+                    }else
+                    {
+                        db.kitchen.update({_id: req.body._id},
+                        {
+                            unidades: doc.unidades -1
+                        },function(err){
+                            console.log(err)
+                        })
+                    }
+                    res.status(200).send('Producto actualizado.')
+                }else
+                {
+                    res.status(500).send('Producto ya en preparacion')
+                }
+                
+            }
+        })
+    }else
+    {
+        res.status(500).send('Producto o session no valida')
+    }
+}
+
+function change_coment (req, res)
+{
+    if (req.session.user.admin._id == req.body.admin._id && req.session.user._id == req.body.user._id)
+    {
+        if (req.body.comentario)
+        {
+            req.body.comentario = req.body.comentario.toUpperCase()
+        }else
+        {
+            req.body.comentario = 'SIN COMENTARIOS'
+        }
+
+        db.kitchen.update({_id: req.body._id},
+        {
+            comentario: req.body.comentario
+        },function(err){
+            if (!err)
+            {
+                res.status(200).send('Comantario actualizado')
+            }else{console.log(err)}
+        })
+    }else
+    {
+        res.status(500).send('Producto o session no valida')
     }
 }
 

@@ -1,13 +1,10 @@
 <div ng-controller="my_comands">
 
+<div class="input-control text " data-role="input" style="width: 100%">
+    <input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" ng-change="search()" id="input_search" autofocus autocomplete="off">
 
-<div align="center">
-    <button class="button rounded large-button primary" ng-click="SelectAny()" ng-disabled="tmp.occupied">Seleccionar ninguno</button>
-
-    <button class="button rounded large-button primary" ng-click="SelectAll()" ng-disabled="tmp.occupied">Seleccionar todos</button>
-
+    <button class="button" ng-click="search()"><span class="mif-search"></span></button>
 </div>
-
 <div style="overflow-x:auto;">
     <table class="table striped hovered bordered border">
          <thead>
@@ -44,7 +41,7 @@
                       <button class="button warning" ng-click="select(a)" onclick="toggleMetroDialog('#cancelar')" ng-disabled="tmp.occupied">Cancelar</button>
                       <button class="split dropdown-toggle" ng-disabled="tmp.occupied"></button>
                       <ul class="split-content d-menu place-right" data-role="dropdown">
-                          <li><a ng-click="call(a)">Comentarios</a></li>
+                          <li><a ng-click="select(a)" onclick="toggleMetroDialog('#change_coment')">Comentarios</a></li>
                       </ul>
                   </div>
                 </td>
@@ -52,7 +49,7 @@
           </tbody>
     </table>
     </div>
-    <!--Ventana Iniciar preparacion-->
+    <!--Ventana cancelar 1 producto-->
     <div data-role="dialog" id="cancelar" class="padding30" data-type=""
       data-close-button="true"
       data-width="auto"
@@ -61,9 +58,23 @@
         <h4>Ensta seguro de cancelar 1 unidade de {{ tmp.unidades }} de {{ tmp.product.name }}<br>
         una vez confirmada la accion, no hay vuelta atraz.</h4></span></h3></p>
 
-      <button class="button warning" ng-click="preparar(tmp)" onclick="hideMetroDialog('#preparar')"><span class="mif-checkmark" autofocus></span> SI</button>
+      <button class="button alert" ng-click="cancelar(tmp)" onclick="hideMetroDialog('#cancelar')"><span class="mif-checkmark" autofocus></span> SI</button>
       <button class="button success" onclick="hideMetroDialog('#cancelar')"><span class="mif-cross"></span> NO</button>
     </div>
-    <!--Ventana Iniciar preparacion-->
+    <!--Ventana cancelar 1 producto-->
+
+    <!--Ventana cambiar comentario-->
+    <div data-role="dialog" id="change_coment" class="padding30" data-type=""
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p><h3><img class="img-round50" ng-src="{{ tmp.product.img }}"> # {{ tmp.unidades }} {{ tmp.product.name }}<br></h3></p>
+      
+      <textarea ng-model="tmp.comentario" rows=3 style="width: 100%"></textarea><br>
+
+      <button class="button info" ng-click="change_coment(tmp)" onclick="hideMetroDialog('#change_coment')"><span class="mif-checkmark" autofocus></span> ENVIAR</button>
+      <button class="button success" onclick="hideMetroDialog('#change_coment')"><span class="mif-cross"></span> OK</button>
+    </div>
+    <!--Ventana cambiar comentario-->
 
 </div>
