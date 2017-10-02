@@ -319,18 +319,74 @@
   </div>
 <!-- Finaliza Acordeon-->
 
-<!-- Acordeon-->
+<!-- gestion de mesas-->
 <div class="accordion large-heading" data-role="accordion">
   <div class="frame">
 
-    <div class="heading"><span class="mif-plus icon"></span> Agregar</span></div>
+    <div class="heading"><span class="mif-plus icon"></span> Gestionar mesas</span></div>
     <div class="content" align="center">
-    ss
+    
+    <div class="panel">
+      <div class="heading">
+          <span class="title">Gestion lugares locales</span>
+      </div>
+      <div class="content">
+          
+          <form>
+            <div class="input-control  modern text iconic" id="widthfull" >
+              <input type="text" placeholder="Lugar" ng-model="lugar.lugar" class="input-full">
+            </div>
+
+            <div class="input-control  modern text iconic" id="widthfull" >
+              <input type="text" placeholder="Descripcion" ng-model="lugar.description" class="input-full">
+            </div>
+
+            <div class="input-control file" data-role="input" ng-model="lugar.img">
+                <input type="file" placeholder="Imagen" onchange="angular.element(this).scope().photoChanged(this.files)">
+                <button class="button" ><span class="mif-folder"></span></button>
+
+            </div>
+            <br>
+          <button class="button success loading-pulse" ng-click="addlugar()">Agregar</button>
+
+          </form>
+        <table class="table striped hovered bordered border">
+         <thead>
+            <tr>
+            <th>IMAGEN</th>
+            <th>LUGAR</th>
+            <th>DESCRIPCION</th>
+            <th>OPCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr ng-repeat="a in places" ng-model="places" >
+                <td align="center"><img class="img-round80" ng-src="{{ a.img }}"></td>
+                <td>{{ a.lugar }}</td>
+                <td>{{ a.description }}</td>
+                <td>
+                  <div class="dropdown-button">
+                    <button class="button success dropdown-toggle">Opciones</button>
+                        <ul class="split-content d-menu place-right" data-role="dropdown">
+                            <li><a class="mif-pencil" href="dashboard#/surtir_receta/{{ a.receta._id }}"> Editar</a></li>
+                            
+                            <li><a class="mif-bin" href="dashboard#/view_recetas/{{ a.receta._id }}"> Eliminar</a></li>
+
+                        </ul>
+                    </div>
+                </td>
+              </tr>
+          </tbody>
+    </table>
+      </div>
+    </div>
+
+
     </div>  
 
   </div>  
 </div>
-<!-- Finaliza Acordeon-->
+<!-- Finaliza gestion de mesas-->
 
 <!-- Acordeon-->
 <div class="accordion large-heading" data-role="accordion">

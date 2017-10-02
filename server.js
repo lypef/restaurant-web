@@ -137,12 +137,14 @@ app.get('/api/account/movements/:id', getAccountMovementsID)
 app.get('/api/account/users', User_adminValuesjson)
 app.get('/api/account/cut_x', GetSalesAdmin)
 app.get('/api/account/product_sale', GetProducts_sale)
+app.get('/api/account/places', get_places)
 
 app.post('/api/account/users/delete', DeleteUser_admin )
 app.post('/api/account/users/add', AddUserAccount);
 app.post('/api/account/users/update', UpdateUser );
 app.post('/api/account/update', UpdateAccountthis );
 app.post('/api/account/cut_z', cut_z_admin)
+app.post('/api/account/add_place', add_place)
 
 //Api kitchen
 app.use('/api/kitchen', function(req,res,next){
@@ -1094,6 +1096,7 @@ function UpdateUser_preferencias (req, res)
         { _id : req.body.preferencias._id },
         {
             color_menubar: req.body.preferencias.color_menubar,
+            preloader: req.body.preferencias.preloader,
             admin: req.body.preferencias.admin,
             ingredientes: req.body.preferencias.ingredientes,
             recetas: req.body.preferencias.recetas,
@@ -1820,6 +1823,16 @@ function GetProducts_sale (req, res)
     })
 }
 
+function get_places (req, res)
+{
+    db.places.find({ admin: req.session.user.admin._id }).populate('admin').exec(function(err,doc){
+        if (!err)
+        {
+            res.json(doc)
+        }
+    })
+}
+
 function GetUseRecetasJSON (req, res)
 {
     db.use_recetas.find({ admin: req.session.user.admin._id}).populate(
@@ -2169,6 +2182,26 @@ function cut_z_admin (req, res)
              }
              AddMovement(req.session.user,'usuario realizo corte z global')
              res.status(200).send('Corte z exitoso')
+        }else
+        {
+            res.status(500).send(err)
+        }
+    })
+}
+
+function add_place (req, res)
+{
+    var p = new db.places(
+    {
+        admin: req.session.user.admin._id,
+        lugar: req.body.lugar,
+        description: req.body.description,
+        img: req.body.img
+    });
+
+    p.save(function (err){
+        if (!err){
+            res.status(200).send('Lugar agregado')
         }else
         {
             res.status(500).send(err)

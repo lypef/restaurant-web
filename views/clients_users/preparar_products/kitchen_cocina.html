@@ -38,7 +38,11 @@
 
     <button class="button warning rounded large-button primary" onclick="toggleMetroDialog('#ActionAll')" ng-disabled="tmp.occupied">Accion todos</button>
 </div>
+<div class="input-control text " data-role="input" style="width: 100%">
+    <input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" ng-change="search()" id="input_search" autofocus autocomplete="off">
 
+    <button class="button" ng-click="search()"><span class="mif-search"></span></button>
+</div>
 <div style="overflow-x:auto;">
     <table class="table striped hovered bordered border">
          <thead>

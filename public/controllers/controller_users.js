@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "http://192.168.1.67:8080"
+var urlsocket = "http://192.168.1.70:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -218,7 +218,7 @@ app.controller("UserValues", function($scope, $http, $timeout, $rootScope){
         $scope.$emit('loadasc')
         $http.post('/api/users/update_preferencias', $scope.usuario)
         .success (function (msg){
-                loadasc()
+            loadasc()
         })
         .error (function (msg){
             pushMessage('alert','ERROR', msg, "cross")
@@ -259,9 +259,6 @@ app.controller("UserValues", function($scope, $http, $timeout, $rootScope){
 });
 
 app.controller("users_administrator", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
-
-
-
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -275,9 +272,29 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
     $scope.tmp = {}
     $scope.loadmovements = false
     $scope.loadview = false
-
+    $scope.lugar = {}
+    $scope.places = {}
 
     $scope.user.img = '/images/no-imagen.jpg'
+
+    $scope.addlugar = function (){
+        $scope.$emit('loadasc')
+        $scope.lugar.img = $scope.user.img
+        $http.post('/api/account/add_place', $scope.lugar)
+        .success (function(msg){
+            GetPlacesASC()
+            $scope.lugar = {}
+            $scope.user.img = '/images/no-imagen.jpg'
+            pushMessage('success', 'HECHO', msg, "checkmark")
+        })
+        .error (function (msg){
+            $scope.$emit('unloadasc')
+            pushMessage('alert', 'ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
 
     $scope.fileReaderSupported = window.FileReader != null;
     $scope.photoChanged = function(files){
@@ -355,16 +372,24 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
         .error (function (msg){
             pushMessage('alert','ERROR', msg, "cross")
         })
+        .finally (function(){
+            $scope.$emit('unload')
+        })
     }
 
     GetAcccountAsc = function (){
+        $scope.$emit('loadasc')
         $http.get('/api/account')
         .success(function(data){
             $scope.account = data
         })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     }
 
     GetUsers = function (){
+        $scope.$emit('load')
         $http.get('/api/account/users')
         .success(function(data){
             $scope.users = data
@@ -372,9 +397,13 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
         .error (function (msg){
             pushMessage('alert','ERROR', msg, "cross")
         })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
     }
 
     Getproducts = function (){
+        $scope.$emit('load')
         $http.get('/api/account/product_sale')
         .success(function(data){
             $scope.sales_products = data
@@ -382,16 +411,55 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
         .error (function (msg){
             pushMessage('alert','ERROR', msg, "cross")
         })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    GetPlaces = function (){
+        
+        $scope.$emit('load')
+        $http.get('/api/account/places')
+        .success(function(data){
+            $scope.places = data
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    GetPlacesASC = function (){
+        
+        $scope.$emit('loadasc')
+        $http.get('/api/account/places')
+        .success(function(data){
+            $scope.places = data
+        })
+        .error (function (msg){
+            $scope.$emit('unloadasc')
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     }
 
     GetUsersAsc = function (){
+        $scope.$emit('loadasc')
         $http.get('/api/account/users')
         .success(function(data){
             $scope.users = data
         })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
     }
 
     GetMovements = function (){
+        $scope.$emit('load')
         $http.get('/api/account/movements')
         .success(function(data){
             $scope.movements = data
@@ -408,6 +476,7 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
     GetAcccount()
     GetUsers()
     Getproducts()
+    GetPlaces()
     GetMovements()
 
     $scope.load = function (item)
@@ -3461,6 +3530,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
     .success (function (){
 
     $scope.cook_products = []
+    $scope.cook_products_hold = []
     $scope.msg = {}
     $scope.msgnew = {}
     $scope.tmp = {}
@@ -3490,6 +3560,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
                 if (data[i].admin._id == $rootScope.user.admin._id && data[i].cocina)
                 {
                     $scope.cook_products.push(data[i])
+                    $scope.cook_products_hold.push(data[i])
                 }
             }
             if ($scope.cook_products.length > existente)
@@ -3502,6 +3573,41 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         });  
         })
     });
+
+    $scope.search = function(){
+        if ($scope.inputbox.txt == null || $scope.inputbox.txt == '')
+        {
+            $scope.cook_products = $scope.cook_products_hold
+        }else
+        {
+            $scope.cook_products = []
+            for (var i = 0; i < $scope.cook_products_hold.length; i++)
+            {
+                if ($scope.cook_products_hold[i].product.name.includes($scope.inputbox.txt.toUpperCase()) || $scope.cook_products_hold[i].product.codebar.includes($scope.inputbox.txt.toUpperCase()) )
+                {
+                    $scope.cook_products.push($scope.cook_products_hold[i])
+                }
+            }
+        }
+        var tmp = $scope.cook_products
+        $scope.cook_products = []
+        
+        for(var i = 0 ; i < tmp.length ; i++)
+        {
+            var add = true
+            for(var b = 0 ; b < $scope.cook_products.length ; b++)
+            {
+                if (tmp[i]._id == $scope.cook_products[b]._id)
+                {
+                    add = false
+                }
+            }
+            if (add)
+            {
+                $scope.cook_products.push(tmp[i])
+            }
+        }
+    };
 
     $scope.ActionAll = function ()
     {
@@ -3803,6 +3909,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
     $scope.pageSizetmp = []
 
     $scope.cook_products = []
+    $scope.cook_products_hold = []
 
     $scope.msg = {}
     $scope.msgnew = {}
@@ -3832,6 +3939,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
                 if (data[i].admin._id == $rootScope.user.admin._id && data[i].barra)
                 {
                     $scope.cook_products.push(data[i])
+                    $scope.cook_products_hold.push(data[i])
                 }
             }
             if ($scope.cook_products.length > existente)
@@ -3844,6 +3952,41 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
         })
     })
     });
+
+    $scope.search = function(){
+        if ($scope.inputbox.txt == null || $scope.inputbox.txt == '')
+        {
+            $scope.cook_products = $scope.cook_products_hold
+        }else
+        {
+            $scope.cook_products = []
+            for (var i = 0; i < $scope.cook_products_hold.length; i++)
+            {
+                if ($scope.cook_products_hold[i].product.name.includes($scope.inputbox.txt.toUpperCase()) || $scope.cook_products_hold[i].product.codebar.includes($scope.inputbox.txt.toUpperCase()) )
+                {
+                    $scope.cook_products.push($scope.cook_products_hold[i])
+                }
+            }
+        }
+        var tmp = $scope.cook_products
+        $scope.cook_products = []
+        
+        for(var i = 0 ; i < tmp.length ; i++)
+        {
+            var add = true
+            for(var b = 0 ; b < $scope.cook_products.length ; b++)
+            {
+                if (tmp[i]._id == $scope.cook_products[b]._id)
+                {
+                    add = false
+                }
+            }
+            if (add)
+            {
+                $scope.cook_products.push(tmp[i])
+            }
+        }
+    };
 
     $scope.ActionAll = function ()
     {
@@ -4233,6 +4376,23 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
                 }
             }
         }
-        $scope.LoadPages()
+        var tmp = $scope.cook_products
+        $scope.cook_products = []
+        
+        for(var i = 0 ; i < tmp.length ; i++)
+        {
+            var add = true
+            for(var b = 0 ; b < $scope.cook_products.length ; b++)
+            {
+                if (tmp[i]._id == $scope.cook_products[b]._id)
+                {
+                    add = false
+                }
+            }
+            if (add)
+            {
+                $scope.cook_products.push(tmp[i])
+            }
+        }
     };
 })
