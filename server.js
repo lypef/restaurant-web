@@ -138,6 +138,7 @@ app.get('/api/account/users', User_adminValuesjson)
 app.get('/api/account/cut_x', GetSalesAdmin)
 app.get('/api/account/product_sale', GetProducts_sale)
 app.get('/api/account/places', get_places)
+app.get('/api/account/tables', get_tables)
 
 app.post('/api/account/users/delete', DeleteUser_admin )
 app.post('/api/account/users/add', AddUserAccount);
@@ -145,6 +146,11 @@ app.post('/api/account/users/update', UpdateUser );
 app.post('/api/account/update', UpdateAccountthis );
 app.post('/api/account/cut_z', cut_z_admin)
 app.post('/api/account/add_place', add_place)
+app.post('/api/account/edit_place', edit_place)
+app.post('/api/account/delete_place', delete_place)
+app.post('/api/account/add_table', add_table)
+app.post('/api/account/edit_table', edit_table)
+app.post('/api/account/delete_table', delete_table)
 
 //Api kitchen
 app.use('/api/kitchen', function(req,res,next){
@@ -191,6 +197,8 @@ app.post('/api/catproducts/search', SearchCatProducts )
 app.get('/api/public/cut_x', GetSalesUser)
 app.get('/api/get_measurements/', GetMeasurementsJSON)
 app.get('/api/get_measurements/:id', GetMeasuremetsJSON_ID)
+app.get('/api/public/get_tables', get_tables)
+app.get('/api/public/socket_tables', socket_tables)
 
 app.post('/api/measurement/add', CreateMeasurement )
 app.post('/api/measurement/update', UpdateMeasurements )
@@ -252,7 +260,6 @@ app.use('/api/sales/', function(req,res,next){
 app.get('/api/sales/products', getproductsJson)
 app.get('/api/sales/ingredientes/', GetUseRecetasJSON)
 app.get('/api/sales/get_cook_products', GetCookProductsAllusers)
-
 app.post('/api/sales/vtd/', addvtd)
 
 
@@ -1058,6 +1065,55 @@ function UpdateUser (req, res)
         })
 }
 
+function edit_place (req, res)
+{
+    db.places.update(
+        { _id : req.body._id, admin: req.session.user.admin._id },
+        {
+            lugar: req.body.lugar.toUpperCase(),
+            description: req.body.description.toUpperCase(),
+            img: req.body.img
+        },
+        function( err)
+        {
+            if (err)
+            {
+                res.status(500).send(err)
+            }else
+            {
+                res.status(200).send('Lugar actualizado con exito')
+            }
+        })
+}
+
+function edit_table (req, res)
+{
+    if (req.body.description)
+    {
+        req.body.description = req.body.description.toUpperCase()
+    }
+
+    db.tables.update(
+        { _id : req.body._id, admin: req.session.user.admin._id },
+        {
+            place: req.body.place,
+            numero: req.body.numero,
+            peoples: req.body.peoples,
+            type_mesa: req.body.type_mesa,
+            description: req.body.description
+        },
+        function( err)
+        {
+            if (err)
+            {
+                res.status(500).send(err)
+            }else
+            {
+                res.status(200).send('Mesa actualizada con exito')
+            }
+        })
+}
+
 function UpdateUser_admin (req, res)
 {
     db.user.update(
@@ -1501,6 +1557,32 @@ function DeleteUser_admin (req, res)
     }
 }
 
+function delete_place (req, res)
+{
+    db.places.remove ({ _id: req.body._id, admin: req.session.user.admin._id},
+        function (err){
+            if (!err){
+                res.status(200).send('Lugar eliminado correctamente')
+            }else
+            {
+                res.status(500).send(err)
+            }
+        })
+}
+
+function delete_table (req, res)
+{
+    db.tables.remove ({ _id: req.body._id, admin: req.session.user.admin._id},
+        function (err){
+            if (!err){
+                res.status(200).send('Mesa eliminada correctamente')
+            }else
+            {
+                res.status(500).send(err)
+            }
+        })
+}
+
 function DeleteProduct (req, res)
 {
     db.products.remove(
@@ -1826,6 +1908,33 @@ function GetProducts_sale (req, res)
 function get_places (req, res)
 {
     db.places.find({ admin: req.session.user.admin._id }).populate('admin').exec(function(err,doc){
+        if (!err)
+        {
+            res.json(doc)
+        }
+    })
+}
+
+function socket_tables (req, res)
+{
+    io.on('connection', function(socket) {
+
+      socket.emit('GetTables'+req.session.user.admin._id);
+
+      socket.on('UpdateTables'+req.session.user.admin._id, function (data) {
+        socket.broadcast.emit('GetTables'+req.session.user.admin._id);
+      });
+
+      socket.on('disconnect', function (){
+        console.log('Desconectado');
+      })
+    });
+    res.sendStatus(200)
+}
+
+function get_tables (req, res)
+{
+    db.tables.find({ admin: req.session.user.admin._id }).sort({numero:1}).populate('admin').populate('place').exec(function(err,doc){
         if (!err)
         {
             res.json(doc)
@@ -2202,6 +2311,28 @@ function add_place (req, res)
     p.save(function (err){
         if (!err){
             res.status(200).send('Lugar agregado')
+        }else
+        {
+            res.status(500).send(err)
+        }
+    })
+}
+
+function add_table (req, res)
+{
+    var p = new db.tables(
+    {
+        admin: req.session.user.admin._id,
+        place: req.body.place,
+        type_mesa: req.body.type_mesa,
+        numero: req.body.numero,
+        peoples: req.body.peoples,
+        description: req.body.description
+    });
+
+    p.save(function (err){
+        if (!err){
+            res.status(200).send('Mesa agregada con exito')
         }else
         {
             res.status(500).send(err)

@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "http://192.168.1.70:8080"
+var urlsocket = "http://192.168.1.66:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -72,6 +72,9 @@ app.config(function($routeProvider){
         })
         .when('/my_comands', {
             templateUrl : '/clients_users/preparar_products/my_comands.html'
+        })
+        .when('/tables', {
+            templateUrl : '/clients_users/sales/tables.html'
         })
         .otherwise({
             redirectTo : '/'
@@ -274,8 +277,107 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
     $scope.loadview = false
     $scope.lugar = {}
     $scope.places = {}
+    $scope.table_add = {}
+    $scope.tables = {}
+    $scope.tmp_table = {}
 
     $scope.user.img = '/images/no-imagen.jpg'
+
+    $scope.edit_table = function ()
+    {
+        $scope.$emit('loadasc')
+        $http.post('/api/account/edit_table', $scope.tmp_table)
+        .success (function (msg){
+            GetTablesASC()
+            pushMessage('success', 'HECHO', msg, "checkmark")
+        })
+        .error (function (msg){
+            $scope.$emit('unloadasc')
+            pushMessage('alert', 'HECHO', msg, "checkmark")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+
+    $scope.delete_table = function ()
+    {
+        $scope.$emit('loadasc')
+        $http.post('/api/account/delete_table', $scope.tmp_table)
+        .success (function (msg){
+            GetTablesASC()
+            pushMessage('success', 'HECHO', msg, "checkmark")
+        })
+        .error (function (msg){
+            $scope.$emit('unloadasc')
+            pushMessage('alert', 'HECHO', msg, "checkmark")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+
+    $scope.add_table = function ()
+    {
+        $scope.$emit('loadasc')
+        $http.post('/api/account/add_table', $scope.table_add)
+        .success (function(msg){
+            $scope.table_add = {}
+            GetTablesASC()
+            pushMessage('success', 'HECHO', msg, "checkmark")
+        })
+        .error (function (msg){
+            $scope.$emit('unloadasc')
+            pushMessage('alert', 'ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+
+    $scope.edit_place = function ()
+    {
+        $scope.$emit('loadasc')
+        $http.post('/api/account/edit_place', $scope.tmp_place)
+        .success (function (msg){
+            GetPlacesASC()
+            pushMessage('success', 'HECHO', msg, "checkmark")
+        })
+        .error (function (msg){
+            $scope.$emit('unloadasc')
+            pushMessage('alert', 'HECHO', msg, "checkmark")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+
+    $scope.delete_place = function ()
+    {
+        $scope.$emit('loadasc')
+        $http.post('/api/account/delete_place', $scope.tmp_place)
+        .success (function (msg){
+            GetPlacesASC()
+            pushMessage('success', 'HECHO', msg, "checkmark")
+        })
+        .error (function (msg){
+            $scope.$emit('unloadasc')
+            pushMessage('alert', 'HECHO', msg, "checkmark")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+
+    $scope.set_place = function (item)
+    {
+        $scope.tmp_place = item
+    }
+
+    $scope.set_table = function (item)
+    {
+        $scope.tmp_table = item
+    }
 
     $scope.addlugar = function (){
         $scope.$emit('loadasc')
@@ -297,6 +399,24 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
     }
 
     $scope.fileReaderSupported = window.FileReader != null;
+    $scope.photoChanged_tmp_place = function(files){
+        if (files != null) {
+            var file = files[0];
+        if ($scope.fileReaderSupported && file.type.indexOf('image') > -1) {
+            $timeout(function() {
+                var fileReader = new FileReader();
+                fileReader.readAsDataURL(file);
+                fileReader.onload = function(e) {
+                    $timeout(function(){
+                        $scope.tmp_place.img = e.target.result;
+                    });
+                }
+            }
+            );
+        }
+    }
+    };
+
     $scope.photoChanged = function(files){
         if (files != null) {
             var file = files[0];
@@ -372,9 +492,6 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
         .error (function (msg){
             pushMessage('alert','ERROR', msg, "cross")
         })
-        .finally (function(){
-            $scope.$emit('unload')
-        })
     }
 
     GetAcccountAsc = function (){
@@ -389,7 +506,6 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
     }
 
     GetUsers = function (){
-        $scope.$emit('load')
         $http.get('/api/account/users')
         .success(function(data){
             $scope.users = data
@@ -397,13 +513,9 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
         .error (function (msg){
             pushMessage('alert','ERROR', msg, "cross")
         })
-        .finally (function (){
-            $scope.$emit('unload')
-        })
     }
 
     Getproducts = function (){
-        $scope.$emit('load')
         $http.get('/api/account/product_sale')
         .success(function(data){
             $scope.sales_products = data
@@ -411,14 +523,9 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
         .error (function (msg){
             pushMessage('alert','ERROR', msg, "cross")
         })
-        .finally (function (){
-            $scope.$emit('unload')
-        })
     }
 
     GetPlaces = function (){
-        
-        $scope.$emit('load')
         $http.get('/api/account/places')
         .success(function(data){
             $scope.places = data
@@ -426,13 +533,34 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
         .error (function (msg){
             pushMessage('alert','ERROR', msg, "cross")
         })
-        .finally (function (){
-            $scope.$emit('unload')
+    }
+
+    GetTables = function (){
+        $http.get('/api/account/tables')
+        .success(function(data){
+            $scope.tables = data
+        })
+        .error (function (msg){
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+    }
+
+    GetTablesASC = function (){
+        $scope.$emit('loadasc')
+        $http.get('/api/account/tables')
+        .success(function(data){
+            $scope.tables = data
+        })
+        .error (function (msg){
+            $scope.$emit('unloadasc')
+            pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function(){
+            $scope.$emit('unloadasc')
         })
     }
 
     GetPlacesASC = function (){
-        
         $scope.$emit('loadasc')
         $http.get('/api/account/places')
         .success(function(data){
@@ -459,7 +587,6 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
     }
 
     GetMovements = function (){
-        $scope.$emit('load')
         $http.get('/api/account/movements')
         .success(function(data){
             $scope.movements = data
@@ -477,6 +604,7 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
     GetUsers()
     Getproducts()
     GetPlaces()
+    GetTables()
     GetMovements()
 
     $scope.load = function (item)
@@ -4396,3 +4524,70 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
         }
     };
 })
+
+app.controller('tables', function ($http, $scope, socket, $rootScope){
+    $scope.$emit('load')
+    $scope.tables = {}
+    $scope.places = []
+    $scope.inputbox = {}
+    
+    $http.get('/api/public/socket_tables')
+    .success (function (){
+        socket = io.connect()
+        socket = io.connect(urlsocket, { 'forceNew': true })
+
+        socket.on('disconnect', function ()
+        {
+            pushMessage('warning','', 'Sistema Desconectado', "cross")
+        });
+
+        socket.on('GetTables'+$rootScope.user.admin._id, function() {
+            $rootScope.$apply(function () {
+                $http.get('/api/public/get_tables')
+                .success (function (data){
+                    $scope.tables = data
+                    loadPlaces()
+                })
+                .error(function (){
+                    $scope.$emit('unload')
+                })
+                .finally (function (){
+                    $scope.$emit('unload')
+                })    
+            }) 
+        });
+    })
+    .error (function (){
+        $scope.$emit('unload')
+    })
+
+    loadPlaces = function (){
+        for (var i = 0; i < $scope.tables.length; i++)
+        {   
+            var add = true
+
+            for (var b = 0; b < $scope.places.length; b++)
+            {
+                
+                if ($scope.tables[i].place._id == $scope.places[b]._id)
+                {
+                    add = false
+                }
+            }
+
+            if (add)
+            {
+                $scope.places.push($scope.tables[i].place)
+            }
+        }
+    }
+
+    $scope.select_place = function (){
+        pushMessage('success','Mys comands', $scope.places.select, "checkmark")        
+    }
+
+    $scope.search = function (){
+        pushMessage('success','Mys comands', $scope.inputbox.txt, "checkmark")        
+    }
+})
+

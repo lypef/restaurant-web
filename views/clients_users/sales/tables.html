@@ -1,0 +1,83 @@
+<div ng-controller="tables">
+	
+	<div class="grid">
+	    <div class="row cells12">
+	        <div class="cell colspan7">
+	        <!--Contanido mesas-->
+	        <div class="panel" style="border: 1px solid #fff">
+			    <div class="heading">
+			        <center><span class="title">Mesas</span></center>
+			    </div>
+
+			    <div class="content">
+			    
+			    <center>
+			    	<div class="input-control text " data-role="input" style="width: 95%" >
+
+		    			<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" ng-change="search()" autofocus autocomplete="off" style="text-align: center">
+
+		    			<button class="button" ng-click="addonelist()"><span class="mif-search"></span></button>
+	    			</div>
+
+	    			<select id ="select" ng-model="places.select" style="text-align: center; text-align-last: center; width: 95%" ng-change="select_place()">
+		            <option value="">---Lugares---</option>
+		            <option ng-repeat=" a in places" value="{{ a._id }}">{{a.lugar}}</option>
+		        </select>
+		        <script>
+		                $(function(){
+		                    $("#select").select2();
+		                });
+		            </script>
+
+			    </center>
+
+			    	<center>
+			    		<span ng-repeat = "a in tables">
+				    		<button class="button btn_cuadrada" ng-show="a.type_mesa == 'cuadrada' && !a.open ">
+				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
+				        	</button>
+
+				        	<button class="button btn_cuadrada_open" ng-show="a.type_mesa == 'cuadrada' && a.open ">
+				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
+				        	</button>
+
+				        	<button class="button btn_rectangular" ng-show="a.type_mesa == 'rectangular' && !a.open ">
+				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
+				        	</button>
+				        	
+				        	<button class="button btn_rectangular_open" ng-show="a.type_mesa == 'rectangular' && a.open ">
+				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
+				        	</button>
+
+
+				        	<button class="button btn_redonda" ng-show="a.type_mesa == 'redonda' && !a.open ">
+				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
+				        	</button>
+
+				        	<button class="button btn_redonda_open" ng-show="a.type_mesa == 'redonda' && a.open ">
+				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
+				        	</button>
+				    </span>
+			    	</center>
+			    	<br>
+			    </div>
+			</div>
+	        <!--Finaliza Contanido mesas-->
+	        </div>
+	        <div class="cell-auto-size"  style="width: 100%">
+	        	<!--Contenido comandas-->
+	        <div class="panel success" style="border: 1px solid #fff">
+			    <div class="heading">
+			        <center><span class="title">Comandas</span></center>
+			    </div>
+			    <div class="content">
+			        <ul>
+			        <li ng-repeat="a in tables">{{ a.numero }}</li>
+			        </ul>
+			    </div>
+			</div>
+	        <!--Finaliza Contenido comandas-->
+	        </div>
+	    </div>
+	</div>
+</div>

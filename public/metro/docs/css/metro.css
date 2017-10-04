@@ -16090,3 +16090,82 @@ video::-webkit-media-controls-enclosure {
   text-align: center;
   z-index: 1;
 }
+
+.btn_cuadrada {
+  width: 130px; 
+  height: 130px; 
+  border: 2px solid #999999;
+  background: #1ba1e2;
+}
+
+.btn_cuadrada:hover {
+  background: #00aff0;
+  border: 2px solid #eeeeee;
+}
+
+.btn_cuadrada_open {
+  width: 130px; 
+  height: 130px; 
+  border: 2px solid #999999;
+  background: #9a1616;
+}
+
+.btn_cuadrada_open:hover {
+  background: #00aff0;
+  background: #ce352c;
+}
+
+.btn_rectangular {
+  width: 280px; 
+  height: 130px; 
+  border: 2px solid #999999;
+  background: #1ba1e2;
+}
+
+.btn_rectangular:hover {
+  background: #00aff0;
+  border: 2px solid #eeeeee;
+}
+
+.btn_rectangular_open {
+  width: 280px; 
+  height: 130px; 
+  border: 2px solid #999999;
+  background: #9a1616;
+}
+
+.btn_rectangular_open:hover {
+  background: #00aff0;
+  border: 2px solid #ce352c;
+}
+
+.btn_redonda {
+  width: 130px;
+  height: 130px;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  border: 2px solid #999999;
+  background: #1ba1e2;
+}
+
+.btn_redonda:hover {
+  background: #00aff0;
+  border: 2px solid #eeeeee;
+}
+
+.btn_redonda_open {
+  width: 130px;
+  height: 130px;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  border: 2px solid #9a1616;
+  background: #1ba1e2;
+}
+
+.btn_redonda_open:hover {
+  background: #ce352c;
+  border: 2px solid #eeeeee;
+}
+
