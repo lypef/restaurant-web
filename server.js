@@ -186,6 +186,21 @@ app.get('/api/finance/movements', getAccountMovements)
 app.get('/api/finance/sales', getAccountSales)
 app.get('/api/finance/products', GetProducts_sale)
 
+//Api Tables
+app.use('/api/tables/', function(req,res,next){
+    if (req.session.user.preferencias.sales)
+    {
+        next()
+    }else
+    {
+        res.status(500).send('No autorizado')
+    }
+});
+app.get('/api/tables/get_tables', get_tables)
+app.get('/api/tables/socket_tables', socket_tables)
+
+app.post('/api/tables/open', table_open)
+
 //Api globales
 app.get('/api/catproducts/:id', CatProductsEditsJson)
 app.get('/api/catproducts/', catproductsJson)
@@ -197,8 +212,7 @@ app.post('/api/catproducts/search', SearchCatProducts )
 app.get('/api/public/cut_x', GetSalesUser)
 app.get('/api/get_measurements/', GetMeasurementsJSON)
 app.get('/api/get_measurements/:id', GetMeasuremetsJSON_ID)
-app.get('/api/public/get_tables', get_tables)
-app.get('/api/public/socket_tables', socket_tables)
+
 
 app.post('/api/measurement/add', CreateMeasurement )
 app.post('/api/measurement/update', UpdateMeasurements )
@@ -249,7 +263,7 @@ app.post('/api/users_admin/delete', DeleteUser_admin );
 
 // Sales
 app.use('/api/sales/', function(req,res,next){
-    if (req.session.user.preferencias.sales)
+    if (req.session.user.preferencias.charge)
     {
         next()
     }else
@@ -1162,7 +1176,8 @@ function UpdateUser_preferencias (req, res)
             barra: req.body.preferencias.barra,
             sales: req.body.preferencias.sales,
             caja: req.body.preferencias.caja,
-            finance: req.body.preferencias.finance
+            finance: req.body.preferencias.finance,
+            charge: req.body.preferencias.charge
         },
         function( err)
         {
@@ -2696,6 +2711,27 @@ function RemoveStockproduct(item){
     })
 }
 
+function table_open (req, res){
+    db.tables.findOne({ admin: req.session.user.admin._id, _id: req.body._id }, function(err,doc){
+        if (!doc.open)
+        {
+            db.tables.update ({ _id: req.body._id},
+            {
+                open: true
+            },
+            function( err)
+            {
+                if (!err)
+                {
+                    res.status(200).send('Mesa abierta')
+                }else{res.status(500).send(err)}
+            })
+        }else
+        {
+            res.status(500).send('Mesa ya abierta')
+        }
+    });
+}
 //Config
 const port = "8080"
 

@@ -32,29 +32,42 @@
 			    </center>
 
 			    	<center>
-			    		<span ng-repeat = "a in tables">
-				    		<button class="button btn_cuadrada" ng-show="a.type_mesa == 'cuadrada' && !a.open ">
+			    		<span ng-repeat = "a in tables" ng-model="tables">
+				    		<button class="button btn_cuadrada" ng-show="a.type_mesa == 'cuadrada' && !a.open && !a.select" ng-click="action(a)">
 				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
 				        	</button>
 
-				        	<button class="button btn_cuadrada_open" ng-show="a.type_mesa == 'cuadrada' && a.open ">
+				        	<button class="button btn_cuadrada_open" ng-show="a.type_mesa == 'cuadrada' && a.open && !a.select" ng-click="action(a)">
 				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
 				        	</button>
 
-				        	<button class="button btn_rectangular" ng-show="a.type_mesa == 'rectangular' && !a.open ">
+				        	<button class="button btn_cuadrada_open_select" ng-show="a.type_mesa == 'cuadrada' && a.select " ng-click="action(a)">
+				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
+				        	</button>
+
+
+				        	<button class="button btn_rectangular" ng-show="a.type_mesa == 'rectangular' && !a.open && !a.select" ng-click="action(a)">
 				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
 				        	</button>
 				        	
-				        	<button class="button btn_rectangular_open" ng-show="a.type_mesa == 'rectangular' && a.open ">
+				        	<button class="button btn_rectangular_open" ng-show="a.type_mesa == 'rectangular' && a.open && !a.select" ng-click="action(a)">
+				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
+				        	</button>
+
+				        	<button class="button btn_rectangular_open_select" ng-show="a.type_mesa == 'rectangular' && a.select" ng-click="action(a)">
 				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
 				        	</button>
 
 
-				        	<button class="button btn_redonda" ng-show="a.type_mesa == 'redonda' && !a.open ">
+				        	<button class="button btn_redonda" ng-show="a.type_mesa == 'redonda' && !a.open && !a.select" ng-click="action(a)">
 				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
 				        	</button>
 
-				        	<button class="button btn_redonda_open" ng-show="a.type_mesa == 'redonda' && a.open ">
+				        	<button class="button btn_redonda_open" ng-show="a.type_mesa == 'redonda' && a.open && !a.select" ng-click="action(a)">
+				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
+				        	</button>
+
+				        	<button class="button btn_redonda_open_select" ng-show="a.type_mesa == 'redonda' && a.select" ng-click="action(a)">
 				        	<strong><h4>Mesa: {{ a.numero }}</h4></strong><h6>Pers: {{ a.peoples }}</h6>
 				        	</button>
 				    </span>
@@ -71,9 +84,10 @@
 			        <center><span class="title">Comandas</span></center>
 			    </div>
 			    <div class="content">
-			        <ul>
-			        <li ng-repeat="a in tables">{{ a.numero }}</li>
-			        </ul>
+			    	<button class="button" ng-click="open()">
+						Abrir mesa {{ table_select.numero }}
+					</button>
+			    	</center>
 			    </div>
 			</div>
 	        <!--Finaliza Contenido comandas-->

@@ -191,6 +191,8 @@
                             <li class="divider"></li>
                             
                             <li><a class="mif-search" ng-click="load(a)" onclick="toggleMetroDialog('#update')"> Actualizar</a></li>
+
+                            <li><a class="mif-tree" ng-click="load(a)" onclick="toggleMetroDialog('#update_permisos')"> Permisos</a></li>
                             
                         </ul>
                     </div>
@@ -533,7 +535,33 @@
           <option value="orange">Orange</option>
       </select>
       </div>
-      <br><br>
+      <br>
+        <button class="button success" ng-click="update()" onclick="hideMetroDialog('#update')"><span class="mif-floppy-disk"></span> Guardar</button>
+
+      <button class="button info" onclick="hideMetroDialog('#update')"><span class="mif-checkmark"></span> Cancelar</button>
+      
+      </form>    
+    <br>
+     </div>   
+<!--Ventana edit modal--> 
+
+<!--Ventana edit permisos-->
+<div data-role="dialog" id="update_permisos" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+
+      <center>
+        <img ng-src="{{ tmp.img }}" style="
+                width: 80px;
+                height: 80px;
+                border-radius: 150px;
+                -webkit-border-radius: 150px;
+                -moz-border-radius: 150px;
+                ">
+      </center>
+      <br>
+      <form align="center">
     <label class="switch-original">
       <input type="checkbox" ng-model="tmp.preferencias.admin">Administrador
       <span class="check"></span>
@@ -543,7 +571,7 @@
       <input type="checkbox" ng-model="tmp.preferencias.ingredientes">Gestion ingredientes
       <span class="check"></span>
     </label>
-    
+    <br><br>
     <label class="switch-original">
       <input type="checkbox" ng-model="tmp.preferencias.recetas">Gestion recetas
       <span class="check"></span>
@@ -553,15 +581,15 @@
       <input type="checkbox" ng-model="tmp.preferencias.products">Gestion productos
       <span class="check"></span>
     </label>
-    
+    <br><br>
     <label class="switch-original">
       <input type="checkbox" ng-model="tmp.preferencias.clientes">Gestion clientes
       <span class="check"></span>
     </label>
     <label class="switch-original">
-      <input type="checkbox" ng-model="tmp.preferencias.sales">Ventas
+      <input type="checkbox" ng-model="tmp.preferencias.sales">Gestion mesas
       <span class="check"></span>
-    </label>
+    </label><br><br>
     <label class="switch-original">
       <input type="checkbox" ng-model="tmp.preferencias.cocina">Gestion cocina
       <span class="check"></span>
@@ -569,25 +597,31 @@
     <label class="switch-original">
       <input type="checkbox" ng-model="tmp.preferencias.barra">Gestion barra
       <span class="check"></span>
-    </label>
+    </label><br><br>
     <label class="switch-original">
-      <input type="checkbox" ng-model="tmp.preferencias.caja">Gestion caja
+      <input type="checkbox" ng-model="tmp.preferencias.caja">Corte X/Z Global
       <span class="check"></span>
     </label>
     <label class="switch-original">
       <input type="checkbox" ng-model="tmp.preferencias.finance">Gestion finanzas
       <span class="check"></span>
+    </label><br><br>
+    <label class="switch-original">
+      <input type="checkbox" ng-model="tmp.preferencias.charge">Gestion cobros
+      <span class="check"></span>
     </label>
     <br><br>
       
-        <button class="button success" ng-click="update()" onclick="hideMetroDialog('#update')"><span class="mif-floppy-disk"></span> Guardar</button>
+        <button class="button success" ng-click="update()" onclick="hideMetroDialog('#update_permisos')"><span class="mif-floppy-disk"></span> Guardar</button>
 
-      <button class="button info" onclick="hideMetroDialog('#update')"><span class="mif-checkmark"></span> Cancelar</button>
+      <button class="button info" onclick="hideMetroDialog('#update_permisos')"><span class="mif-checkmark"></span> Cancelar</button>
       
       </form>    
     <br>
      </div>   
-<!--Ventana edit modal-->        
+<!--Ventana edit permisos-->        
+
+
 <div data-role="dialog" id="delete" class="padding30" data-type="" 
     data-close-button="true"
     data-width="auto"

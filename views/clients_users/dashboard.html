@@ -101,17 +101,17 @@
         <span class="app-bar-divider"></span>
         <ul class="app-bar-menu">
             
-            <li ng-show="usuario.preferencias.sales">
+            <li ng-show="usuario.preferencias.sales || usuario.preferencias.charge">
                 <a href="" class="dropdown-toggle"><span class="mif-spoon-fork mif-2x"></span> Restaurante</a>
                 <ul class="d-menu" data-role="dropdown">
                     <li>
-                        <a href="dashboard#/tables"><span class="mif-apps mif-2x"></span> Mesas</a>
+                        <a href="dashboard#/tables" ng-show="usuario.preferencias.sales"><span class="mif-apps mif-2x" ></span> Mesas</a>
                         </li>
                         <li>
-                        <a href="#"><span class="mif-motorcycle mif-2x"></span> Domicilios</a>
+                        <a href="#" ng-show="usuario.preferencias.charge"><span class="mif-dollar mif-2x"></span> Caja</a>
                         </li>
                         <li>
-                        <a href="dashboard#/my_comands"><span class="mif-keyboard mif-2x"></span> Mis comandas</a>
+                        <a href="dashboard#/my_comands" ng-show="usuario.preferencias.sales"><span class="mif-keyboard mif-2x"></span> Mis comandas</a>
                         </li>
 
                     </ul>
@@ -120,7 +120,7 @@
             <li>
             <li ng-show="usuario.preferencias.cocina"><a href="dashboard#/kitchen_cocina"><span class="mif-fire mif-2x"></span> Cocina</a></li>
             <li>
-            <li ng-show="usuario.preferencias.sales"><a href="dashboard#/sales/vtd"><span class="mif-shopping-basket2 mif-2x"></span> Venta directa</a></li>
+            <li ng-show="usuario.preferencias.charge"><a href="dashboard#/sales/vtd"><span class="mif-shopping-basket2 mif-2x"></span> Venta directa</a></li>
             <li ng-show="usuario.preferencias.caja || usuario.preferencias.admin || usuario.preferencias.finance">
                 <a href="" class="dropdown-toggle"><span class="mif-money mif-2x"></span> Caja</a>
                 <ul class="d-menu" data-role="dropdown">

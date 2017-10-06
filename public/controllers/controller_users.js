@@ -2647,8 +2647,6 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
 
 app.controller("sales_vtd", ['$scope', '$http', 'socket', '$rootScope', function ($scope, $http, socket, $rootScope) {
 
-
-
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -4530,8 +4528,40 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
     $scope.tables = {}
     $scope.places = []
     $scope.inputbox = {}
-    
-    $http.get('/api/public/socket_tables')
+    $scope.table_select = {}
+
+    $scope.action = function (item)
+    {
+        DeselectAllTables()
+        item.select = true
+        $scope.table_select = item
+    }
+
+    $scope.open = function ()
+    {
+        $scope.$emit('loadasc')
+        $http.post('/api/tables/open', $scope.table_select)
+        .success (function (msg){
+            $scope.table_select.open = true
+            DeselectAllTables()
+            pushMessage('success','MESA', msg, "checkmark")
+        })
+        .error (function (msg){
+          pushMessage('alert','MESA', msg, "cross")  
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+
+    DeselectAllTables = function (){
+        for (var i = 0; i < $scope.tables.length; i++)
+        {
+            $scope.tables[i].select = false
+        }
+    }
+
+    $http.get('/api/tables/socket_tables')
     .success (function (){
         socket = io.connect()
         socket = io.connect(urlsocket, { 'forceNew': true })
@@ -4543,7 +4573,7 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
 
         socket.on('GetTables'+$rootScope.user.admin._id, function() {
             $rootScope.$apply(function () {
-                $http.get('/api/public/get_tables')
+                $http.get('/api/tables/get_tables')
                 .success (function (data){
                     $scope.tables = data
                     loadPlaces()
