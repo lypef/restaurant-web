@@ -261,7 +261,7 @@ app.controller("UserValues", function($scope, $http, $timeout, $rootScope){
     }
 });
 
-app.controller("users_administrator", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
+app.controller("users_administrator", ['$scope', '$http','$timeout','socket','$rootScope', function ($scope, $http, $timeout, socket,$rootScope) {
     $scope.currentPage = 0;
     $scope.pageSize = 5;
     $scope.pages = [];
@@ -289,6 +289,7 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
         $http.post('/api/account/edit_table', $scope.tmp_table)
         .success (function (msg){
             GetTablesASC()
+            socket.emit('UpdateTables'+$rootScope.user.admin._id)
             pushMessage('success', 'HECHO', msg, "checkmark")
         })
         .error (function (msg){
@@ -306,6 +307,7 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
         $http.post('/api/account/delete_table', $scope.tmp_table)
         .success (function (msg){
             GetTablesASC()
+            socket.emit('UpdateTables'+$rootScope.user.admin._id)
             pushMessage('success', 'HECHO', msg, "checkmark")
         })
         .error (function (msg){
@@ -324,6 +326,7 @@ app.controller("users_administrator", ['$scope', '$http','$timeout', function ($
         .success (function(msg){
             $scope.table_add = {}
             GetTablesASC()
+            socket.emit('UpdateTables'+$rootScope.user.admin._id)
             pushMessage('success', 'HECHO', msg, "checkmark")
         })
         .error (function (msg){
@@ -4527,8 +4530,9 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
     $scope.$emit('load')
     $scope.tables = {}
     $scope.places = []
+    $scope.places_hold = []
     $scope.inputbox = {}
-    $scope.table_select = {}
+    $scope.table_select = 'all'
 
     $scope.action = function (item)
     {
@@ -4544,6 +4548,7 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
         .success (function (msg){
             $scope.table_select.open = true
             DeselectAllTables()
+            socket.emit('UpdateTables'+$rootScope.user.admin._id)
             pushMessage('success','MESA', msg, "checkmark")
         })
         .error (function (msg){
@@ -4576,6 +4581,7 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
                 $http.get('/api/tables/get_tables')
                 .success (function (data){
                     $scope.tables = data
+                    $scope.tables_hold = data
                     loadPlaces()
                 })
                 .error(function (){
@@ -4613,7 +4619,21 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
     }
 
     $scope.select_place = function (){
-        pushMessage('success','Mys comands', $scope.places.select, "checkmark")        
+        if ($scope.places.select == 'all')
+        {
+            $scope.tables = $scope.tables_hold
+        }else
+        {
+
+            $scope.tables = []
+            for (var i = 0; i < $scope.tables_hold.length; i++)
+            {
+                if ($scope.tables_hold[i].place._id == $scope.places.select)
+                {
+                    $scope.tables.push($scope.tables_hold[i])
+                }
+            }
+        }
     }
 
     $scope.search = function (){

@@ -20,7 +20,7 @@
 	    			</div>
 
 	    			<select id ="select" ng-model="places.select" style="text-align: center; text-align-last: center; width: 95%" ng-change="select_place()">
-		            <option value="">---Lugares---</option>
+		            <option value="all">---VER TODOS---</option>
 		            <option ng-repeat=" a in places" value="{{ a._id }}">{{a.lugar}}</option>
 		        </select>
 		        <script>
@@ -84,6 +84,7 @@
 			        <center><span class="title">Comandas</span></center>
 			    </div>
 			    <div class="content">
+			    	<center>
 			    	<button class="button" ng-click="open()">
 						Abrir mesa {{ table_select.numero }}
 					</button>
