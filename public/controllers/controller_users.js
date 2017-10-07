@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "http://192.168.1.66:8080"
+var urlsocket = "http://192.168.1.75:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -4619,6 +4619,7 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
     }
 
     $scope.select_place = function (){
+        DeselectAllTables()
         if ($scope.places.select == 'all')
         {
             $scope.tables = $scope.tables_hold

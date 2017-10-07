@@ -85,9 +85,19 @@
 			    </div>
 			    <div class="content">
 			    	<center>
-			    	<button class="button" ng-click="open()">
+			    	<button class="button" ng-click="open()" ng-show="!table_select.open && table_select">
 						Abrir mesa {{ table_select.numero }}
 					</button>
+					
+					<div ng-show="table_select.open">
+						<br>
+						Aqui va el contenido especifico de la mesa. 
+					</div>
+
+					<button class="button" ng-click="open()" ng-show="table_select.open">
+						Cerrar mesa {{ table_select.numero }}
+					</button>
+
 			    	</center>
 			    </div>
 			</div>
