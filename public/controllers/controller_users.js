@@ -4541,6 +4541,24 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
         $scope.table_select = item
     }
 
+    $scope.close = function ()
+    {
+        $scope.$emit('loadasc')
+        $http.post('/api/tables/close', $scope.table_select)
+        .success (function (msg){
+            $scope.table_select.open = false
+            DeselectAllTables()
+            socket.emit('UpdateTables'+$rootScope.user.admin._id)
+            pushMessage('success','MESA', msg, "checkmark")
+        })
+        .error (function (msg){
+          pushMessage('alert','MESA', msg, "cross")  
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+
     $scope.open = function ()
     {
         $scope.$emit('loadasc')

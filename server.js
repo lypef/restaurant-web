@@ -200,6 +200,7 @@ app.get('/api/tables/get_tables', get_tables)
 app.get('/api/tables/socket_tables', socket_tables)
 
 app.post('/api/tables/open', table_open)
+app.post('/api/tables/close', table_close)
 
 //Api globales
 app.get('/api/catproducts/:id', CatProductsEditsJson)
@@ -2732,6 +2733,29 @@ function table_open (req, res){
         }
     });
 }
+
+function table_close (req, res){
+    db.tables.findOne({ admin: req.session.user.admin._id, _id: req.body._id }, function(err,doc){
+        if (doc.open)
+        {
+            db.tables.update ({ _id: req.body._id},
+            {
+                open: false
+            },
+            function( err)
+            {
+                if (!err)
+                {
+                    res.status(200).send('Mesa cerrada')
+                }else{res.status(500).send(err)}
+            })
+        }else
+        {
+            res.status(500).send('Mesa ya abierta')
+        }
+    });
+}
+
 //Config
 const port = "8080"
 
