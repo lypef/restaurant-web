@@ -4534,7 +4534,44 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
     $scope.places_hold = []
     $scope.inputbox = {}
     $scope.table_select = 'all'
-    $scope.category = []
+    $scope.category = {}
+
+    $scope.search_product = function ()
+    {
+        $scope.category.select = null
+
+        if ($scope.inputbox.txt0 == null || $scope.inputbox.txt0 == '')
+        {
+            $scope.products = $scope.products_hold
+        }else
+        {
+            $scope.products =[]
+            for (var i = 0; i < $scope.products_hold.length; i++)
+            {
+                if ($scope.products_hold[i].name.includes($scope.inputbox.txt0.toUpperCase()) || $scope.products_hold[i].codebar.includes($scope.inputbox.txt0.toUpperCase()))
+                {
+                    $scope.products.push($scope.products_hold[i])
+                }
+            }
+        }
+    }
+    
+    $scope.show_categories = function () {
+        if (!$scope.category.select)
+        {
+            $scope.products = $scope.products_hold
+        }else
+        {
+            $scope.products = []
+            for (var i = 0; i < $scope.products_hold.length; i ++)
+            {
+                if ($scope.products_hold[i].category._id == $scope.category.select)
+                {
+                    $scope.products.push($scope.products_hold[i])
+                }
+            }
+        }
+    }
 
     $scope.action = function (item)
     {
@@ -4624,6 +4661,14 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
                 })
             })
         })
+
+        $http.get('/api/catproducts/')
+        .success(function(data) {
+            $scope.category = data;
+        })
+        .error(function(data) {
+            pushMessage('alert','ERROR',data, "cross")
+        })
     })
     .error (function (){
         $scope.$emit('unload')
@@ -4650,26 +4695,6 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
         }
     }
 
-    loadCategory = function (){
-        for (var i = 0; i < $scope.products_hold.length; i++)
-        {   
-            var add = true
-            console.log($scope.products_hold[i])
-            for (var b = 0; b < $scope.category.length; b++)
-            {
-                
-                if ($scope.products_hold[i].category._id == $scope.category[b]._id)
-                {
-                    add = false
-                }
-            }
-
-            if (add)
-            {
-                $scope.category.push($scope.products_hold[i].category)
-            }
-        }
-    }
 
     $scope.select_place = function (){
         DeselectAllTables()
