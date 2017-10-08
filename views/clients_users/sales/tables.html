@@ -91,7 +91,57 @@
 					
 					<div ng-show="table_select.open">
 						<br>
-						Aqui va el contenido especifico de la mesa. 
+						<!--Levantar pedido-->
+						<select id ="select0" ng-model="categories.select" style="text-align: center; text-align-last: center; width: 95%" ng-change="show_categories()">
+			            <option value="">---Cetegorias---</option>
+			            <option ng-repeat=" a in category" value="{{ a._id }}">{{a.categoria}}</option>
+			        </select>
+			        <script>
+		                $(function(){
+		                    $("#select0").select2();
+		                });
+		            </script>
+		            <form>
+		    		<div class="input-control text " data-role="input" style="width: 95%">
+
+		    		<input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" ng-change="search()" id="input_search" autofocus autocomplete="off">
+
+		    		<button class="button" ng-click="addonelist()"><span class="mif-plus"></span></button></div>
+		        	</form>
+
+		        	<div class='pagination' >
+          <button type='button ' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = 0'>Principio</button>
+
+          <button type='button' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
+
+          <button type='button' class='item current' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{ page.no }}</button>
+
+          <button type='button' class='item' ng-disabled='currentPage >= products.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
+
+          <button type='button' class='item' ng-disabled='currentPage == products.length/pageSize - 1' ng-click='currentPage = products.length/pageSize - 1'>Final</button>
+        
+        <table class="table striped hovered bordered">
+         <thead>
+            <tr>
+            <th>PRODUCTO</th>
+            <th>OPCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr ng-repeat="a in products | startFromGrid: currentPage * pageSize | limitTo: pageSize" ng-model="products" >
+                <td align="center">
+                <img class= "img-round50" ng-src="{{a.img}}"><br>
+                {{ a.name }} - $ {{ a.price }}</td>
+                <td align="center">
+                	<button class="button cycle-button large-button primary" ng-click="add(a)">+</button>
+                	<button class="button cycle-button large-button" ng-click="remove(a)">-</button>
+                </td>
+
+              </tr>
+          </tbody>
+    </table>
+    </div>
+						<!--Levantar pedido-->
 					</div>
 
 					<button class="button" ng-click="close()" ng-show="table_select.open">

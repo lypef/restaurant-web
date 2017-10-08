@@ -16128,7 +16128,7 @@ video::-webkit-media-controls-enclosure {
 }
 
 .btn_rectangular {
-  width: 280px; 
+  width: 264px; 
   height: 130px; 
   border: 2px solid #999999;
   background: #1ba1e2;
@@ -16140,7 +16140,7 @@ video::-webkit-media-controls-enclosure {
 }
 
 .btn_rectangular_open {
-  width: 280px; 
+  width: 264px; 
   height: 130px; 
   border: 2px solid #999999;
   background: #9a1616;
@@ -16152,7 +16152,7 @@ video::-webkit-media-controls-enclosure {
 }
 
 .btn_rectangular_open_select {
-  width: 280px; 
+  width: 264px; 
   height: 130px; 
   border: 2px solid #999999;
   background: #f0a30a;

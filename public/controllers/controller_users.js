@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "http://192.168.1.75:8080"
+var urlsocket = "http://192.168.1.67:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -2313,9 +2313,7 @@ app.controller("view_receta", function($scope, $http, $routeParams, $window)
 })
 
 
-app.controller('update_products', function ($scope, $http, $timeout, $routeParams, $window) {
-
-
+app.controller('update_products', function ($scope, $http, $timeout, $routeParams, $window, socket, $rootScope) {
 
     $scope.product = {};
     $scope.recetas = {};
@@ -2344,6 +2342,7 @@ app.controller('update_products', function ($scope, $http, $timeout, $routeParam
         {
             pushMessage('success', 'HECHO', 'Producto actualizado con exito', "checkmark")
             $scope.DateClient = {};
+            socket.emit('update_products'+$rootScope.user.admin._id)
             $window.location = "dashboard#/products";
         })
         .error(function(msg)
@@ -4529,10 +4528,13 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
 app.controller('tables', function ($http, $scope, socket, $rootScope){
     $scope.$emit('load')
     $scope.tables = {}
+    $scope.products = {}
+    $scope.products_hold = {}
     $scope.places = []
     $scope.places_hold = []
     $scope.inputbox = {}
     $scope.table_select = 'all'
+    $scope.category = []
 
     $scope.action = function (item)
     {
@@ -4594,6 +4596,7 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
             pushMessage('warning','', 'Sistema Desconectado', "cross")
         });
 
+
         socket.on('GetTables'+$rootScope.user.admin._id, function() {
             $rootScope.$apply(function () {
                 $http.get('/api/tables/get_tables')
@@ -4601,15 +4604,26 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
                     $scope.tables = data
                     $scope.tables_hold = data
                     loadPlaces()
+                    loadCategory()
                 })
                 .error(function (){
-                    $scope.$emit('unload')
-                })
-                .finally (function (){
                     $scope.$emit('unload')
                 })    
             }) 
         });
+
+        socket.on('GetProducts'+$rootScope.user.admin._id, function() {
+            $rootScope.$apply(function (){
+                $http.get('/api/sales/products')
+                .success (function (data){
+                    $scope.products = data
+                    $scope.products_hold = data
+                })
+                .finally (function (){
+                    $scope.$emit('unload')
+                })
+            })
+        })
     })
     .error (function (){
         $scope.$emit('unload')
@@ -4636,6 +4650,27 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
         }
     }
 
+    loadCategory = function (){
+        for (var i = 0; i < $scope.products_hold.length; i++)
+        {   
+            var add = true
+            console.log($scope.products_hold[i])
+            for (var b = 0; b < $scope.category.length; b++)
+            {
+                
+                if ($scope.products_hold[i].category._id == $scope.category[b]._id)
+                {
+                    add = false
+                }
+            }
+
+            if (add)
+            {
+                $scope.category.push($scope.products_hold[i].category)
+            }
+        }
+    }
+
     $scope.select_place = function (){
         DeselectAllTables()
         if ($scope.places.select == 'all')
@@ -4655,8 +4690,23 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
         }
     }
 
-    $scope.search = function (){
-        pushMessage('success','Mys comands', $scope.inputbox.txt, "checkmark")        
+    $scope.search = function ()
+    {
+        if (!$scope.inputbox.txt)
+        {
+            $scope.tables = $scope.tables_hold
+        }
+        else
+        {
+            $scope.tables = []
+            for (var i = 0; i < $scope.tables_hold.length; i ++)
+            {
+                if ($scope.tables_hold[i].numero == $scope.inputbox.txt)
+                {
+                    $scope.tables.push($scope.tables_hold[i])
+                }
+            }
+        }
     }
 })
 

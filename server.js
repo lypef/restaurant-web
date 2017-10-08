@@ -1937,8 +1937,14 @@ function socket_tables (req, res)
 
       socket.emit('GetTables'+req.session.user.admin._id);
 
+      socket.emit('GetProducts'+req.session.user.admin._id);
+
       socket.on('UpdateTables'+req.session.user.admin._id, function (data) {
         socket.broadcast.emit('GetTables'+req.session.user.admin._id);
+      });
+
+      socket.on('update_products'+req.session.user.admin._id, function () {
+        socket.broadcast.emit('GetProducts'+req.session.user.admin._id);
       });
 
       socket.on('disconnect', function (){
@@ -2558,12 +2564,12 @@ function addvtd (req, res ){
             {
                 if (req.body[i].unidades == 1)
                 {
-                    add_sale_product(req.body[i]._id, req.session.user.admin._id, ticket._id)
+                    add_sale_product(req.body[i]._id, req.session.user.admin._id, ticket._id, true)
                 }else
                 {
                     for (var b = 1; b <= req.body[i].unidades; b++)
                     {
-                        add_sale_product(req.body[i]._id, req.session.user.admin._id, ticket._id)
+                        add_sale_product(req.body[i]._id, req.session.user.admin._id, ticket._id, true)
                     }
                 }
                 if (req.body[i].cocina || req.body[i].barra){
@@ -2591,12 +2597,13 @@ function addvtd (req, res ){
 
 }
 
-function add_sale_product (product, admin, ticket)
+function add_sale_product (product, admin, ticket, pay)
 {
     var sale_produc_add = new db.sales_products({
         admin: admin,
         sale: ticket,
-        product: product
+        product: product,
+        pay: pay
     })
 
     sale_produc_add.save (function(err){

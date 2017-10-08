@@ -138,6 +138,7 @@ var sales_products_scheme = new mongoose.Schema({
 	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'},
 	sale: { type: Schema.Types.ObjectId, ref: 'sales'},
 	product: { type: Schema.Types.ObjectId, ref: 'products'},
+	pay: { type: Boolean, default: false, required: true }
 })
 
 var kitchen_scheme = new mongoose.Schema({
