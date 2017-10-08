@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "http://192.168.1.67:8080"
+var urlsocket = "http://192.168.1.75:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -4527,6 +4527,12 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
 
 app.controller('tables', function ($http, $scope, socket, $rootScope){
     $scope.$emit('load')
+    
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
+    $scope.pageSizetmp = {}
+
     $scope.tables = {}
     $scope.products = {}
     $scope.products_hold = {}
@@ -4535,6 +4541,166 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
     $scope.inputbox = {}
     $scope.table_select = 'all'
     $scope.category = {}
+    $scope.comanda = []
+
+    $scope.send_cocina = function (){
+        $scope.$emit('load')
+        $http.post('/api/sales/vtd/', $scope.comanda)
+        .success(function(msg){
+          socket.emit('UpdateComanda'+$rootScope.user.admin._id);
+          $scope.clean()
+          pushMessage('success','', msg, "checkmark")
+        })
+        .error (function (msg){
+            pushMessage('alert','', msg, "cross")
+            $scope.$emit('unload')
+        })
+        .finally (function (){
+            $scope.$emit('unload')
+        })
+    }
+
+    $scope.cleanbtn = function (){
+        $scope.category.select = null
+        $scope.inputbox.txt = null
+        $scope.products = $scope.products_hold
+        $scope.comanda = []
+        LoadPages()
+        document.getElementById('input_search').focus();
+    }
+
+    $scope.clean = function (){
+        $scope.categories.select = null
+        $scope.inputbox.txt = null
+        $scope.products = $scope.products_hold
+        $scope.comanda = []
+        $scope.LoadPages()
+        document.getElementById('input_search').focus();
+    }
+    
+    GetTotal_Comanda = function ()
+    {
+        $scope.comanda.total = 0
+        for (var i = 0; i < $scope.comanda.length; i++)
+        {
+            $scope.comanda.total += $scope.comanda[i].total
+        }
+        $scope.comanda.total = $scope.comanda.total.toFixed(2)
+    }
+    
+    $scope.addonelist = function (){
+        $scope.inputbox.txt = null
+        var exist = false
+
+        for (var i = 0; i < $scope.comanda.length; i++)
+        {
+            if ($scope.comanda[i]._id == $scope.products[0]._id)
+            {
+                $scope.comanda[i].unidades ++
+                if ($scope.products[0].receta)
+                {
+                    $scope.products[0].stockc --
+                }else
+                {
+                    $scope.products[0].stock --
+                }
+                $scope.comanda[i].total = $scope.comanda[i].unidades * $scope.comanda[i].price
+                exist = true
+            }
+        }
+
+        if (!exist)
+        {
+            $scope.products[0].unidades = 1;
+            $scope.products[0].total = $scope.products[0].price;
+            $scope.products[0].delivery = true
+            if ($scope.products[0].receta)
+            {
+                $scope.products[0].stockc --
+            }else
+            {
+                $scope.products[0].stock --
+            }
+            $scope.comanda.push ($scope.products[0])
+        }
+        pushMessage('success','',$scope.products[0].unidades + ' ' + $scope.products[0].name, "checkmark")
+        GetTotal_Comanda()
+        document.getElementById('input_search').focus();
+    }
+
+    $scope.add = function (item){
+        $scope.inputbox.txt = null
+        var exist = false
+
+        for (var i = 0; i < $scope.comanda.length; i++)
+        {
+            if ($scope.comanda[i]._id == item._id)
+            {
+                $scope.comanda[i].unidades ++
+                if (item.receta)
+                {
+                    item.stockc --
+                }else
+                {
+                    item.stock --
+                }
+                $scope.comanda[i].total = $scope.comanda[i].unidades * $scope.comanda[i].price
+                exist = true
+            }
+        }
+
+        if (!exist)
+        {
+            item.unidades = 1;
+            item.total = item.price;
+            item.delivery = true
+            if (item.receta)
+            {
+                item.stockc --
+            }else
+            {
+                item.stock --
+            }
+            $scope.comanda.push (item)
+        }
+        pushMessage('success','',item.unidades + ' ' + item.name, "checkmark")
+        GetTotal_Comanda()
+        document.getElementById('input_search').focus();
+    }
+
+    $scope.remove = function (item){
+        $scope.inputbox.txt = null
+        for (var i = 0; i < $scope.comanda.length; i++)
+        {
+            if ($scope.comanda[i]._id == item._id && $scope.comanda[i].unidades == 1)
+            {
+                $scope.comanda.splice($scope.comanda.indexOf(item),1);
+                if (item.receta)
+                {
+                    item.stockc ++
+                }else
+                {
+                    item.stock ++
+                }
+                GetTotal_Comanda()
+            }
+            if ($scope.comanda[i]._id == item._id && $scope.comanda[i].unidades > 1)
+            {
+                $scope.comanda[i].unidades --
+                $scope.comanda[i].total = $scope.comanda[i].unidades * $scope.comanda[i].price
+                if (item.receta)
+                {
+                    item.stockc ++
+                }else
+                {
+                    item.stock ++
+                }
+            }
+        }
+        GetTotal_Comanda()
+        document.getElementById('input_search').focus();
+        pushMessage('warning','',item.unidades + ' ' + item.name, "checkmark")
+    }
 
     $scope.search_product = function ()
     {
@@ -4554,6 +4720,7 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
                 }
             }
         }
+        LoadPages()
     }
     
     $scope.show_categories = function () {
@@ -4571,6 +4738,7 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
                 }
             }
         }
+        LoadPages()
     }
 
     $scope.action = function (item)
@@ -4641,7 +4809,6 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
                     $scope.tables = data
                     $scope.tables_hold = data
                     loadPlaces()
-                    loadCategory()
                 })
                 .error(function (){
                     $scope.$emit('unload')
@@ -4655,6 +4822,7 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
                 .success (function (data){
                     $scope.products = data
                     $scope.products_hold = data
+                    LoadPages()
                 })
                 .finally (function (){
                     $scope.$emit('unload')
@@ -4732,6 +4900,41 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
                 }
             }
         }
+        LoadPages()
     }
+
+    LoadPages = function ()
+    {
+        $scope.pages.length = 0;
+            var ini = $scope.currentPage - 4;
+            var fin = $scope.currentPage + 5;
+            if (ini < 1) {
+              ini = 1;
+              if (Math.ceil($scope.products.length / $scope.pageSize) > 10)
+                fin = 10;
+              else
+                fin = Math.ceil($scope.products.length / $scope.pageSize);
+            } else {
+              if (ini >= Math.ceil($scope.products.length / $scope.pageSize) - 10) {
+                ini = Math.ceil($scope.products.length / $scope.pageSize) - 10;
+                fin = Math.ceil($scope.products.length / $scope.pageSize);
+              }
+            }
+            if (ini < 1) ini = 1;
+            for (var i = ini; i <= fin; i++) {
+              $scope.pages.push({
+                no: i
+              });
+            }
+
+            if ($scope.currentPage >= $scope.pages.length)
+            $scope.currentPage = $scope.pages.length - 1;
+    }
+
+
+    $scope.setPage = function(index) {
+        $scope.currentPage = index - 1;
+    };
+
 })
 

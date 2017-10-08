@@ -140,7 +140,45 @@
           </tbody>
     </table>
     <hr>
-    <label class="tag warning" align="center"><h3>Comanda</h3></label>
+	<label class="tag warning" align="center"><h3>Comanda</h3></label>
+	<div style="overflow-x:auto;">
+		
+				  <div align="left" style="border-left: 8px solid transparent;">
+		
+				  <button class="button primary large-button" ng-disabled="!comanda[0]" onclick="toggleMetroDialog('#vtd')">Total $ {{ comanda.total }}</button>
+		
+				  <button class="button warning large-button mif-bin" ng-disabled="!comanda[0]" ng-click="cleanbtn()">Limpiar</button>
+		
+				</div>
+	<table class="table striped hovered bordered">
+		<thead>
+		  <tr>
+			<th>UNIDADES</th>
+			<th>PRODUCTO</th>
+			<th>UNITARIO</th>
+			<th>TOTAL</th>
+			<th>OPCIONES</th>
+						  <th>COMENTARIOS</th>
+		  </tr>
+		</thead>
+		<tbody>
+		  <tr ng-repeat='a in comanda'>
+			<td align="center">
+			<span class="tag success"><h2>{{ a.unidades }}</h2></span>
+			</td>
+			<td><img class="img-round80" ng-src="{{ a.img }}"> {{ a.name }}</td>
+			<td align="center"><span class="tag info"><h4>$ {{ a.price }}</h4></span></td>
+			<td align="center"><span class="tag warning"><h4>$ {{ a.total }}</h4></span></td>
+			<td align="center">
+				  <button class="button cycle-button large-button primary" ng-click="add(a)">+</button>
+				  <button class="button cycle-button large-button" ng-click="remove(a)">-</button>
+			</td>
+						  <td>
+							  <textarea name="name" rows="6" ng-model="a.comentario"></textarea>
+						  </td>
+		  </tr>
+		</tbody>
+	  </table>
     </div>
 						<!--Levantar pedido-->
 					</div>
@@ -156,4 +194,20 @@
 	        </div>
 	    </div>
 	</div>
+	<div data-role="dialog" id="vtd" class="padding30" data-type=""
+	data-close-button="true"
+	data-width="auto"
+	data-overlay="true">
+
+	<p>
+	<font face="Segoe UI Bold">
+	<h3> MESA NUMERO: {{ table_select.numero }}</h3>
+	<h4>Realizar venta por total de: {{ comanda.total }}</h4>
+	</font>
+	</p>
+
+	<button class="button success" ng-click="send_cocina()" onclick="hideMetroDialog('#vtd')">SI</button>
+	<button class="button alert" onclick="hideMetroDialog('#vtd')">NO</button>
+	</div>
+</div>
 </div>
