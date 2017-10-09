@@ -20,7 +20,7 @@ app.use(express.static('public'));
 app.use(express.static('views'));
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({'extended':'true'}));
-app.use(bodyParser.json({limit: '3mb'}));
+app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(methodOverride());
 app.use(function(req, res, next) {
@@ -276,6 +276,7 @@ app.get('/api/sales/products', getproductsJson)
 app.get('/api/sales/ingredientes/', GetUseRecetasJSON)
 app.get('/api/sales/get_cook_products', GetCookProductsAllusers)
 app.post('/api/sales/vtd/', addvtd)
+app.post('/api/sales/vtd_tables/', addvtd_tables)
 
 
 //Sockets
@@ -830,7 +831,7 @@ function User_adminValuesjson (req,res){
 };
 
 function GetCookProducts (req,res){
-    db.kitchen.find({admin: req.session.user.admin._id, end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').exec(function(err,doc){
+    db.kitchen.find({admin: req.session.user.admin._id, end: false }).sort({_id:1}).populate('admin').populate('user').populate('product').populate('mesa').exec(function(err,doc){
       if (!err)
         {
             res.json(doc)
@@ -2597,6 +2598,27 @@ function addvtd (req, res ){
 
 }
 
+function addvtd_tables (req, res ){
+    for (var i = 0; i < req.body.length; i ++)
+    {
+        if (req.body[i].cocina || req.body[i].barra){
+            if (req.body[i].comentario)
+            {
+                req.body[i].comentario = req.body[i].comentario.toUpperCase()
+            }else {
+                req.body[i].comentario = "SIN COMENTARIOS"
+            }
+            add_comanda_cocina(req.body[i], req.session.user)
+        }
+
+        if (!req.body[i].receta){
+            RemoveStockproduct(req.body[i])
+        }
+    }
+
+    res.status(200).send('Comanda enviada')
+}
+
 function add_sale_product (product, admin, ticket, pay)
 {
     var sale_produc_add = new db.sales_products({
@@ -2680,6 +2702,7 @@ function add_comanda_cocina(item, session){
     {
         admin: session.admin._id,
         user: session._id,
+        mesa: item.table,
         product: item._id,
         unidades: item.unidades,
         cocina: item.cocina,

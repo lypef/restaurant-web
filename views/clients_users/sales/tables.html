@@ -107,7 +107,7 @@
 		    		<input type="text" name="filter" ng-model="inputbox.txt0" placeholder="Buscar" ng-change="search_product()" id="input_search" autofocus autocomplete="off">
 
 		    		<button class="button" ng-click="addonelist()"><span class="mif-plus"></span></button></div>
-		        	</form>
+		  </form>
 
 		        	<div class='pagination' >
           <button type='button ' class='item' ng-disabled='currentPage == 0' ng-click='currentPage = 0'>Principio</button>
@@ -140,7 +140,7 @@
           </tbody>
     </table>
     <hr>
-	<label class="tag warning" align="center"><h3>Comanda</h3></label>
+	
 	<div style="overflow-x:auto;">
 		
 				  <div align="left" style="border-left: 8px solid transparent;">
@@ -182,18 +182,35 @@
     </div>
 						<!--Levantar pedido-->
 					</div>
-
-					<button class="button" ng-click="close()" ng-show="table_select.open">
+					<br>
+					<button class="button large-button alert" onclick="toggleMetroDialog('#close_table')" ng-show="table_select.open">
 						Cerrar mesa {{ table_select.numero }}
 					</button>
 
 			    	</center>
+			    	<br><br>
 			    </div>
 			</div>
 	        <!--Finaliza Contenido comandas-->
 	        </div>
 	    </div>
 	</div>
+
+	<div data-role="dialog" id="close_table" class="padding30" data-type=""
+	data-close-button="true"
+	data-width="auto"
+	data-overlay="true">
+
+	<p>
+	<font face="Segoe UI Bold">
+	<h3> CERRAR MESA NUMERO: {{ table_select.numero }}</h3>
+	</font>
+	</p>
+
+	<button class="button alert" ng-click="close()" onclick="hideMetroDialog('#close_table')">SI</button>
+	<button class="button success" onclick="hideMetroDialog('#close_table')">NO</button>
+	</div>
+
 	<div data-role="dialog" id="vtd" class="padding30" data-type=""
 	data-close-button="true"
 	data-width="auto"

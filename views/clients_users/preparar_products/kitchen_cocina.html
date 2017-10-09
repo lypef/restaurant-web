@@ -66,7 +66,9 @@
                 <td align="center"><span class="tag success"><h2>{{ a.unidades }}</h2></span></td>
                 <td>{{ a.status }}</td>
                 <td ng-if="a.delivery"><span class="tag warning"><h3>P. llevar</h3></span></td>
-                <td ng-if="!a.delivery"><span class="tag info"><h3>Mesa</h3></span></td>
+                
+                <td ng-if="!a.delivery"><span class="tag info"><h3>Mesa {{ a.mesa.numero }}</h3></span></td>
+                
                 <td>{{ a.comentario }}</td>
                 <td align="center">
                     <label class="input-control checkbox">

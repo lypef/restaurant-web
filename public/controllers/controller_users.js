@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "http://192.168.1.75:8080"
+var urlsocket = "restweb-lypef.c9users.io"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -4545,10 +4545,17 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
 
     $scope.send_cocina = function (){
         $scope.$emit('load')
-        $http.post('/api/sales/vtd/', $scope.comanda)
+
+        for (var i = 0 ; i < $scope.comanda.length; i ++)
+        {
+            $scope.comanda[i].table = $scope.table_select._id
+            $scope.comanda[i].delivery = false
+        }
+        
+        $http.post('/api/sales/vtd_tables/', $scope.comanda)
         .success(function(msg){
           socket.emit('UpdateComanda'+$rootScope.user.admin._id);
-          $scope.clean()
+          clean()
           pushMessage('success','', msg, "checkmark")
         })
         .error (function (msg){
@@ -4569,12 +4576,11 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
         document.getElementById('input_search').focus();
     }
 
-    $scope.clean = function (){
-        $scope.categories.select = null
+    clean = function (){
         $scope.inputbox.txt = null
         $scope.products = $scope.products_hold
         $scope.comanda = []
-        $scope.LoadPages()
+        LoadPages()
         document.getElementById('input_search').focus();
     }
     
@@ -4589,7 +4595,7 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
     }
     
     $scope.addonelist = function (){
-        $scope.inputbox.txt = null
+        $scope.inputbox.txt0 = null
         var exist = false
 
         for (var i = 0; i < $scope.comanda.length; i++)
