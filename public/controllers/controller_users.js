@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "restweb-lypef.c9users.io"
+var urlsocket = "http://192.168.1.67:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -75,6 +75,9 @@ app.config(function($routeProvider){
         })
         .when('/tables', {
             templateUrl : '/clients_users/sales/tables.html'
+        })
+        .when('/caja', {
+            templateUrl : '/clients_users/sales/caja.html'
         })
         .otherwise({
             redirectTo : '/'
@@ -4555,6 +4558,7 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
         $http.post('/api/sales/vtd_tables/', $scope.comanda)
         .success(function(msg){
           socket.emit('UpdateComanda'+$rootScope.user.admin._id);
+          socket.emit('UpdateCaja'+$rootScope.user.admin._id);
           clean()
           pushMessage('success','', msg, "checkmark")
         })
@@ -4944,3 +4948,52 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
 
 })
 
+app.controller('caja', function ($http, $scope, socket, $rootScope){
+    $scope.$emit('load')
+    
+    $scope.currentPage = 0;
+    $scope.pageSize = 5;
+    $scope.pages = [];
+    $scope.pageSizetmp = {}
+
+    $scope.tables = {}
+    $scope.comandas = {}
+    $scope.comandas_hold = {}
+    $scope.inputbox = {}
+    $scope.table_select = 'all'
+    $scope.category = {}
+    $scope.comanda = []
+
+    $http.get('/api/sales/socket_caja')
+    .success (function (){
+        socket = io.connect()
+        socket = io.connect(urlsocket, { 'forceNew': true })
+
+        socket.on('disconnect', function ()
+        {
+            pushMessage('warning','', 'Sistema Desconectado', "cross")
+        });
+
+
+        socket.on('GetCaja'+$rootScope.user.admin._id, function() {
+            $rootScope.$apply(function () {
+                $http.get('/api/sales/getComandsPay')
+                .success (function (data){
+                    $scope.comandas = data
+                    $scope.comandas_hold = data
+                })
+                .error(function (){
+                    $scope.$emit('unload')
+                })    
+                .finally (function (){
+                    $scope.$emit('unload')
+                })
+            }) 
+        });
+    })
+    .error (function (){
+        $scope.$emit('unload')
+    })
+
+    
+})

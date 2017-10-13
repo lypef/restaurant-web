@@ -13,7 +13,6 @@
             <th>ESTADO</th>
             <th>DELIVERY</th>
             <th>COMENTARIOS</th>
-            <th>SELECCIONAR</th>
             <th>OPCIONES</th>
             </tr>
           </thead>
@@ -29,13 +28,6 @@
                 <td ng-if="a.delivery"><span class="tag warning"><h3>P. llevar</h3></span></td>
                 <td ng-if="!a.delivery"><span class="tag info"><h3>Mesa {{ a.mesa.numero }}</h3></span></td>
                 <td>{{ a.comentario }}</td>
-                <td align="center">
-                    <label class="input-control checkbox">
-                        <input type="checkbox" ng-model="a.check">
-                        <span class="check"></span>
-                        <span class="caption">Seleccionar</span>
-                    </label>
-                </td>
                 <td>
                   <div class="split-button">
                       <button class="button warning" ng-click="select(a)" onclick="toggleMetroDialog('#cancelar')" ng-disabled="tmp.occupied">Cancelar</button>

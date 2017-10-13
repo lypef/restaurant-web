@@ -275,6 +275,9 @@ app.use('/api/sales/', function(req,res,next){
 app.get('/api/sales/products', getproductsJson)
 app.get('/api/sales/ingredientes/', GetUseRecetasJSON)
 app.get('/api/sales/get_cook_products', GetCookProductsAllusers)
+app.get('/api/sales/socket_caja', socket_caja)
+app.get('/api/sales/getComandsPay', getkitchencomands)
+
 app.post('/api/sales/vtd/', addvtd)
 app.post('/api/sales/vtd_tables/', addvtd_tables)
 
@@ -1839,6 +1842,17 @@ function getproductsJson (req,res){
     })
 };
 
+function getkitchencomands (req,res){
+    db.kitchen.find({ admin : req.session.user.admin._id, paid: false}).populate('admin').populate('user').populate('cocinero').populate('mesa').populate('product').exec(function(err, data) {
+        if(err) {
+            res.status(500).send(err)
+        }else
+        {
+            res.json(data);
+        }
+    })
+};
+
 function getproductsJson_stock (req,res){
     db.products.find({ admin : req.session.user.admin._id, receta: null }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, data) {
         if(err) {
@@ -1946,6 +1960,23 @@ function socket_tables (req, res)
 
       socket.on('update_products'+req.session.user.admin._id, function () {
         socket.broadcast.emit('GetProducts'+req.session.user.admin._id);
+      });
+
+      socket.on('disconnect', function (){
+        console.log('Desconectado');
+      })
+    });
+    res.sendStatus(200)
+}
+
+function socket_caja (req, res)
+{
+    io.on('connection', function(socket) {
+
+      socket.emit('GetCaja'+req.session.user.admin._id);
+
+      socket.on('UpdateCaja'+req.session.user.admin._id, function () {
+        socket.broadcast.emit('GetCaja'+req.session.user.admin._id);
       });
 
       socket.on('disconnect', function (){
@@ -2563,6 +2594,8 @@ function addvtd (req, res ){
         if (!err){
             for (var i = 0; i < req.body.length; i ++)
             {
+                req.body[i].paid = true
+                
                 if (req.body[i].unidades == 1)
                 {
                     add_sale_product(req.body[i]._id, req.session.user.admin._id, ticket._id, true)
@@ -2709,7 +2742,8 @@ function add_comanda_cocina(item, session){
         barra: item.barra,
         comentario: item.comentario,
         delivery: item.delivery,
-        status: 'En cola'
+        status: 'En cola',
+        paid: item.paid
     });
 
     p.save(function (err){

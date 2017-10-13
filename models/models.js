@@ -154,7 +154,8 @@ var kitchen_scheme = new mongoose.Schema({
 	preparando: { type: Boolean, default: false },
 	end: { type: Boolean, default: false },
 	delivery: { type: Boolean, default: false },
-	status: { type: String}
+	status: { type: String},
+	paid: { type: Boolean, default: false }
 })
 
 var places_scheme = new mongoose.Schema({

@@ -143,13 +143,6 @@
 	
 	<div style="overflow-x:auto;">
 		
-				  <div align="left" style="border-left: 8px solid transparent;">
-		
-				  <button class="button primary large-button" ng-disabled="!comanda[0]" onclick="toggleMetroDialog('#vtd')">Total $ {{ comanda.total }}</button>
-		
-				  <button class="button warning large-button mif-bin" ng-disabled="!comanda[0]" ng-click="cleanbtn()">Limpiar</button>
-		
-				</div>
 	<table class="table striped hovered bordered">
 		<thead>
 		  <tr>
@@ -183,9 +176,17 @@
 						<!--Levantar pedido-->
 					</div>
 					<br>
-					<button class="button large-button alert" onclick="toggleMetroDialog('#close_table')" ng-show="table_select.open">
+					<div align="center" style="border-left: 8px solid transparent;">
+		
+					  <button class="button primary large-button" ng-disabled="!comanda[0]" onclick="toggleMetroDialog('#vtd')">Total $ {{ comanda.total }}</button>
+						<br>
+					  <button class="button warning large-button mif-bin" ng-disabled="!comanda[0]" ng-click="cleanbtn()">Limpiar</button>
+					
+					  <button class="button large-button alert" onclick="toggleMetroDialog('#close_table')" ng-show="table_select.open">
 						Cerrar mesa {{ table_select.numero }}
-					</button>
+					  </button>
+
+					</div>
 
 			    	</center>
 			    	<br><br>
