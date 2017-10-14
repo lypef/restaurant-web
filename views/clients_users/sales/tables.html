@@ -81,11 +81,12 @@
 	        	<!--Contenido comandas-->
 	        <div class="panel success" style="border: 1px solid #fff">
 			    <div class="heading">
-			        <center><span class="title">Comandas</span></center>
+			        <center><span class="title">Comandas mesa: {{ table_select.numero }}</span></center>
 			    </div>
 			    <div class="content">
 			    	<center>
-			    	<button class="button" ng-click="open()" ng-show="!table_select.open && table_select.numero">
+			    	<br>
+			    	<button class="button warning" ng-click="open()" ng-show="!table_select.open && table_select.numero">
 						Abrir mesa {{ table_select.numero }}
 					</button>
 					
