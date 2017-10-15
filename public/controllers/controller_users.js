@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "restweb-lypef.c9users.io"
+var urlsocket = "http://localhost:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -4964,6 +4964,22 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
     $scope.category = {}
     $scope.comanda = []
 
+    $scope.SelectAll = function ()
+    {
+        for(var i = 0; i < $scope.comandas.length; i++)
+        {
+            $scope.comandas[i].check = true
+        }
+    }
+
+    $scope.SelectAny = function ()
+    {
+        for(var i = 0; i < $scope.comandas.length; i++)
+        {
+            $scope.comandas[i].check = false
+        }
+    }
+
     $http.get('/api/sales/socket_caja')
     .success (function (){
         socket = io.connect()
@@ -4993,7 +5009,5 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
     })
     .error (function (){
         $scope.$emit('unload')
-    })
-
-    
+    })  
 })

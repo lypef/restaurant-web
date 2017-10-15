@@ -1,5 +1,74 @@
 <div ng-controller="caja">
-	<ul>
-		<li ng-repeat="a in comandas">{{ a.product.name }}</li>
-	</ul>
+<div align="center">
+    <button class="button rounded large-button primary" ng-click="SelectAny()" ng-disabled="tmp.occupied">Seleccionar ninguno</button>
+
+    <button class="button rounded large-button primary" ng-click="SelectAll()" ng-disabled="tmp.occupied">Seleccionar todos</button>
+
+    <button class="button rounded large-button success" onclick="toggleMetroDialog('#PrepararAll')" ng-disabled="tmp.occupied">Cobrar seleccionados</button>
+
+    <button class="button rounded large-button warning" onclick="toggleMetroDialog('#FinalizarAll')" ng-disabled="tmp.occupied">Cobrar todos</button>
+
+</div>
+<hr>
+<div class="grid">
+    <div class="row cells2">
+        <div class="cell-auto-size"  style="width: 100%">
+            <div class="input-control text " data-role="input" style="width: 95%" >
+
+                        <input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" ng-change="search()" autofocus autocomplete="off" style="text-align: center">
+
+                        <button class="button" ng-click="addonelist()"><span class="mif-search"></span></button>
+                    </div>
+
+                </center>
+
+        </div>
+        
+        <div class="cell-auto-size"  style="width: 100%">
+            <select id ="select" ng-model="places.select" style="text-align: center; text-align-last: center; width: 95%" ng-change="select_place()">
+                    <option value="all">---Mesas---</option>
+                    <option ng-repeat=" a in places" value="{{ a._id }}">{{a.lugar}}</option>
+                </select>
+                <script>
+                        $(function(){
+                            $("#select").select2();
+                        });
+                    </script>
+        </div>
+    </div>
+</div>
+	<table class="table striped hovered bordered border">
+         <thead>
+            <tr>
+            <th>PRODUCTO</th>
+            <th>UNIDADES</th>
+            <th>ESTADO</th>
+            <th>DELIVERY</th>
+            <th>COMENTARIOS</th>
+            <th>SELECCIONAR</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr ng-repeat="a in comandas" ng-model="comandas" >	
+                <td>
+                <img class= "img-round100" ng-src="{{ a.product.img }}"> {{ a.product.name }}
+                </td>
+
+                <td align="center"><span class="tag success"><h2>{{ a.unidades }}</h2></span></td>
+                <td>{{ a.status }}</td>
+                <td ng-if="a.delivery"><span class="tag warning"><h3>P. llevar</h3></span></td>
+                
+                <td ng-if="!a.delivery"><span class="tag info"><h3>Mesa {{ a.mesa.numero }}</h3></span></td>
+                
+                <td>{{ a.comentario }}</td>
+                <td align="center">
+                    <label class="input-control checkbox">
+                        <input type="checkbox" ng-model="a.check">
+                        <span class="check"></span>
+                        <span class="caption">Seleccionar</span>
+                    </label>
+                </td>
+              </tr>
+          </tbody>
+    </table>
 </div>
