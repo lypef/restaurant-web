@@ -4963,6 +4963,29 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
     $scope.table_select = 'all'
     $scope.category = {}
     $scope.comanda = []
+    $scope.tables = []
+    $scope.money = {}
+
+    $scope.calculatetotalselect = function ()
+    {
+        $scope.money.select = 0
+        for(var i = 0; i < $scope.comandas.length; i++)
+        {
+            if ($scope.comandas[i].check)
+            {
+                $scope.money.select += $scope.comandas[i].product.price
+            }
+        }
+    }
+
+    $scope.calculatetotalselect_all = function ()
+    {
+        $scope.money.select_all = 0
+        for(var i = 0; i < $scope.comandas_hold.length; i++)
+        {
+            $scope.money.select_all += $scope.comandas_hold[i].product.price
+        }
+    }
 
     $scope.SelectAll = function ()
     {
@@ -4970,6 +4993,8 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
         {
             $scope.comandas[i].check = true
         }
+        $scope.calculatetotalselect()
+        $scope.calculatetotalselect_all()
     }
 
     $scope.SelectAny = function ()
@@ -4977,6 +5002,25 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
         for(var i = 0; i < $scope.comandas.length; i++)
         {
             $scope.comandas[i].check = false
+        }
+    }
+
+    LoadTables = function (){
+        for(var i = 0; i < $scope.comandas_hold.length; i++)
+        {
+            var add = true
+            for(var b = 0; b < $scope.tables.length; b++)
+            {
+                if ($scope.comandas_hold[i].mesa._id == $scope.tables[b]._id)
+                {
+                    add = false
+                }
+            }
+
+            if (add)
+            {
+                $scope.tables.push($scope.comandas_hold[i].mesa)
+            }   
         }
     }
 
@@ -4997,6 +5041,8 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
                 .success (function (data){
                     $scope.comandas = data
                     $scope.comandas_hold = data
+                    LoadTables()
+                    $scope.calculatetotalselect_all()
                 })
                 .error(function (){
                     $scope.$emit('unload')
