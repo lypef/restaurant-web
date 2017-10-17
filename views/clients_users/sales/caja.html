@@ -4,9 +4,9 @@
 
     <button class="button rounded large-button primary" ng-click="SelectAll()" ng-disabled="tmp.occupied">Seleccionar todos</button>
 
-    <button class="button rounded large-button success" onclick="toggleMetroDialog('#PrepararAll')" ng-disabled="tmp.occupied">Cobrar seleccionados $ {{money.select}}</button>
+    <button class="button rounded large-button success" onclick="toggleMetroDialog('#PrepararAll')" ng-disabled="tmp.occupied">Cobrar {{money.totalp}} productos seleccionados $ {{money.select}}</button>
 
-    <button class="button rounded large-button warning" onclick="toggleMetroDialog('#FinalizarAll')" ng-disabled="tmp.occupied">Cobrar todos $ {{money.select_all}}</button>
+    <button class="button rounded large-button warning" onclick="toggleMetroDialog('#FinalizarAll')" ng-disabled="tmp.occupied">Cobrar todos $ {{money.select_all}} - # {{ comandas.length }} productos</button>
 
 </div>
 <hr>
@@ -15,7 +15,7 @@
         <div class="cell-auto-size"  style="width: 100%">
             <div class="input-control text " data-role="input" style="width: 95%" >
 
-                        <input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar" ng-change="search()" autofocus autocomplete="off" style="text-align: center">
+                        <input type="text" name="filter" ng-model="inputbox.txt" placeholder="Buscar - Producto/Codigo barra / status" ng-change="search()" autofocus autocomplete="off" style="text-align: center">
 
                         <button class="button" ng-click="addonelist()"><span class="mif-search"></span></button>
                     </div>
@@ -25,7 +25,7 @@
         </div>
         
         <div class="cell-auto-size"  style="width: 100%">
-            <select id ="select" ng-model="tables" style="text-align: center; text-align-last: center; width: 95%" ng-change="select_place()">
+            <select id ="select" ng-model="tables.select" style="text-align: center; text-align-last: center; width: 95%" ng-change="select_table()">
                     <option value="all">---Mesas---</option>
                     <option ng-repeat=" a in tables" value="{{ a._id }}">Mesa numero: {{a.numero}}</option>
                 </select>

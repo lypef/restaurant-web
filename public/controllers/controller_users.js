@@ -4965,15 +4965,49 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
     $scope.comanda = []
     $scope.tables = []
     $scope.money = {}
+    $scope.money.select = 0
+    $scope.money.totalp = 0
+
+    $scope.search = function (){
+        $scope.comandas = []
+        for (var i = 0; i < $scope.comandas_hold.length; i++)
+        {
+            if ($scope.comandas_hold[i].product.name.includes($scope.inputbox.txt.toUpperCase()) || $scope.comandas_hold[i].product.codebar.includes($scope.inputbox.txt.toUpperCase()) || $scope.comandas_hold[i].status.toUpperCase().includes($scope.inputbox.txt.toUpperCase()) )
+            {
+                $scope.comandas.push($scope.comandas_hold[i])
+            }
+        }
+    }
+
+    $scope.select_table = function (){
+        $scope.comandas = []
+        $scope.inputbox.txt = null
+        if ($scope.tables.select == 'all')
+        {
+            $scope.comandas = $scope.comandas_hold
+        }else
+        {
+            for(var i = 0; i < $scope.comandas_hold.length; i++)
+            {
+                if ($scope.comandas_hold[i].mesa._id == $scope.tables.select)
+                {
+                    $scope.comandas.push($scope.comandas_hold[i])    
+                }   
+            }
+        }
+        $scope.SelectAny()
+    }
 
     $scope.calculatetotalselect = function ()
     {
         $scope.money.select = 0
+        $scope.money.totalp = 0
         for(var i = 0; i < $scope.comandas.length; i++)
         {
             if ($scope.comandas[i].check)
             {
                 $scope.money.select += $scope.comandas[i].product.price
+                $scope.money.totalp ++
             }
         }
     }
@@ -5003,6 +5037,7 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
         {
             $scope.comandas[i].check = false
         }
+        $scope.calculatetotalselect()
     }
 
     LoadTables = function (){
