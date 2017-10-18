@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "http://localhost:8080"
+var urlsocket = "http://192.168.1.64:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -4410,6 +4410,10 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
 app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, socket, $window){
 
     $scope.$emit('load')
+    
+    $scope.tmp = {}
+    $scope.tmp.occupied = false
+
     $http.get('/api/socket/my_comands')
     .success (function(){
         $scope.cook_products = []
@@ -4426,7 +4430,6 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
             $rootScope.$apply(function () {
             $http.get('/api/kitchen/cook_products')
             .success (function (data){
-                console.log(data)
                 var existente = $scope.cook_products.length
                 $scope.cook_products = []
       
@@ -4442,7 +4445,6 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
                 {
                     pushMessage('info','BARRA', 'Mis ordenes', "checkmark")
                 }
-                loadvaluestatus()
             })
             .finally (function (){
                 $scope.$emit('unload')
@@ -4453,6 +4455,7 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
     })
 
     $scope.change_coment = function (item){
+        $scope.tmp.occupied = true
         $scope.$emit('loadasc')
         $http.post('/api/kitchen/change_coment', item)
         .success(function (msg){
@@ -4461,15 +4464,18 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
         })
         .finally (function(){
             socket.emit('UpdateComanda'+$rootScope.user.admin._id);
+            $scope.tmp.occupied = false
             $scope.$emit('unloadasc')
         })
     }
 
     $scope.cancelar = function (item){
         $scope.$emit('loadasc')
+        $scope.tmp.occupied = true
         $http.post('/api/kitchen/cancel_comand', item)
         .success(function (msg){
             socket.emit('UpdateComanda'+$rootScope.user.admin._id);
+            socket.emit('UpdateCaja'+$rootScope.user.admin._id);
             if (item.unidades <= 1)
             {
                 $scope.cook_products.splice($scope.cook_products.indexOf(item),1);
@@ -4484,6 +4490,7 @@ app.controller('my_comands', function ($scope, $http, $timeout, $rootScope, sock
             pushMessage('alert','Mys comands', msg, "cross")  
         })
         .finally (function(){
+            $scope.tmp.occupied = false
             $scope.$emit('unloadasc')
         })
     }
@@ -4967,6 +4974,15 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
     $scope.money = {}
     $scope.money.select = 0
     $scope.money.totalp = 0
+    $scope.money.occupied = false
+
+    $scope.payselect = function (){
+        pushMessage('warning','', 'Pagar seleccion', "cross")
+    }        
+
+    $scope.payall = function (){
+        pushMessage('warning','', 'Pagar todos', "cross")
+    }
 
     $scope.search = function (){
         $scope.comandas = []
@@ -4977,6 +4993,8 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
                 $scope.comandas.push($scope.comandas_hold[i])
             }
         }
+        $scope.SelectAny()
+        $scope.calculatetotalselect_all()
     }
 
     $scope.select_table = function (){
@@ -4996,18 +5014,21 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
             }
         }
         $scope.SelectAny()
+        $scope.calculatetotalselect_all()
     }
 
     $scope.calculatetotalselect = function ()
     {
         $scope.money.select = 0
         $scope.money.totalp = 0
+        $scope.comandasselect = []
         for(var i = 0; i < $scope.comandas.length; i++)
         {
             if ($scope.comandas[i].check)
             {
                 $scope.money.select += $scope.comandas[i].product.price
                 $scope.money.totalp ++
+                $scope.comandasselect.push($scope.comandas[i])
             }
         }
     }
@@ -5015,9 +5036,9 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
     $scope.calculatetotalselect_all = function ()
     {
         $scope.money.select_all = 0
-        for(var i = 0; i < $scope.comandas_hold.length; i++)
+        for(var i = 0; i < $scope.comandas.length; i++)
         {
-            $scope.money.select_all += $scope.comandas_hold[i].product.price
+            $scope.money.select_all += $scope.comandas[i].product.price
         }
     }
 
@@ -5072,18 +5093,21 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
 
         socket.on('GetCaja'+$rootScope.user.admin._id, function() {
             $rootScope.$apply(function () {
+                $scope.money.occupied = true
                 $http.get('/api/sales/getComandsPay')
                 .success (function (data){
                     $scope.comandas = data
                     $scope.comandas_hold = data
                     LoadTables()
                     $scope.calculatetotalselect_all()
+                    $scope.SelectAny()
                 })
                 .error(function (){
                     $scope.$emit('unload')
                 })    
                 .finally (function (){
                     $scope.$emit('unload')
+                    $scope.money.occupied = false
                 })
             }) 
         });

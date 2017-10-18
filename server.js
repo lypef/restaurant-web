@@ -1327,12 +1327,8 @@ function cancel_comand (req, res)
                 {
                     if (doc.unidades <= 1)
                     {
-                        db.kitchen.update({_id: req.body._id},
-                        {
-                            unidades: 0,
-                            preparando: false,
-                            end: true
-                        },function(err){
+                        db.kitchen.remove({_id: req.body._id},
+                        function(err){
                             console.log(err)
                         })
                     }else

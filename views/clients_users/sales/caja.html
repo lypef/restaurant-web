@@ -1,12 +1,12 @@
 <div ng-controller="caja">
 <div align="center">
-    <button class="button rounded large-button primary" ng-click="SelectAny()" ng-disabled="tmp.occupied">Seleccionar ninguno</button>
+    <button class="button rounded large-button primary" ng-click="SelectAny()" ng-disabled="money.occupied">Seleccionar ninguno</button>
 
-    <button class="button rounded large-button primary" ng-click="SelectAll()" ng-disabled="tmp.occupied">Seleccionar todos</button>
+    <button class="button rounded large-button primary" ng-click="SelectAll()" ng-disabled="money.occupied">Seleccionar todos</button>
 
-    <button class="button rounded large-button success" onclick="toggleMetroDialog('#PrepararAll')" ng-disabled="tmp.occupied">Cobrar {{money.totalp}} productos seleccionados $ {{money.select}}</button>
+    <button class="button rounded large-button success" onclick="toggleMetroDialog('#payselect')" ng-disabled="money.occupied">Cobrar {{money.totalp}} productos seleccionados $ {{money.select}}</button>
 
-    <button class="button rounded large-button warning" onclick="toggleMetroDialog('#FinalizarAll')" ng-disabled="tmp.occupied">Cobrar todos $ {{money.select_all}} - # {{ comandas.length }} productos</button>
+    <button class="button rounded large-button warning" onclick="toggleMetroDialog('#payall')" ng-disabled="money.occupied">Cobrar todos $ {{money.select_all}} - # {{ comandas.length }} productos</button>
 
 </div>
 <hr>
@@ -71,4 +71,42 @@
               </tr>
           </tbody>
     </table>
+    <!--Ventana pagar seleccion-->
+    <div data-role="dialog" id="payselect" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      <p>COBRAR PRODUCTOS SELECCIONADOS</p> 
+      <ul>
+          <li ng-repeat="a in comandasselect | limitTo: 10">
+            {{a.unidades}} - {{a.product.name}} $: {{a.product.price}}
+          </li>
+        <h6>Maximo de productos mostrados: 10</h6>
+        <p>TOTAL: $ {{money.select}}</p>
+      </ul>
+      <button class="button warning" ng-click="payselect()" onclick="hideMetroDialog('#payselect')"><span class="mif-checkmark"></span> SI</button>
+      <button class="button success" onclick="hideMetroDialog('#payselect')"><span class="mif-cross"></span> NO</button>
+    </div>
+    <!--Ventana pagar seleccion-->
+
+    <!--Ventana pagar todos-->
+    <div data-role="dialog" id="payall" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true">
+      
+      <p>COBRAR TODOS LOS PRODUCTOS</p> 
+      <ul>
+          <li ng-repeat="a in comandas | limitTo: 10">
+            {{a.unidades}} - {{a.product.name}} $: {{a.product.price}}
+          </li>
+        <h6>Maximo de productos mostrados: 10</h6>
+        <h6>Total de productos: {{ comandas.length }}</h6>
+        <p>TOTAL: $ {{money.select_all}}</p>
+      </ul>
+       
+      <button class="button warning" ng-click="payall()" onclick="hideMetroDialog('#payall')"><span class="mif-checkmark"></span> SI</button>
+      <button class="button success" onclick="hideMetroDialog('#payall')"><span class="mif-cross"></span> NO</button>
+    </div>
+    <!--Ventana pagar todos-->
 </div>
