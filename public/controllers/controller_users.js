@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "https://restweb-lypef.c9users.io/"
+var urlsocket = "restweb-lypef.c9users.io"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -110,10 +110,12 @@ app.factory('socket', ['$rootScope', function($rootScope) {
   };
 }]);
 
-app.controller("UserValues", function($scope, $http, $timeout, $rootScope){
+app.controller("UserValues", function($scope, $http, $timeout, $rootScope, socket){
     $scope.usuario = {};
     $scope.addmoneyvar = {}
     $scope.removemoneyvar = {}
+    $scope.noti = {}
+
 
     $scope.$on('load', function(){$scope.loading = true})
     $scope.$on('unload', function(){$scope.loading = false})
@@ -257,6 +259,47 @@ app.controller("UserValues", function($scope, $http, $timeout, $rootScope){
         })
         .error (function (msg){
             pushMessage('alert','ERROR', msg, "cross")
+        })
+        .finally (function (){
+            $scope.$emit('unloadasc')
+        })
+    }
+
+    $http.get('/api/public/socket_notifications')
+    .success (function (){
+        socket = io.connect()
+        socket = io.connect(urlsocket, { 'forceNew': true })
+
+        socket.on('disconnect', function ()
+        {
+            pushMessage('warning','', 'Sistema Desconectado', "cross")
+        });
+
+        socket.on('get_notifications'+$rootScope.user.admin._id, function ()
+        {
+            $scope.$apply(
+                $http.get('/api/public/get_notifications')
+                .success (function (data){
+                    $scope.noti = data
+                })
+            )
+        });
+        
+    })
+    .error (function (){
+        $scope.$emit('unload')
+    })  
+
+    $scope.asist = function (item){
+        $scope.$emit('loadasc')
+        $http.post('/api/public/set_status_notifications', item)
+        .success (function (msg){
+            $scope.noti.splice($scope.noti.indexOf(item),1);
+            pushMessage('success','', msg, "checkmark")
+        })
+        .error (function (msg){
+            $scope.$emit('unloadasc')
+            pushMessage('alert','', msg, "cross")
         })
         .finally (function (){
             $scope.$emit('unloadasc')
@@ -3958,7 +4001,14 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
 
     $scope.call = function (item)
     {
-        pushMessage('warning','', 'Alerta enviada', "checkmark")
+        $http.post('/api/kitchen/add_notifications', item)
+        .success (function (msg){
+            socket.emit('update_notifications'+$rootScope.user.admin._id);
+            pushMessage('warning','', msg, "checkmark")    
+        })
+        .error(function (msg){
+            pushMessage('alert','', 'msg', "cross")    
+        })
     }
 
     loadvaluestatus = function (){
@@ -4337,7 +4387,14 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
 
     $scope.call = function (item)
     {
-        pushMessage('warning','', 'Alerta enviada', "checkmark")
+        $http.post('/api/kitchen/add_notifications', item)
+        .success (function (msg){
+            socket.emit('update_notifications'+$rootScope.user.admin._id);
+            pushMessage('warning','', msg, "checkmark")    
+        })
+        .error(function (msg){
+            pushMessage('alert','', 'msg', "cross")    
+        })
     }
 
     loadvaluestatus = function (){
@@ -4977,11 +5034,73 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
     $scope.money.occupied = false
 
     $scope.payselect = function (){
-        pushMessage('warning','', 'Pagar seleccion', "cross")
+        $scope.money.occupied = true
+        $scope.$emit('loadasc')
+        var items = []
+        
+        for (var i = 0; i < $scope.comandas.length; i++)
+        {
+            if ($scope.comandas[i].check)
+            {
+                items.push($scope.comandas[i])
+            }
+        }
+        $http.post('/api/sales/pay_comands', items)
+        .success (function (msg){
+            $http.get('/api/sales/getComandsPay')
+                .success (function (data){
+                    $scope.comandas = data
+                    $scope.comandas_hold = data
+                    LoadTables()
+                    $scope.calculatetotalselect_all()
+                    $scope.SelectAny()
+                    socket.emit('UpdateCaja'+$rootScope.user.admin._id);
+                    pushMessage('success','Correcto', msg, "checkmark")
+                })
+                .error(function (){
+                    $scope.$emit('unload')
+                    $scope.money.occupied = false
+                })    
+                .finally (function (){
+                    $scope.$emit('unloadasc')
+                    $scope.money.occupied = false        
+                })
+        })
+        .error (function (){
+            $scope.$emit('unloadasc')
+            $scope.money.occupied = false
+        })
     }        
 
     $scope.payall = function (){
-        pushMessage('warning','', 'Pagar todos', "cross")
+        $scope.money.occupied = true
+        $scope.$emit('loadasc')
+        
+        $http.post('/api/sales/pay_comands', $scope.comandas)
+        .success (function (msg){
+            $http.get('/api/sales/getComandsPay')
+                .success (function (data){
+                    $scope.comandas = data
+                    $scope.comandas_hold = data
+                    LoadTables()
+                    $scope.calculatetotalselect_all()
+                    $scope.SelectAny()
+                    socket.emit('UpdateCaja'+$rootScope.user.admin._id);
+                    pushMessage('success','Correcto', msg, "checkmark")
+                })
+                .error(function (){
+                    $scope.$emit('unload')
+                    $scope.money.occupied = false
+                })    
+                .finally (function (){
+                    $scope.$emit('unloadasc')
+                    $scope.money.occupied = false        
+                })
+        })
+        .error (function (){
+            $scope.$emit('unloadasc')
+            $scope.money.occupied = false
+        })
     }
 
     $scope.search = function (){

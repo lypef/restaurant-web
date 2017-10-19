@@ -78,10 +78,10 @@
       data-overlay="true">
       <p>COBRAR PRODUCTOS SELECCIONADOS</p> 
       <ul>
-          <li ng-repeat="a in comandasselect | limitTo: 10">
+          <li ng-repeat="a in comandasselect | limitTo: 8">
             {{a.unidades}} - {{a.product.name}} $: {{a.product.price}}
           </li>
-        <h6>Maximo de productos mostrados: 10</h6>
+        <h6>Maximo de productos mostrados: 8</h6>
         <p>TOTAL: $ {{money.select}}</p>
       </ul>
       <button class="button warning" ng-click="payselect()" onclick="hideMetroDialog('#payselect')"><span class="mif-checkmark"></span> SI</button>
@@ -97,10 +97,10 @@
       
       <p>COBRAR TODOS LOS PRODUCTOS</p> 
       <ul>
-          <li ng-repeat="a in comandas | limitTo: 10">
+          <li ng-repeat="a in comandas | limitTo: 8">
             {{a.unidades}} - {{a.product.name}} $: {{a.product.price}}
           </li>
-        <h6>Maximo de productos mostrados: 10</h6>
+        <h6>Maximo de productos mostrados: 8</h6>
         <h6>Total de productos: {{ comandas.length }}</h6>
         <p>TOTAL: $ {{money.select_all}}</p>
       </ul>

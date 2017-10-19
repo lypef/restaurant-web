@@ -167,6 +167,7 @@ app.get('/api/kitchen/cook_products', GetCookProducts)
 
 app.post('/api/kitchen/product_update_preparacion', UpdateProduct_kitchen_preparacion)
 app.post('/api/kitchen/product_update_finalizacion', UpdateProduct_kitchen_finalizacion)
+app.post('/api/kitchen/add_notifications', add_notifications)
 app.post('/api/kitchen/cancel_comand', cancel_comand)
 app.post('/api/kitchen/change_coment', change_coment)
 
@@ -213,6 +214,8 @@ app.post('/api/catproducts/search', SearchCatProducts )
 app.get('/api/public/cut_x', GetSalesUser)
 app.get('/api/get_measurements/', GetMeasurementsJSON)
 app.get('/api/get_measurements/:id', GetMeasuremetsJSON_ID)
+app.get('/api/public/socket_notifications', socket_notifications)
+app.get('/api/public/get_notifications', get_notifications)
 
 
 app.post('/api/measurement/add', CreateMeasurement )
@@ -223,6 +226,7 @@ app.post('/api/users/update', UpdateUser );
 app.post('/api/users/update_preferencias', UpdateUser_preferencias );
 app.post('/api/public/add_sale', addmoney );
 app.post('/api/public/cut_z', cut_z_users)
+app.post('/api/public/set_status_notifications', set_status_notifications)
 
 //Enlaces globales de inicio de session
 app.post("/login", Login )
@@ -280,6 +284,7 @@ app.get('/api/sales/getComandsPay', getkitchencomands)
 
 app.post('/api/sales/vtd/', addvtd)
 app.post('/api/sales/vtd_tables/', addvtd_tables)
+app.post('/api/sales/pay_comands', pay_comands)
 
 
 //Sockets
@@ -337,6 +342,7 @@ app.post('/api/socket/finalizar_all', function(req, res){
         {
             if (req.session.user.admin._id == req.body[i].admin._id)
             {
+                var add = true
                 db.kitchen.update(
                 { _id : req.body[i]._id},
                 {
@@ -348,9 +354,21 @@ app.post('/api/socket/finalizar_all', function(req, res){
                 {
                     if (err)
                     {
+                        add = false
                         console.log(err)
                     }
                 })
+                if (add)
+                {
+                    if (req.body[i].product.receta)
+                    {
+                        RemoveIngredientsProduct(req.body[i].product, req.session.user, req.body[i].unidades)
+                    }else
+                    {
+                        req.body[i].product.unidades = req.body[i].unidades
+                        RemoveStockproduct(req.body[i].product)
+                    }
+                }
             }else
             {
                 console.log('Producto no valido')
@@ -1306,7 +1324,7 @@ function UpdateProduct_kitchen_finalizacion (req, res)
                 res.status(404).send("Algo desconocido sucedio, intente nuevamente")
             }else
             {
-                RemoveIngredientsProduct(req.body.product,req.session.user)
+                RemoveIngredientsProduct(req.body.product,req.session.user, req.body.unidades)
                 res.status(200).send('Finaliza la preparacion')
             }
         })
@@ -1316,6 +1334,35 @@ function UpdateProduct_kitchen_finalizacion (req, res)
     }
 }
 
+function add_notifications (req, res)
+{
+    var cadena 
+
+    if (req.body.cocina)
+    {
+        cadena = 'Solicitud precencial en la cocina por: ' + req.body.unidades + ' ' +  req.body.product.name
+    }else
+    {
+        cadena = 'Solicitud precencial en la barra por: ' + req.body.unidades + ' ' +  req.body.product.name
+    }
+
+    var p = new db.notifications({
+        admin: req.session.user.admin._id,
+        user: req.body.user._id,
+        msg: cadena
+    })
+
+    p.save(function (err) {
+         if (err)
+         {
+            res.status(500).send('Solicitud no enviada')
+         }else
+         {
+            res.status(200).send('Alerta enviada')
+         }
+    })
+}
+
 function cancel_comand (req, res)
 {
     if (req.session.user.admin._id == req.body.admin._id && req.session.user._id == req.body.user._id)
@@ -1323,14 +1370,17 @@ function cancel_comand (req, res)
         db.kitchen.findOne({_id: req.body._id},function(err,doc){
             if (!err)
             {
-                if (!doc.preparando)
+                if (!doc.preparando && !doc.paid)
                 {
                     if (doc.unidades <= 1)
                     {
-                        db.kitchen.remove({_id: req.body._id},
-                        function(err){
-                            console.log(err)
+                        
+                        db.kitchen.remove({_id: req.body._id}, function(err) {
+                          if (err) {
+                              console.log(err);
+                          }
                         })
+
                     }else
                     {
                         db.kitchen.update({_id: req.body._id},
@@ -1343,7 +1393,7 @@ function cancel_comand (req, res)
                     res.status(200).send('Producto actualizado.')
                 }else
                 {
-                    res.status(500).send('Producto ya en preparacion')
+                    res.status(500).send('Producto ya en preparacion o cobrado')
                 }
                 
             }
@@ -1849,6 +1899,66 @@ function getkitchencomands (req,res){
     })
 };
 
+function pay_comands (req,res){
+    var total = 0
+
+    for (var i = 0; i < req.body.length; i ++)
+    {
+        total += req.body[i].product.price
+    }
+
+    var r = true
+
+    var ticket = new db.sales(
+    {
+        admin: req.session.user.admin._id,
+        user: req.session.user._id,
+        fecha: GetDate(),
+        monto: total,
+        description: 'se realizo cobro',
+        cut_user: false,
+        cut_global: false
+    });
+
+    ticket.save(function (err)
+    {
+        if (!err){
+        
+            
+            for (var i = 0; i < req.body.length; i ++)
+            {
+                var add = true
+                db.kitchen.update(
+                { _id : req.body[i]._id },
+                {
+                    paid: true
+                },
+                function(err1)
+                {
+                    if (err1)
+                    {
+                        console.log(err1)
+                        add = false
+                        r = false
+                    }
+                })
+                if (add)
+                {
+                    add_sale_product(req.body[i].product._id, req.session.user.admin._id, ticket._id, true)
+                }
+            }
+        }
+    })
+
+    if (r)
+    {
+        var user = req.session.user
+        user._id = req.body[0].user._id
+        AddMovement(req.session.user,'venta realizada con exito. Folio: ' + ticket._id + ' $: ' + total + ', Cobrado por: ' + req.session.user.nombre, ticket._id)
+        res.status(200).send('Productos cobrados con exito')
+    }else{res.status(500).send('Error desconocido')}
+};
+
 function getproductsJson_stock (req,res){
     db.products.find({ admin : req.session.user.admin._id, receta: null }).sort({name:1}).populate('category').populate('admin').populate('receta').exec(function(err, data) {
         if(err) {
@@ -1973,6 +2083,23 @@ function socket_caja (req, res)
 
       socket.on('UpdateCaja'+req.session.user.admin._id, function () {
         socket.broadcast.emit('GetCaja'+req.session.user.admin._id);
+      });
+
+      socket.on('disconnect', function (){
+        console.log('Desconectado');
+      })
+    });
+    res.sendStatus(200)
+}
+
+function socket_notifications (req, res)
+{
+    io.on('connection', function(socket) {
+
+      socket.emit('get_notifications'+req.session.user.admin._id);
+
+      socket.on('update_notifications'+req.session.user.admin._id, function () {
+        socket.broadcast.emit('get_notifications'+req.session.user.admin._id);
       });
 
       socket.on('disconnect', function (){
@@ -2221,6 +2348,18 @@ function CatProductsEditsJson (req,res){
     });
 };
 
+function get_notifications (req,res){
+    db.notifications.find({ admin: req.session.user.admin._id, viewed: false, user: req.session.user._id },function(err,doc){
+        if (doc != null)
+        {
+            res.json(doc)
+        }else
+        {
+            res.status(404);
+        }
+    });
+};
+
 function ClientsUserIDLoad (req,res){
     db.clients_users.findOne({_id:req.params.id},function(err,doc){
         if (doc != null)
@@ -2292,6 +2431,25 @@ function UpdateMeasurements (req, res)
         }else
         {
             res.status(200).send("actualizado")
+        }
+    })
+}
+
+function set_status_notifications (req, res)
+{
+    db.notifications.update(
+    { _id : req.body._id },
+    {
+        viewed: true
+    },
+    function( err)
+    {
+        if (err)
+        {
+            res.status(404).send("Algo desconocido sucedio, intente nuevamente")
+        }else
+        {
+            res.status(200).send("Asistido")
         }
     })
 }
@@ -2611,10 +2769,6 @@ function addvtd (req, res ){
                     }
                     add_comanda_cocina(req.body[i], req.session.user)
                 }
-
-                if (!req.body[i].receta){
-                    RemoveStockproduct(req.body[i])
-                }
             }
         }else {r = false}
     })
@@ -2690,7 +2844,7 @@ function SearchIngredients (req, res)
 
 }
 
-function RemoveIngredientsProduct (product, session)
+function RemoveIngredientsProduct (product, session, descontar)
 {
     if (session.admin._id == product.admin && product.receta)
     {
@@ -2701,7 +2855,7 @@ function RemoveIngredientsProduct (product, session)
                 {
                     if (doc[i].update_ingredients)
                     {
-                        RemoveIngredientsProductPorcion(doc[i].ingrediente, doc[i].porcion)
+                        RemoveIngredientsProductPorcion(doc[i].ingrediente, doc[i].porcion * descontar)
                     }
                 }
             }

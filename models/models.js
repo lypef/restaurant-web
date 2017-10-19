@@ -175,6 +175,13 @@ var tables_scheme = new mongoose.Schema({
 	open: { type: Boolean, default: false }
 })
 
+var notifications_scheme = new mongoose.Schema({
+	admin: { type: Schema.Types.ObjectId, ref: 'clients_users'},
+	user: { type: Schema.Types.ObjectId, ref: 'user'},
+	msg: { type: String, required: false , uppercase: true},
+	viewed: { type: Boolean, default: false }
+})
+
 module.exports.user = mongoose.model("user",user_scheme);
 module.exports.admin = mongoose.model("admin",Admin_scheme);
 module.exports.clients = mongoose.model("clients",clients_scheme);
@@ -193,5 +200,6 @@ module.exports.sales_products = mongoose.model("sales_products",sales_products_s
 module.exports.kitchen = mongoose.model("kitchen",kitchen_scheme);
 module.exports.places = mongoose.model("places",places_scheme);
 module.exports.tables = mongoose.model("tables",tables_scheme);
+module.exports.notifications = mongoose.model("notifications",notifications_scheme);
 
 

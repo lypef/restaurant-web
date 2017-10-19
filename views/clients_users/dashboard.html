@@ -95,7 +95,7 @@
 <body ng-controller="UserValues">
         
         <div class="app-bar fixed-top {{ usuario.preferencias.color_menubar }}" data-role="appbar">
-
+        
         <a href="dashboard#/" class="app-bar-element branding"><span class="mif-shop mif-2x"></span></a>
 
         <span class="app-bar-divider"></span>
@@ -238,6 +238,9 @@
                 </div>
 
                 <div ng-show="!loading">
+                <ul>
+                    <li ng-repeat= "a in noti"> <button class="button primary" ng-click="asist(a)">X</button> {{a.msg}}</li>
+                </ul>
                     <div ng-view></div>
                 </div>
                     <br>
@@ -245,10 +248,9 @@
                     <div class="bottom-menu-wrapper">
                     <ul class="horizontal-menu compact">
                     <li><a>&copy; 2017 Sistema Restaurant Web</a></li>
-                    <li class="place-right"><a href="#">Ayuda</a></li>
-                    <li class="place-right"><a href="#">Legal</a></li>
-                    <li class="place-right"><a href="#">Desarrollo</a></li>
-                    <li class="place-right"><a href="#">Contacto</a></li>
+                    <li class="place-right" style="cursor: pointer;"><a onclick="parent.location='mailto:soporte@cyberchoapas.com'">Ayuda</a></li>
+                    <li class="place-right" style="cursor: pointer;"><a onclick="parent.location='mailto:proyectos@cyberchoapas.com'">Desarrollo</a></li>
+                    <li class="place-right" style="cursor: pointer;"><a onclick="parent.location='mailto:contacto@cyberchoapas.com'">Contacto</a></li>
                     
                     </ul>
                     </div>
