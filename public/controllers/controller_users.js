@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "restweb-lypef.c9users.io"
+var urlsocket = "https://restweb-lypef.c9users.io"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -3993,12 +3993,6 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
         })
     }
 
-
-    $scope.edit = function (item)
-    {
-        pushMessage('warning','Edit', item.product.name, "cross")
-    }
-
     $scope.call = function (item)
     {
         $http.post('/api/kitchen/add_notifications', item)
@@ -4377,12 +4371,6 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
               }
             })
         })
-    }
-
-
-    $scope.edit = function (item)
-    {
-        pushMessage('warning','Edit', item.product.name, "cross")
     }
 
     $scope.call = function (item)
