@@ -268,7 +268,7 @@ app.post('/api/users_admin/delete', DeleteUser_admin );
 
 // Sales
 app.use('/api/sales/', function(req,res,next){
-    if (req.session.user.preferencias.charge)
+    if (req.session.user.preferencias.charge || req.session.user.preferencias.tables)
     {
         next()
     }else
@@ -1200,7 +1200,8 @@ function UpdateUser_preferencias (req, res)
             sales: req.body.preferencias.sales,
             caja: req.body.preferencias.caja,
             finance: req.body.preferencias.finance,
-            charge: req.body.preferencias.charge
+            charge: req.body.preferencias.charge,
+            tables: req.body.preferencias.tables
         },
         function( err)
         {

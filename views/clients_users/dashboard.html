@@ -101,17 +101,17 @@
         <span class="app-bar-divider"></span>
         <ul class="app-bar-menu">
             
-            <li ng-show="usuario.preferencias.sales || usuario.preferencias.charge">
+            <li ng-show="usuario.preferencias.sales || usuario.preferencias.charge || usuario.preferencias.tables">
                 <a href="" class="dropdown-toggle"><span class="mif-spoon-fork mif-2x"></span> Restaurante</a>
                 <ul class="d-menu" data-role="dropdown">
                     <li>
-                        <a href="dashboard#/tables" ng-show="usuario.preferencias.sales"><span class="mif-apps mif-2x" ></span> Mesas</a>
+                        <a href="dashboard#/tables" ng-show="usuario.preferencias.tables"><span class="mif-apps mif-2x" ></span> Mesas</a>
                         </li>
                         <li>
                         <a href="dashboard#/caja" ng-show="usuario.preferencias.charge"><span class="mif-dollar mif-2x"></span> Caja</a>
                         </li>
                         <li>
-                        <a href="dashboard#/my_comands" ng-show="usuario.preferencias.sales"><span class="mif-keyboard mif-2x"></span> Mis comandas</a>
+                        <a href="dashboard#/my_comands" ng-show="usuario.preferencias.caja || usuario.preferencias.tables"><span class="mif-keyboard mif-2x"></span> Mis comandas</a>
                         </li>
 
                     </ul>

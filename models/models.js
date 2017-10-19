@@ -28,7 +28,8 @@ var preferencias_user_scheme = new mongoose.Schema({
 	sales: { type: Boolean, default: false },
 	caja: { type: Boolean, default: false },
 	finance: { type: Boolean, default: false },
-	charge: { type: Boolean, default: false }
+	charge: { type: Boolean, default: false },
+	tables: { type: Boolean, default: false }
 })
 
 var clients_scheme = new mongoose.Schema({
