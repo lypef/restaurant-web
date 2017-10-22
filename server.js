@@ -30,6 +30,7 @@ res.setHeader('Access-Control-Allow-Origin', '*');
     next();
 });
 app.use("/dashboard",sessiontrue);
+app.use("/dashboard/ticket",sessiontrue);
 app.use("/admin_dashboard",sessiontrue);
 app.use('/api/', tokenApi);
 app.use('/api/', StatusTrue);
@@ -216,6 +217,7 @@ app.get('/api/get_measurements/', GetMeasurementsJSON)
 app.get('/api/get_measurements/:id', GetMeasuremetsJSON_ID)
 app.get('/api/public/socket_notifications', socket_notifications)
 app.get('/api/public/get_notifications', get_notifications)
+app.get('/api/public/get_ticket/:id', get_ticket)
 
 
 app.post('/api/measurement/add', CreateMeasurement )
@@ -239,6 +241,7 @@ app.get('/', Inicio )
 app.get("/user_incorrect", user_incorrect )
 app.get("/membership_off", Membership_Off )
 app.get("/dashboard", Dashboard )
+app.get("/dashboard/ticket/:id", dashboard_ticket )
 app.get('/logout', Logout)
 
 app.get('/admin_login', AdminLogin)
@@ -517,13 +520,17 @@ function Inicio (req, res)
 }
 
 function Dashboard (req,res){
-	if (req.session.clients)
+    if (req.session.clients)
     {
         res.sendFile('./views/clients_users/dashboard.html', { root: __dirname });
     }
     else {
         res.redirect("/")
     }
+}
+
+function dashboard_ticket (req,res){
+	res.sendFile('./views/clients_users/reports/tickets.html', { root: __dirname });
 }
 
 function Dashboard_Admin (req,res){
@@ -2358,6 +2365,11 @@ function get_notifications (req,res){
             res.status(404);
         }
     });
+};
+
+function get_ticket (req,res){
+    console.log(req.params.id)
+    res.status(200);
 };
 
 function ClientsUserIDLoad (req,res){

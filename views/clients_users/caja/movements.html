@@ -53,8 +53,16 @@
               <td>{{ a.fecha }}</td> 
               <td>{{ a.description }}</td>
               <td align="center">
-                <button class="button success" ng-show ="a.sale" ng-click="showventa(a)" onclick="toggleMetroDialog('#showventa')">Ver venta</button>
-                <button ng-show ="!a.sale"class="button" disabled>Ver venta</button>
+                
+                <div class="split-button">
+                      <button ng-show= "a.sale" class="button success" ng-click="showventa(a)" onclick="toggleMetroDialog('#showventa')" ng-disabled="!a.sale">ver venta</button>
+                      <button ng-show= "!a.sale" class="button" ng-click="showventa(a)" onclick="toggleMetroDialog('#showventa')" ng-disabled="!a.sale">ver venta</button>
+                      <button class="split dropdown-toggle" ng-disabled="!a.sale"></button>
+                      <ul class="split-content d-menu place-right" data-role="dropdown">
+                          <li><a href="/dashboard/ticket/{{a.sale}}" target="_blank">Ver ticket</a></li>
+                      </ul>
+                  </div>
+
               </td>
             </tr>
           </tbody>

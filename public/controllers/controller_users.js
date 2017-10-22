@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "https://restweb-lypef.c9users.io"
+var urlsocket = "http://localhost:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -5223,3 +5223,16 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
         $scope.$emit('unload')
     })  
 })
+
+app.controller('reportes_ticket', function ($scope, $http, $window){
+    
+    $http.get('/api/public/get_ticket/' + window.location.pathname)
+    .success(function (){
+
+    })
+})
+
+
+
+
+
