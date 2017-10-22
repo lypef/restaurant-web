@@ -5225,6 +5225,7 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
 })
 
 app.controller('reports_ticket', function ($scope, $http, $window, $rootScope){
+    $scope.load = true
     $scope.ticket = []
     $http.get('/api/public/get_ticket/' + window.location.pathname.split('/')[3])
     .success(function (data){
@@ -5234,5 +5235,8 @@ app.controller('reports_ticket', function ($scope, $http, $window, $rootScope){
         {
             $scope.ticket.push({a:arr[i]})
         }
+    })
+    .finally (function (){
+        $scope.load = false
     })
 })

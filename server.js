@@ -2369,18 +2369,34 @@ function get_notifications (req,res){
 };
 
 function get_ticket (req,res){
-    db.sales.find({ _id: req.params.id },function(err,doc){
+    db.sales.findOne({admin: req.session.user.admin._id, _id: req.params.id }).populate('user').exec(function(err,doc){
         if (doc)
         {
-            console.log(doc)
-            var ticket = req.session.user.admin.nombre + "/"
-            ticket += req.session.user.admin.direccion + '/'
-            ticket += req.session.user.admin.telefono + '/'
-            ticket += 'F. IMPRESION:/'
-            ticket += GetDate() + '/'
-            ticket += 'F. CONSUMO:/'
-            ticket += doc.fecha + '/'
-            res.status(200).send(ticket);
+            db.sales_products.find({sale: req.params.id, admin: req.session.user.admin._id}).populate('product').exec(function (erro0, doc0){
+                if (doc0)
+                {
+                    console.log(doc0)
+                    var ticket = req.session.user.admin.nombre + "/"
+                    ticket += req.session.user.admin.direccion + '/'
+                    ticket += req.session.user.admin.telefono + '/'
+                    ticket += 'F. IMPRESION:/'
+                    ticket += GetDate() + '/'
+                    ticket += 'F. CONSUMO:/'
+                    ticket += doc.fecha + '/'
+                    ticket += '=================================' + '/'
+                    ticket += 'MESERO:' + '/'
+                    ticket += doc.user.nombre + '/'
+                    ticket += '=================================' + '/'
+                    for (var i = 0; i < doc0.length; i++){
+                        ticket += '(1) ' + doc0[i].product.name + '| $ ' + doc0[i].product.price + '/'
+                    }
+                    ticket += '=================================' + '/'
+                    ticket += 'TOTAL: $ ' + doc.monto + '/'
+                    ticket += '/'
+                    ticket += 'WWW.CYBERCHOAPAS.COM/'
+                    res.status(200).send(ticket);
+                }
+            })
         }
     })
 };
