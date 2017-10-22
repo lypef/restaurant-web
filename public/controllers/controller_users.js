@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "restweb-lypef.c9users.io"
+var urlsocket = "http://localhost:8080"
 
 app.config(function($routeProvider){
     $routeProvider
