@@ -2369,8 +2369,20 @@ function get_notifications (req,res){
 };
 
 function get_ticket (req,res){
-    console.log(req.params.id)
-    res.status(200);
+    db.sales.find({ _id: req.params.id },function(err,doc){
+        if (doc)
+        {
+            console.log(doc)
+            var ticket = req.session.user.admin.nombre + "/"
+            ticket += req.session.user.admin.direccion + '/'
+            ticket += req.session.user.admin.telefono + '/'
+            ticket += 'F. IMPRESION:/'
+            ticket += GetDate() + '/'
+            ticket += 'F. CONSUMO:/'
+            ticket += doc.fecha + '/'
+            res.status(200).send(ticket);
+        }
+    })
 };
 
 function ClientsUserIDLoad (req,res){

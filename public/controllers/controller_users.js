@@ -5224,15 +5224,15 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
     })  
 })
 
-app.controller('reportes_ticket', function ($scope, $http, $window){
-    
-    $http.get('/api/public/get_ticket/' + window.location.pathname)
-    .success(function (){
+app.controller('reports_ticket', function ($scope, $http, $window, $rootScope){
+    $scope.ticket = []
+    $http.get('/api/public/get_ticket/' + window.location.pathname.split('/')[3])
+    .success(function (data){
+        var arr = data.split('/')
 
+        for(var i = 0 ; i < arr.length; i ++)
+        {
+            $scope.ticket.push({a:arr[i]})
+        }
     })
 })
-
-
-
-
-
