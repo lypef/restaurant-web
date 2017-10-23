@@ -1912,7 +1912,7 @@ function pay_comands (req,res){
 
     for (var i = 0; i < req.body.length; i ++)
     {
-        total += req.body[i].product.price
+        total += req.body[i].unidades * req.body[i].product.price
     }
 
     var r = true
@@ -1935,7 +1935,10 @@ function pay_comands (req,res){
             
             for (var i = 0; i < req.body.length; i ++)
             {
-                var add = true
+                for (var b = 0; b < req.body[i].unidades; b++)
+                {
+                    add_sale_product(req.body[i].product._id, req.session.user.admin._id, ticket._id, true)   
+                }
                 db.kitchen.update(
                 { _id : req.body[i]._id },
                 {
@@ -1946,14 +1949,9 @@ function pay_comands (req,res){
                     if (err1)
                     {
                         console.log(err1)
-                        add = false
                         r = false
                     }
                 })
-                if (add)
-                {
-                    add_sale_product(req.body[i].product._id, req.session.user.admin._id, ticket._id, true)
-                }
             }
         }
     })
@@ -2375,7 +2373,6 @@ function get_ticket (req,res){
             db.sales_products.find({sale: req.params.id, admin: req.session.user.admin._id}).populate('product').exec(function (erro0, doc0){
                 if (doc0)
                 {
-                    console.log(doc0)
                     var ticket = req.session.user.admin.nombre + "/"
                     ticket += req.session.user.admin.direccion + '/'
                     ticket += req.session.user.admin.telefono + '/'
@@ -2383,6 +2380,8 @@ function get_ticket (req,res){
                     ticket += GetDate() + '/'
                     ticket += 'F. CONSUMO:/'
                     ticket += doc.fecha + '/'
+                    ticket += 'FOLIO:' + '/'
+                    ticket += doc._id + '/'
                     ticket += '=================================' + '/'
                     ticket += 'MESERO:' + '/'
                     ticket += doc.user.nombre + '/'
@@ -2394,7 +2393,7 @@ function get_ticket (req,res){
                     ticket += 'TOTAL: $ ' + doc.monto + '/'
                     ticket += '/'
                     ticket += 'WWW.CYBERCHOAPAS.COM/'
-                    res.status(200).send(ticket);
+                    res.status(200).send(ticket.toUpperCase());
                 }
             })
         }

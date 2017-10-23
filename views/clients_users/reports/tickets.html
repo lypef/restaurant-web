@@ -17,7 +17,7 @@
     
 </head>
 
-<body ng-controller="reports_ticket">
+<body ng-controller="reports_ticket" style="font-family: 'arial narrow'; font-size:8;">
         <div ng-show="load">
                 
         <div class="cell bg-white">
@@ -25,6 +25,9 @@
         </div>
 
         </div>
-        <span ng-repeat=" a in ticket" ng-show="!load">{{ a.a }}<br></span>
+        <span ng-repeat=" a in ticket" ng-show="!load">{{ a.a }}<br>
+        </span>
+
+
 </body>
 </html>

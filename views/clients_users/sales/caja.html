@@ -6,7 +6,7 @@
 
     <button class="button rounded large-button success" onclick="toggleMetroDialog('#payselect')" ng-disabled="money.occupied">Cobrar {{money.totalp}} productos seleccionados $ {{money.select}}</button>
 
-    <button class="button rounded large-button warning" onclick="toggleMetroDialog('#payall')" ng-disabled="money.occupied">Cobrar todos $ {{money.select_all}} - # {{ comandas.length }} productos</button>
+    <button class="button rounded large-button warning" onclick="toggleMetroDialog('#payall')" ng-disabled="money.occupied">Cobrar todos $ {{money.select_all}} - # {{ money.select_allp }} productos</button>
 
 </div>
 <hr>
@@ -101,7 +101,7 @@
             {{a.unidades}} - {{a.product.name}} $: {{a.product.price}}
           </li>
         <h6>Maximo de productos mostrados: 8</h6>
-        <h6>Total de productos: {{ comandas.length }}</h6>
+        <h6>Total de productos: {{ money.select_allp }}</h6>
         <p>TOTAL: $ {{money.select_all}}</p>
       </ul>
        

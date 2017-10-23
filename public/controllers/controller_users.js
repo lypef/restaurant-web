@@ -1,6 +1,6 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "restweb-lypef.c9users.io"
+var urlsocket = "http://192.168.1.70:8080"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -5133,8 +5133,8 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
         {
             if ($scope.comandas[i].check)
             {
-                $scope.money.select += $scope.comandas[i].product.price
-                $scope.money.totalp ++
+                $scope.money.select += $scope.comandas[i].unidades * $scope.comandas[i].product.price
+                $scope.money.totalp += $scope.comandas[i].unidades
                 $scope.comandasselect.push($scope.comandas[i])
             }
         }
@@ -5143,9 +5143,11 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
     $scope.calculatetotalselect_all = function ()
     {
         $scope.money.select_all = 0
+        $scope.money.select_allp = 0
         for(var i = 0; i < $scope.comandas.length; i++)
         {
-            $scope.money.select_all += $scope.comandas[i].product.price
+            $scope.money.select_all += $scope.comandas[i].unidades * $scope.comandas[i].product.price
+            $scope.money.select_allp += $scope.comandas[i].unidades 
         }
     }
 
