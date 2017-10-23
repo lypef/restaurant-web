@@ -1348,10 +1348,10 @@ function add_notifications (req, res)
 
     if (req.body.cocina)
     {
-        cadena = 'Solicitud precencial en la cocina por: ' + req.body.unidades + ' ' +  req.body.product.name
+        cadena = 'Solicitud presencial en la cocina por: ' + req.body.unidades + ' ' +  req.body.product.name
     }else
     {
-        cadena = 'Solicitud precencial en la barra por: ' + req.body.unidades + ' ' +  req.body.product.name
+        cadena = 'Solicitud presencial en la barra por: ' + req.body.unidades + ' ' +  req.body.product.name
     }
 
     var p = new db.notifications({
