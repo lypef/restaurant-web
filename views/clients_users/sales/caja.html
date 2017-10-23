@@ -82,6 +82,7 @@
             {{a.unidades}} - {{a.product.name}} $: {{a.product.price}}
           </li>
         <h6>Maximo de productos mostrados: 8</h6>
+        <p>TOTAL DE PRODUCTOS: {{ money.totalp }}</p>
         <p>TOTAL: $ {{money.select}}</p>
       </ul>
       <button class="button warning" ng-click="payselect()" onclick="hideMetroDialog('#payselect')"><span class="mif-checkmark"></span> SI</button>
