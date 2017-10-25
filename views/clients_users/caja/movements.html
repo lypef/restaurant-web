@@ -36,7 +36,7 @@
         </div>
     <!--Finaliza Busqueda y numero mostrado -->
     <div style="overflow-x:auto;">
-    <table class="table striped hovered bordered border">
+    <table class="table striped hovered bordered border export-table">
       <thead>
             <tr>
               <th>FOTO</th>
@@ -67,6 +67,10 @@
             </tr>
           </tbody>
     </table>
+    <a ng-click="exportAction('csv')"> Export CSV</a><br/><br/>
+    <a ng-click="exportAction('excel')"> Export Excel</a><br/><br/>
+    <a ng-click="exportAction('doc')"> Export Doc</a><br/><br/>
+    <a ng-click="exportAction('pdf')"> Export Pdf</a><br/><br/>
     <div class="row flex-just-sa">
         <div class="cell-auto-size">
         <div class='pagination'>
