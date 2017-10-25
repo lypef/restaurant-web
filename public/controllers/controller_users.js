@@ -1,6 +1,7 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "restweb-lypef.c9users.io"
+//var urlsocket = "restweb-lypef.c9users.io"
+var urlsocket = "http://localhost:8080/"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -2693,7 +2694,7 @@ app.controller("products_shopping", ['$scope', '$http', function ($scope, $http)
     }
 })
 
-app.controller("sales_vtd", ['$scope', '$http', 'socket', '$rootScope', function ($scope, $http, socket, $rootScope) {
+app.controller("sales_vtd", ['$scope', '$http', 'socket', '$rootScope','$window', function ($scope, $http, socket, $rootScope, $window) {
 
     $scope.currentPage = 0;
     $scope.pageSize = 5;
@@ -2710,10 +2711,11 @@ app.controller("sales_vtd", ['$scope', '$http', 'socket', '$rootScope', function
     $scope.vtd = function (){
         $scope.$emit('load')
         $http.post('/api/sales/vtd/', $scope.comanda)
-        .success(function(msg){
+        .success(function(ticket){
           socket.emit('UpdateComanda'+$rootScope.user.admin._id);
           $scope.clean()
-          pushMessage('success','', msg, "checkmark")
+          window.open('/dashboard/ticket/'+ticket, '_blank');
+          pushMessage('success','', 'Venta realizada con exito', "checkmark")
         })
         .error (function (msg){
             pushMessage('alert','', msg, "cross")
@@ -5000,7 +5002,7 @@ app.controller('tables', function ($http, $scope, socket, $rootScope){
 
 })
 
-app.controller('caja', function ($http, $scope, socket, $rootScope){
+app.controller('caja', function ($http, $scope, socket, $rootScope, $window){
     $scope.$emit('load')
     
     $scope.currentPage = 0;
@@ -5034,7 +5036,8 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
             }
         }
         $http.post('/api/sales/pay_comands', items)
-        .success (function (msg){
+        .success (function (ticket){
+            window.open('/dashboard/ticket/'+ticket, '_blank');
             $http.get('/api/sales/getComandsPay')
                 .success (function (data){
                     $scope.comandas = data
@@ -5043,7 +5046,7 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
                     $scope.calculatetotalselect_all()
                     $scope.SelectAny()
                     socket.emit('UpdateCaja'+$rootScope.user.admin._id);
-                    pushMessage('success','Correcto', msg, "checkmark")
+                    pushMessage('success','Correcto', 'Productos cobrados con exito', "checkmark")
                 })
                 .error(function (){
                     $scope.$emit('unload')
@@ -5065,7 +5068,8 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
         $scope.$emit('loadasc')
         
         $http.post('/api/sales/pay_comands', $scope.comandas)
-        .success (function (msg){
+        .success (function (ticket){
+            window.open('/dashboard/ticket/'+ticket, '_blank');
             $http.get('/api/sales/getComandsPay')
                 .success (function (data){
                     $scope.comandas = data
@@ -5074,7 +5078,7 @@ app.controller('caja', function ($http, $scope, socket, $rootScope){
                     $scope.calculatetotalselect_all()
                     $scope.SelectAny()
                     socket.emit('UpdateCaja'+$rootScope.user.admin._id);
-                    pushMessage('success','Correcto', msg, "checkmark")
+                    pushMessage('success','Correcto', 'Productos cobrados con exito', "checkmark")
                 })
                 .error(function (){
                     $scope.$emit('unload')

@@ -1961,7 +1961,7 @@ function pay_comands (req,res){
         var user = req.session.user
         user._id = req.body[0].user._id
         AddMovement(req.session.user,'venta realizada con exito. Folio: ' + ticket._id + ' $: ' + total + ', Cobrado por: ' + req.session.user.nombre, ticket._id)
-        res.status(200).send('Productos cobrados con exito')
+        res.status(200).send(ticket._id)
     }else{res.status(500).send('Error desconocido')}
 };
 
@@ -2816,7 +2816,7 @@ function addvtd (req, res ){
     if (r)
     {
         AddMovement(req.session.user,'venta realizada con exito. Folio: ' + ticket._id + ' $: ' + total, ticket._id)
-        res.status(200).send('Venta realizada')
+        res.status(200).send(ticket._id)
     }else{res.status(500).send('Error desconocido')}
 
 }
