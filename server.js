@@ -363,6 +363,24 @@ app.post('/api/socket/finalizar_all', function(req, res){
                 })
                 if (add)
                 {
+                    var cadena 
+
+                    if (req.body[i].cocina)
+                    {
+                        cadena = 'Cocina: ' + req.body[i].unidades + ' ' +  req.body[i].product.name + ' finalizados'
+                    }else
+                    {
+                        cadena = 'Barra: ' + req.body[i].unidades + ' ' +  req.body[i].product.name + ' finalizados'
+                    }
+
+                    var p = new db.notifications({
+                        admin: req.session.user.admin._id,
+                        user: req.body[i].user._id,
+                        msg: cadena
+                    })
+
+                    p.save()
+
                     if (req.body[i].product.receta)
                     {
                         RemoveIngredientsProduct(req.body[i].product, req.session.user, req.body[i].unidades)

@@ -3965,6 +3965,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id);
+                socket.emit('update_notifications'+$rootScope.user.admin._id);
                 for (var i = 0; i < tmp.length; i++)
                 {
                     $scope.cook_products.splice($scope.cook_products.indexOf(tmp[i]),1);
@@ -4348,6 +4349,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id);
+                socket.emit('update_notifications'+$rootScope.user.admin._id);
                 for (var i = 0; i < tmp.length; i++)
                 {
                     $scope.cook_products.splice($scope.cook_products.indexOf(tmp[i]),1);
