@@ -77,12 +77,12 @@ THE SOFTWARE.*/
 
 					var blob = new Blob([tdData], { type: 'text/csv' });
 					if (window.navigator.msSaveBlob) { // // IE hack; see http://msdn.microsoft.com/en-us/library/ie/hh779016.aspx
-					    window.navigator.msSaveOrOpenBlob(blob, 'exportData' + new Date().toDateString() + '.csv');
+					    window.navigator.msSaveOrOpenBlob(blob, 'restAIO-' + new Date().toDateString() + '.csv');
 					}
 					else {
 					    var a = window.document.createElement("a");
 					    a.href = window.URL.createObjectURL(blob, { type: "text/plain" });
-					    a.download = "exportData" + new Date().toDateString() + ".csv";
+					    a.download = "restAIO-" + new Date().toDateString() + ".csv";
 					    document.body.appendChild(a);
 					    a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
 					    document.body.removeChild(a);
@@ -131,7 +131,7 @@ THE SOFTWARE.*/
 					}
 					
 					var base64data = "base64," + $.base64.encode(tdData);
-					window.open('data:application/sql;filename=exportData;' + base64data);
+					window.open('data:application/sql;filename=restAIO-;' + base64data);
 					
 				
 				}else if(defaults.type == 'json'){
@@ -180,7 +180,7 @@ THE SOFTWARE.*/
 						console.log(JSON.stringify(jsonExportArray));
 					}
 					var base64data = "base64," + $.base64.encode(JSON.stringify(jsonExportArray));
-					window.open('data:application/json;filename=exportData;' + base64data);
+					window.open('data:application/json;filename=restAIO-;' + base64data);
 				}else if(defaults.type == 'xml'){
 				
 					var xml = '<?xml version="1.0" encoding="utf-8"?>';
@@ -221,7 +221,7 @@ THE SOFTWARE.*/
 					}
 					
 					var base64data = "base64," + $.base64.encode(xml);
-					window.open('data:application/xml;filename=exportData;' + base64data);
+					window.open('data:application/xml;filename=restAIO-;' + base64data);
 
 				}else if(defaults.type == 'excel' || defaults.type == 'doc'|| defaults.type == 'powerpoint'  ){
 					//console.log($(this).html());
@@ -297,12 +297,12 @@ THE SOFTWARE.*/
 
 					var blob = new Blob([excelFile], { type: 'text/' + fileType });
 					if (window.navigator.msSaveBlob) { // // IE hack; see http://msdn.microsoft.com/en-us/library/ie/hh779016.aspx
-					    window.navigator.msSaveOrOpenBlob(blob, 'exportData' + new Date().toDateString() + '.' + fileType);
+					    window.navigator.msSaveOrOpenBlob(blob, 'restAIO-' + new Date().toDateString() + '.' + fileType);
 					}
 					else {
 					    var a = window.document.createElement("a");
 					    a.href = window.URL.createObjectURL(blob, { type: "text/plain" });
-					    a.download = "exportData" + new Date().toDateString() + "." + fileType;
+					    a.download = "restAIO-" + new Date().toDateString() + "." + fileType;
 					    document.body.appendChild(a);
 					    a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
 					    document.body.removeChild(a);
@@ -319,7 +319,7 @@ THE SOFTWARE.*/
 					});		
 				}else if(defaults.type == 'pdf'){
 	
-					var doc = new jsPDF('p','pt', 'a4', true);
+					var doc = new jsPDF('p','pt', 'letter', true);
 					doc.setFontSize(defaults.pdfFontSize);
 					
 					// Header

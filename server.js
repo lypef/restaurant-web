@@ -387,6 +387,23 @@ app.post('/api/socket/action_all', function(req, res){
             {
                 if (req.body[i].preparando)
                 {
+                    var cadena 
+
+                    if (req.body[i].cocina)
+                    {
+                        cadena = 'Cocina: ' + req.body[i].unidades + ' ' +  req.body[i].product.name + ' finalizados'
+                    }else
+                    {
+                        cadena = 'Barra: ' + req.body[i].unidades + ' ' +  req.body[i].product.name + ' finalizados'
+                    }
+
+                    var p = new db.notifications({
+                        admin: req.session.user.admin._id,
+                        user: req.body[i].user._id,
+                        msg: cadena
+                    })
+
+                    p.save()
                     db.kitchen.update(
                     { _id : req.body[i]._id},
                     {
@@ -1333,6 +1350,24 @@ function UpdateProduct_kitchen_finalizacion (req, res)
             }else
             {
                 RemoveIngredientsProduct(req.body.product,req.session.user, req.body.unidades)
+                
+                var cadena 
+
+                if (req.body.cocina)
+                {
+                    cadena = 'Cocina: ' + req.body.unidades + ' ' +  req.body.product.name + ' finalizados'
+                }else
+                {
+                    cadena = 'Barra: ' + req.body.unidades + ' ' +  req.body.product.name + ' finalizados'
+                }
+
+                var p = new db.notifications({
+                    admin: req.session.user.admin._id,
+                    user: req.body.user._id,
+                    msg: cadena
+                })
+
+                p.save()
                 res.status(200).send('Finaliza la preparacion')
             }
         })
@@ -2374,16 +2409,18 @@ function get_ticket (req,res){
                 if (doc0)
                 {
                     var ticket = req.session.user.admin.nombre + "/"
+                    ticket += 'DIRECCION:/'
                     ticket += req.session.user.admin.direccion + '/'
+                    ticket += 'TELEFONO:/'
                     ticket += req.session.user.admin.telefono + '/'
                     ticket += 'F. IMPRESION:/'
-                    ticket += GetDate() + '/'
+                    ticket += GetDateNormal() + '/'
                     ticket += 'F. CONSUMO:/'
                     ticket += doc.fecha + '/'
                     ticket += 'FOLIO:' + '/'
                     ticket += doc._id + '/'
                     ticket += '=================================' + '/'
-                    ticket += 'MESERO:' + '/'
+                    ticket += 'ATENDIO:' + '/'
                     ticket += doc.user.nombre + '/'
                     ticket += '=================================' + '/'
                     for (var i = 0; i < doc0.length; i++){
@@ -2760,6 +2797,11 @@ function InsertClientUser (req,res)
 function GetDate () {
     var date = new Date();
     date.setHours(date.getHours()-5)
+    return date
+}
+function GetDateNormal () {
+    var date = new Date();
+    date.setHours(date.getHours())
     return date
 }
 

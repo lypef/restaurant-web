@@ -12,7 +12,7 @@ var jsPDF = function(){
 	var buffer = '';
 	
 	var pdfVersion = '1.3'; // PDF Version
-	var defaultPageFormat = 'a4';
+	var defaultPageFormat = 'letter';
 	var pageFormats = { // Size in mm of various paper formats
 		'a3': [841.89, 1190.55],
 		'a4': [595.28, 841.89],

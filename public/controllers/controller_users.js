@@ -1,7 +1,7 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
 //var urlsocket = "restweb-lypef.c9users.io"
-var urlsocket = "http://localhost:8080/"
+var urlsocket = "http://192.168.1.68:8080/"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -3576,6 +3576,20 @@ app.controller("finance_administrator", ['$scope', '$http','$timeout', function 
         $scope.currentPage = index - 1;
     };
 
+    $scope.exportAction = function (option) {
+          switch (option) {
+              case 'pdf': $scope.$broadcast('export-pdf', {}); 
+                  break; 
+              case 'excel': $scope.$broadcast('export-excel', {});
+                  break; 
+              case 'doc': $scope.$broadcast('export-doc', {});
+                  break;
+              case 'csv': $scope.$broadcast('export-csv', {});
+                  break;
+              default: console.log('no event caught'); 
+          }
+      }
+
 }
   ]).filter('startFromGrid', function() {
     return function(input, start)
@@ -3840,6 +3854,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id);
+                socket.emit('update_notifications'+$rootScope.user.admin._id);
                 for (var i = 0; i < tmp.length; i++)
                 {
                     for (var b = 0; b < $scope.cook_products.length; b++)
@@ -3956,6 +3971,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
                 }
                 loadvaluestatus()
                 pushMessage('success','', msg, "checkmark")
+                
             })
             .error(function (msg){
                pushMessage('alert','ERROR', msg, "checkmark")
@@ -4013,6 +4029,7 @@ app.controller('procuts_kitchen_cocina',  function ($scope, $http, $timeout, $ro
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id);
+                socket.emit('update_notifications'+$rootScope.user.admin._id);
                 $scope.cook_products.splice($scope.cook_products.indexOf(item),1);
                 pushMessage('success','', msg + ' ' + item.product.name, "checkmark")
                 loadvaluestatus()
@@ -4220,6 +4237,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id);
+                socket.emit('update_notifications'+$rootScope.user.admin._id);
                 for (var i = 0; i < tmp.length; i++)
                 {
                     for (var b = 0; b < $scope.cook_products.length; b++)
@@ -4393,6 +4411,7 @@ app.controller('procuts_kitchen_barr', function ($scope, $http, $timeout, $rootS
             $http.get('/api/kitchen/cook_products')
             .success(function (data){
                 socket.emit('UpdateComanda'+$rootScope.user.admin._id);
+                socket.emit('update_notifications'+$rootScope.user.admin._id);
                 $scope.cook_products.splice($scope.cook_products.indexOf(item),1);
                 pushMessage('success','', msg + ' ' + item.product.name, "checkmark")
                 loadvaluestatus()

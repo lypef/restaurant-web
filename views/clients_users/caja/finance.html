@@ -1,5 +1,5 @@
 <div class="content" align="center" ng-controller="finance_administrator">
-
+    
 <div google-chart chart="myChartObject" style="height:100%; width:100%;"></div>
 <hr>
 <div class="input-control select" style="text-align: center; text-align-last: center; width: 100%">
@@ -66,8 +66,13 @@
             </div>
         </div>
     <!--Finaliza Busqueda y numero mostrado -->
+    <button class="button primary" ng-click="exportAction('csv')"><span class="mif-file-archive"> Export Csv</span></button>
+    <button class="button success" ng-click="exportAction('excel')"><span class="mif-file-excel"> Export Excel</span></button>
+    <button class="button info" ng-click="exportAction('doc')"><span class="mif-file-word"> Export Doc</span></button>
+    
     <div style="overflow-x:auto;">
-    <table class="table striped hovered bordered border">
+    
+    <table class="table striped hovered bordered border export-table">
       <thead>
             <tr>
               <th>FOTO</th>
