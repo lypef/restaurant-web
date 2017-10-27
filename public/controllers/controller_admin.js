@@ -238,7 +238,6 @@ app.controller("AddUser_Client", function($scope, $http, $routeParams, $window)
             $scope.variables = {};
         })
         .error(function(msg) {
-            console.log(msg);
             pushMessage('alert','ERROR','VERIFIQUE LA INFORMACION', "cross")
         })
         .finally (function (){

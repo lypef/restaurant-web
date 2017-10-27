@@ -669,11 +669,18 @@ function AddUser (req,res){
             {
                 adminadmin: req.body.admin,
                 color_menubar: 'blue',
-                admin: req.body.preferencias.admin,
-                ingredientes: req.body.preferencias.ingredientes,
-                recetas: req.body.preferencias.recetas,
-                products: req.body.preferencias.products,
-                clientes: req.body.preferencias.clientes
+                admin: true,
+                ingredientes: true,
+                recetas: true,
+                products: true,
+                clientes: true,
+                cocina: true,
+                barra: true,
+                sales: true,
+                caja: true,
+                finance: true,
+                charge: true,
+                tables: true
             });
 
             p.save(function (err){
@@ -1597,7 +1604,27 @@ function DeleteAcconunt (req, res)
                                                                     if (!err){
                                                                         db.sales_products.remove ({ admin: req.body._id }, function (err){
                                                                         if (!err){
-                                                                            r = true
+                                                                            db.kitchen.remove ({ admin: req.body._id }, function (err){
+                                                                            if (!err){
+                                                                                db.places.remove ({ admin: req.body._id }, function (err){
+                                                                                if (!err){
+                                                                                    db.tables.remove ({ admin: req.body._id }, function (err){
+                                                                                    if (!err){
+                                                                                        db.notifications.remove ({ admin: req.body._id }, function (err){
+                                                                                        if (!err){
+                                                                                            r = true
+                                                                                        }else { r = false }
+                                                                                        })
+
+                                                                                    }else { r = false }
+                                                                                    })          
+
+                                                                                }else { r = false }
+                                                                                })
+
+                                                                            }else { r = false }
+                                                                            })
+
                                                                         }else { r = false }
                                                                         })
                                                                     }else { r = false }
