@@ -1,12 +1,12 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "restweb-lypef.c9users.io"
-//var urlsocket = "http://192.168.1.71:8080/"
+//var urlsocket = "restweb-lypef.c9users.io"
+var urlsocket = "http://192.168.1.67:8080/"
 
 app.config(function($routeProvider){
     $routeProvider
         .when('/', {
-            templateUrl : '/clients_users/index.html'
+            templateUrl : 'clients_users/caja/cut_x_user.html'
         })
         .when('/sales/vtd', {
             templateUrl : 'clients_users/sales/vtd.html'
