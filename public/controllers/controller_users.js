@@ -1,7 +1,7 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-//var urlsocket = "restweb-lypef.c9users.io"
-var urlsocket = "http://192.168.1.67:8080/"
+var urlsocket = "restweb-lypef.c9users.io"
+//var urlsocket = "http://192.168.1.67:8080/"
 
 app.config(function($routeProvider){
     $routeProvider
@@ -5304,8 +5304,7 @@ app.controller('reports_ticket', function ($scope, $http, $window, $rootScope){
     })
 })
 
-app.controller("last_movements", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
-    
+app.controller("last_movements", function ($scope, $http, $timeout) {
     $scope.movements = {}
     $scope.movements_hold = {}
     
@@ -5337,13 +5336,4 @@ app.controller("last_movements", ['$scope', '$http','$timeout', function ($scope
               default: console.log('no event caught'); 
           }
       }
-
-}
-  ]).filter('startFromGrid', function() {
-    return function(input, start)
-    {
-        if (!input || !input.length) { return; }
-        start = +start;
-        return input.slice(start);
-    }
 })
