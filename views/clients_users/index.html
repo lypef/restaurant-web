@@ -1,0 +1,45 @@
+<div class="content" align="center" ng-controller="last_movements">
+    
+    <button class="button primary" ng-click="exportAction('csv')"><span class="mif-file-archive"> Export Csv</span></button>
+    <button class="button success" ng-click="exportAction('excel')"><span class="mif-file-excel"> Export Excel</span></button>
+    <button class="button info" ng-click="exportAction('doc')"><span class="mif-file-word"> Export Doc</span></button>
+    
+    <div style="overflow-x:auto;">
+    <table class="table striped hovered bordered border export-table">
+      <thead>
+            <tr>
+              <th>USUARIO</th>
+              <th>DESCRIPCION</th>
+              <th>TICKET</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat='a in movements | limitTo: 15'>
+              <td><img class="img-round50" ng-src="{{ a.user.img }}">{{ a.user.nombre }}</td>
+              <td>{{ a.description }}</td>
+              <td align="center">
+              	<a href="/dashboard/ticket/{{a.sale}}" target="_blank" ng-disabled="!a.sale">
+                <button class="button primary" ng-disabled="!a.sale"><span class="mif-printer"></span> Imprimir</button>	
+                </a>
+              </td>
+            </tr>
+          </tbody>
+    </table>
+</div>
+<!--Ventana modal showventa-->
+    <div data-role="dialog" id="showventa" class="padding30" data-type="" 
+      data-close-button="true"
+      data-width="auto"
+      data-overlay="true"
+      data-place="top-center">
+      <p><h5>Lista de productos vendidos</h5></p>
+       <hr>
+      <ul align="left">
+      <li ng-repeat ="a in sale.products">{{ a.product.name}} $ {{ a.product.price}}</li>
+      </ul> 
+
+      <button class="button success" onclick="hideMetroDialog('#showventa')"><span class="mif-checkmark"></span> OK</button>
+    </div>
+    <!--Ventana modal showventa-->
+    </div>
+<!-- Finaliza Acordeon-->

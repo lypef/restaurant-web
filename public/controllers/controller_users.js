@@ -1,12 +1,12 @@
 var app = angular.module('restweb', ['ngRoute', 'googlechart'])
 
-var urlsocket = "restweb-lypef.c9users.io"
-//var urlsocket = "http://192.168.1.67:8080/"
+//var urlsocket = "restweb-lypef.c9users.io"
+var urlsocket = "http://192.168.1.67:8080/"
 
 app.config(function($routeProvider){
     $routeProvider
         .when('/', {
-            templateUrl : 'clients_users/caja/cut_x_user.html'
+            templateUrl : '/clients_users/index.html'
         })
         .when('/sales/vtd', {
             templateUrl : 'clients_users/sales/vtd.html'
@@ -5304,15 +5304,27 @@ app.controller('reports_ticket', function ($scope, $http, $window, $rootScope){
     })
 })
 
+app.controller("last_movements", ['$scope', '$http','$timeout', function ($scope, $http, $timeout) {
+    
+    $scope.movements = {}
+    $scope.movements_hold = {}
+    
 
+    $scope.$emit('load')
+    $http.get('/api/public/last_movements')
+    .success(function(data){
+        $scope.movements = data
+        $scope.movements_hold = data
+        $scope.LoadPages()
+    })
+    .error (function (msg){
+        pushMessage('alert','ERROR', msg, "cross")
+    })
+    .finally(function (){
+        $scope.$emit('unload')
+    })
 
-
-
-
-app.controller('MainCtrl', function($scope) {
-  $scope.name = 'World';
-  
-        $scope.exportAction = function (option) {
+    $scope.exportAction = function (option) {
           switch (option) {
               case 'pdf': $scope.$broadcast('export-pdf', {}); 
                   break; 
@@ -5325,34 +5337,13 @@ app.controller('MainCtrl', function($scope) {
               default: console.log('no event caught'); 
           }
       }
-        
-      $scope.reportData = [
-                     {
-                         "EmployeeID": "1234567",
-                         "LastName": "Lastname",
-                         "FirstName": "First name",
-                         "Salary": 1000
-                     },
-                     {
-                         "EmployeeID": "11111111",
-                         "LastName": "Lastname 1",
-                         "FirstName": "First name 1",
-                         "Salary": 2000
-                     },
-                     {
-                         "EmployeeID": "222222222",
-                         "LastName": "Lastname 2",
-                         "FirstName": "First name 2",
-                         "Salary": 3000
-                     },
-                     {
-                         "EmployeeID": "333333333",
-                         "LastName": "Lastname 3",
-                         "FirstName": "First name 3",
-                         "Salary": 4000
-                     }
-            ];
-        
-  
-});
 
+}
+  ]).filter('startFromGrid', function() {
+    return function(input, start)
+    {
+        if (!input || !input.length) { return; }
+        start = +start;
+        return input.slice(start);
+    }
+})

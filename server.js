@@ -218,6 +218,7 @@ app.get('/api/get_measurements/:id', GetMeasuremetsJSON_ID)
 app.get('/api/public/socket_notifications', socket_notifications)
 app.get('/api/public/get_notifications', get_notifications)
 app.get('/api/public/get_ticket/:id', get_ticket)
+app.get('/api/public/last_movements', last_movements)
 
 
 app.post('/api/measurement/add', CreateMeasurement )
@@ -525,6 +526,24 @@ function AddMovement (session, description, sale)
     {
         admin: session.admin._id,
         user: session._id,
+        fecha: GetDate(),
+        description: description,
+        sale: sale
+    });
+
+    p.save(function (err){
+        if (!err){
+            console.log(p)
+        }
+    })
+}
+
+function AddMovement0 (usert,session, description, sale)
+{
+    var p = new db.movements(
+    {
+        admin: session.admin._id,
+        user: usert,
         fecha: GetDate(),
         description: description,
         sale: sale
@@ -847,6 +866,17 @@ function getAccount (req,res){
 
 function getAccountMovements (req,res){
     db.movements.find({ admin: req.session.user.admin }).sort({fecha:-1}).populate('admin').populate('user').exec(function(err,doc){
+        if (!err)
+        {
+            res.json(doc)
+        }else {
+            console.log("Usuario no encontrado")
+        }
+    });
+};
+
+function last_movements (req,res){
+    db.movements.find({ admin: req.session.user.admin, user: req.session.user._id }).sort({fecha:-1}).populate('admin').populate('user').exec(function(err,doc){
         if (!err)
         {
             res.json(doc)
@@ -2038,9 +2068,7 @@ function pay_comands (req,res){
 
     if (r)
     {
-        var user = req.session.user
-        user._id = req.body[0].user._id
-        AddMovement(req.session.user,'venta realizada con exito. Folio: ' + ticket._id + ' $: ' + total + ', Cobrado por: ' + req.session.user.nombre, ticket._id)
+        AddMovement0(req.body[0].user._id, req.session.user,'venta realizada con exito. Folio: ' + ticket._id + ' $: ' + total + ', Cobrado por: ' + req.session.user.nombre, ticket._id)
         res.status(200).send(ticket._id)
     }else{res.status(500).send('Error desconocido')}
 };
